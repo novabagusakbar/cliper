@@ -12,6 +12,8 @@ Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 | 🌱 IPAS | 10 |
 | 🕌 Pendidikan Agama Islam | 12 |
 | 🌙 Bahasa Arab | 10 |
+| 🤲 Fiqih | 12 |
+| 🇬🇧 Bahasa Inggris | 12 |
 | 🎲 Campuran | 10 soal acak dari semua pelajaran |
 
 Fitur:
