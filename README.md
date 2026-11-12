@@ -5,25 +5,24 @@ Kuis interaktif untuk siswa kelas 3 Madrasah Ibtidaiyah, siap ditempel di **Goog
 Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 
 ## Isi kuis
-| Pelajaran | Jumlah soal |
-|---|---|
-| 🔢 Matematika | 12 + soal otomatis tanpa batas |
-| 📖 Bahasa Indonesia | 10 |
-| 🌱 IPAS | 10 |
-| 🕌 Pendidikan Agama Islam | 12 |
-| 🌙 Bahasa Arab | 10 |
-| 🤲 Fiqih | 12 |
-| 🇬🇧 Bahasa Inggris | 12 |
-| 🎲 Campuran | 10 soal acak dari semua pelajaran |
+Soal **dibuat otomatis** dari daftar kata, angka, dan fakta, jadi hampir setiap soal berbeda.
+
+| Pelajaran | Perkiraan jumlah soal berbeda | Contoh materi |
+|---|---|---|
+| 🔢 Matematika | tak terbatas (angka acak) | +, −, ×, :, nilai tempat, pola, pecahan, uang, waktu, satuan, keliling, pembulatan |
+| 📖 Bahasa Indonesia | ±2.000+ | lawan kata, persamaan kata, kata benda/kerja/sifat, pemahaman kalimat, tanda baca |
+| 🇬🇧 Bahasa Inggris | ±470 | kosakata, angka 1–100, lawan kata, hari, warna |
+| 🌙 Bahasa Arab | ±270 | kosakata 13 kelompok, kelompok kata |
+| 🌱 IPAS | ±230 | jenis makanan hewan, cara berkembang biak, perubahan wujud, tumbuhan, magnet, energi |
+| 🕌 PAI | ±200 | Asmaul Husna, malaikat, rukun iman & Islam, sifat wajib Allah, akhlak, surah pendek, kisah nabi |
+| 🤲 Fiqih | ±110 | salat fardu & rawatib, wudu, azan, salat berjamaah, air suci |
+| 🎲 Campuran | gabungan semua | |
 
 Fitur:
 - Siswa mengisi nama, lalu memilih pelajaran
-- Urutan soal dan pilihan jawaban diacak setiap kali main
-- **Soal selalu unik:** soal yang sudah dijawab dicatat per nama siswa dan tidak muncul lagi
-  - Matematika membuat soal baru otomatis dengan angka acak, jadi tidak pernah habis
-  - Pelajaran lain: jika semua soal sudah dikerjakan, kuis memberi tahu siswa lalu memulai putaran baru
-  - Kartu pelajaran menampilkan sisa soal baru, mis. "7 soal baru dari 12"
-  - Tombol "Hapus riwayat soal untuk nama ini" untuk mengulang dari awal
+- **Soal tidak berulang:** soal yang sudah dijawab dicatat per nama siswa dan tidak dimunculkan lagi
+- Jika hampir semua soal suatu pelajaran sudah dikerjakan, soal yang paling lama dikerjakan boleh muncul lagi untuk mengulang (siswa diberi tahu)
+- **Matematika punya Level 1–3:** naik level jika nilai ≥ 80, turun jika nilai < 50
 - Langsung muncul benar/salah beserta penjelasannya
 - Suara, nilai 0–100, bintang, konfeti, dan pembahasan soal yang salah
 - Bisa dipakai di HP, tablet, dan laptop
@@ -56,4 +55,4 @@ Riwayat disimpan di browser perangkat yang dipakai siswa (bukan di server). Jadi
 - Jika ganti HP/laptop, memakai mode penyamaran, atau menghapus data browser, riwayatnya mulai dari awal.
 - Jika browser memblokir penyimpanan di Google Sites, soal tetap tidak berulang selama halaman belum ditutup.
 
-Supaya pelajaran selain Matematika lebih lama habisnya, tambahkan lebih banyak soal ke `BANK SOAL`.
+Untuk menambah variasi, tambahkan kata/fakta baru ke daftar di bagian pembuat soal (mis. `ANTONIM`, `KOSAKATA_ARAB`, `MALAIKAT`) atau soal baru di `BANK SOAL`.
