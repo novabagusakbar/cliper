@@ -7,7 +7,7 @@ Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 ## Isi kuis
 | Pelajaran | Jumlah soal |
 |---|---|
-| 🔢 Matematika | 12 |
+| 🔢 Matematika | 12 + soal otomatis tanpa batas |
 | 📖 Bahasa Indonesia | 10 |
 | 🌱 IPAS | 10 |
 | 🕌 Pendidikan Agama Islam | 12 |
@@ -19,6 +19,11 @@ Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 Fitur:
 - Siswa mengisi nama, lalu memilih pelajaran
 - Urutan soal dan pilihan jawaban diacak setiap kali main
+- **Soal selalu unik:** soal yang sudah dijawab dicatat per nama siswa dan tidak muncul lagi
+  - Matematika membuat soal baru otomatis dengan angka acak, jadi tidak pernah habis
+  - Pelajaran lain: jika semua soal sudah dikerjakan, kuis memberi tahu siswa lalu memulai putaran baru
+  - Kartu pelajaran menampilkan sisa soal baru, mis. "7 soal baru dari 12"
+  - Tombol "Hapus riwayat soal untuk nama ini" untuk mengulang dari awal
 - Langsung muncul benar/salah beserta penjelasannya
 - Suara, nilai 0–100, bintang, konfeti, dan pembahasan soal yang salah
 - Bisa dipakai di HP, tablet, dan laptop
@@ -44,3 +49,11 @@ Buka file HTML dengan Notepad, cari bagian `BANK SOAL`. Setiap soal ditulis sepe
 - `p` = penjelasan yang muncul setelah menjawab
 
 Jumlah soal per kuis bisa diubah di baris `const JUMLAH_SOAL = 10;`.
+
+## Catatan tentang riwayat soal
+Riwayat disimpan di browser perangkat yang dipakai siswa (bukan di server). Jadi:
+- Siswa harus mengetik nama yang sama setiap kali main.
+- Jika ganti HP/laptop, memakai mode penyamaran, atau menghapus data browser, riwayatnya mulai dari awal.
+- Jika browser memblokir penyimpanan di Google Sites, soal tetap tidak berulang selama halaman belum ditutup.
+
+Supaya pelajaran selain Matematika lebih lama habisnya, tambahkan lebih banyak soal ke `BANK SOAL`.
