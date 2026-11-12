@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Pintar Kelas 3 MI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff8e7;
+    --card: #ffffff;
+    --ink: #2d2a32;
+    --muted: #6b6475;
+    --primary: #2f9e6e;
+    --primary-dark: #227a54;
+    --accent: #ffb703;
+    --benar: #2fbf71;
+    --salah: #ef476f;
+    --line: #f0e6cf;
+    --shadow: 0 6px 0 rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 10%, #ffe8a3 0 60px, transparent 61px),
+      radial-gradient(circle at 92% 18%, #c9f2dd 0 45px, transparent 46px),
+      radial-gradient(circle at 85% 92%, #ffd6e0 0 70px, transparent 71px);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
+  .screen { display: none; animation: muncul .35s ease; }
+  .screen.aktif { display: block; }
+  @keyframes muncul { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .kartu {
+    background: var(--card);
+    border: 3px solid var(--line);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  h1 { font-size: clamp(28px, 6vw, 40px); margin: 0; line-height: 1.1; color: var(--primary-dark); }
+  h2 { font-size: 24px; margin: 0 0 12px; }
+  .sub { color: var(--muted); margin: 6px 0 0; }
+  .header { text-align: center; margin-bottom: 18px; }
+  .maskot { font-size: 56px; display: block; animation: goyang 2.4s ease-in-out infinite; }
+  @keyframes goyang { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+  label.judul { display: block; font-weight: 700; margin: 4px 0 8px; }
+  input[type=text] {
+    width: 100%; font: inherit; font-size: 20px;
+    padding: 12px 16px; border-radius: 16px;
+    border: 3px solid var(--line); outline: none; background: #fffdf7;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+
+  .mapel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 8px; }
+  .mapel {
+    font: inherit; cursor: pointer; text-align: center;
+    border: 3px solid transparent; border-radius: 20px;
+    padding: 14px 10px; color: var(--ink);
+    box-shadow: var(--shadow); transition: transform .12s;
+  }
+  .mapel:hover { transform: translateY(-3px); }
+  .mapel.dipilih { border-color: var(--ink); transform: translateY(-3px) scale(1.03); }
+  .mapel .ikon { font-size: 36px; display: block; }
+  .mapel b { display: block; font-size: 18px; }
+  .mapel small { color: var(--muted); }
+
+  .tombol {
+    font: inherit; font-weight: 800; font-size: 20px; cursor: pointer;
+    border: none; border-radius: 18px; padding: 14px 26px;
+    background: var(--primary); color: #fff;
+    box-shadow: 0 5px 0 var(--primary-dark);
+    transition: transform .08s, box-shadow .08s;
+  }
+  .tombol:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--primary-dark); }
+  .tombol:disabled { background: #b9c2bd; box-shadow: 0 5px 0 #98a29c; cursor: not-allowed; }
+  .tombol.kuning { background: var(--accent); color: var(--ink); box-shadow: 0 5px 0 #d99a00; }
+  .tombol.putih { background: #fff; color: var(--ink); border: 3px solid var(--line); box-shadow: 0 5px 0 var(--line); }
+  .tengah { text-align: center; margin-top: 20px; }
+  .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
+
+  /* Layar kuis */
+  .bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .chip { background: #fff; border: 3px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; }
+  .progress { height: 16px; background: #fff; border: 3px solid var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+  .progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--primary)); transition: width .4s; }
+  .soal { font-size: clamp(20px, 4.5vw, 26px); font-weight: 700; margin: 0 0 16px; }
+  .arab { font-family: "Amiri", "Traditional Arabic", serif; font-size: 1.5em; direction: rtl; unicode-bidi: isolate; }
+  .opsi-list { display: grid; gap: 10px; }
+  .opsi {
+    font: inherit; font-size: 20px; text-align: left; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    background: #fffdf7; border: 3px solid var(--line); border-radius: 18px;
+    padding: 10px 14px; color: var(--ink); transition: transform .1s, background .2s;
+  }
+  .opsi:hover:not(:disabled) { transform: translateX(4px); border-color: var(--accent); }
+  .opsi .huruf {
+    flex: none; width: 38px; height: 38px; border-radius: 12px;
+    display: grid; place-items: center; font-weight: 800;
+    background: var(--accent); color: var(--ink);
+  }
+  .opsi.benar { background: #dcf7e8; border-color: var(--benar); }
+  .opsi.benar .huruf { background: var(--benar); color: #fff; }
+  .opsi.salah { background: #ffe1e8; border-color: var(--salah); animation: geleng .35s; }
+  .opsi.salah .huruf { background: var(--salah); color: #fff; }
+  .opsi:disabled { cursor: default; }
+  @keyframes geleng { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+  .umpan { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 18px; font-weight: 700; }
+  .umpan.tampil { display: block; animation: muncul .3s; }
+  .umpan.ok { background: #dcf7e8; color: #17603a; }
+  .umpan.no { background: #ffe1e8; color: #8a1934; }
+  .umpan p { margin: 4px 0 0; font-weight: 500; }
+
+  /* Hasil */
+  .bintang { font-size: 52px; letter-spacing: 6px; margin: 6px 0; }
+  .skor-besar { font-size: 64px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
+  .ulasan { margin-top: 18px; text-align: left; }
+  .ulasan details { background: #fffdf7; border: 3px solid var(--line); border-radius: 16px; padding: 10px 14px; }
+  .ulasan summary { cursor: pointer; font-weight: 700; }
+  .ulasan ol { padding-left: 22px; margin: 10px 0 0; }
+  .ulasan li { margin-bottom: 10px; }
+  .ulasan .jwb-salah { color: var(--salah); }
+  .ulasan .jwb-benar { color: var(--primary-dark); font-weight: 700; }
+  .baris-tombol { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; }
+
+  /* Konfeti */
+  .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
+  @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
+
+  @media (max-width: 480px) {
+    body { font-size: 17px; }
+    .kartu { padding: 16px; border-radius: 20px; }
+    .opsi { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LAYAR 1: MULAI -->
+  <section id="layarMulai" class="screen aktif">
+    <div class="header">
+      <span class="maskot" aria-hidden="true">🦉</span>
+      <h1>Kuis Pintar Kelas 3 MI</h1>
+      <p class="sub">Ayo belajar sambil bermain! Pilih pelajaran lalu jawab soalnya, ya.</p>
+    </div>
+    <div class="kartu">
+      <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
+      <input id="namaSiswa" type="text" maxlength="30" placeholder="Tulis namamu di sini" autocomplete="off">
+
+      <p class="judul" style="margin-top:18px">📚 Pilih pelajaran:</p>
+      <div class="mapel-grid" id="daftarMapel"></div>
+
+      <div class="pesan-error" id="pesanError" role="alert"></div>
+      <div class="tengah">
+        <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
+      </div>
+    </div>
+    <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
+  </section>
+
+  <!-- LAYAR 2: KUIS -->
+  <section id="layarKuis" class="screen">
+    <div class="bar-atas">
+      <span class="chip" id="infoMapel">📚</span>
+      <span class="chip" id="infoNomor">Soal 1/10</span>
+      <span class="chip" id="infoSkor">⭐ 0</span>
+    </div>
+    <div class="progress" aria-hidden="true"><div id="barProgress"></div></div>
+    <div class="kartu">
+      <p class="soal" id="teksSoal"></p>
+      <div class="opsi-list" id="daftarOpsi"></div>
+      <div class="umpan" id="umpan" role="status" aria-live="polite"></div>
+      <div class="tengah">
+        <button class="tombol kuning" id="btnLanjut" style="display:none">Lanjut ➡️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYAR 3: HASIL -->
+  <section id="layarHasil" class="screen">
+    <div class="kartu tengah" style="margin-top:0">
+      <div style="font-size:64px" id="emojiHasil">🏆</div>
+      <h2 id="judulHasil">Hebat!</h2>
+      <div class="bintang" id="bintangHasil">⭐⭐⭐</div>
+      <div class="skor-besar" id="skorHasil">100</div>
+      <p class="sub" id="rincianHasil"></p>
+      <p id="pesanHasil" style="font-weight:700"></p>
+      <div class="ulasan" id="ulasan"></div>
+      <div class="baris-tombol">
+        <button class="tombol" id="btnUlang">Ulangi 🔄</button>
+        <button class="tombol putih" id="btnGanti">Ganti Pelajaran 📚</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   BANK SOAL — silakan tambah/ubah soal di sini.
+   Format: { t: "pertanyaan", o: ["opsi1","opsi2","opsi3","opsi4"], j: indeksJawabanBenar (0-3), p: "penjelasan" }
+   Teks Arab bisa dibungkus <span class="arab">...</span>
+   ========================================================= */
+const BANK = {
+  mtk: {
+    nama: "Matematika", ikon: "🔢", warna: "#ffe3a3",
+    soal: [
+      { t: "245 + 132 = ...", o: ["367", "377", "387", "477"], j: 1, p: "Satuan 5+2=7, puluhan 4+3=7, ratusan 2+1=3. Hasilnya 377." },
+      { t: "500 − 175 = ...", o: ["325", "335", "375", "425"], j: 0, p: "500 − 175 = 325." },
+      { t: "7 × 8 = ...", o: ["54", "56", "48", "64"], j: 1, p: "7 × 8 = 56." },
+      { t: "48 : 6 = ...", o: ["6", "7", "8", "9"], j: 2, p: "Karena 6 × 8 = 48, maka 48 : 6 = 8." },
+      { t: "Nilai angka 4 pada bilangan 642 adalah ...", o: ["4", "40", "400", "4.000"], j: 1, p: "Angka 4 berada di tempat puluhan, jadi nilainya 40." },
+      { t: "1 jam sama dengan ... menit.", o: ["30", "50", "60", "100"], j: 2, p: "1 jam = 60 menit." },
+      { t: "Bangun datar yang memiliki 4 sisi sama panjang dan 4 sudut siku-siku adalah ...", o: ["Segitiga", "Persegi", "Lingkaran", "Persegi panjang"], j: 1, p: "Persegi memiliki 4 sisi yang sama panjang." },
+      { t: "Ani punya 3 kotak. Setiap kotak berisi 6 kue. Jumlah kue Ani ada ...", o: ["9", "12", "18", "24"], j: 2, p: "3 × 6 = 18 kue." },
+      { t: "1 meter = ... cm", o: ["10", "100", "1.000", "50"], j: 1, p: "1 meter sama dengan 100 sentimeter." },
+      { t: "Keliling persegi dengan panjang sisi 5 cm adalah ...", o: ["10 cm", "15 cm", "20 cm", "25 cm"], j: 2, p: "Keliling persegi = 4 × sisi = 4 × 5 = 20 cm." },
+      { t: "Pecahan ½ dibaca ...", o: ["Sepertiga", "Seperempat", "Setengah", "Dua per satu"], j: 2, p: "½ dibaca setengah atau satu per dua." },
+      { t: "Urutan bilangan dari yang terkecil adalah ...", o: ["251, 215, 152, 125", "125, 152, 215, 251", "152, 125, 251, 215", "215, 125, 251, 152"], j: 1, p: "Bandingkan ratusannya dulu, lalu puluhan: 125 < 152 < 215 < 251." }
+    ]
+  },
+  bind: {
+    nama: "Bahasa Indonesia", ikon: "📖", warna: "#ffd6e0",
+    soal: [
+      { t: "Lawan kata dari \"rajin\" adalah ...", o: ["Pintar", "Malas", "Giat", "Tekun"], j: 1, p: "Lawan kata (antonim) rajin adalah malas." },
+      { t: "Persamaan kata dari \"pandai\" adalah ...", o: ["Pintar", "Bodoh", "Malas", "Lambat"], j: 0, p: "Persamaan kata (sinonim) pandai adalah pintar." },
+      { t: "Huruf kapital digunakan pada ... kalimat.", o: ["Tengah", "Akhir", "Awal", "Setiap kata"], j: 2, p: "Awal kalimat selalu ditulis dengan huruf kapital." },
+      { t: "Tanda baca yang tepat di akhir kalimat tanya adalah ...", o: ["Titik (.)", "Koma (,)", "Seru (!)", "Tanya (?)"], j: 3, p: "Kalimat tanya diakhiri tanda tanya (?)." },
+      { t: "\"Ibu memasak nasi di dapur.\" Siapa yang memasak?", o: ["Ayah", "Ibu", "Kakak", "Nenek"], j: 1, p: "Yang memasak adalah Ibu." },
+      { t: "Kata berikut yang termasuk kata benda adalah ...", o: ["Berlari", "Meja", "Cantik", "Cepat"], j: 1, p: "Meja adalah nama benda." },
+      { t: "Kalimat perintah yang benar adalah ...", o: ["Pintu itu tertutup.", "Apakah pintu tertutup?", "Tolong tutup pintunya!", "Pintunya besar sekali."], j: 2, p: "Kalimat perintah berisi suruhan dan biasanya diakhiri tanda seru (!)." },
+      { t: "Lawan kata dari \"tinggi\" adalah ...", o: ["Besar", "Panjang", "Rendah", "Lebar"], j: 2, p: "Antonim tinggi adalah rendah." },
+      { t: "Kata berikut yang termasuk kata sifat adalah ...", o: ["Rumah", "Makan", "Cantik", "Buku"], j: 2, p: "Cantik menunjukkan sifat atau keadaan." },
+      { t: "Cerita yang tokohnya hewan dan berperilaku seperti manusia disebut ...", o: ["Fabel", "Puisi", "Pantun", "Biografi"], j: 0, p: "Fabel adalah dongeng dengan tokoh hewan, contohnya Kancil dan Buaya." }
+    ]
+  },
+  ipas: {
+    nama: "IPAS", ikon: "🌱", warna: "#c9f2dd",
+    soal: [
+      { t: "Tumbuhan hijau membuat makanannya sendiri melalui proses ...", o: ["Fotosintesis", "Bernapas", "Penguapan", "Pembekuan"], j: 0, p: "Fotosintesis memerlukan cahaya matahari, air, dan karbon dioksida." },
+      { t: "Hewan yang makanannya hanya tumbuhan disebut ...", o: ["Karnivora", "Omnivora", "Herbivora", "Insektivora"], j: 2, p: "Herbivora = pemakan tumbuhan, contohnya sapi dan kambing." },
+      { t: "Es batu yang mencair berubah wujud dari ...", o: ["Cair ke padat", "Padat ke cair", "Cair ke gas", "Gas ke cair"], j: 1, p: "Es (padat) mencair menjadi air (cair)." },
+      { t: "Bagian tumbuhan yang berfungsi menyerap air dari tanah adalah ...", o: ["Daun", "Bunga", "Batang", "Akar"], j: 3, p: "Akar menyerap air dan zat hara dari dalam tanah." },
+      { t: "Sumber energi panas terbesar bagi bumi adalah ...", o: ["Bulan", "Matahari", "Lampu", "Api unggun"], j: 1, p: "Matahari adalah sumber energi utama bagi bumi." },
+      { t: "Hewan berikut yang berkembang biak dengan bertelur adalah ...", o: ["Kucing", "Sapi", "Ayam", "Kambing"], j: 2, p: "Ayam bertelur. Kucing, sapi, dan kambing melahirkan." },
+      { t: "Air yang dipanaskan terus-menerus akan berubah menjadi uap. Peristiwa ini disebut ...", o: ["Membeku", "Mencair", "Menguap", "Mengembun"], j: 2, p: "Perubahan cair menjadi gas disebut menguap." },
+      { t: "Berikut ini yang merupakan ciri makhluk hidup adalah ...", o: ["Bernapas", "Berwarna", "Keras", "Diam saja"], j: 0, p: "Makhluk hidup bernapas, tumbuh, makan, dan berkembang biak." },
+      { t: "Urutan daur hidup kupu-kupu yang benar adalah ...", o: ["Ulat → telur → kupu-kupu → kepompong", "Telur → ulat → kepompong → kupu-kupu", "Kepompong → telur → ulat → kupu-kupu", "Telur → kepompong → ulat → kupu-kupu"], j: 1, p: "Kupu-kupu mengalami metamorfosis sempurna: telur, ulat, kepompong, kupu-kupu." },
+      { t: "Membuang sampah pada tempatnya bermanfaat untuk ...", o: ["Membuat banjir", "Menjaga kebersihan lingkungan", "Mengundang nyamuk", "Mengotori sungai"], j: 1, p: "Kebersihan adalah sebagian dari iman. Lingkungan jadi bersih dan sehat." }
+    ]
+  },
+  pai: {
+    nama: "Pendidikan Agama Islam", ikon: "🕌", warna: "#d6e4ff",
+    soal: [
+      { t: "Rukun Islam ada ... perkara.", o: ["4", "5", "6", "7"], j: 1, p: "Rukun Islam ada 5: syahadat, salat, zakat, puasa, haji." },
+      { t: "Rukun Iman ada ... perkara.", o: ["5", "6", "7", "8"], j: 1, p: "Rukun Iman ada 6, dimulai dari iman kepada Allah." },
+      { t: "Salat fardu dalam sehari semalam ada ... waktu.", o: ["3", "4", "5", "6"], j: 2, p: "Subuh, Zuhur, Asar, Magrib, dan Isya." },
+      { t: "Salat Subuh dikerjakan sebanyak ... rakaat.", o: ["2", "3", "4", "5"], j: 0, p: "Salat Subuh 2 rakaat." },
+      { t: "Salat Magrib dikerjakan sebanyak ... rakaat.", o: ["2", "3", "4", "5"], j: 1, p: "Salat Magrib 3 rakaat." },
+      { t: "Kitab suci umat Islam adalah ...", o: ["Taurat", "Zabur", "Injil", "Al-Qur'an"], j: 3, p: "Al-Qur'an diturunkan kepada Nabi Muhammad saw." },
+      { t: "Nabi dan rasul terakhir adalah ...", o: ["Nabi Adam a.s.", "Nabi Musa a.s.", "Nabi Muhammad saw.", "Nabi Isa a.s."], j: 2, p: "Nabi Muhammad saw. adalah penutup para nabi." },
+      { t: "Malaikat yang bertugas menyampaikan wahyu adalah ...", o: ["Mikail", "Jibril", "Israfil", "Izrail"], j: 1, p: "Malaikat Jibril menyampaikan wahyu kepada para nabi dan rasul." },
+      { t: "Sebelum salat, kita wajib bersuci dengan ...", o: ["Berwudu", "Makan", "Tidur", "Bermain"], j: 0, p: "Wudu adalah syarat sah salat." },
+      { t: "Asmaul Husna \"Ar-Rahman\" artinya Allah Yang Maha ...", o: ["Melihat", "Mendengar", "Pengasih", "Kuasa"], j: 2, p: "Ar-Rahman artinya Yang Maha Pengasih." },
+      { t: "Doa yang dibaca sebelum makan diawali dengan ...", o: ["Alhamdulillah", "Bismillah", "Astagfirullah", "Subhanallah"], j: 1, p: "Sebelum makan kita membaca Bismillah." },
+      { t: "Surah pertama dalam Al-Qur'an adalah ...", o: ["An-Nas", "Al-Ikhlas", "Al-Fatihah", "Al-Baqarah"], j: 2, p: "Al-Fatihah adalah surah pembuka Al-Qur'an." }
+    ]
+  },
+  arab: {
+    nama: "Bahasa Arab", ikon: "🌙", warna: "#eadcff",
+    soal: [
+      { t: "Arti kata <span class=\"arab\">كِتَابٌ</span> adalah ...", o: ["Pena", "Buku", "Meja", "Tas"], j: 1, p: "كِتَابٌ (kitaabun) artinya buku." },
+      { t: "Arti kata <span class=\"arab\">قَلَمٌ</span> adalah ...", o: ["Pena", "Kursi", "Pintu", "Papan tulis"], j: 0, p: "قَلَمٌ (qalamun) artinya pena/pulpen." },
+      { t: "Arti kata <span class=\"arab\">مَدْرَسَةٌ</span> adalah ...", o: ["Masjid", "Rumah", "Sekolah", "Pasar"], j: 2, p: "مَدْرَسَةٌ (madrasatun) artinya sekolah." },
+      { t: "Arti kata <span class=\"arab\">بَيْتٌ</span> adalah ...", o: ["Rumah", "Kelas", "Kebun", "Jalan"], j: 0, p: "بَيْتٌ (baitun) artinya rumah." },
+      { t: "Arti kata <span class=\"arab\">بَابٌ</span> adalah ...", o: ["Jendela", "Lantai", "Atap", "Pintu"], j: 3, p: "بَابٌ (baabun) artinya pintu." },
+      { t: "Bahasa Arab dari \"ibu\" adalah ...", o: ["<span class=\"arab\">أَبٌ</span>", "<span class=\"arab\">أُمٌّ</span>", "<span class=\"arab\">أَخٌ</span>", "<span class=\"arab\">أُخْتٌ</span>"], j: 1, p: "أُمٌّ (ummun) artinya ibu. أَبٌ = ayah, أَخٌ = saudara laki-laki, أُخْتٌ = saudara perempuan." },
+      { t: "Angka <span class=\"arab\">وَاحِدٌ</span> artinya ...", o: ["Satu", "Dua", "Tiga", "Empat"], j: 0, p: "وَاحِدٌ (waahidun) artinya satu." },
+      { t: "Bahasa Arab dari angka tiga adalah ...", o: ["<span class=\"arab\">اِثْنَانِ</span>", "<span class=\"arab\">ثَلَاثَةٌ</span>", "<span class=\"arab\">أَرْبَعَةٌ</span>", "<span class=\"arab\">خَمْسَةٌ</span>"], j: 1, p: "ثَلَاثَةٌ (tsalaatsatun) artinya tiga." },
+      { t: "Warna <span class=\"arab\">أَحْمَرُ</span> artinya ...", o: ["Biru", "Hijau", "Merah", "Kuning"], j: 2, p: "أَحْمَرُ (ahmaru) artinya merah." },
+      { t: "Ucapan \"selamat pagi\" dalam bahasa Arab adalah ...", o: ["<span class=\"arab\">مَسَاءُ الْخَيْرِ</span>", "<span class=\"arab\">شُكْرًا</span>", "<span class=\"arab\">صَبَاحُ الْخَيْرِ</span>", "<span class=\"arab\">عَفْوًا</span>"], j: 2, p: "صَبَاحُ الْخَيْرِ (shabaahul khair) = selamat pagi." }
+    ]
+  }
+};
+
+/* Pengaturan */
+const JUMLAH_SOAL = 10;      // jumlah soal per kuis
+const MODE_CAMPUR = { nama: "Campuran", ikon: "🎲", warna: "#fff1b8" };
+
+/* ========================================================= */
+const $ = (id) => document.getElementById(id);
+const acak = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const k = Math.floor(Math.random() * (i + 1)); [a[i], a[k]] = [a[k], a[i]]; } return a; };
+
+let pilihanMapel = null, nama = "", soalAktif = [], nomor = 0, skor = 0, catatan = [];
+
+/* Suara sederhana (tanpa file) */
+let ctx = null;
+function bunyi(jenis) {
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const nada = jenis === "benar" ? [523, 659, 784] : jenis === "salah" ? [300, 220] : [523, 659, 784, 1047];
+    nada.forEach((f, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = jenis === "salah" ? "sawtooth" : "triangle";
+      o.frequency.value = f;
+      const t = ctx.currentTime + i * 0.12;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + 0.2);
+    });
+  } catch (e) { /* abaikan jika browser tidak mendukung */ }
+}
+
+function konfeti(n = 80) {
+  const warna = ["#ffb703", "#2fbf71", "#ef476f", "#118ab2", "#8338ec"];
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement("div");
+    d.className = "konfeti";
+    d.style.left = Math.random() * 100 + "vw";
+    d.style.background = warna[i % warna.length];
+    d.style.animationDuration = 1.8 + Math.random() * 1.8 + "s";
+    d.style.animationDelay = Math.random() * 0.6 + "s";
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 4500);
+  }
+}
+
+function tampilkan(id) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("aktif"));
+  $(id).classList.add("aktif");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* Daftar mapel */
+function buatDaftarMapel() {
+  const semua = { ...BANK, campur: MODE_CAMPUR };
+  const wadah = $("daftarMapel");
+  Object.entries(semua).forEach(([kode, m]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "mapel";
+    b.style.background = m.warna;
+    const jml = kode === "campur" ? "Semua pelajaran" : m.soal.length + " soal";
+    b.innerHTML = `<span class="ikon">${m.ikon}</span><b>${m.nama}</b><small>${jml}</small>`;
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".mapel").forEach((x) => x.classList.remove("dipilih"));
+      b.classList.add("dipilih");
+      pilihanMapel = kode;
+      $("pesanError").textContent = "";
+    });
+    wadah.appendChild(b);
+  });
+}
+
+function mulai() {
+  nama = $("namaSiswa").value.trim();
+  if (!nama) { $("pesanError").textContent = "Tulis namamu dulu, ya! 😊"; $("namaSiswa").focus(); return; }
+  if (!pilihanMapel) { $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚"; return; }
+
+  let kumpulan;
+  if (pilihanMapel === "campur") {
+    kumpulan = Object.values(BANK).flatMap((m) => m.soal.map((s) => ({ ...s, ikon: m.ikon })));
+  } else {
+    kumpulan = BANK[pilihanMapel].soal;
+  }
+  soalAktif = acak(kumpulan).slice(0, JUMLAH_SOAL).map((s) => {
+    // acak urutan pilihan jawaban, tetap ingat yang benar
+    const urut = acak(s.o.map((teks, i) => ({ teks, benar: i === s.j })));
+    return { ...s, opsi: urut };
+  });
+  nomor = 0; skor = 0; catatan = [];
+  const m = pilihanMapel === "campur" ? MODE_CAMPUR : BANK[pilihanMapel];
+  $("infoMapel").textContent = m.ikon + " " + m.nama;
+  tampilkan("layarKuis");
+  tampilSoal();
+}
+
+function tampilSoal() {
+  const s = soalAktif[nomor];
+  $("infoNomor").textContent = `Soal ${nomor + 1}/${soalAktif.length}`;
+  $("infoSkor").textContent = "⭐ " + skor;
+  $("barProgress").style.width = (nomor / soalAktif.length) * 100 + "%";
+  $("teksSoal").innerHTML = (s.ikon ? s.ikon + " " : "") + s.t;
+  $("umpan").className = "umpan";
+  $("btnLanjut").style.display = "none";
+
+  const wadah = $("daftarOpsi");
+  wadah.innerHTML = "";
+  s.opsi.forEach((op, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opsi";
+    b.innerHTML = `<span class="huruf">${"ABCD"[i]}</span><span>${op.teks}</span>`;
+    b.addEventListener("click", () => jawab(b, op));
+    wadah.appendChild(b);
+  });
+}
+
+function jawab(tombol, op) {
+  const s = soalAktif[nomor];
+  const semua = [...document.querySelectorAll(".opsi")];
+  semua.forEach((b, i) => { b.disabled = true; if (s.opsi[i].benar) b.classList.add("benar"); });
+  const u = $("umpan");
+  const kunci = s.opsi.find((x) => x.benar).teks;
+  if (op.benar) {
+    skor++;
+    bunyi("benar");
+    const pujian = ["Benar! Hebat! 🎉", "MasyaAllah, benar! 🌟", "Pintar sekali! 👏", "Betul! Teruskan! 💪"];
+    u.innerHTML = pujian[Math.floor(Math.random() * pujian.length)] + `<p>${s.p}</p>`;
+    u.className = "umpan ok tampil";
+  } else {
+    tombol.classList.add("salah");
+    bunyi("salah");
+    u.innerHTML = `Belum tepat, jangan menyerah! 💖<p>Jawaban yang benar: <b>${kunci}</b>. ${s.p}</p>`;
+    u.className = "umpan no tampil";
+  }
+  catatan.push({ soal: s.t, dipilih: op.teks, kunci, benar: op.benar });
+  $("infoSkor").textContent = "⭐ " + skor;
+  const btn = $("btnLanjut");
+  btn.textContent = nomor + 1 < soalAktif.length ? "Lanjut ➡️" : "Lihat Nilai 🏆";
+  btn.style.display = "inline-block";
+  btn.focus({ preventScroll: true });
+}
+
+function lanjut() {
+  nomor++;
+  if (nomor < soalAktif.length) tampilSoal();
+  else selesai();
+}
+
+function selesai() {
+  $("barProgress").style.width = "100%";
+  const total = soalAktif.length;
+  const nilai = Math.round((skor / total) * 100);
+  let jmlBintang, emoji, judul, pesan;
+  if (nilai >= 90)      { jmlBintang = 3; emoji = "🏆"; judul = "Luar Biasa, " + nama + "!"; pesan = "MasyaAllah, kamu hebat sekali! Pertahankan, ya!"; }
+  else if (nilai >= 70) { jmlBintang = 2; emoji = "🥳"; judul = "Bagus, " + nama + "!"; pesan = "Hampir sempurna! Ayo coba lagi supaya dapat 3 bintang."; }
+  else if (nilai >= 50) { jmlBintang = 1; emoji = "😊"; judul = "Cukup Baik, " + nama + "!"; pesan = "Terus belajar, kamu pasti bisa lebih baik!"; }
+  else                  { jmlBintang = 0; emoji = "💪"; judul = "Semangat, " + nama + "!"; pesan = "Tidak apa-apa. Baca lagi materinya, lalu coba sekali lagi, ya!"; }
+
+  $("emojiHasil").textContent = emoji;
+  $("judulHasil").textContent = judul;
+  $("bintangHasil").textContent = "⭐".repeat(jmlBintang) + "☆".repeat(3 - jmlBintang);
+  $("skorHasil").textContent = nilai;
+  $("rincianHasil").textContent = `Benar ${skor} dari ${total} soal`;
+  $("pesanHasil").textContent = pesan;
+
+  const salah = catatan.filter((c) => !c.benar);
+  $("ulasan").innerHTML = salah.length === 0
+    ? `<p class="tengah" style="font-weight:700">Semua jawabanmu benar! 🎉</p>`
+    : `<details><summary>📝 Lihat pembahasan soal yang salah (${salah.length})</summary><ol>` +
+      salah.map((c) => `<li>${c.soal}<br><span class="jwb-salah">✗ Jawabanmu: ${c.dipilih}</span><br><span class="jwb-benar">✓ Jawaban benar: ${c.kunci}</span></li>`).join("") +
+      `</ol></details>`;
+
+  tampilkan("layarHasil");
+  bunyi("selesai");
+  if (nilai >= 70) konfeti();
+}
+
+$("btnMulai").addEventListener("click", mulai);
+$("namaSiswa").addEventListener("keydown", (e) => { if (e.key === "Enter") mulai(); });
+$("btnLanjut").addEventListener("click", lanjut);
+$("btnUlang").addEventListener("click", mulai);
+$("btnGanti").addEventListener("click", () => tampilkan("layarMulai"));
+buatDaftarMapel();
+</script>
+</body>
+</html>
