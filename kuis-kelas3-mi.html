@@ -88,6 +88,10 @@
   .tengah { text-align: center; margin-top: 20px; }
   .link-reset { font: inherit; font-size: 15px; background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; }
   .info-putaran { display: none; background: #fff1b8; border: 3px solid var(--accent); border-radius: 16px; padding: 10px 14px; margin-bottom: 14px; font-weight: 700; }
+  .info-pilihan { text-align: center; font-weight: 800; color: var(--primary-dark); font-size: 20px; min-height: 1.4em; margin-top: 14px; }
+  .mapel { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .mapel.dipilih { box-shadow: 0 0 0 4px var(--primary), var(--shadow); }
+  .mapel.dipilih::after { content: "✔ Dipilih"; display: block; font-weight: 800; color: var(--primary-dark); font-size: 15px; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -164,6 +168,7 @@
       <p class="judul" style="margin-top:18px">📚 Pilih pelajaran:</p>
       <div class="mapel-grid" id="daftarMapel"></div>
 
+      <div class="info-pilihan" id="infoPilihan"></div>
       <div class="pesan-error" id="pesanError" role="alert"></div>
       <div class="tengah">
         <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
@@ -213,6 +218,18 @@
 
 </div>
 
+<script>
+/* Bantuan untuk browser lama (HP/tablet lama) */
+if (!Array.prototype.flat) Array.prototype.flat = function () { return [].concat.apply([], this); };
+if (!Array.prototype.flatMap) Array.prototype.flatMap = function (fn) { return [].concat.apply([], this.map(fn)); };
+if (!String.prototype.padStart) String.prototype.padStart = function (n, c) { var s = String(this); while (s.length < n) s = c + s; return s; };
+if (!Object.entries) Object.entries = function (o) { return Object.keys(o).map(function (k) { return [k, o[k]]; }); };
+if (!Array.from) Array.from = function (a, fn) { var r = []; for (var i = 0; i < a.length; i++) r.push(fn ? fn(a[i], i) : a[i]); return r; };
+window.onerror = function (msg) {
+  var el = document.getElementById("pesanError");
+  if (el) el.textContent = "⚠️ Kuis tidak bisa berjalan di browser ini. Coba buka dengan Google Chrome versi terbaru. (" + msg + ")";
+};
+</script>
 <script>
 /* =========================================================
    BANK SOAL — silakan tambah/ubah soal di sini.
@@ -386,8 +403,8 @@ function opsiAngka(benar, akhiran = "") {
 function pasangan(daftar, tanyaA, tanyaB, ketA = (x) => x, ketB = (x) => x) {
   return () => {
     const [a, b] = ambil(daftar);
-    if (Math.random() < 0.5) return pg(tanyaA(ketA(a)), ketB(b), daftar.map((x) => ketB(x[1])), `${ketA(a)} = ${ketB(b)}.`);
-    return pg(tanyaB(ketB(b)), ketA(a), daftar.map((x) => ketA(x[0])), `${ketB(b)} = ${ketA(a)}.`);
+    if (Math.random() < 0.5) return pg(tanyaA(a), ketB(b), daftar.map((x) => ketB(x[1])), `${ketA(a)} = ${ketB(b)}.`);
+    return pg(tanyaB(b), ketA(a), daftar.map((x) => ketA(x[0])), `${ketB(b)} = ${ketA(a)}.`);
   };
 }
 const NAMA = ["Ani", "Budi", "Siti", "Ahmad", "Fatimah", "Umar", "Aisyah", "Hasan", "Zahra", "Rizki", "Salma", "Yusuf", "Nadia", "Ilham"];
@@ -400,16 +417,16 @@ const WADAH = ["kotak", "keranjang", "kantong", "piring", "rak"];
 const L = () => levelAktif;
 const GEN_MTK = [
   () => { const [a, b] = L() === 1 ? [rnd(11, 60), rnd(11, 39)] : L() === 2 ? [rnd(100, 599), rnd(100, 399)] : [rnd(1000, 5999), rnd(500, 3999)];
-    const h = a + b; return { t: `${fmt(a)} + ${fmt(b)} = ...`, ...opsiAngka(h), p: `${fmt(a)} + ${fmt(b)} = ${fmt(h)}. Jumlahkan dari satuan, puluhan, lalu ratusan.` }; },
+    const h = a + b; return Object.assign({ t: `${fmt(a)} + ${fmt(b)} = ...`, p: `${fmt(a)} + ${fmt(b)} = ${fmt(h)}. Jumlahkan dari satuan, puluhan, lalu ratusan.` }, opsiAngka(h)); },
   () => { const a = L() === 1 ? rnd(30, 99) : L() === 2 ? rnd(300, 999) : rnd(2000, 9999); const b = rnd(Math.floor(a / 5), a - 10), h = a - b;
-    return { t: `${fmt(a)} − ${fmt(b)} = ...`, ...opsiAngka(h), p: `${fmt(a)} − ${fmt(b)} = ${fmt(h)}.` }; },
+    return Object.assign({ t: `${fmt(a)} − ${fmt(b)} = ...`, p: `${fmt(a)} − ${fmt(b)} = ${fmt(h)}.` }, opsiAngka(h)); },
   () => { const [a, b] = L() === 1 ? [rnd(2, 5), rnd(1, 10)] : L() === 2 ? [rnd(2, 10), rnd(2, 10)] : [rnd(11, 30), rnd(2, 9)];
-    const h = a * b; return { t: `${a} × ${b} = ...`, ...opsiAngka(h), p: `${a} × ${b} = ${h}, artinya ${b} dijumlahkan sebanyak ${a} kali.` }; },
+    const h = a * b; return Object.assign({ t: `${a} × ${b} = ...`, p: `${a} × ${b} = ${h}, artinya ${b} dijumlahkan sebanyak ${a} kali.` }, opsiAngka(h)); },
   () => { const b = L() === 1 ? rnd(2, 5) : rnd(2, 10), c = L() === 3 ? rnd(6, 15) : rnd(2, 10), a = b * c;
-    return { t: `${a} : ${b} = ...`, ...opsiAngka(c), p: `Karena ${b} × ${c} = ${a}, maka ${a} : ${b} = ${c}.` }; },
+    return Object.assign({ t: `${a} : ${b} = ...`, p: `Karena ${b} × ${c} = ${a}, maka ${a} : ${b} = ${c}.` }, opsiAngka(c)); },
   () => { const nd = L() + 1; let d; do { d = Array.from({ length: nd }, () => rnd(1, 9)); } while (new Set(d).size < nd);
     const n = Number(d.join("")), pos = rnd(0, nd - 1), tempat = ["satuan", "puluhan", "ratusan", "ribuan"], kek = nd - 1 - pos;
-    const nilai = d[pos] * 10 ** kek, o = [d[pos], d[pos] * 10, d[pos] * 100, d[pos] * 1000];
+    const nilai = d[pos] * Math.pow(10, kek), o = [d[pos], d[pos] * 10, d[pos] * 100, d[pos] * 1000];
     return { t: `Nilai angka ${d[pos]} pada bilangan ${fmt(n)} adalah ...`, o: [nilai, ...o.filter((x) => x !== nilai)].map(fmt), j: 0, p: `Angka ${d[pos]} berada di tempat ${tempat[kek]}, jadi nilainya ${fmt(nilai)}.` }; },
   () => { const x = L() === 1 ? rnd(10, 99) : L() === 2 ? rnd(100, 999) : rnd(1000, 9999); let y; do { y = x + rnd(-20, 20) * (L() === 1 ? 1 : 10); } while (y <= 0);
     const tanda = x > y ? ">" : x < y ? "<" : "=", nm = { ">": "lebih dari", "<": "kurang dari", "=": "sama dengan" };
@@ -417,23 +434,23 @@ const GEN_MTK = [
   () => { const step = L() === 1 ? rnd(2, 5) : L() === 2 ? ambil([5, 6, 7, 8, 9, 10, 25]) : ambil([11, 12, 15, 25, 50, 100]);
     const turun = L() > 1 && Math.random() < 0.4, s = turun ? rnd(step * 6, step * 6 + 50) : rnd(1, 30);
     const deret = Array.from({ length: 5 }, (_, i) => s + (turun ? -1 : 1) * step * i), h = deret.pop();
-    return { t: `Bilangan berikutnya dari pola ${deret.map(fmt).join(", ")}, ... adalah`, ...opsiAngka(h), p: `Polanya selalu ${turun ? "berkurang" : "bertambah"} ${step}, jadi berikutnya ${fmt(h)}.` }; },
+    return Object.assign({ t: `Bilangan berikutnya dari pola ${deret.map(fmt).join(", ")}, ... adalah`, p: `Polanya selalu ${turun ? "berkurang" : "bertambah"} ${step}, jadi berikutnya ${fmt(h)}.` }, opsiAngka(h)); },
   () => { const nm = ambil(NAMA), bd = ambil(BENDA), wd = ambil(WADAH), x = rnd(2, L() === 1 ? 5 : 9), y = rnd(3, L() === 3 ? 25 : 10), h = x * y;
-    return { t: `${nm} punya ${x} ${wd}. Setiap ${wd} berisi ${y} ${bd}. Jumlah ${bd} ${nm} ada ...`, ...opsiAngka(h), p: `${x} × ${y} = ${h} ${bd}.` }; },
+    return Object.assign({ t: `${nm} punya ${x} ${wd}. Setiap ${wd} berisi ${y} ${bd}. Jumlah ${bd} ${nm} ada ...`, p: `${x} × ${y} = ${h} ${bd}.` }, opsiAngka(h)); },
   () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = L() === 1 ? rnd(15, 50) : rnd(50, 300), b = rnd(5, a - 3), h = a - b;
-    return { t: `${nm} punya ${a} ${bd}. Sebanyak ${b} ${bd} diberikan kepada temannya. Sisa ${bd} ${nm} ada ...`, ...opsiAngka(h), p: `${a} − ${b} = ${h} ${bd}.` }; },
+    return Object.assign({ t: `${nm} punya ${a} ${bd}. Sebanyak ${b} ${bd} diberikan kepada temannya. Sisa ${bd} ${nm} ada ...`, p: `${a} − ${b} = ${h} ${bd}.` }, opsiAngka(h)); },
   () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = L() === 1 ? rnd(10, 40) : rnd(40, 250), b = L() === 1 ? rnd(5, 30) : rnd(20, 200), h = a + b;
-    return { t: `${nm} punya ${a} ${bd}. Ibu memberi lagi ${b} ${bd}. Sekarang ${bd} ${nm} ada ...`, ...opsiAngka(h), p: `${a} + ${b} = ${h} ${bd}.` }; },
+    return Object.assign({ t: `${nm} punya ${a} ${bd}. Ibu memberi lagi ${b} ${bd}. Sekarang ${bd} ${nm} ada ...`, p: `${a} + ${b} = ${h} ${bd}.` }, opsiAngka(h)); },
   () => { const b = rnd(2, L() === 1 ? 5 : 10), c = rnd(2, L() === 3 ? 12 : 9), a = b * c, bd = ambil(BENDA);
-    return { t: `${a} ${bd} dibagikan sama banyak kepada ${b} anak. Setiap anak mendapat ...`, ...opsiAngka(c, " " + bd), p: `${a} : ${b} = ${c} ${bd}.` }; },
+    return Object.assign({ t: `${a} ${bd} dibagikan sama banyak kepada ${b} anak. Setiap anak mendapat ...`, p: `${a} : ${b} = ${c} ${bd}.` }, opsiAngka(c, " " + bd)); },
   () => { const s = rnd(3, L() === 3 ? 40 : 15), h = 4 * s;
-    return { t: `Keliling persegi dengan panjang sisi ${s} cm adalah ...`, ...opsiAngka(h, " cm"), p: `Keliling persegi = 4 × sisi = 4 × ${s} = ${h} cm.` }; },
+    return Object.assign({ t: `Keliling persegi dengan panjang sisi ${s} cm adalah ...`, p: `Keliling persegi = 4 × sisi = 4 × ${s} = ${h} cm.` }, opsiAngka(h, " cm")); },
   () => { const p = rnd(5, L() === 3 ? 30 : 12), l = rnd(2, p - 1), h = 2 * (p + l);
-    return { t: `Keliling persegi panjang dengan panjang ${p} cm dan lebar ${l} cm adalah ...`, ...opsiAngka(h, " cm"), p: `Keliling = 2 × (panjang + lebar) = 2 × (${p} + ${l}) = ${h} cm.` }; },
+    return Object.assign({ t: `Keliling persegi panjang dengan panjang ${p} cm dan lebar ${l} cm adalah ...`, p: `Keliling = 2 × (panjang + lebar) = 2 × (${p} + ${l}) = ${h} cm.` }, opsiAngka(h, " cm")); },
   () => { const jenis = ambil(["m-cm", "jam-menit", "menit-detik", "kg-g", "km-m"]);
     const [dari, ke, kali] = { "m-cm": ["meter", "cm", 100], "jam-menit": ["jam", "menit", 60], "menit-detik": ["menit", "detik", 60], "kg-g": ["kg", "gram", 1000], "km-m": ["km", "meter", 1000] }[jenis];
     const n = rnd(2, L() === 1 ? 5 : 12), h = n * kali;
-    return { t: `${n} ${dari} = ... ${ke}`, ...opsiAngka(h), p: `1 ${dari} = ${fmt(kali)} ${ke}, jadi ${n} ${dari} = ${n} × ${fmt(kali)} = ${fmt(h)} ${ke}.` }; },
+    return Object.assign({ t: `${n} ${dari} = ... ${ke}`, p: `1 ${dari} = ${fmt(kali)} ${ke}, jadi ${n} ${dari} = ${n} × ${fmt(kali)} = ${fmt(h)} ${ke}.` }, opsiAngka(h)); },
   () => { const j = rnd(1, 9), tambah = rnd(1, L() === 1 ? 3 : 6), mnt = L() === 1 ? "00" : ambil(["00", "15", "30", "45"]), h = j + tambah;
     const f = (x) => String(x).padStart(2, "0") + "." + mnt;
     return pg(`Sekarang pukul ${f(j)}. ${tambah} jam lagi pukul ...`, f(h), [f(h + 1), f(h - 1), f(j + tambah + 2), f(Math.max(1, j - tambah))], `${f(j)} ditambah ${tambah} jam menjadi ${f(h)}.`); },
@@ -681,7 +698,7 @@ const GENERATOR = { mtk: GEN_MTK, bind: GEN_BIND, ipas: GEN_IPAS, pai: GEN_PAI, 
    MEMILIH SOAL — selalu soal yang belum pernah dijawab
    ========================================================= */
 function soalTetapBaru(kode, riwayat) {
-  return acak(BANK[kode].soal.map((s) => ({ ...s, id: idSoal(kode, s) })).filter((s) => !riwayat.has(s.id)));
+  return acak(BANK[kode].soal.map((s) => Object.assign({}, s, { id: idSoal(kode, s) })).filter((s) => !riwayat.has(s.id)));
 }
 function buatSoalOtomatis(kode, dipakai) {
   for (let i = 0; i < 300; i++) {
@@ -694,7 +711,7 @@ function buatSoalOtomatis(kode, dipakai) {
 function pilihSoalBaru(kode) {
   const riwayat = bacaRiwayat(nama), dipakai = new Set(riwayat), hasil = [];
   const daftarKode = kode === "campur" ? Object.keys(BANK) : [kode];
-  const tetap = acak(daftarKode.flatMap((k) => soalTetapBaru(k, riwayat).map((s) => ({ ...s, kode: k })))).slice(0, rnd(1, MAKS_SOAL_TETAP));
+  const tetap = acak(daftarKode.flatMap((k) => soalTetapBaru(k, riwayat).map((s) => Object.assign({}, s, { kode: k })))).slice(0, rnd(1, MAKS_SOAL_TETAP));
   tetap.forEach((s) => { dipakai.add(s.id); hasil.push(s); });
   let gagal = 0;
   while (hasil.length < JUMLAH_SOAL && gagal < 50) {
@@ -764,12 +781,12 @@ function konfeti(n = 80) {
 function tampilkan(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("aktif"));
   $(id).classList.add("aktif");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
 }
 
 /* Daftar mapel */
 function buatDaftarMapel() {
-  const semua = { ...BANK, campur: MODE_CAMPUR };
+  const semua = Object.assign({}, BANK, { campur: MODE_CAMPUR });
   const wadah = $("daftarMapel");
   Object.entries(semua).forEach(([kode, m]) => {
     const b = document.createElement("button");
@@ -783,6 +800,7 @@ function buatDaftarMapel() {
       b.classList.add("dipilih");
       pilihanMapel = kode;
       $("pesanError").textContent = "";
+      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama;
     });
     wadah.appendChild(b);
   });
@@ -816,7 +834,7 @@ function mulai() {
   soalAktif = terpilih.map((s) => {
     // acak urutan pilihan jawaban, tetap ingat yang benar
     const urut = acak(s.o.map((teks, i) => ({ teks, benar: i === s.j })));
-    return { ...s, opsi: urut };
+    return Object.assign({}, s, { opsi: urut });
   });
   nomor = 0; skor = 0; catatan = [];
   const m = pilihanMapel === "campur" ? MODE_CAMPUR : BANK[pilihanMapel];
@@ -870,7 +888,7 @@ function jawab(tombol, op) {
   const btn = $("btnLanjut");
   btn.textContent = nomor + 1 < soalAktif.length ? "Lanjut ➡️" : "Lihat Nilai 🏆";
   btn.style.display = "inline-block";
-  btn.focus({ preventScroll: true });
+  try { btn.focus({ preventScroll: true }); } catch (e) {}
 }
 
 function lanjut() {

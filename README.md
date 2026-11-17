@@ -56,3 +56,8 @@ Riwayat disimpan di browser perangkat yang dipakai siswa (bukan di server). Jadi
 - Jika browser memblokir penyimpanan di Google Sites, soal tetap tidak berulang selama halaman belum ditutup.
 
 Untuk menambah variasi, tambahkan kata/fakta baru ke daftar di bagian pembuat soal (mis. `ANTONIM`, `KOSAKATA_ARAB`, `MALAIKAT`) atau soal baru di `BANK SOAL`.
+
+## Jika pelajaran tidak bisa dipilih
+- **Di halaman edit Google Sites, kuis tidak bisa diklik.** Klik di dalam kotak sematan hanya memilih kotaknya. Coba kuis lewat tombol **Pratinjau** (ikon mata) atau di situs yang sudah dipublikasikan.
+- Pastikan **seluruh** isi file tersalin (Ctrl+A lalu Ctrl+C), dari `<!DOCTYPE html>` sampai `</html>`.
+- Kuis berjalan di Chrome 52+ / Safari 10.1+ (HP 2016 ke atas). Jika browser terlalu lama, muncul pesan peringatan berwarna merah di bawah daftar pelajaran.
