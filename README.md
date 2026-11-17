@@ -60,4 +60,15 @@ Untuk menambah variasi, tambahkan kata/fakta baru ke daftar di bagian pembuat so
 ## Jika pelajaran tidak bisa dipilih
 - **Di halaman edit Google Sites, kuis tidak bisa diklik.** Klik di dalam kotak sematan hanya memilih kotaknya. Coba kuis lewat tombol **Pratinjau** (ikon mata) atau di situs yang sudah dipublikasikan.
 - Pastikan **seluruh** isi file tersalin (Ctrl+A lalu Ctrl+C), dari `<!DOCTYPE html>` sampai `</html>`.
-- Kuis berjalan di Chrome 52+ / Safari 10.1+ (HP 2016 ke atas). Jika browser terlalu lama, muncul pesan peringatan berwarna merah di bawah daftar pelajaran.
+- Kuis memakai JavaScript versi lama (ES5) supaya jalan di **iPad/iPhone iOS 9 ke atas** dan Android 5 ke atas.
+- Jika kuis gagal berjalan, kotak merah **"Memuat kuis..."** tidak hilang atau berisi pesan error. Foto/salin tulisan itu untuk mencari penyebabnya.
+
+## Untuk pengembang
+File yang ditempel ke Google Sites (`kuis-kelas3-mi.html`) dibuat dari `src/kuis-kelas3-mi.src.html`:
+
+```
+npm install
+npm run build
+```
+
+Soal di `BANK SOAL` tetap bisa diubah langsung di `kuis-kelas3-mi.html`, tetapi perubahan itu akan tertimpa saat build berikutnya. Jadi lebih baik ubah di file `src`, lalu jalankan build.

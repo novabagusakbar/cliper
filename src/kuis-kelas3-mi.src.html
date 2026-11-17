@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Pintar Kelas 3 MI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff8e7;
+    --card: #ffffff;
+    --ink: #2d2a32;
+    --muted: #6b6475;
+    --primary: #2f9e6e;
+    --primary-dark: #227a54;
+    --accent: #ffb703;
+    --benar: #2fbf71;
+    --salah: #ef476f;
+    --line: #f0e6cf;
+    --shadow: 0 6px 0 rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 10%, #ffe8a3 0 60px, transparent 61px),
+      radial-gradient(circle at 92% 18%, #c9f2dd 0 45px, transparent 46px),
+      radial-gradient(circle at 85% 92%, #ffd6e0 0 70px, transparent 71px);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
+  .screen { display: none; animation: muncul .35s ease; }
+  .screen.aktif { display: block; }
+  @keyframes muncul { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .kartu {
+    background: var(--card);
+    border: 3px solid var(--line);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  h1 { font-size: clamp(28px, 6vw, 40px); margin: 0; line-height: 1.1; color: var(--primary-dark); }
+  h2 { font-size: 24px; margin: 0 0 12px; }
+  .sub { color: var(--muted); margin: 6px 0 0; }
+  .header { text-align: center; margin-bottom: 18px; }
+  .maskot { font-size: 56px; display: block; animation: goyang 2.4s ease-in-out infinite; }
+  @keyframes goyang { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+  label.judul { display: block; font-weight: 700; margin: 4px 0 8px; }
+  input[type=text] {
+    width: 100%; font: inherit; font-size: 20px;
+    padding: 12px 16px; border-radius: 16px;
+    border: 3px solid var(--line); outline: none; background: #fffdf7;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+
+  .mapel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 8px; }
+  .mapel {
+    font: inherit; cursor: pointer; text-align: center;
+    border: 3px solid transparent; border-radius: 20px;
+    padding: 14px 10px; color: var(--ink);
+    box-shadow: var(--shadow); transition: transform .12s;
+  }
+  .mapel:hover { transform: translateY(-3px); }
+  .mapel.dipilih { border-color: var(--ink); transform: translateY(-3px) scale(1.03); }
+  .mapel .ikon { font-size: 36px; display: block; }
+  .mapel b { display: block; font-size: 18px; }
+  .mapel small { color: var(--muted); }
+
+  .tombol {
+    font: inherit; font-weight: 800; font-size: 20px; cursor: pointer;
+    border: none; border-radius: 18px; padding: 14px 26px;
+    background: var(--primary); color: #fff;
+    box-shadow: 0 5px 0 var(--primary-dark);
+    transition: transform .08s, box-shadow .08s;
+  }
+  .tombol:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--primary-dark); }
+  .tombol:disabled { background: #b9c2bd; box-shadow: 0 5px 0 #98a29c; cursor: not-allowed; }
+  .tombol.kuning { background: var(--accent); color: var(--ink); box-shadow: 0 5px 0 #d99a00; }
+  .tombol.putih { background: #fff; color: var(--ink); border: 3px solid var(--line); box-shadow: 0 5px 0 var(--line); }
+  .tengah { text-align: center; margin-top: 20px; }
+  .link-reset { font: inherit; font-size: 15px; background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; }
+  .info-putaran { display: none; background: #fff1b8; border: 3px solid var(--accent); border-radius: 16px; padding: 10px 14px; margin-bottom: 14px; font-weight: 700; }
+  .info-pilihan { text-align: center; font-weight: 800; color: var(--primary-dark); font-size: 20px; min-height: 1.4em; margin-top: 14px; }
+  .mapel { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .mapel.dipilih { box-shadow: 0 0 0 4px var(--primary), var(--shadow); }
+  .mapel.dipilih::after { content: "✔ Dipilih"; display: block; font-weight: 800; color: var(--primary-dark); font-size: 15px; }
+  .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
+
+  /* Layar kuis */
+  .bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .chip { background: #fff; border: 3px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; }
+  .progress { height: 16px; background: #fff; border: 3px solid var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+  .progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--primary)); transition: width .4s; }
+  .soal { font-size: clamp(20px, 4.5vw, 26px); font-weight: 700; margin: 0 0 16px; }
+  .arab { font-family: "Amiri", "Traditional Arabic", serif; font-size: 1.5em; direction: rtl; unicode-bidi: isolate; }
+  .opsi-list { display: grid; gap: 10px; }
+  .opsi {
+    font: inherit; font-size: 20px; text-align: left; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    background: #fffdf7; border: 3px solid var(--line); border-radius: 18px;
+    padding: 10px 14px; color: var(--ink); transition: transform .1s, background .2s;
+  }
+  .opsi:hover:not(:disabled) { transform: translateX(4px); border-color: var(--accent); }
+  .opsi .huruf {
+    flex: none; width: 38px; height: 38px; border-radius: 12px;
+    display: grid; place-items: center; font-weight: 800;
+    background: var(--accent); color: var(--ink);
+  }
+  .opsi.benar { background: #dcf7e8; border-color: var(--benar); }
+  .opsi.benar .huruf { background: var(--benar); color: #fff; }
+  .opsi.salah { background: #ffe1e8; border-color: var(--salah); animation: geleng .35s; }
+  .opsi.salah .huruf { background: var(--salah); color: #fff; }
+  .opsi:disabled { cursor: default; }
+  @keyframes geleng { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+  .umpan { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 18px; font-weight: 700; }
+  .umpan.tampil { display: block; animation: muncul .3s; }
+  .umpan.ok { background: #dcf7e8; color: #17603a; }
+  .umpan.no { background: #ffe1e8; color: #8a1934; }
+  .umpan p { margin: 4px 0 0; font-weight: 500; }
+
+  /* Hasil */
+  .bintang { font-size: 52px; letter-spacing: 6px; margin: 6px 0; }
+  .skor-besar { font-size: 64px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
+  .ulasan { margin-top: 18px; text-align: left; }
+  .ulasan details { background: #fffdf7; border: 3px solid var(--line); border-radius: 16px; padding: 10px 14px; }
+  .ulasan summary { cursor: pointer; font-weight: 700; }
+  .ulasan ol { padding-left: 22px; margin: 10px 0 0; }
+  .ulasan li { margin-bottom: 10px; }
+  .ulasan .jwb-salah { color: var(--salah); }
+  .ulasan .jwb-benar { color: var(--primary-dark); font-weight: 700; }
+  .baris-tombol { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; }
+
+  /* Konfeti */
+  .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
+  @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
+
+  @media (max-width: 480px) {
+    body { font-size: 17px; }
+    .kartu { padding: 16px; border-radius: 20px; }
+    .opsi { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="cekJS" style="background:#ffe1e8;color:#8a1934;border-radius:16px;padding:12px 16px;margin-bottom:12px;font-weight:700;text-align:center">
+    ⏳ Memuat kuis... Jika tulisan ini tidak hilang, browser tidak bisa menjalankan kuis. Coba perbarui iPad/HP atau buka di Google Chrome.
+  </div>
+
+  <!-- LAYAR 1: MULAI -->
+  <section id="layarMulai" class="screen aktif">
+    <div class="header">
+      <span class="maskot" aria-hidden="true">🦉</span>
+      <h1>Kuis Pintar Kelas 3 MI</h1>
+      <p class="sub">Ayo belajar sambil bermain! Pilih pelajaran lalu jawab soalnya, ya.</p>
+    </div>
+    <div class="kartu">
+      <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
+      <input id="namaSiswa" type="text" maxlength="30" placeholder="Tulis namamu di sini" autocomplete="off">
+
+      <p class="judul" style="margin-top:18px">📚 Pilih pelajaran:</p>
+      <div class="mapel-grid" id="daftarMapel"></div>
+
+      <div class="info-pilihan" id="infoPilihan"></div>
+      <div class="pesan-error" id="pesanError" role="alert"></div>
+      <div class="tengah">
+        <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
+      </div>
+      <div class="tengah" style="margin-top:12px">
+        <button type="button" class="link-reset" id="btnReset" style="display:none">🗑️ Hapus riwayat soal untuk nama ini</button>
+      </div>
+    </div>
+    <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
+  </section>
+
+  <!-- LAYAR 2: KUIS -->
+  <section id="layarKuis" class="screen">
+    <div class="bar-atas">
+      <span class="chip" id="infoMapel">📚</span>
+      <span class="chip" id="infoNomor">Soal 1/10</span>
+      <span class="chip" id="infoSkor">⭐ 0</span>
+    </div>
+    <div class="progress" aria-hidden="true"><div id="barProgress"></div></div>
+    <div class="info-putaran" id="infoPutaran" role="status"></div>
+    <div class="kartu">
+      <p class="soal" id="teksSoal"></p>
+      <div class="opsi-list" id="daftarOpsi"></div>
+      <div class="umpan" id="umpan" role="status" aria-live="polite"></div>
+      <div class="tengah">
+        <button class="tombol kuning" id="btnLanjut" style="display:none">Lanjut ➡️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYAR 3: HASIL -->
+  <section id="layarHasil" class="screen">
+    <div class="kartu tengah" style="margin-top:0">
+      <div style="font-size:64px" id="emojiHasil">🏆</div>
+      <h2 id="judulHasil">Hebat!</h2>
+      <div class="bintang" id="bintangHasil">⭐⭐⭐</div>
+      <div class="skor-besar" id="skorHasil">100</div>
+      <p class="sub" id="rincianHasil"></p>
+      <p id="pesanHasil" style="font-weight:700"></p>
+      <div class="ulasan" id="ulasan"></div>
+      <div class="baris-tombol">
+        <button class="tombol" id="btnUlang">Ulangi 🔄</button>
+        <button class="tombol putih" id="btnGanti">Ganti Pelajaran 📚</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* Bantuan untuk browser lama (HP/tablet lama) */
+if (!Array.prototype.flat) Array.prototype.flat = function () { return [].concat.apply([], this); };
+if (!Array.prototype.flatMap) Array.prototype.flatMap = function (fn) { return [].concat.apply([], this.map(fn)); };
+if (!String.prototype.padStart) String.prototype.padStart = function (n, c) { var s = String(this); while (s.length < n) s = c + s; return s; };
+if (!Object.entries) Object.entries = function (o) { return Object.keys(o).map(function (k) { return [k, o[k]]; }); };
+if (!Array.from) Array.from = function (a, fn) { var r = []; for (var i = 0; i < a.length; i++) r.push(fn ? fn(a[i], i) : a[i]); return r; };
+window.onerror = function (msg, src, baris) {
+  var teks = "⚠️ Ada masalah saat menjalankan kuis. Kirim tulisan ini ke guru/pembuat kuis: " + msg + " (baris " + baris + ") | " + navigator.userAgent;
+  var el = document.getElementById("pesanError"), cek = document.getElementById("cekJS");
+  if (el) el.textContent = teks;
+  if (cek) cek.textContent = teks;
+};
+</script>
+<script>
+/* =========================================================
+   BANK SOAL — silakan tambah/ubah soal di sini.
+   Format: { t: "pertanyaan", o: ["opsi1","opsi2","opsi3","opsi4"], j: indeksJawabanBenar (0-3), p: "penjelasan" }
+   Teks Arab bisa dibungkus <span class="arab">...</span>
+   ========================================================= */
+const BANK = {
+  mtk: {
+    nama: "Matematika", ikon: "🔢", warna: "#ffe3a3",
+    soal: [
+      { t: "245 + 132 = ...", o: ["367", "377", "387", "477"], j: 1, p: "Satuan 5+2=7, puluhan 4+3=7, ratusan 2+1=3. Hasilnya 377." },
+      { t: "500 − 175 = ...", o: ["325", "335", "375", "425"], j: 0, p: "500 − 175 = 325." },
+      { t: "7 × 8 = ...", o: ["54", "56", "48", "64"], j: 1, p: "7 × 8 = 56." },
+      { t: "48 : 6 = ...", o: ["6", "7", "8", "9"], j: 2, p: "Karena 6 × 8 = 48, maka 48 : 6 = 8." },
+      { t: "Nilai angka 4 pada bilangan 642 adalah ...", o: ["4", "40", "400", "4.000"], j: 1, p: "Angka 4 berada di tempat puluhan, jadi nilainya 40." },
+      { t: "1 jam sama dengan ... menit.", o: ["30", "50", "60", "100"], j: 2, p: "1 jam = 60 menit." },
+      { t: "Bangun datar yang memiliki 4 sisi sama panjang dan 4 sudut siku-siku adalah ...", o: ["Segitiga", "Persegi", "Lingkaran", "Persegi panjang"], j: 1, p: "Persegi memiliki 4 sisi yang sama panjang." },
+      { t: "Ani punya 3 kotak. Setiap kotak berisi 6 kue. Jumlah kue Ani ada ...", o: ["9", "12", "18", "24"], j: 2, p: "3 × 6 = 18 kue." },
+      { t: "1 meter = ... cm", o: ["10", "100", "1.000", "50"], j: 1, p: "1 meter sama dengan 100 sentimeter." },
+      { t: "Keliling persegi dengan panjang sisi 5 cm adalah ...", o: ["10 cm", "15 cm", "20 cm", "25 cm"], j: 2, p: "Keliling persegi = 4 × sisi = 4 × 5 = 20 cm." },
+      { t: "Pecahan ½ dibaca ...", o: ["Sepertiga", "Seperempat", "Setengah", "Dua per satu"], j: 2, p: "½ dibaca setengah atau satu per dua." },
+      { t: "Urutan bilangan dari yang terkecil adalah ...", o: ["251, 215, 152, 125", "125, 152, 215, 251", "152, 125, 251, 215", "215, 125, 251, 152"], j: 1, p: "Bandingkan ratusannya dulu, lalu puluhan: 125 < 152 < 215 < 251." }
+    ]
+  },
+  bind: {
+    nama: "Bahasa Indonesia", ikon: "📖", warna: "#ffd6e0",
+    soal: [
+      { t: "Lawan kata dari \"rajin\" adalah ...", o: ["Pintar", "Malas", "Giat", "Tekun"], j: 1, p: "Lawan kata (antonim) rajin adalah malas." },
+      { t: "Persamaan kata dari \"pandai\" adalah ...", o: ["Pintar", "Bodoh", "Malas", "Lambat"], j: 0, p: "Persamaan kata (sinonim) pandai adalah pintar." },
+      { t: "Huruf kapital digunakan pada ... kalimat.", o: ["Tengah", "Akhir", "Awal", "Setiap kata"], j: 2, p: "Awal kalimat selalu ditulis dengan huruf kapital." },
+      { t: "Tanda baca yang tepat di akhir kalimat tanya adalah ...", o: ["Titik (.)", "Koma (,)", "Seru (!)", "Tanya (?)"], j: 3, p: "Kalimat tanya diakhiri tanda tanya (?)." },
+      { t: "\"Ibu memasak nasi di dapur.\" Siapa yang memasak?", o: ["Ayah", "Ibu", "Kakak", "Nenek"], j: 1, p: "Yang memasak adalah Ibu." },
+      { t: "Kata berikut yang termasuk kata benda adalah ...", o: ["Berlari", "Meja", "Cantik", "Cepat"], j: 1, p: "Meja adalah nama benda." },
+      { t: "Kalimat perintah yang benar adalah ...", o: ["Pintu itu tertutup.", "Apakah pintu tertutup?", "Tolong tutup pintunya!", "Pintunya besar sekali."], j: 2, p: "Kalimat perintah berisi suruhan dan biasanya diakhiri tanda seru (!)." },
+      { t: "Lawan kata dari \"tinggi\" adalah ...", o: ["Besar", "Panjang", "Rendah", "Lebar"], j: 2, p: "Antonim tinggi adalah rendah." },
+      { t: "Kata berikut yang termasuk kata sifat adalah ...", o: ["Rumah", "Makan", "Cantik", "Buku"], j: 2, p: "Cantik menunjukkan sifat atau keadaan." },
+      { t: "Cerita yang tokohnya hewan dan berperilaku seperti manusia disebut ...", o: ["Fabel", "Puisi", "Pantun", "Biografi"], j: 0, p: "Fabel adalah dongeng dengan tokoh hewan, contohnya Kancil dan Buaya." }
+    ]
+  },
+  ipas: {
+    nama: "IPAS", ikon: "🌱", warna: "#c9f2dd",
+    soal: [
+      { t: "Tumbuhan hijau membuat makanannya sendiri melalui proses ...", o: ["Fotosintesis", "Bernapas", "Penguapan", "Pembekuan"], j: 0, p: "Fotosintesis memerlukan cahaya matahari, air, dan karbon dioksida." },
+      { t: "Hewan yang makanannya hanya tumbuhan disebut ...", o: ["Karnivora", "Omnivora", "Herbivora", "Insektivora"], j: 2, p: "Herbivora = pemakan tumbuhan, contohnya sapi dan kambing." },
+      { t: "Es batu yang mencair berubah wujud dari ...", o: ["Cair ke padat", "Padat ke cair", "Cair ke gas", "Gas ke cair"], j: 1, p: "Es (padat) mencair menjadi air (cair)." },
+      { t: "Bagian tumbuhan yang berfungsi menyerap air dari tanah adalah ...", o: ["Daun", "Bunga", "Batang", "Akar"], j: 3, p: "Akar menyerap air dan zat hara dari dalam tanah." },
+      { t: "Sumber energi panas terbesar bagi bumi adalah ...", o: ["Bulan", "Matahari", "Lampu", "Api unggun"], j: 1, p: "Matahari adalah sumber energi utama bagi bumi." },
+      { t: "Hewan berikut yang berkembang biak dengan bertelur adalah ...", o: ["Kucing", "Sapi", "Ayam", "Kambing"], j: 2, p: "Ayam bertelur. Kucing, sapi, dan kambing melahirkan." },
+      { t: "Air yang dipanaskan terus-menerus akan berubah menjadi uap. Peristiwa ini disebut ...", o: ["Membeku", "Mencair", "Menguap", "Mengembun"], j: 2, p: "Perubahan cair menjadi gas disebut menguap." },
+      { t: "Berikut ini yang merupakan ciri makhluk hidup adalah ...", o: ["Bernapas", "Berwarna", "Keras", "Diam saja"], j: 0, p: "Makhluk hidup bernapas, tumbuh, makan, dan berkembang biak." },
+      { t: "Urutan daur hidup kupu-kupu yang benar adalah ...", o: ["Ulat → telur → kupu-kupu → kepompong", "Telur → ulat → kepompong → kupu-kupu", "Kepompong → telur → ulat → kupu-kupu", "Telur → kepompong → ulat → kupu-kupu"], j: 1, p: "Kupu-kupu mengalami metamorfosis sempurna: telur, ulat, kepompong, kupu-kupu." },
+      { t: "Membuang sampah pada tempatnya bermanfaat untuk ...", o: ["Membuat banjir", "Menjaga kebersihan lingkungan", "Mengundang nyamuk", "Mengotori sungai"], j: 1, p: "Kebersihan adalah sebagian dari iman. Lingkungan jadi bersih dan sehat." }
+    ]
+  },
+  pai: {
+    nama: "Pendidikan Agama Islam", ikon: "🕌", warna: "#d6e4ff",
+    soal: [
+      { t: "Rukun Islam ada ... perkara.", o: ["4", "5", "6", "7"], j: 1, p: "Rukun Islam ada 5: syahadat, salat, zakat, puasa, haji." },
+      { t: "Rukun Iman ada ... perkara.", o: ["5", "6", "7", "8"], j: 1, p: "Rukun Iman ada 6, dimulai dari iman kepada Allah." },
+      { t: "Salat fardu dalam sehari semalam ada ... waktu.", o: ["3", "4", "5", "6"], j: 2, p: "Subuh, Zuhur, Asar, Magrib, dan Isya." },
+      { t: "Salat Subuh dikerjakan sebanyak ... rakaat.", o: ["2", "3", "4", "5"], j: 0, p: "Salat Subuh 2 rakaat." },
+      { t: "Salat Magrib dikerjakan sebanyak ... rakaat.", o: ["2", "3", "4", "5"], j: 1, p: "Salat Magrib 3 rakaat." },
+      { t: "Kitab suci umat Islam adalah ...", o: ["Taurat", "Zabur", "Injil", "Al-Qur'an"], j: 3, p: "Al-Qur'an diturunkan kepada Nabi Muhammad saw." },
+      { t: "Nabi dan rasul terakhir adalah ...", o: ["Nabi Adam a.s.", "Nabi Musa a.s.", "Nabi Muhammad saw.", "Nabi Isa a.s."], j: 2, p: "Nabi Muhammad saw. adalah penutup para nabi." },
+      { t: "Malaikat yang bertugas menyampaikan wahyu adalah ...", o: ["Mikail", "Jibril", "Israfil", "Izrail"], j: 1, p: "Malaikat Jibril menyampaikan wahyu kepada para nabi dan rasul." },
+      { t: "Sebelum salat, kita wajib bersuci dengan ...", o: ["Berwudu", "Makan", "Tidur", "Bermain"], j: 0, p: "Wudu adalah syarat sah salat." },
+      { t: "Asmaul Husna \"Ar-Rahman\" artinya Allah Yang Maha ...", o: ["Melihat", "Mendengar", "Pengasih", "Kuasa"], j: 2, p: "Ar-Rahman artinya Yang Maha Pengasih." },
+      { t: "Doa yang dibaca sebelum makan diawali dengan ...", o: ["Alhamdulillah", "Bismillah", "Astagfirullah", "Subhanallah"], j: 1, p: "Sebelum makan kita membaca Bismillah." },
+      { t: "Surah pertama dalam Al-Qur'an adalah ...", o: ["An-Nas", "Al-Ikhlas", "Al-Fatihah", "Al-Baqarah"], j: 2, p: "Al-Fatihah adalah surah pembuka Al-Qur'an." }
+    ]
+  },
+  arab: {
+    nama: "Bahasa Arab", ikon: "🌙", warna: "#eadcff",
+    soal: [
+      { t: "Arti kata <span class=\"arab\">كِتَابٌ</span> adalah ...", o: ["Pena", "Buku", "Meja", "Tas"], j: 1, p: "كِتَابٌ (kitaabun) artinya buku." },
+      { t: "Arti kata <span class=\"arab\">قَلَمٌ</span> adalah ...", o: ["Pena", "Kursi", "Pintu", "Papan tulis"], j: 0, p: "قَلَمٌ (qalamun) artinya pena/pulpen." },
+      { t: "Arti kata <span class=\"arab\">مَدْرَسَةٌ</span> adalah ...", o: ["Masjid", "Rumah", "Sekolah", "Pasar"], j: 2, p: "مَدْرَسَةٌ (madrasatun) artinya sekolah." },
+      { t: "Arti kata <span class=\"arab\">بَيْتٌ</span> adalah ...", o: ["Rumah", "Kelas", "Kebun", "Jalan"], j: 0, p: "بَيْتٌ (baitun) artinya rumah." },
+      { t: "Arti kata <span class=\"arab\">بَابٌ</span> adalah ...", o: ["Jendela", "Lantai", "Atap", "Pintu"], j: 3, p: "بَابٌ (baabun) artinya pintu." },
+      { t: "Bahasa Arab dari \"ibu\" adalah ...", o: ["<span class=\"arab\">أَبٌ</span>", "<span class=\"arab\">أُمٌّ</span>", "<span class=\"arab\">أَخٌ</span>", "<span class=\"arab\">أُخْتٌ</span>"], j: 1, p: "أُمٌّ (ummun) artinya ibu. أَبٌ = ayah, أَخٌ = saudara laki-laki, أُخْتٌ = saudara perempuan." },
+      { t: "Angka <span class=\"arab\">وَاحِدٌ</span> artinya ...", o: ["Satu", "Dua", "Tiga", "Empat"], j: 0, p: "وَاحِدٌ (waahidun) artinya satu." },
+      { t: "Bahasa Arab dari angka tiga adalah ...", o: ["<span class=\"arab\">اِثْنَانِ</span>", "<span class=\"arab\">ثَلَاثَةٌ</span>", "<span class=\"arab\">أَرْبَعَةٌ</span>", "<span class=\"arab\">خَمْسَةٌ</span>"], j: 1, p: "ثَلَاثَةٌ (tsalaatsatun) artinya tiga." },
+      { t: "Warna <span class=\"arab\">أَحْمَرُ</span> artinya ...", o: ["Biru", "Hijau", "Merah", "Kuning"], j: 2, p: "أَحْمَرُ (ahmaru) artinya merah." },
+      { t: "Ucapan \"selamat pagi\" dalam bahasa Arab adalah ...", o: ["<span class=\"arab\">مَسَاءُ الْخَيْرِ</span>", "<span class=\"arab\">شُكْرًا</span>", "<span class=\"arab\">صَبَاحُ الْخَيْرِ</span>", "<span class=\"arab\">عَفْوًا</span>"], j: 2, p: "صَبَاحُ الْخَيْرِ (shabaahul khair) = selamat pagi." }
+    ]
+  },
+  fiqih: {
+    nama: "Fiqih", ikon: "🤲", warna: "#cdeffd",
+    soal: [
+      { t: "Salat sunah yang dikerjakan sebelum atau sesudah salat fardu disebut salat sunah ...", o: ["Duha", "Rawatib", "Tahajud", "Id"], j: 1, p: "Salat sunah rawatib menyertai salat fardu, dikerjakan sebelum atau sesudahnya." },
+      { t: "Salat sunah rawatib yang dikerjakan sebelum salat fardu disebut ...", o: ["Qabliyah", "Ba'diyah", "Witir", "Tarawih"], j: 0, p: "Qabliyah artinya sebelum. Contohnya salat sunah qabliyah Subuh." },
+      { t: "Salat sunah rawatib yang dikerjakan sesudah salat fardu disebut ...", o: ["Qabliyah", "Duha", "Ba'diyah", "Istikharah"], j: 2, p: "Ba'diyah artinya sesudah. Contohnya salat sunah ba'diyah Magrib." },
+      { t: "Salat sunah qabliyah Subuh dikerjakan sebanyak ... rakaat.", o: ["1", "2", "3", "4"], j: 1, p: "Salat sunah qabliyah Subuh 2 rakaat, keutamaannya lebih baik dari dunia dan isinya." },
+      { t: "Salat fardu yang tidak memiliki salat sunah ba'diyah adalah ...", o: ["Subuh", "Zuhur", "Magrib", "Isya"], j: 0, p: "Setelah salat Subuh (dan Asar) tidak ada salat sunah ba'diyah." },
+      { t: "Setelah selesai salat, kita dianjurkan untuk berzikir dan ...", o: ["Bermain", "Berdoa", "Tidur", "Berlari"], j: 1, p: "Zikir dan doa setelah salat membuat hati tenang dan dekat dengan Allah." },
+      { t: "Bacaan zikir \"Astagfirullahal 'azim\" artinya ...", o: ["Maha Suci Allah", "Segala puji bagi Allah", "Aku memohon ampun kepada Allah Yang Maha Agung", "Allah Maha Besar"], j: 2, p: "Istigfar adalah memohon ampunan kepada Allah." },
+      { t: "Bacaan \"Subhanallah\" artinya ...", o: ["Maha Suci Allah", "Allah Maha Besar", "Tiada Tuhan selain Allah", "Segala puji bagi Allah"], j: 0, p: "Subhanallah (tasbih) artinya Maha Suci Allah." },
+      { t: "Bacaan \"Alhamdulillah\" artinya ...", o: ["Maha Suci Allah", "Segala puji bagi Allah", "Allah Maha Besar", "Dengan nama Allah"], j: 1, p: "Alhamdulillah (tahmid) artinya segala puji bagi Allah." },
+      { t: "Bacaan \"Allahu Akbar\" artinya ...", o: ["Allah Maha Esa", "Allah Maha Pengasih", "Allah Maha Besar", "Allah Maha Melihat"], j: 2, p: "Allahu Akbar (takbir) artinya Allah Maha Besar." },
+      { t: "Setelah niat, anggota wudu yang pertama kali dibasuh adalah ...", o: ["Kaki", "Kepala", "Telinga", "Wajah"], j: 3, p: "Urutan fardu wudu: niat, membasuh wajah, tangan sampai siku, mengusap kepala, membasuh kaki, tertib." },
+      { t: "Berikut ini yang membatalkan wudu adalah ...", o: ["Buang angin (kentut)", "Makan", "Minum", "Berbicara"], j: 0, p: "Keluarnya sesuatu dari dua jalan, seperti kentut, membatalkan wudu." }
+    ]
+  },
+  bing: {
+    nama: "Bahasa Inggris", ikon: "🇬🇧", warna: "#ffdcc2",
+    soal: [
+      { t: "Bahasa Inggris dari \"kucing\" adalah ...", o: ["Dog", "Cat", "Bird", "Fish"], j: 1, p: "Cat = kucing. Dog = anjing, bird = burung, fish = ikan." },
+      { t: "Bahasa Inggris dari warna \"merah\" adalah ...", o: ["Blue", "Green", "Red", "Yellow"], j: 2, p: "Red = merah." },
+      { t: "Angka 7 dalam bahasa Inggris adalah ...", o: ["Six", "Seven", "Eight", "Nine"], j: 1, p: "7 = seven." },
+      { t: "Angka 10 dalam bahasa Inggris adalah ...", o: ["Ten", "Two", "Twelve", "Twenty"], j: 0, p: "10 = ten." },
+      { t: "\"Good morning\" artinya ...", o: ["Selamat malam", "Selamat siang", "Selamat tidur", "Selamat pagi"], j: 3, p: "Good morning = selamat pagi." },
+      { t: "\"Book\" artinya ...", o: ["Buku", "Pensil", "Tas", "Meja"], j: 0, p: "Book = buku. Pencil = pensil, bag = tas, table = meja." },
+      { t: "\"Mother\" artinya ...", o: ["Ayah", "Ibu", "Kakak", "Nenek"], j: 1, p: "Mother = ibu. Father = ayah." },
+      { t: "We see with our ...", o: ["Ears", "Nose", "Eyes", "Hands"], j: 2, p: "Eyes = mata. Kita melihat dengan mata." },
+      { t: "What color is a banana? It is ...", o: ["Yellow", "Purple", "Black", "Blue"], j: 0, p: "Pisang yang matang berwarna kuning (yellow)." },
+      { t: "Bahasa Inggris dari hari \"Senin\" adalah ...", o: ["Sunday", "Monday", "Friday", "Tuesday"], j: 1, p: "Monday = Senin. Sunday = Minggu, Tuesday = Selasa, Friday = Jumat." },
+      { t: "Jika temanmu berkata \"Thank you\", kamu menjawab ...", o: ["Good bye", "Sorry", "You're welcome", "Hello"], j: 2, p: "You're welcome = sama-sama." },
+      { t: "\"How are you?\" Jawaban yang tepat adalah ...", o: ["My name is Ali.", "I am fine, thank you.", "I am eight years old.", "Good night."], j: 1, p: "How are you? = Apa kabar? Jawabannya: I am fine, thank you." }
+    ]
+  }
+};
+
+/* Pengaturan */
+const JUMLAH_SOAL = 10;      // jumlah soal per kuis
+const MAKS_SOAL_TETAP = 3;   // paling banyak soal dari BANK SOAL per kuis; sisanya dibuat otomatis
+const MODE_CAMPUR = { nama: "Campuran", ikon: "🎲", warna: "#fff1b8" };
+
+/* ========================================================= */
+const $ = (id) => document.getElementById(id);
+const acak = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const k = Math.floor(Math.random() * (i + 1)); [a[i], a[k]] = [a[k], a[i]]; } return a; };
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const ambil = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const fmt = (n) => n.toLocaleString("id-ID");
+const kapital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const ar = (s) => `<span class="arab">${s}</span>`;
+
+let pilihanMapel = null, nama = "", soalAktif = [], nomor = 0, skor = 0, catatan = [], levelAktif = 1;
+
+/* =========================================================
+   PENYIMPANAN — riwayat soal & level, per nama siswa
+   ========================================================= */
+const MAKS_RIWAYAT = 5000;
+const memori = {}; // cadangan jika penyimpanan browser diblokir
+const kunci = (jenis, n) => "kuisMI3:" + jenis + ":" + n.trim().toLowerCase();
+function baca(k, awal) {
+  try { const v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); } catch (e) {}
+  return k in memori ? memori[k] : awal;
+}
+function tulis(k, v) { memori[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+const bacaRiwayat = (n) => new Set(baca(kunci("riwayat", n), []));
+const simpanRiwayat = (n, set) => tulis(kunci("riwayat", n), [...set].slice(-MAKS_RIWAYAT));
+const bacaLevel = (n, kode) => baca(kunci("level-" + kode, n), 1);
+const simpanLevel = (n, kode, v) => tulis(kunci("level-" + kode, n), v);
+const idSoal = (kode, s) => kode + "|" + s.t + "|" + s.o[s.j];
+
+/* =========================================================
+   ALAT BANTU MEMBUAT SOAL
+   ========================================================= */
+// Soal pilihan ganda: jawaban benar + 3 pengecoh dari daftar
+function pg(t, benar, pengecoh, p) {
+  const lain = acak([...new Set(pengecoh)].filter((x) => x !== benar)).slice(0, 3);
+  return { t, o: [benar, ...lain], j: 0, p };
+}
+// Pengecoh angka yang mirip jawaban benar
+function opsiAngka(benar, akhiran = "") {
+  const calon = acak([benar + 1, benar - 1, benar + 2, benar - 2, benar + 10, benar - 10, benar + 100, benar - 100, benar * 2])
+    .filter((x) => x > 0 && x !== benar);
+  return { o: [benar, ...[...new Set(calon)].slice(0, 3)].map((x) => fmt(x) + akhiran), j: 0 };
+}
+// Tanya-jawab dua arah dari daftar pasangan [a, b]
+function pasangan(daftar, tanyaA, tanyaB, ketA = (x) => x, ketB = (x) => x) {
+  return () => {
+    const [a, b] = ambil(daftar);
+    if (Math.random() < 0.5) return pg(tanyaA(a), ketB(b), daftar.map((x) => ketB(x[1])), `${ketA(a)} = ${ketB(b)}.`);
+    return pg(tanyaB(b), ketA(a), daftar.map((x) => ketA(x[0])), `${ketB(b)} = ${ketA(a)}.`);
+  };
+}
+const NAMA = ["Ani", "Budi", "Siti", "Ahmad", "Fatimah", "Umar", "Aisyah", "Hasan", "Zahra", "Rizki", "Salma", "Yusuf", "Nadia", "Ilham"];
+
+/* =========================================================
+   MATEMATIKA — soal angka acak, tingkat kesulitan naik sesuai level
+   ========================================================= */
+const BENDA = ["kue", "apel", "pensil", "kelereng", "buku", "jeruk", "permen", "telur", "bunga"];
+const WADAH = ["kotak", "keranjang", "kantong", "piring", "rak"];
+const L = () => levelAktif;
+const GEN_MTK = [
+  () => { const [a, b] = L() === 1 ? [rnd(11, 60), rnd(11, 39)] : L() === 2 ? [rnd(100, 599), rnd(100, 399)] : [rnd(1000, 5999), rnd(500, 3999)];
+    const h = a + b; return Object.assign({ t: `${fmt(a)} + ${fmt(b)} = ...`, p: `${fmt(a)} + ${fmt(b)} = ${fmt(h)}. Jumlahkan dari satuan, puluhan, lalu ratusan.` }, opsiAngka(h)); },
+  () => { const a = L() === 1 ? rnd(30, 99) : L() === 2 ? rnd(300, 999) : rnd(2000, 9999); const b = rnd(Math.floor(a / 5), a - 10), h = a - b;
+    return Object.assign({ t: `${fmt(a)} − ${fmt(b)} = ...`, p: `${fmt(a)} − ${fmt(b)} = ${fmt(h)}.` }, opsiAngka(h)); },
+  () => { const [a, b] = L() === 1 ? [rnd(2, 5), rnd(1, 10)] : L() === 2 ? [rnd(2, 10), rnd(2, 10)] : [rnd(11, 30), rnd(2, 9)];
+    const h = a * b; return Object.assign({ t: `${a} × ${b} = ...`, p: `${a} × ${b} = ${h}, artinya ${b} dijumlahkan sebanyak ${a} kali.` }, opsiAngka(h)); },
+  () => { const b = L() === 1 ? rnd(2, 5) : rnd(2, 10), c = L() === 3 ? rnd(6, 15) : rnd(2, 10), a = b * c;
+    return Object.assign({ t: `${a} : ${b} = ...`, p: `Karena ${b} × ${c} = ${a}, maka ${a} : ${b} = ${c}.` }, opsiAngka(c)); },
+  () => { const nd = L() + 1; let d; do { d = Array.from({ length: nd }, () => rnd(1, 9)); } while (new Set(d).size < nd);
+    const n = Number(d.join("")), pos = rnd(0, nd - 1), tempat = ["satuan", "puluhan", "ratusan", "ribuan"], kek = nd - 1 - pos;
+    const nilai = d[pos] * Math.pow(10, kek), o = [d[pos], d[pos] * 10, d[pos] * 100, d[pos] * 1000];
+    return { t: `Nilai angka ${d[pos]} pada bilangan ${fmt(n)} adalah ...`, o: [nilai, ...o.filter((x) => x !== nilai)].map(fmt), j: 0, p: `Angka ${d[pos]} berada di tempat ${tempat[kek]}, jadi nilainya ${fmt(nilai)}.` }; },
+  () => { const x = L() === 1 ? rnd(10, 99) : L() === 2 ? rnd(100, 999) : rnd(1000, 9999); let y; do { y = x + rnd(-20, 20) * (L() === 1 ? 1 : 10); } while (y <= 0);
+    const tanda = x > y ? ">" : x < y ? "<" : "=", nm = { ">": "lebih dari", "<": "kurang dari", "=": "sama dengan" };
+    return { t: `Tanda yang tepat untuk ${fmt(x)} ... ${fmt(y)} adalah`, o: [tanda, ...[">", "<", "="].filter((z) => z !== tanda)], j: 0, p: `${fmt(x)} ${nm[tanda]} ${fmt(y)}, jadi tandanya ${tanda}.` }; },
+  () => { const step = L() === 1 ? rnd(2, 5) : L() === 2 ? ambil([5, 6, 7, 8, 9, 10, 25]) : ambil([11, 12, 15, 25, 50, 100]);
+    const turun = L() > 1 && Math.random() < 0.4, s = turun ? rnd(step * 6, step * 6 + 50) : rnd(1, 30);
+    const deret = Array.from({ length: 5 }, (_, i) => s + (turun ? -1 : 1) * step * i), h = deret.pop();
+    return Object.assign({ t: `Bilangan berikutnya dari pola ${deret.map(fmt).join(", ")}, ... adalah`, p: `Polanya selalu ${turun ? "berkurang" : "bertambah"} ${step}, jadi berikutnya ${fmt(h)}.` }, opsiAngka(h)); },
+  () => { const nm = ambil(NAMA), bd = ambil(BENDA), wd = ambil(WADAH), x = rnd(2, L() === 1 ? 5 : 9), y = rnd(3, L() === 3 ? 25 : 10), h = x * y;
+    return Object.assign({ t: `${nm} punya ${x} ${wd}. Setiap ${wd} berisi ${y} ${bd}. Jumlah ${bd} ${nm} ada ...`, p: `${x} × ${y} = ${h} ${bd}.` }, opsiAngka(h)); },
+  () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = L() === 1 ? rnd(15, 50) : rnd(50, 300), b = rnd(5, a - 3), h = a - b;
+    return Object.assign({ t: `${nm} punya ${a} ${bd}. Sebanyak ${b} ${bd} diberikan kepada temannya. Sisa ${bd} ${nm} ada ...`, p: `${a} − ${b} = ${h} ${bd}.` }, opsiAngka(h)); },
+  () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = L() === 1 ? rnd(10, 40) : rnd(40, 250), b = L() === 1 ? rnd(5, 30) : rnd(20, 200), h = a + b;
+    return Object.assign({ t: `${nm} punya ${a} ${bd}. Ibu memberi lagi ${b} ${bd}. Sekarang ${bd} ${nm} ada ...`, p: `${a} + ${b} = ${h} ${bd}.` }, opsiAngka(h)); },
+  () => { const b = rnd(2, L() === 1 ? 5 : 10), c = rnd(2, L() === 3 ? 12 : 9), a = b * c, bd = ambil(BENDA);
+    return Object.assign({ t: `${a} ${bd} dibagikan sama banyak kepada ${b} anak. Setiap anak mendapat ...`, p: `${a} : ${b} = ${c} ${bd}.` }, opsiAngka(c, " " + bd)); },
+  () => { const s = rnd(3, L() === 3 ? 40 : 15), h = 4 * s;
+    return Object.assign({ t: `Keliling persegi dengan panjang sisi ${s} cm adalah ...`, p: `Keliling persegi = 4 × sisi = 4 × ${s} = ${h} cm.` }, opsiAngka(h, " cm")); },
+  () => { const p = rnd(5, L() === 3 ? 30 : 12), l = rnd(2, p - 1), h = 2 * (p + l);
+    return Object.assign({ t: `Keliling persegi panjang dengan panjang ${p} cm dan lebar ${l} cm adalah ...`, p: `Keliling = 2 × (panjang + lebar) = 2 × (${p} + ${l}) = ${h} cm.` }, opsiAngka(h, " cm")); },
+  () => { const jenis = ambil(["m-cm", "jam-menit", "menit-detik", "kg-g", "km-m"]);
+    const [dari, ke, kali] = { "m-cm": ["meter", "cm", 100], "jam-menit": ["jam", "menit", 60], "menit-detik": ["menit", "detik", 60], "kg-g": ["kg", "gram", 1000], "km-m": ["km", "meter", 1000] }[jenis];
+    const n = rnd(2, L() === 1 ? 5 : 12), h = n * kali;
+    return Object.assign({ t: `${n} ${dari} = ... ${ke}`, p: `1 ${dari} = ${fmt(kali)} ${ke}, jadi ${n} ${dari} = ${n} × ${fmt(kali)} = ${fmt(h)} ${ke}.` }, opsiAngka(h)); },
+  () => { const j = rnd(1, 9), tambah = rnd(1, L() === 1 ? 3 : 6), mnt = L() === 1 ? "00" : ambil(["00", "15", "30", "45"]), h = j + tambah;
+    const f = (x) => String(x).padStart(2, "0") + "." + mnt;
+    return pg(`Sekarang pukul ${f(j)}. ${tambah} jam lagi pukul ...`, f(h), [f(h + 1), f(h - 1), f(j + tambah + 2), f(Math.max(1, j - tambah))], `${f(j)} ditambah ${tambah} jam menjadi ${f(h)}.`); },
+  () => { const nm = ambil(NAMA), b1 = ambil(["pensil", "penghapus", "buku tulis", "roti", "susu", "penggaris"]), b2 = ambil(["permen", "air minum", "spidol", "buku gambar"]);
+    const h1 = rnd(1, L() === 1 ? 5 : 15) * 500, h2 = rnd(1, L() === 1 ? 5 : 15) * 500, bayar = Math.ceil((h1 + h2 + 1) / 5000) * 5000;
+    if (L() === 1 || Math.random() < 0.5) { const h = h1 + h2; return pg(`${nm} membeli ${b1} seharga Rp${fmt(h1)} dan ${b2} seharga Rp${fmt(h2)}. Jumlah harganya ...`, "Rp" + fmt(h), [h + 500, h - 500, h + 1000, Math.abs(h1 - h2) || h + 1500].map((x) => "Rp" + fmt(x)), `Rp${fmt(h1)} + Rp${fmt(h2)} = Rp${fmt(h)}.`); }
+    const h = bayar - h1; return pg(`${nm} membeli ${b1} seharga Rp${fmt(h1)} dan membayar dengan uang Rp${fmt(bayar)}. Uang kembaliannya ...`, "Rp" + fmt(h), [h + 500, h - 500 || h + 1500, h + 1000, h1].map((x) => "Rp" + fmt(x)), `Rp${fmt(bayar)} − Rp${fmt(h1)} = Rp${fmt(h)}.`); },
+  () => { const n = rnd(2, 10), bd = ambil(["kue", "roti", "pizza", "semangka", "kertas"]), nm = ambil(NAMA);
+    return pg(`Sebuah ${bd} dipotong menjadi ${n} bagian sama besar. ${nm} mengambil 1 bagian. Bagian yang diambil ${nm} adalah ...`, `1/${n}`, [`${n}/1`, `1/${n + 1}`, `1/${n - 1 || 3}`, `2/${n}`], `1 bagian dari ${n} bagian ditulis 1/${n} (satu per ${n}).`); },
+  () => { const ds = acak([2, 3, 4, 5, 6, 8, 10]).slice(0, 4), besar = Math.random() < 0.5, h = besar ? Math.min(...ds) : Math.max(...ds);
+    return pg(`Pecahan yang paling ${besar ? "besar" : "kecil"} adalah ...`, `1/${h}`, ds.map((d) => `1/${d}`), `Untuk pecahan 1/..., makin ${besar ? "kecil" : "besar"} penyebutnya, makin ${besar ? "besar" : "kecil"} nilainya. Jadi 1/${h}.`); },
+  () => { const genap = Math.random() < 0.5, maks = L() === 1 ? 50 : 999, buat = (g) => { let x; do { x = rnd(10, maks); } while ((x % 2 === 0) !== g); return x; };
+    return pg(`Bilangan berikut yang termasuk bilangan ${genap ? "genap" : "ganjil"} adalah ...`, fmt(buat(genap)), [buat(!genap), buat(!genap), buat(!genap), buat(!genap)].map(fmt), `Bilangan ${genap ? "genap berakhiran 0, 2, 4, 6, atau 8" : "ganjil berakhiran 1, 3, 5, 7, atau 9"}.`); },
+  () => { if (L() === 1) { const x = rnd(11, 99), h = Math.round(x / 10) * 10; return pg(`${x} dibulatkan ke puluhan terdekat menjadi ...`, fmt(h), [h + 10, h - 10, x, h + 5].filter((v) => v > 0).map(fmt), `Satuannya ${x % 10}. ${x % 10 >= 5 ? "5 atau lebih dibulatkan ke atas" : "Kurang dari 5 dibulatkan ke bawah"}, jadi ${h}.`); }
+    const x = rnd(101, 999), h = Math.round(x / 100) * 100; return pg(`${x} dibulatkan ke ratusan terdekat menjadi ...`, fmt(h), [h + 100, h - 100 || 1000, Math.round(x / 10) * 10, x].map(fmt), `Puluhannya ${Math.floor(x / 10) % 10}. ${Math.floor(x / 10) % 10 >= 5 ? "5 atau lebih dibulatkan ke atas" : "Kurang dari 5 dibulatkan ke bawah"}, jadi ${fmt(h)}.`); }
+];
+
+/* =========================================================
+   BAHASA INDONESIA
+   ========================================================= */
+const ANTONIM = [["besar", "kecil"], ["tinggi", "rendah"], ["panjang", "pendek"], ["rajin", "malas"], ["siang", "malam"], ["panas", "dingin"], ["terang", "gelap"], ["cepat", "lambat"], ["berat", "ringan"], ["bersih", "kotor"], ["tua", "muda"], ["kaya", "miskin"], ["senang", "sedih"], ["naik", "turun"], ["masuk", "keluar"], ["buka", "tutup"], ["atas", "bawah"], ["depan", "belakang"], ["jauh", "dekat"], ["gemuk", "kurus"], ["pandai", "bodoh"], ["tebal", "tipis"], ["luas", "sempit"], ["kasar", "halus"], ["basah", "kering"], ["kuat", "lemah"], ["mahal", "murah"], ["ramai", "sepi"], ["datang", "pergi"], ["menang", "kalah"], ["awal", "akhir"], ["benar", "salah"], ["penuh", "kosong"], ["manis", "pahit"], ["jujur", "bohong"], ["maju", "mundur"], ["lurus", "bengkok"], ["baru", "lama"], ["keras", "lunak"], ["hidup", "mati"]];
+const BENTROK = { tinggi: ["pendek"], pendek: ["tinggi"], baru: ["tua"], tua: ["baru"], gelap: ["siang"], malam: ["terang"], bohong: ["benar"], halus: ["keras"], keras: ["halus"] };
+const SINONIM = [["pintar", "pandai"], ["gembira", "senang"], ["cepat", "lekas"], ["ibu", "bunda"], ["ayah", "bapak"], ["bohong", "dusta"], ["teman", "kawan"], ["benar", "betul"], ["indah", "elok"], ["hadiah", "kado"], ["sulit", "sukar"], ["melihat", "memandang"], ["wajah", "muka"], ["sunyi", "sepi"], ["rajin", "tekun"], ["murid", "siswa"], ["hewan", "binatang"], ["sungai", "kali"], ["makan", "santap"], ["mungil", "kecil"], ["berbicara", "berkata"], ["uang", "duit"]];
+const KATA = {
+  "benda": ["meja", "kursi", "buku", "pensil", "sepatu", "lemari", "piring", "sendok", "sepeda", "jam", "tas", "pintu", "bola", "payung", "gelas", "jendela"],
+  "kerja": ["berlari", "membaca", "menulis", "makan", "minum", "tidur", "melompat", "memasak", "menyapu", "berenang", "bernyanyi", "menggambar", "mencuci", "berjalan"],
+  "sifat": ["cantik", "besar", "kecil", "rajin", "pintar", "tinggi", "manis", "bersih", "pendek", "cepat", "baik", "ramah", "panas", "dingin", "lucu"]
+};
+const KEGIATAN = [["membaca buku", "perpustakaan"], ["menyiram bunga", "taman"], ["membeli sayur", "pasar"], ["bermain bola", "lapangan"], ["memasak nasi", "dapur"], ["mencuci piring", "dapur"], ["salat berjamaah", "masjid"], ["belajar matematika", "kelas"], ["menangkap ikan", "sungai"], ["menanam padi", "sawah"], ["memberi makan ayam", "kandang"], ["mengaji Al-Qur'an", "musala"], ["berenang", "kolam renang"], ["membeli roti", "toko"], ["memetik mangga", "kebun"]];
+const WAKTU = ["pagi hari", "siang hari", "sore hari", "malam hari", "hari Minggu", "hari Jumat"];
+const SUBJEK = ["Ayah", "Ibu", "Kakak", "Adik", "Paman", "Nenek", ...NAMA];
+const KALIMAT = {
+  "tanya (?)": ["Di mana rumahmu", "Siapa nama ibumu", "Kapan kamu berangkat sekolah", "Apa cita-citamu", "Mengapa adik menangis", "Berapa umurmu", "Bagaimana kabarmu hari ini", "Apakah kamu sudah salat"],
+  "perintah (!)": ["Tolong ambilkan buku itu", "Ayo kita belajar bersama", "Buanglah sampah pada tempatnya", "Tutup pintunya", "Jangan berisik di kelas", "Cucilah tanganmu sebelum makan", "Bacalah doa sebelum belajar"],
+  "berita (.)": ["Ayah pergi ke kantor", "Adik tidur di kamar", "Kami belajar di kelas", "Ibu membeli sayur di pasar", "Kakek membaca koran di teras", "Hari ini cuaca sangat cerah", "Kucingku berwarna putih"]
+};
+const GEN_BIND = [
+  () => { const [a, b] = ambil(ANTONIM), [q, j] = Math.random() < 0.5 ? [a, b] : [b, a];
+    const peng = ANTONIM.flat().filter((w) => w !== q && w !== j && !(BENTROK[q] || []).includes(w));
+    return pg(`Lawan kata dari "${q}" adalah ...`, kapital(j), peng.map(kapital), `Lawan kata (antonim) ${q} adalah ${j}.`); },
+  () => { const [a, b] = ambil(SINONIM), [q, j] = Math.random() < 0.5 ? [a, b] : [b, a];
+    return pg(`Persamaan kata dari "${q}" adalah ...`, kapital(j), SINONIM.flat().filter((w) => w !== q && w !== j).map(kapital), `Persamaan kata (sinonim) ${q} adalah ${j}.`); },
+  () => { const jenis = ambil(Object.keys(KATA)), w = ambil(KATA[jenis]);
+    return { t: `Kata "${w}" termasuk kata ...`, o: ["Benda", "Kerja", "Sifat"], j: ["benda", "kerja", "sifat"].indexOf(jenis), p: { benda: "Kata benda adalah nama suatu benda.", kerja: "Kata kerja menunjukkan suatu kegiatan atau perbuatan.", sifat: "Kata sifat menunjukkan sifat atau keadaan." }[jenis] }; },
+  () => { const jenis = ambil(Object.keys(KATA)), lain = Object.keys(KATA).filter((x) => x !== jenis).flatMap((x) => KATA[x]);
+    return pg(`Kata berikut yang termasuk kata ${jenis} adalah ...`, kapital(ambil(KATA[jenis])), lain.map(kapital), `${kapital(jenis === "benda" ? "kata benda adalah nama benda" : jenis === "kerja" ? "kata kerja menunjukkan kegiatan" : "kata sifat menunjukkan keadaan")}.`); },
+  () => { const s = ambil(SUBJEK), [k, tmp] = ambil(KEGIATAN), w = ambil(WAKTU), kal = `"${s} ${k} di ${tmp} pada ${w}."`, jenis = rnd(0, 3);
+    if (jenis === 0) return pg(`${kal} Siapa yang ${k}?`, s, SUBJEK, `Yang ${k} adalah ${s}.`);
+    if (jenis === 1) return pg(`${kal} Di mana ${s} ${k}?`, kapital(tmp), KEGIATAN.map((x) => kapital(x[1])), `${s} ${k} di ${tmp}.`);
+    if (jenis === 2) return pg(`${kal} Kapan ${s} ${k}?`, kapital(w), WAKTU.map(kapital), `${s} ${k} pada ${w}.`);
+    return pg(`${kal} Apa yang dilakukan ${s}?`, kapital(k), KEGIATAN.map((x) => kapital(x[0])), `${s} ${k}.`); },
+  () => { const jenis = ambil(Object.keys(KALIMAT)), k = ambil(KALIMAT[jenis]);
+    if (Math.random() < 0.5) return { t: `Tanda baca yang tepat untuk kalimat "${k} ..." adalah`, o: ["Tanda tanya (?)", "Tanda seru (!)", "Titik (.)", "Koma (,)"], j: Object.keys(KALIMAT).indexOf(jenis), p: `Kalimat ini adalah kalimat ${jenis}.` };
+    return { t: `Kalimat "${k}${jenis.slice(-2, -1)}" termasuk kalimat ...`, o: ["Tanya", "Perintah", "Berita"], j: Object.keys(KALIMAT).indexOf(jenis), p: `Kalimat ini adalah kalimat ${jenis}.` }; }
+];
+
+/* =========================================================
+   IPAS
+   ========================================================= */
+const MAKANAN_HEWAN = { herbivora: ["sapi", "kambing", "kuda", "kelinci", "jerapah", "kerbau", "rusa", "domba", "gajah", "zebra"], karnivora: ["harimau", "singa", "serigala", "buaya", "elang", "hiu", "ular", "macan tutul"], omnivora: ["ayam", "tikus", "beruang", "monyet", "bebek"] };
+const BIAK = { bertelur: ["ayam", "bebek", "burung merpati", "kura-kura", "buaya", "ular", "ikan lele", "katak", "penyu", "cicak"], melahirkan: ["kucing", "sapi", "kambing", "kelinci", "kuda", "gajah", "paus", "lumba-lumba", "kerbau", "harimau"] };
+const WUJUD = { Mencair: ["es batu di dalam gelas lama-lama menjadi air", "mentega yang dipanaskan di wajan", "cokelat yang digenggam lama di tangan", "es krim yang dibiarkan di bawah sinar matahari"], Membeku: ["air dimasukkan ke dalam freezer menjadi es", "lilin cair yang lama-lama mengeras", "air yang dibuat menjadi es lilin"], Menguap: ["air yang direbus lama-lama berkurang", "baju basah yang dijemur menjadi kering", "air laut yang terkena panas matahari", "genangan air hujan yang hilang saat siang"], Mengembun: ["titik-titik air di bagian luar gelas berisi es", "embun pada daun di pagi hari", "kaca mobil yang berembun saat hujan"] };
+const TUMBUHAN = [["Akar", "menyerap air dan zat hara dari tanah"], ["Batang", "menyalurkan air dan makanan ke seluruh bagian tumbuhan"], ["Daun", "tempat membuat makanan (fotosintesis)"], ["Bunga", "alat perkembangbiakan tumbuhan"], ["Buah", "melindungi biji"]];
+const HIDUP = ["kucing", "pohon mangga", "ikan", "rumput", "kupu-kupu", "bunga mawar", "cacing", "burung", "jamur", "semut"];
+const MATI = ["batu", "meja", "sepeda", "kursi", "pensil", "tas", "mobil", "boneka", "gelas", "sepatu", "robot mainan"];
+const INDRA = [["Mata", "melihat"], ["Telinga", "mendengar"], ["Hidung", "mencium bau"], ["Lidah", "mengecap rasa"], ["Kulit", "meraba"]];
+const ENERGI = [["Lampu", "cahaya"], ["Kipas angin", "gerak"], ["Setrika", "panas"], ["Bel listrik", "bunyi"], ["Penanak nasi (rice cooker)", "panas"], ["Blender", "gerak"], ["Mesin cuci", "gerak"], ["Pengeras suara (speaker)", "bunyi"]];
+const MAKANAN_HEWAN_TAMBAH = { herbivora: ["unta", "badak", "kuda nil", "belalang", "ulat"], karnivora: ["burung hantu", "anjing laut", "elang laut"], omnivora: ["burung pipit", "ikan mas", "musang"] };
+Object.keys(MAKANAN_HEWAN_TAMBAH).forEach((k) => MAKANAN_HEWAN[k].push(...MAKANAN_HEWAN_TAMBAH[k]));
+const TEMPAT_HIDUP = { "di darat": ["kucing", "gajah", "kambing", "harimau", "kelinci", "semut", "jerapah"], "di air": ["ikan", "paus", "lumba-lumba", "gurita", "bintang laut", "kepiting", "ubur-ubur"], "di darat dan di air (amfibi)": ["katak", "salamander"] };
+const BIAK_TUMBUHAN = [["mangga", "biji"], ["rambutan", "biji"], ["jagung", "biji"], ["kacang tanah", "biji"], ["singkong", "stek batang"], ["mawar", "stek batang"], ["tebu", "stek batang"], ["kentang", "umbi"], ["wortel", "umbi"], ["bawang merah", "umbi lapis"], ["pisang", "tunas"], ["bambu", "tunas"], ["cocor bebek", "tunas daun"], ["paku-pakuan", "spora"], ["jamur", "spora"]];
+const KEBUTUHAN = [["Tumbuhan membutuhkan air, udara, dan cahaya matahari untuk", "tumbuh dan membuat makanan"], ["Manusia membutuhkan makanan untuk", "mendapatkan tenaga (energi)"], ["Kita perlu tidur yang cukup supaya", "tubuh sehat dan segar"], ["Kita menggosok gigi supaya", "gigi bersih dan tidak berlubang"], ["Kita mencuci tangan sebelum makan supaya", "kuman tidak masuk ke tubuh"], ["Kita berolahraga secara teratur supaya", "badan sehat dan kuat"]];
+const MAGNET = { "ditarik magnet": ["paku besi", "jarum", "peniti", "klip kertas", "gunting besi", "mur dan baut"], "tidak ditarik magnet": ["kertas", "kayu", "plastik", "karet penghapus", "kain", "kaca", "daun"] };
+const SUMBER_ENERGI = [["Matahari", "panas dan cahaya"], ["Angin", "gerak untuk kincir angin"], ["Air terjun", "listrik (PLTA)"], ["Makanan", "tenaga untuk tubuh"], ["Baterai", "listrik untuk senter dan mainan"], ["Kayu bakar", "panas untuk memasak"]];
+const GEN_IPAS = [
+  () => { const t = ambil(Object.keys(TEMPAT_HIDUP)), h = ambil(TEMPAT_HIDUP[t]);
+    return { t: `Hewan ${h} hidup ...`, o: Object.keys(TEMPAT_HIDUP).map(kapital), j: Object.keys(TEMPAT_HIDUP).indexOf(t), p: `${kapital(h)} hidup ${t}.` }; },
+  () => { const [tb, c] = ambil(BIAK_TUMBUHAN);
+    return pg(`Tumbuhan ${tb} dapat dikembangbiakkan dengan ...`, kapital(c), BIAK_TUMBUHAN.map((x) => kapital(x[1])), `${kapital(tb)} berkembang biak dengan ${c}.`); },
+  () => { const [q, j] = ambil(KEBUTUHAN); return pg(`${q} ...`, kapital(j), KEBUTUHAN.map((x) => kapital(x[1])), `${q} ${j}.`); },
+  () => { const jenis = ambil(Object.keys(MAGNET)), lain = MAGNET[jenis === "ditarik magnet" ? "tidak ditarik magnet" : "ditarik magnet"];
+    return pg(`Benda berikut yang ${jenis === "ditarik magnet" ? "dapat" : "TIDAK dapat"} ditarik magnet adalah ...`, kapital(ambil(MAGNET[jenis])), lain.map(kapital), `Magnet menarik benda dari besi atau baja. Kertas, kayu, plastik, dan kain tidak ditarik magnet.`); },
+  pasangan(SUMBER_ENERGI, (a) => `${a} adalah sumber energi yang menghasilkan ...`, (b) => `Sumber energi yang menghasilkan ${b} adalah ...`, (x) => x, kapital),
+
+  () => { const jenis = ambil(Object.keys(MAKANAN_HEWAN)), h = ambil(MAKANAN_HEWAN[jenis]);
+    return { t: `Hewan ${h} termasuk hewan ...`, o: ["Herbivora (pemakan tumbuhan)", "Karnivora (pemakan daging)", "Omnivora (pemakan segala)"], j: ["herbivora", "karnivora", "omnivora"].indexOf(jenis), p: `${kapital(h)} termasuk ${jenis}.` }; },
+  () => { const jenis = ambil(Object.keys(MAKANAN_HEWAN)), lain = Object.keys(MAKANAN_HEWAN).filter((x) => x !== jenis).flatMap((x) => MAKANAN_HEWAN[x]);
+    return pg(`Hewan berikut yang termasuk ${jenis} adalah ...`, kapital(ambil(MAKANAN_HEWAN[jenis])), lain.map(kapital), `${kapital(jenis)}: ${MAKANAN_HEWAN[jenis].slice(0, 4).join(", ")}, dan lain-lain.`); },
+  () => { const jenis = ambil(Object.keys(BIAK)), h = ambil(BIAK[jenis]);
+    return { t: `Hewan ${h} berkembang biak dengan cara ...`, o: ["Bertelur", "Melahirkan", "Membelah diri", "Bertunas"], j: jenis === "bertelur" ? 0 : 1, p: `${kapital(h)} berkembang biak dengan ${jenis}.` }; },
+  () => { const jenis = ambil(Object.keys(BIAK)), lain = BIAK[jenis === "bertelur" ? "melahirkan" : "bertelur"];
+    return pg(`Hewan berikut yang berkembang biak dengan ${jenis} adalah ...`, kapital(ambil(BIAK[jenis])), lain.map(kapital), `Contoh hewan ${jenis}: ${BIAK[jenis].slice(0, 4).join(", ")}.`); },
+  () => { const jenis = ambil(Object.keys(WUJUD)), c = ambil(WUJUD[jenis]);
+    return { t: `Peristiwa "${c}" disebut ...`, o: Object.keys(WUJUD), j: Object.keys(WUJUD).indexOf(jenis), p: { Mencair: "Mencair: padat menjadi cair.", Membeku: "Membeku: cair menjadi padat.", Menguap: "Menguap: cair menjadi gas (uap).", Mengembun: "Mengembun: gas (uap) menjadi cair." }[jenis] }; },
+  pasangan(TUMBUHAN, (a) => `Fungsi ${a.toLowerCase()} pada tumbuhan adalah ...`, (b) => `Bagian tumbuhan yang berfungsi ${b} adalah ...`, (x) => x, kapital),
+  () => { const hidup = Math.random() < 0.5;
+    return pg(`Berikut ini yang termasuk ${hidup ? "makhluk hidup" : "benda mati"} adalah ...`, kapital(ambil(hidup ? HIDUP : MATI)), (hidup ? MATI : HIDUP).map(kapital), `Makhluk hidup bernapas, makan, tumbuh, dan berkembang biak. Benda mati tidak.`); },
+  pasangan(INDRA, (a) => `${a} adalah alat indra untuk ...`, (b) => `Alat indra untuk ${b} adalah ...`, (x) => x, kapital),
+  () => { const [alat, en] = ambil(ENERGI);
+    return { t: `${alat} mengubah energi listrik menjadi energi ...`, o: ["Cahaya", "Gerak", "Panas", "Bunyi"], j: ["cahaya", "gerak", "panas", "bunyi"].indexOf(en), p: `${alat} menghasilkan energi ${en}.` }; }
+];
+
+/* =========================================================
+   PENDIDIKAN AGAMA ISLAM
+   ========================================================= */
+const ASMAUL_HUSNA = [["Ar-Rahman", "Maha Pengasih"], ["Ar-Rahim", "Maha Penyayang"], ["Al-Malik", "Maha Merajai"], ["Al-Quddus", "Maha Suci"], ["As-Salam", "Maha Memberi Kesejahteraan"], ["Al-Mu'min", "Maha Memberi Keamanan"], ["Al-'Aziz", "Maha Perkasa"], ["Al-Khaliq", "Maha Pencipta"], ["Ar-Razzaq", "Maha Pemberi Rezeki"], ["Al-Ghaffar", "Maha Pengampun"], ["Al-'Alim", "Maha Mengetahui"], ["As-Sami'", "Maha Mendengar"], ["Al-Bashir", "Maha Melihat"], ["Al-Wahhab", "Maha Pemberi Karunia"], ["Al-Hakim", "Maha Bijaksana"], ["Al-Karim", "Maha Mulia"]];
+const MALAIKAT = [["Jibril", "menyampaikan wahyu"], ["Mikail", "membagi rezeki"], ["Israfil", "meniup sangkakala"], ["Izrail", "mencabut nyawa"], ["Munkar dan Nakir", "menanyai manusia di alam kubur"], ["Raqib", "mencatat amal baik"], ["Atid", "mencatat amal buruk"], ["Malik", "menjaga pintu neraka"], ["Ridwan", "menjaga pintu surga"]];
+const KITAB = [["Taurat", "Nabi Musa a.s."], ["Zabur", "Nabi Daud a.s."], ["Injil", "Nabi Isa a.s."], ["Al-Qur'an", "Nabi Muhammad saw."]];
+const RUKUN_ISLAM = ["Membaca dua kalimat syahadat", "Mendirikan salat", "Menunaikan zakat", "Berpuasa di bulan Ramadan", "Menunaikan ibadah haji bagi yang mampu"];
+const RUKUN_IMAN = ["Iman kepada Allah", "Iman kepada malaikat", "Iman kepada kitab-kitab Allah", "Iman kepada rasul-rasul Allah", "Iman kepada hari akhir", "Iman kepada qada dan qadar"];
+const URUTAN = ["pertama", "kedua", "ketiga", "keempat", "kelima", "keenam"];
+const THAYYIBAH = [["memulai makan atau pekerjaan", "Bismillahirrahmanirrahim"], ["selesai makan atau mendapat nikmat", "Alhamdulillah"], ["mendengar berita ada orang yang meninggal dunia", "Innalillahi wa inna ilaihi raji'un"], ["melakukan kesalahan", "Astagfirullah"], ["melihat sesuatu yang menakjubkan", "Subhanallah"], ["berjanji akan melakukan sesuatu", "Insya Allah"], ["bertemu sesama muslim", "Assalamu'alaikum"], ["teman bersin lalu mengucap alhamdulillah", "Yarhamukallah"]];
+const MUKJIZAT = [["tongkatnya bisa berubah menjadi ular dan membelah lautan", "Nabi Musa a.s."], ["tidak terbakar saat dibakar dalam api", "Nabi Ibrahim a.s."], ["membuat kapal besar saat banjir besar", "Nabi Nuh a.s."], ["dapat menyembuhkan orang sakit dengan izin Allah", "Nabi Isa a.s."], ["dapat berbicara dengan hewan", "Nabi Sulaiman a.s."], ["dapat melunakkan besi dengan tangannya", "Nabi Daud a.s."], ["menerima kitab suci Al-Qur'an", "Nabi Muhammad saw."], ["ditelan ikan besar lalu selamat", "Nabi Yunus a.s."]];
+const urutanGen = (daftar, judul) => () => {
+  const i = rnd(0, daftar.length - 1);
+  if (Math.random() < 0.5) return pg(`${judul} yang ${URUTAN[i]} adalah ...`, daftar[i], daftar, `${judul}: ${daftar.map((x, k) => (k + 1) + ". " + x).join("; ")}.`);
+  return pg(`"${daftar[i]}" adalah ${judul.toLowerCase()} yang ke-...`, String(i + 1), daftar.map((_, k) => String(k + 1)), `${daftar[i]} adalah ${judul.toLowerCase()} yang ${URUTAN[i]}.`);
+};
+const SIFAT_WAJIB = [["Wujud", "ada"], ["Qidam", "terdahulu"], ["Baqa", "kekal"], ["Mukhalafatu lil hawaditsi", "berbeda dengan makhluk-Nya"], ["Qiyamuhu binafsihi", "berdiri sendiri"], ["Wahdaniyah", "Esa (satu)"], ["Qudrat", "berkuasa"], ["Iradat", "berkehendak"], ["Ilmu", "mengetahui"], ["Hayat", "hidup"], ["Sama'", "mendengar"], ["Bashar", "melihat"], ["Kalam", "berfirman"]];
+const AKHLAK = { terpuji: ["jujur", "sabar", "rendah hati", "suka menolong", "pemaaf", "disiplin", "hormat kepada orang tua", "bersyukur", "rajin belajar", "menepati janji"], tercela: ["sombong", "berbohong", "iri hati", "malas", "mencuri", "mengejek teman", "pemarah", "kikir", "durhaka kepada orang tua", "ingkar janji"] };
+const SURAH = [["Al-Fatihah", 7, "Pembukaan"], ["An-Nas", 6, "Manusia"], ["Al-Falaq", 5, "Waktu Subuh"], ["Al-Ikhlas", 4, "Memurnikan Keesaan Allah"], ["Al-Lahab", 5, "Gejolak Api"], ["An-Nasr", 3, "Pertolongan"], ["Al-Kafirun", 6, "Orang-Orang Kafir"], ["Al-Kautsar", 3, "Nikmat yang Berlimpah"], ["Al-Ma'un", 7, "Barang yang Berguna"], ["Quraisy", 4, "Suku Quraisy"], ["Al-Fil", 5, "Gajah"], ["Al-'Asr", 3, "Masa"]];
+const GEN_PAI = [
+  pasangan(SIFAT_WAJIB, (a) => `Sifat wajib Allah "${a}" artinya Allah ...`, (b) => `Sifat wajib Allah yang artinya Allah ${b} adalah ...`, (x) => x, kapital),
+  () => { const jenis = ambil(Object.keys(AKHLAK)), lain = AKHLAK[jenis === "terpuji" ? "tercela" : "terpuji"], a = ambil(AKHLAK[jenis]);
+    if (Math.random() < 0.5) return { t: `Sikap "${a}" termasuk akhlak ...`, o: ["Terpuji", "Tercela"], j: jenis === "terpuji" ? 0 : 1, p: jenis === "terpuji" ? `${kapital(a)} adalah akhlak terpuji. Ayo kita biasakan!` : `${kapital(a)} adalah akhlak tercela. Kita harus menjauhinya.` };
+    return pg(`Berikut ini yang termasuk akhlak ${jenis} adalah ...`, kapital(a), lain.map(kapital), `Akhlak terpuji: ${AKHLAK.terpuji.slice(0, 4).join(", ")}. Akhlak tercela: ${AKHLAK.tercela.slice(0, 4).join(", ")}.`); },
+  () => { const [n, ay] = ambil(SURAH); return pg(`Surah ${n} terdiri dari ... ayat.`, String(ay), ["3", "4", "5", "6", "7", "8"], `Surah ${n} terdiri dari ${ay} ayat.`); },
+  () => { const [n, , art] = ambil(SURAH);
+    if (Math.random() < 0.5) return pg(`Surah ${n} artinya ...`, art, SURAH.map((x) => x[2]), `${n} artinya ${art}.`);
+    return pg(`Surah yang artinya "${art}" adalah surah ...`, n, SURAH.map((x) => x[0]), `${n} artinya ${art}.`); },
+
+  pasangan(ASMAUL_HUSNA, (a) => `Asmaul Husna "${a}" artinya Allah Yang ...`, (b) => `Asmaul Husna yang artinya Allah Yang ${b} adalah ...`),
+  pasangan(MALAIKAT, (a) => `Tugas malaikat ${a} adalah ...`, (b) => `Malaikat yang bertugas ${b} adalah ...`, (x) => x, kapital),
+  pasangan(KITAB, (a) => `Kitab ${a} diturunkan kepada ...`, (b) => `Kitab yang diturunkan kepada ${b} adalah ...`),
+  urutanGen(RUKUN_ISLAM, "Rukun Islam"),
+  urutanGen(RUKUN_IMAN, "Rukun Iman"),
+  () => { const [s, k] = ambil(THAYYIBAH);
+    if (Math.random() < 0.5) return pg(`Ketika ${s}, kita mengucapkan ...`, k, THAYYIBAH.map((x) => x[1]), `Ketika ${s}, kita mengucapkan ${k}.`);
+    return pg(`Kalimat "${k}" diucapkan ketika ...`, kapital(s), THAYYIBAH.map((x) => kapital(x[0])), `${k} diucapkan ketika ${s}.`); },
+  () => { const [m, n] = ambil(MUKJIZAT); return pg(`Nabi yang ${m} adalah ...`, n, MUKJIZAT.map((x) => x[1]), `Kisah ini adalah kisah ${n}.`); }
+];
+
+/* =========================================================
+   FIQIH
+   ========================================================= */
+const SALAT = [["Subuh", 2, "saat terbit fajar sampai matahari terbit", "Isya"], ["Zuhur", 4, "saat matahari tergelincir di siang hari", "Subuh"], ["Asar", 4, "pada sore hari", "Zuhur"], ["Magrib", 3, "saat matahari terbenam", "Asar"], ["Isya", 4, "saat malam hari, setelah hilangnya mega merah", "Magrib"]];
+const FARDU_WUDU = ["Niat", "Membasuh muka", "Membasuh kedua tangan sampai siku", "Mengusap sebagian kepala", "Membasuh kedua kaki sampai mata kaki", "Tertib (berurutan)"];
+const SUNAH_WUDU = ["Membaca basmalah", "Berkumur-kumur", "Membersihkan lubang hidung", "Membasuh kedua telinga", "Mendahulukan anggota yang kanan", "Bersiwak (menggosok gigi)", "Mencuci kedua telapak tangan di awal"];
+const BATAL_WUDU = ["Buang angin (kentut)", "Buang air kecil", "Buang air besar", "Tidur nyenyak", "Pingsan atau hilang akal"];
+const TIDAK_BATAL = ["Makan", "Minum", "Berbicara", "Tersenyum", "Berjalan", "Membaca buku", "Memakai baju"];
+const ZIKIR = [["Subhanallah", "Maha Suci Allah"], ["Alhamdulillah", "Segala puji bagi Allah"], ["Allahu Akbar", "Allah Maha Besar"], ["Astagfirullahal 'azim", "Aku memohon ampun kepada Allah Yang Maha Agung"], ["La ilaha illallah", "Tiada Tuhan selain Allah"], ["Bismillah", "Dengan nama Allah"]];
+const JAMAAH = [["Orang yang memimpin salat berjamaah disebut", "Imam"], ["Orang yang mengikuti imam dalam salat berjamaah disebut", "Makmum"], ["Barisan dalam salat berjamaah disebut", "Saf"], ["Orang yang mengumandangkan azan disebut", "Muazin"], ["Panggilan untuk salat sebelum masuk waktu salat disebut", "Azan"], ["Panggilan tanda salat akan segera dimulai disebut", "Iqamah"], ["Bersuci dengan debu sebagai pengganti wudu disebut", "Tayamum"], ["Mandi untuk membersihkan diri dari hadas besar disebut", "Mandi wajib"]];
+const AZAN = [["Allahu Akbar", "Allah Maha Besar"], ["Hayya 'alas-salah", "Marilah salat"], ["Hayya 'alal-falah", "Marilah menuju kemenangan"], ["Asy-hadu alla ilaha illallah", "Aku bersaksi tiada Tuhan selain Allah"], ["Ash-shalatu khairum minan-naum", "Salat lebih baik daripada tidur"]];
+const RAWATIB = [["sebelum", "Subuh", "Qabliyah Subuh"], ["sebelum", "Zuhur", "Qabliyah Zuhur"], ["sesudah", "Zuhur", "Ba'diyah Zuhur"], ["sebelum", "Asar", "Qabliyah Asar"], ["sesudah", "Magrib", "Ba'diyah Magrib"], ["sebelum", "Isya", "Qabliyah Isya"], ["sesudah", "Isya", "Ba'diyah Isya"]];
+const AIR = { "suci dan menyucikan": ["air hujan", "air sumur", "air sungai", "air laut", "air embun", "air salju", "air mata air"], "tidak dapat dipakai untuk wudu": ["air teh", "air kopi", "air sabun", "air sirup", "air kelapa", "air yang terkena najis"] };
+const GEN_FIQIH = [
+  () => { const [q, j] = ambil(JAMAAH); return pg(`${q} ...`, j, JAMAAH.map((x) => x[1]), `${q} ${j.toLowerCase()}.`); },
+  pasangan(AZAN, (a) => `Lafaz azan "${a}" artinya ...`, (b) => `Lafaz azan yang artinya "${b}" adalah ...`),
+  () => { const [w, s, nm] = ambil(RAWATIB), lain = ["Subuh", "Zuhur", "Asar", "Magrib", "Isya"].flatMap((x) => ["Qabliyah " + x, "Ba'diyah " + x]);
+    return pg(`Salat sunah yang dikerjakan ${w} salat ${s} disebut salat sunah ...`, nm, lain, `${w === "sebelum" ? "Qabliyah = sebelum" : "Ba'diyah = sesudah"}, jadi namanya salat sunah ${nm}.`); },
+  () => { const jenis = ambil(Object.keys(AIR)), lain = AIR[jenis === "suci dan menyucikan" ? "tidak dapat dipakai untuk wudu" : "suci dan menyucikan"];
+    return pg(`Air berikut yang ${jenis === "suci dan menyucikan" ? "suci dan menyucikan (boleh untuk berwudu)" : "TIDAK dapat dipakai untuk berwudu"} adalah ...`, kapital(ambil(AIR[jenis])), lain.map(kapital), `Air untuk wudu adalah air mutlak, seperti air hujan, sumur, sungai, dan laut.`); },
+  () => { const [q, j] = ambil([["Salat berjamaah paling sedikit dikerjakan oleh ... orang.", "2"], ["Pahala salat berjamaah lebih utama ... derajat daripada salat sendirian.", "27"], ["Jumlah rakaat salat fardu dalam sehari semalam adalah ...", "17"], ["Jumlah salat fardu dalam sehari semalam ada ... waktu.", "5"]]);
+    return pg(q, j, ["2", "3", "5", "10", "17", "25", "27"], `Jawabannya ${j}.`); },
+
+  () => { const [s, r] = ambil(SALAT); return pg(`Salat ${s} dikerjakan sebanyak ... rakaat.`, String(r), ["2", "3", "4", "5", "1"], `Salat ${s} ${r} rakaat. Jumlah rakaat salat fardu sehari semalam 17.`); },
+  () => { const [s, , w] = ambil(SALAT);
+    if (Math.random() < 0.5) return pg(`Waktu salat ${s} adalah ...`, kapital(w), SALAT.map((x) => kapital(x[2])), `Salat ${s} dikerjakan ${w}.`);
+    return pg(`Salat fardu yang dikerjakan ${w} adalah salat ...`, s, SALAT.map((x) => x[0]), `Salat ${s} dikerjakan ${w}.`); },
+  () => { const [s, , , seb] = ambil(SALAT); return pg(`Salat fardu yang dikerjakan sesudah salat ${seb} adalah salat ...`, s, SALAT.map((x) => x[0]), `Urutan salat: Subuh, Zuhur, Asar, Magrib, Isya.`); },
+  urutanGen(FARDU_WUDU, "Fardu wudu"),
+  () => { const sunah = Math.random() < 0.5;
+    return pg(`Berikut ini yang termasuk ${sunah ? "sunah" : "fardu (rukun)"} wudu adalah ...`, sunah ? ambil(SUNAH_WUDU) : ambil(FARDU_WUDU.slice(0, 5)), sunah ? FARDU_WUDU.slice(0, 5) : SUNAH_WUDU, `Fardu wudu ada 6: ${FARDU_WUDU.join(", ").toLowerCase()}.`); },
+  () => { const batal = Math.random() < 0.5;
+    return pg(`Berikut ini yang ${batal ? "" : "TIDAK "}membatalkan wudu adalah ...`, ambil(batal ? BATAL_WUDU : TIDAK_BATAL), batal ? TIDAK_BATAL : BATAL_WUDU, `Yang membatalkan wudu antara lain: ${BATAL_WUDU.join(", ").toLowerCase()}.`); },
+  pasangan(ZIKIR, (a) => `Bacaan zikir "${a}" artinya ...`, (b) => `Bacaan zikir yang artinya "${b}" adalah ...`),
+  () => { const z = ambil(["tasbih (Subhanallah)", "tahmid (Alhamdulillah)", "takbir (Allahu Akbar)"]);
+    return pg(`Setelah salat, kita dianjurkan membaca ${z} sebanyak ... kali.`, "33", ["10", "33", "40", "100", "7"], `Tasbih, tahmid, dan takbir masing-masing dibaca 33 kali.`); }
+];
+
+/* =========================================================
+   BAHASA ARAB — kosakata dikelompokkan supaya pengecohnya mirip
+   ========================================================= */
+const KOSAKATA_ARAB = {
+  "benda": [["كِتَابٌ", "buku"], ["قَلَمٌ", "pena"], ["مَكْتَبٌ", "meja"], ["كُرْسِيٌّ", "kursi"], ["بَابٌ", "pintu"], ["نَافِذَةٌ", "jendela"], ["سَبُّوْرَةٌ", "papan tulis"], ["حَقِيْبَةٌ", "tas"], ["مِسْطَرَةٌ", "penggaris"], ["مِمْحَاةٌ", "penghapus"], ["سَاعَةٌ", "jam"], ["مِرْآةٌ", "cermin"], ["سَرِيْرٌ", "tempat tidur"]],
+  "tempat": [["بَيْتٌ", "rumah"], ["مَدْرَسَةٌ", "sekolah"], ["مَسْجِدٌ", "masjid"], ["فَصْلٌ", "kelas"], ["مَطْبَخٌ", "dapur"], ["حَدِيْقَةٌ", "kebun"], ["سُوْقٌ", "pasar"]],
+  "keluarga": [["أَبٌ", "ayah"], ["أُمٌّ", "ibu"], ["أَخٌ", "saudara laki-laki"], ["أُخْتٌ", "saudara perempuan"], ["جَدٌّ", "kakek"], ["جَدَّةٌ", "nenek"], ["عَمٌّ", "paman"]],
+  "angka": [["وَاحِدٌ", "satu"], ["اِثْنَانِ", "dua"], ["ثَلَاثَةٌ", "tiga"], ["أَرْبَعَةٌ", "empat"], ["خَمْسَةٌ", "lima"], ["سِتَّةٌ", "enam"], ["سَبْعَةٌ", "tujuh"], ["ثَمَانِيَةٌ", "delapan"], ["تِسْعَةٌ", "sembilan"], ["عَشَرَةٌ", "sepuluh"]],
+  "warna": [["أَحْمَرُ", "merah"], ["أَزْرَقُ", "biru"], ["أَخْضَرُ", "hijau"], ["أَصْفَرُ", "kuning"], ["أَبْيَضُ", "putih"], ["أَسْوَدُ", "hitam"]],
+  "anggota tubuh": [["رَأْسٌ", "kepala"], ["عَيْنٌ", "mata"], ["أُذُنٌ", "telinga"], ["أَنْفٌ", "hidung"], ["فَمٌ", "mulut"], ["يَدٌ", "tangan"], ["رِجْلٌ", "kaki"], ["شَعْرٌ", "rambut"]],
+  "hewan": [["قِطٌّ", "kucing"], ["أَسَدٌ", "singa"], ["فِيْلٌ", "gajah"], ["سَمَكٌ", "ikan"], ["طَائِرٌ", "burung"], ["بَقَرَةٌ", "sapi"], ["دَجَاجَةٌ", "ayam"], ["حِصَانٌ", "kuda"], ["أَرْنَبٌ", "kelinci"]],
+  "buah": [["تُفَّاحٌ", "apel"], ["مَوْزٌ", "pisang"], ["بُرْتُقَالٌ", "jeruk"], ["عِنَبٌ", "anggur"], ["رُمَّانٌ", "delima"]],
+  "kegiatan": [["يَأْكُلُ", "makan"], ["يَشْرَبُ", "minum"], ["يَنَامُ", "tidur"], ["يَقْرَأُ", "membaca"], ["يَكْتُبُ", "menulis"], ["يَلْعَبُ", "bermain"], ["يَجْلِسُ", "duduk"], ["يَذْهَبُ", "pergi"]],
+  "pekerjaan": [["مُدَرِّسٌ", "guru"], ["طَبِيْبٌ", "dokter"], ["فَلَّاحٌ", "petani"], ["تَاجِرٌ", "pedagang"], ["طَالِبٌ", "siswa"], ["شُرْطِيٌّ", "polisi"]],
+  "ungkapan": [["شُكْرًا", "terima kasih"], ["عَفْوًا", "sama-sama"], ["صَبَاحُ الْخَيْرِ", "selamat pagi"], ["مَسَاءُ الْخَيْرِ", "selamat sore"], ["مَعَ السَّلَامَةِ", "selamat jalan"], ["كَيْفَ حَالُكَ", "apa kabar"]],
+  "hari": [["الْأَحَدُ", "Minggu"], ["الْاِثْنَيْنِ", "Senin"], ["الثُّلَاثَاءُ", "Selasa"], ["الْأَرْبِعَاءُ", "Rabu"], ["الْخَمِيْسُ", "Kamis"], ["الْجُمُعَةُ", "Jumat"], ["السَّبْتُ", "Sabtu"]]
+};
+const GEN_ARAB = [() => {
+  const kats = Object.keys(KOSAKATA_ARAB).filter((k) => k !== "ungkapan"), kat = ambil(kats), [a] = ambil(KOSAKATA_ARAB[kat]);
+  return pg(`Kata ${ar(a)} termasuk kelompok kata ...`, kapital(kat), kats.map(kapital), `${a} artinya ${KOSAKATA_ARAB[kat].find((x) => x[0] === a)[1]}, termasuk kelompok ${kat}.`);
+}, () => {
+  const kat = ambil(Object.keys(KOSAKATA_ARAB)), daftar = KOSAKATA_ARAB[kat], [a, i] = ambil(daftar);
+  if (Math.random() < 0.5) return pg(`Arti kata ${ar(a)} adalah ...`, kapital(i), daftar.map((x) => kapital(x[1])), `${a} artinya ${i}.`);
+  return pg(`Bahasa Arab dari "${i}" adalah ...`, ar(a), daftar.map((x) => ar(x[0])), `${i} dalam bahasa Arab adalah ${a}.`);
+}];
+
+/* =========================================================
+   BAHASA INGGRIS
+   ========================================================= */
+const KOSAKATA_INGGRIS = {
+  "hewan": [["cat", "kucing"], ["dog", "anjing"], ["bird", "burung"], ["fish", "ikan"], ["cow", "sapi"], ["goat", "kambing"], ["horse", "kuda"], ["chicken", "ayam"], ["duck", "bebek"], ["rabbit", "kelinci"], ["elephant", "gajah"], ["tiger", "harimau"], ["lion", "singa"], ["monkey", "monyet"], ["snake", "ular"], ["frog", "katak"], ["butterfly", "kupu-kupu"], ["ant", "semut"]],
+  "warna": [["red", "merah"], ["blue", "biru"], ["green", "hijau"], ["yellow", "kuning"], ["white", "putih"], ["black", "hitam"], ["orange", "oranye"], ["purple", "ungu"], ["pink", "merah muda"], ["brown", "cokelat"], ["grey", "abu-abu"]],
+  "keluarga": [["father", "ayah"], ["mother", "ibu"], ["brother", "saudara laki-laki"], ["sister", "saudara perempuan"], ["grandfather", "kakek"], ["grandmother", "nenek"], ["uncle", "paman"], ["aunt", "bibi"], ["baby", "bayi"]],
+  "anggota tubuh": [["head", "kepala"], ["eye", "mata"], ["ear", "telinga"], ["nose", "hidung"], ["mouth", "mulut"], ["hand", "tangan"], ["foot", "kaki"], ["hair", "rambut"], ["tooth", "gigi"], ["finger", "jari"]],
+  "benda di sekolah": [["book", "buku"], ["pen", "pulpen"], ["pencil", "pensil"], ["eraser", "penghapus"], ["ruler", "penggaris"], ["bag", "tas"], ["table", "meja"], ["chair", "kursi"], ["door", "pintu"], ["window", "jendela"], ["board", "papan tulis"]],
+  "buah": [["apple", "apel"], ["banana", "pisang"], ["mango", "mangga"], ["grape", "anggur"], ["watermelon", "semangka"], ["pineapple", "nanas"], ["papaya", "pepaya"], ["strawberry", "stroberi"], ["coconut", "kelapa"]],
+  "hari": [["Sunday", "Minggu"], ["Monday", "Senin"], ["Tuesday", "Selasa"], ["Wednesday", "Rabu"], ["Thursday", "Kamis"], ["Friday", "Jumat"], ["Saturday", "Sabtu"]],
+  "bulan": [["January", "Januari"], ["February", "Februari"], ["March", "Maret"], ["April", "April"], ["May", "Mei"], ["June", "Juni"], ["July", "Juli"], ["August", "Agustus"], ["September", "September"], ["October", "Oktober"], ["November", "November"], ["December", "Desember"]],
+  "sifat": [["big", "besar"], ["small", "kecil"], ["tall", "tinggi"], ["hot", "panas"], ["cold", "dingin"], ["happy", "senang"], ["sad", "sedih"], ["fast", "cepat"], ["slow", "lambat"], ["clean", "bersih"], ["dirty", "kotor"], ["beautiful", "cantik"]],
+  "kegiatan": [["eat", "makan"], ["drink", "minum"], ["sleep", "tidur"], ["read", "membaca"], ["write", "menulis"], ["run", "berlari"], ["swim", "berenang"], ["sing", "bernyanyi"], ["draw", "menggambar"], ["cook", "memasak"]]
+};
+const LAWAN_INGGRIS = [["big", "small"], ["tall", "short"], ["hot", "cold"], ["happy", "sad"], ["fast", "slow"], ["clean", "dirty"], ["open", "close"], ["full", "empty"], ["new", "old"], ["up", "down"], ["day", "night"], ["thick", "thin"]];
+const SATUAN_EN = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const PULUHAN_EN = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const angkaEn = (n) => n === 100 ? "one hundred" : n < 20 ? SATUAN_EN[n] : PULUHAN_EN[Math.floor(n / 10)] + (n % 10 ? "-" + SATUAN_EN[n % 10] : "");
+const GEN_BING = [
+  () => { const kat = ambil(Object.keys(KOSAKATA_INGGRIS)), daftar = KOSAKATA_INGGRIS[kat], [e, i] = ambil(daftar);
+    if (Math.random() < 0.5) return pg(`"${e}" artinya ...`, kapital(i), daftar.map((x) => kapital(x[1])), `${e} = ${i}.`);
+    return pg(`Bahasa Inggris dari "${i}" adalah ...`, kapital(e), daftar.map((x) => kapital(x[0])), `${i} = ${e}.`); },
+  () => { const n = rnd(1, 100), cal = [n + 1, n - 1, n + 10, n - 10, (n % 10) * 10 + Math.floor(n / 10)].filter((x) => x >= 1 && x <= 100 && x !== n);
+    if (n >= 13 && n <= 19) cal.push((n - 10) * 10);
+    if (Math.random() < 0.5) return pg(`Angka ${n} dalam bahasa Inggris adalah ...`, kapital(angkaEn(n)), cal.map((x) => kapital(angkaEn(x))), `${n} = ${angkaEn(n)}.`);
+    return pg(`"${kapital(angkaEn(n))}" adalah angka ...`, String(n), cal.map(String), `${angkaEn(n)} = ${n}.`); },
+  () => { const [a, b] = ambil(LAWAN_INGGRIS), [q, j] = Math.random() < 0.5 ? [a, b] : [b, a];
+    return pg(`The opposite of "${q}" is ...`, kapital(j), LAWAN_INGGRIS.flat().filter((w) => w !== q && w !== j).map(kapital), `Lawan kata ${q} adalah ${j}.`); },
+  () => { const hari = KOSAKATA_INGGRIS.hari.map((x) => x[0]), i = rnd(0, 6), besok = Math.random() < 0.5, h = hari[(i + (besok ? 1 : 6)) % 7];
+    return pg(`Today is ${hari[i]}. ${besok ? "Tomorrow" : "Yesterday"} is ...`, h, hari, `${besok ? "Tomorrow = besok" : "Yesterday = kemarin"}. Hari ${besok ? "setelah" : "sebelum"} ${hari[i]} adalah ${h}.`); },
+  () => { const benda = [["banana", "yellow"], ["grass", "green"], ["sky", "blue"], ["milk", "white"], ["crow", "black"], ["tomato", "red"], ["carrot", "orange"], ["chocolate", "brown"], ["leaf", "green"], ["snow", "white"], ["coal", "black"], ["sun", "yellow"]], [b, w] = ambil(benda);
+    return pg(`What color is the ${b}? It is ...`, kapital(w), ["red", "blue", "green", "yellow", "white", "black", "orange", "brown", "purple"].map(kapital), `The ${b} is ${w}.`); }
+];
+
+const GENERATOR = { mtk: GEN_MTK, bind: GEN_BIND, ipas: GEN_IPAS, pai: GEN_PAI, fiqih: GEN_FIQIH, arab: GEN_ARAB, bing: GEN_BING };
+
+/* =========================================================
+   MEMILIH SOAL — selalu soal yang belum pernah dijawab
+   ========================================================= */
+function soalTetapBaru(kode, riwayat) {
+  return acak(BANK[kode].soal.map((s) => Object.assign({}, s, { id: idSoal(kode, s) })).filter((s) => !riwayat.has(s.id)));
+}
+function buatSoalOtomatis(kode, dipakai) {
+  for (let i = 0; i < 300; i++) {
+    const s = ambil(GENERATOR[kode])();
+    s.id = idSoal(kode, s);
+    if (!dipakai.has(s.id)) return s;
+  }
+  return null;
+}
+function pilihSoalBaru(kode) {
+  const riwayat = bacaRiwayat(nama), dipakai = new Set(riwayat), hasil = [];
+  const daftarKode = kode === "campur" ? Object.keys(BANK) : [kode];
+  const tetap = acak(daftarKode.flatMap((k) => soalTetapBaru(k, riwayat).map((s) => Object.assign({}, s, { kode: k })))).slice(0, rnd(1, MAKS_SOAL_TETAP));
+  tetap.forEach((s) => { dipakai.add(s.id); hasil.push(s); });
+  let gagal = 0;
+  while (hasil.length < JUMLAH_SOAL && gagal < 50) {
+    const k = ambil(daftarKode), s = buatSoalOtomatis(k, dipakai);
+    if (!s) { gagal++; continue; }
+    s.kode = k; dipakai.add(s.id); hasil.push(s);
+  }
+  let info = "";
+  if (hasil.length < JUMLAH_SOAL) {
+    // Soal baru habis: soal yang PALING LAMA dikerjakan boleh muncul lagi untuk mengulang
+    const milik = [...riwayat].filter((id) => daftarKode.some((k) => id.startsWith(k + "|")));
+    milik.slice(0, Math.ceil(milik.length / 2)).forEach((id) => { riwayat.delete(id); dipakai.delete(id); });
+    simpanRiwayat(nama, riwayat);
+    hasil.forEach((s) => dipakai.add(s.id));
+    while (hasil.length < JUMLAH_SOAL) {
+      const k = ambil(daftarKode), s = buatSoalOtomatis(k, dipakai);
+      if (!s) break;
+      s.kode = k; dipakai.add(s.id); hasil.push(s);
+    }
+    info = "🌟 MasyaAllah! Hampir semua soal pelajaran ini sudah kamu kerjakan. Beberapa soal lama muncul lagi untuk mengulang pelajaran.";
+  }
+  if (kode === "campur") hasil.forEach((s) => (s.ikon = BANK[s.kode].ikon));
+  return { terpilih: acak(hasil), info };
+}
+function tandaiDijawab(id) {
+  const r = bacaRiwayat(nama); r.add(id); simpanRiwayat(nama, r);
+}
+function jumlahDikerjakan(kode, n) {
+  const r = [...bacaRiwayat(n)];
+  return kode === "campur" ? r.length : r.filter((id) => id.startsWith(kode + "|")).length;
+}
+
+/* Suara sederhana (tanpa file) */
+let ctx = null;
+function bunyi(jenis) {
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const nada = jenis === "benar" ? [523, 659, 784] : jenis === "salah" ? [300, 220] : [523, 659, 784, 1047];
+    nada.forEach((f, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = jenis === "salah" ? "sawtooth" : "triangle";
+      o.frequency.value = f;
+      const t = ctx.currentTime + i * 0.12;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + 0.2);
+    });
+  } catch (e) { /* abaikan jika browser tidak mendukung */ }
+}
+
+function konfeti(n = 80) {
+  const warna = ["#ffb703", "#2fbf71", "#ef476f", "#118ab2", "#8338ec"];
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement("div");
+    d.className = "konfeti";
+    d.style.left = Math.random() * 100 + "vw";
+    d.style.background = warna[i % warna.length];
+    d.style.animationDuration = 1.8 + Math.random() * 1.8 + "s";
+    d.style.animationDelay = Math.random() * 0.6 + "s";
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 4500);
+  }
+}
+
+function tampilkan(id) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("aktif"));
+  $(id).classList.add("aktif");
+  try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
+}
+
+/* Daftar mapel */
+function buatDaftarMapel() {
+  const semua = Object.assign({}, BANK, { campur: MODE_CAMPUR });
+  const wadah = $("daftarMapel");
+  Object.entries(semua).forEach(([kode, m]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "mapel";
+    b.style.background = m.warna;
+    b.dataset.kode = kode;
+    b.innerHTML = `<span class="ikon">${m.ikon}</span><b>${m.nama}</b><small></small>`;
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".mapel").forEach((x) => x.classList.remove("dipilih"));
+      b.classList.add("dipilih");
+      pilihanMapel = kode;
+      $("pesanError").textContent = "";
+      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama;
+    });
+    wadah.appendChild(b);
+  });
+  perbaruiInfoMapel();
+}
+
+/* Tulisan kecil di kartu pelajaran: berapa soal yang belum dikerjakan */
+function perbaruiInfoMapel() {
+  const n = $("namaSiswa").value.trim();
+  document.querySelectorAll(".mapel").forEach((b) => {
+    const kode = b.dataset.kode;
+    let teks = "♾️ Soal selalu baru";
+    if (n) {
+      teks = `✅ ${jumlahDikerjakan(kode, n)} soal dikerjakan`;
+      if (kode === "mtk") teks += ` • Level ${bacaLevel(n, "mtk")}`;
+    }
+    b.querySelector("small").textContent = teks;
+  });
+  $("btnReset").style.display = n && bacaRiwayat(n).size ? "inline" : "none";
+}
+
+function mulai() {
+  nama = $("namaSiswa").value.trim();
+  if (!nama) { $("pesanError").textContent = "Tulis namamu dulu, ya! 😊"; $("namaSiswa").focus(); return; }
+  if (!pilihanMapel) { $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚"; return; }
+
+  levelAktif = bacaLevel(nama, "mtk");
+  const { terpilih, info } = pilihSoalBaru(pilihanMapel);
+  $("infoPutaran").textContent = info;
+  $("infoPutaran").style.display = info ? "block" : "none";
+  soalAktif = terpilih.map((s) => {
+    // acak urutan pilihan jawaban, tetap ingat yang benar
+    const urut = acak(s.o.map((teks, i) => ({ teks, benar: i === s.j })));
+    return Object.assign({}, s, { opsi: urut });
+  });
+  nomor = 0; skor = 0; catatan = [];
+  const m = pilihanMapel === "campur" ? MODE_CAMPUR : BANK[pilihanMapel];
+  $("infoMapel").textContent = m.ikon + " " + m.nama + (pilihanMapel === "mtk" ? " • Level " + levelAktif : "");
+  tampilkan("layarKuis");
+  tampilSoal();
+}
+
+function tampilSoal() {
+  const s = soalAktif[nomor];
+  $("infoNomor").textContent = `Soal ${nomor + 1}/${soalAktif.length}`;
+  $("infoSkor").textContent = "⭐ " + skor;
+  $("barProgress").style.width = (nomor / soalAktif.length) * 100 + "%";
+  $("teksSoal").innerHTML = (s.ikon ? s.ikon + " " : "") + s.t;
+  $("umpan").className = "umpan";
+  $("btnLanjut").style.display = "none";
+
+  const wadah = $("daftarOpsi");
+  wadah.innerHTML = "";
+  s.opsi.forEach((op, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opsi";
+    b.innerHTML = `<span class="huruf">${"ABCD"[i]}</span><span>${op.teks}</span>`;
+    b.addEventListener("click", () => jawab(b, op));
+    wadah.appendChild(b);
+  });
+}
+
+function jawab(tombol, op) {
+  const s = soalAktif[nomor];
+  const semua = [...document.querySelectorAll(".opsi")];
+  semua.forEach((b, i) => { b.disabled = true; if (s.opsi[i].benar) b.classList.add("benar"); });
+  const u = $("umpan");
+  const kunci = s.opsi.find((x) => x.benar).teks;
+  if (op.benar) {
+    skor++;
+    bunyi("benar");
+    const pujian = ["Benar! Hebat! 🎉", "MasyaAllah, benar! 🌟", "Pintar sekali! 👏", "Betul! Teruskan! 💪"];
+    u.innerHTML = pujian[Math.floor(Math.random() * pujian.length)] + `<p>${s.p}</p>`;
+    u.className = "umpan ok tampil";
+  } else {
+    tombol.classList.add("salah");
+    bunyi("salah");
+    u.innerHTML = `Belum tepat, jangan menyerah! 💖<p>Jawaban yang benar: <b>${kunci}</b>. ${s.p}</p>`;
+    u.className = "umpan no tampil";
+  }
+  catatan.push({ soal: s.t, dipilih: op.teks, kunci, benar: op.benar });
+  tandaiDijawab(s.id);
+  $("infoSkor").textContent = "⭐ " + skor;
+  const btn = $("btnLanjut");
+  btn.textContent = nomor + 1 < soalAktif.length ? "Lanjut ➡️" : "Lihat Nilai 🏆";
+  btn.style.display = "inline-block";
+  try { btn.focus({ preventScroll: true }); } catch (e) {}
+}
+
+function lanjut() {
+  nomor++;
+  if (nomor < soalAktif.length) tampilSoal();
+  else selesai();
+}
+
+function selesai() {
+  $("barProgress").style.width = "100%";
+  const total = soalAktif.length;
+  const nilai = Math.round((skor / total) * 100);
+  let jmlBintang, emoji, judul, pesan;
+  if (nilai >= 90)      { jmlBintang = 3; emoji = "🏆"; judul = "Luar Biasa, " + nama + "!"; pesan = "MasyaAllah, kamu hebat sekali! Pertahankan, ya!"; }
+  else if (nilai >= 70) { jmlBintang = 2; emoji = "🥳"; judul = "Bagus, " + nama + "!"; pesan = "Hampir sempurna! Ayo coba lagi supaya dapat 3 bintang."; }
+  else if (nilai >= 50) { jmlBintang = 1; emoji = "😊"; judul = "Cukup Baik, " + nama + "!"; pesan = "Terus belajar, kamu pasti bisa lebih baik!"; }
+  else                  { jmlBintang = 0; emoji = "💪"; judul = "Semangat, " + nama + "!"; pesan = "Tidak apa-apa. Baca lagi materinya, lalu coba sekali lagi, ya!"; }
+
+  // Level Matematika naik/turun mengikuti nilai, supaya anak terus tertantang
+  if (pilihanMapel === "mtk") {
+    const lama = levelAktif, baru = nilai >= 80 ? Math.min(3, lama + 1) : nilai < 50 ? Math.max(1, lama - 1) : lama;
+    simpanLevel(nama, "mtk", baru);
+    if (baru > lama) pesan += ` 🚀 Kamu naik ke Level ${baru}! Soal berikutnya lebih menantang.`;
+    else if (baru < lama) pesan += ` Kita latihan lagi di Level ${baru} dulu, ya.`;
+    else if (lama === 3 && nilai >= 80) pesan += " 👑 Kamu sudah di level tertinggi!";
+  }
+  $("emojiHasil").textContent = emoji;
+  $("judulHasil").textContent = judul;
+  $("bintangHasil").textContent = "⭐".repeat(jmlBintang) + "☆".repeat(3 - jmlBintang);
+  $("skorHasil").textContent = nilai;
+  $("rincianHasil").textContent = `Benar ${skor} dari ${total} soal`;
+  $("pesanHasil").textContent = pesan;
+
+  const salah = catatan.filter((c) => !c.benar);
+  $("ulasan").innerHTML = salah.length === 0
+    ? `<p class="tengah" style="font-weight:700">Semua jawabanmu benar! 🎉</p>`
+    : `<details><summary>📝 Lihat pembahasan soal yang salah (${salah.length})</summary><ol>` +
+      salah.map((c) => `<li>${c.soal}<br><span class="jwb-salah">✗ Jawabanmu: ${c.dipilih}</span><br><span class="jwb-benar">✓ Jawaban benar: ${c.kunci}</span></li>`).join("") +
+      `</ol></details>`;
+
+  tampilkan("layarHasil");
+  bunyi("selesai");
+  if (nilai >= 70) konfeti();
+}
+
+$("btnMulai").addEventListener("click", mulai);
+$("namaSiswa").addEventListener("keydown", (e) => { if (e.key === "Enter") mulai(); });
+$("btnLanjut").addEventListener("click", lanjut);
+$("btnUlang").addEventListener("click", mulai);
+$("btnGanti").addEventListener("click", () => { perbaruiInfoMapel(); tampilkan("layarMulai"); });
+$("namaSiswa").addEventListener("input", perbaruiInfoMapel);
+$("btnReset").addEventListener("click", () => {
+  const n = $("namaSiswa").value.trim();
+  if (n && confirm(`Hapus riwayat soal untuk "${n}"? Semua soal akan dianggap baru lagi.`)) {
+    simpanRiwayat(n, new Set());
+    perbaruiInfoMapel();
+  }
+});
+buatDaftarMapel();
+document.getElementById("cekJS").style.display = "none";
+</script>
+</body>
+</html>
