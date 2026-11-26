@@ -15,7 +15,7 @@ if [ "$(id -u)" -ne 0 ]; then echo "❌ Jalankan dengan sudo (sebagai root)."; e
 echo "1) Mengunduh kuis terbaru..."
 mkdir -p "$FOLDER"
 curl -fsSL "$SUMBER?v=$(date +%s)" -o "$FOLDER/index.html.baru"
-grep -q "Kuis Pintar Kelas 3 MI" "$FOLDER/index.html.baru" || { echo "❌ File yang diunduh tidak sesuai."; rm -f "$FOLDER/index.html.baru"; exit 1; }
+grep -q "Tes Gratis HadirFlow" "$FOLDER/index.html.baru" || { echo "❌ File yang diunduh tidak sesuai."; rm -f "$FOLDER/index.html.baru"; exit 1; }
 mv "$FOLDER/index.html.baru" "$FOLDER/index.html"
 chmod 755 "$FOLDER"; chmod 644 "$FOLDER/index.html"
 echo "   ✅ Tersimpan di $FOLDER/index.html"
@@ -71,7 +71,7 @@ CRON
   fi
 
   echo "3) Memeriksa hasil..."
-  CIRI="Kuis Pintar Kelas 3 MI"
+  CIRI="Tes Gratis HadirFlow"
   ISI_LOKAL="$(docker exec "$KONTAINER" sh -c "wget -qO- http://127.0.0.1/kuistes/ 2>/dev/null || curl -s http://127.0.0.1/kuistes/" 2>/dev/null || true)"
   ISI_PUBLIK="$(curl -s --max-time 15 "https://$DOMAIN/kuistes/?cek=$(date +%s)" 2>/dev/null || true)"
   if [[ "$ISI_PUBLIK" == *"$CIRI"* ]]; then
@@ -149,7 +149,7 @@ else
 fi
 
 echo "4) Memeriksa hasil..."
-CIRI="Kuis Pintar Kelas 3 MI"
+CIRI="Tes Gratis HadirFlow"
 ambil() { curl "$@" 2>/dev/null || true; }   # baca dulu seluruh halaman, baru dicari (aman dengan pipefail)
 LOKAL=tidak
 ISI_LOKAL="$(ambil -sk --noproxy "*" --max-time 10 --resolve "$DOMAIN:443:127.0.0.1" "https://$DOMAIN/kuistes/")$(ambil -s --noproxy "*" --max-time 10 -H "Host: $DOMAIN" "http://127.0.0.1/kuistes/")"

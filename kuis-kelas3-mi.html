@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kuis Pintar Kelas 3 MI</title>
+<title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -104,6 +104,13 @@
   .promo-ortu a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
   .tombol.wa { background: #1faa59; box-shadow: 0 5px 0 #168544; }
   .tombol.hf { background: #ffd23f; color: #072B6B; box-shadow: 0 5px 0 #d9ad00; }
+  .lencana { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; text-align: left; }
+  .lencana button { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fff; color: var(--ink); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow); touch-action: manipulation; }
+  .lencana button small { font-weight: 500; color: var(--muted); }
+  .lencana button b { float: right; background: var(--primary); color: #fff; border-radius: 999px; padding: 0 10px; font-size: 13px; line-height: 1.8; }
+  .pilih-chip { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-pilih { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fffdf7; color: var(--ink); border-radius: 999px; padding: 6px 14px; touch-action: manipulation; }
+  .chip-pilih.aktif { background: var(--primary); border-color: var(--primary); color: #fff; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -182,6 +189,7 @@
   .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
   @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
 
+  @media (max-width: 520px) { .lencana { grid-template-columns: 1fr; } }
   @media (max-width: 480px) {
     body { font-size: 17px; }
     .kartu { padding: 16px; border-radius: 20px; }
@@ -199,8 +207,14 @@
   <section id="layarMulai" class="screen aktif">
     <div class="header">
       <span class="maskot" aria-hidden="true">🦉</span>
-      <h1>Kuis Pintar Kelas 3 MI</h1>
-      <p class="sub">Ayo belajar sambil bermain dan kenali dirimu!</p>
+      <h1>Tes Gratis HadirFlow</h1>
+      <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA. Semua gratis!</p>
+      <div class="lencana">
+        <button type="button" data-buka="otak">🧠 Tes Kecerdasan <small>(ala IQ)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="mesin">🧬 Tes Gaya Belajar <small>(ala STIFIn)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="kepribadian">🎭 Tes Kepribadian <small>(ala MBTI)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="pelajaran">📚 Kuis Pelajaran TK–SMA <b>Gratis</b></button>
+      </div>
     </div>
     <div class="kartu">
       <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
@@ -212,7 +226,11 @@
       </div>
 
       <div id="tabPelajaran" class="isi-tab aktif">
-        <p class="judul">📚 Pilih pelajaran:</p>
+        <p class="judul">🎒 Pilih jenjang:</p>
+        <div class="pilih-chip" id="daftarJenjang"></div>
+        <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
+        <div class="pilih-chip" id="daftarKelas"></div>
+        <p class="judul" style="margin-top:12px">📚 Pilih pelajaran:</p>
         <div class="mapel-grid" id="daftarMapel"></div>
         <div class="info-pilihan" id="infoPilihan"></div>
         <div class="tengah">
@@ -344,6 +362,11 @@ if (!String.prototype.padStart) String.prototype.padStart = function (n, c) {
   var s = String(this);
   while (s.length < n) s = c + s;
   return s;
+};
+if (!Object.values) Object.values = function (o) {
+  return Object.keys(o).map(function (k) {
+    return o[k];
+  });
 };
 if (!Object.entries) Object.entries = function (o) {
   return Object.keys(o).map(function (k) {
@@ -824,11 +847,6 @@ var LINK_HADIRFLOW = "https://hadirflow.my.id/?ref=kuistes";
 /* Pengaturan */
 var JUMLAH_SOAL = 10; // jumlah soal per kuis
 var MAKS_SOAL_TETAP = 3; // paling banyak soal dari BANK SOAL per kuis; sisanya dibuat otomatis
-var MODE_CAMPUR = {
-  nama: "Campuran",
-  ikon: "🎲",
-  warna: "#fff1b8"
-};
 
 /* ========================================================= */
 var $ = function $(id) {
@@ -1763,21 +1781,1333 @@ var GENERATOR = {
 };
 
 /* =========================================================
+   KURIKULUM TK–SMA — pembuat soal otomatis per kelas
+   g = tingkat kelas: TK A = -1, TK B = 0, SD 1–6, SMP 7–9, SMA 10–12
+   ========================================================= */
+var kelasAktif = "3";
+var G = function G() {
+  return KELAS_INFO[kelasAktif].g;
+};
+var SUP = {
+  "-": "⁻",
+  "0": "⁰",
+  "1": "¹",
+  "2": "²",
+  "3": "³",
+  "4": "⁴",
+  "5": "⁵",
+  "6": "⁶",
+  "7": "⁷",
+  "8": "⁸",
+  "9": "⁹"
+};
+var sup = function sup(n) {
+  return String(n).split("").map(function (c) {
+    return SUP[c] || c;
+  }).join("");
+};
+// Pengecoh untuk bilangan kecil (TK/SD awal) dan bilangan bulat (boleh negatif)
+function opsiKecil(benar) {
+  var akhiran = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+  var calon = acak([benar + 1, benar - 1, benar + 2, benar - 2, benar + 3]).filter(function (x) {
+    return x > 0 && x !== benar;
+  });
+  return {
+    o: [benar].concat(_toConsumableArray(calon.slice(0, 3))).map(function (x) {
+      return fmt(x) + akhiran;
+    }),
+    j: 0
+  };
+}
+function opsiBulat(benar) {
+  var akhiran = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+  var calon = acak([benar + 1, benar - 1, -benar, benar + 2, benar - 2, benar + 10, benar - 10]).filter(function (x) {
+    return x !== benar;
+  });
+  return {
+    o: [benar].concat(_toConsumableArray(_toConsumableArray(new Set(calon)).slice(0, 3))).map(function (x) {
+      return String(x).replace("-", "−") + akhiran;
+    }),
+    j: 0
+  };
+}
+var angkaSoal = function angkaSoal(t, benar, p) {
+  var akhiran = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "";
+  var fn = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : opsiAngka;
+  return Object.assign({
+    t: t,
+    p: p
+  }, fn(benar, akhiran));
+};
+var _fpb = function fpb(a, b) {
+  return b ? _fpb(b, a % b) : a;
+};
+var kpk = function kpk(a, b) {
+  return a * b / _fpb(a, b);
+};
+
+/* ---------- TK: huruf, angka, warna & bentuk ---------- */
+var KATA_GAMBAR = [["🍎", "Apel"], ["🐱", "Kucing"], ["🚗", "Mobil"], ["🐟", "Ikan"], ["🌙", "Bulan"], ["☀️", "Matahari"], ["🐘", "Gajah"], ["🦆", "Bebek"], ["🍌", "Pisang"], ["🐄", "Sapi"], ["⭐", "Bintang"], ["🌸", "Bunga"], ["🍇", "Anggur"], ["🐍", "Ular"], ["🥚", "Telur"], ["🐰", "Kelinci"], ["🦁", "Singa"], ["🐔", "Ayam"], ["🏠", "Rumah"], ["⚽", "Bola"], ["🌳", "Pohon"], ["🍉", "Semangka"], ["🐊", "Buaya"], ["🐸", "Katak"], ["🦒", "Jerapah"], ["🥕", "Wortel"], ["🐭", "Tikus"], ["🍊", "Jeruk"], ["🐒", "Monyet"], ["🐝", "Lebah"], ["🍞", "Roti"], ["🥛", "Susu"], ["🌽", "Jagung"], ["🐐", "Kambing"], ["🐴", "Kuda"], ["🐧", "Penguin"], ["🦀", "Kepiting"], ["🍓", "Stroberi"], ["🐛", "Ulat"], ["🦉", "Burung hantu"]];
+var ABJAD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+var BENDA_HITUNG = ["🍎", "⭐", "🐟", "🌸", "🍌", "⚽", "🐥", "🍓", "🚗", "🎈"];
+var ANGKA_KATA = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh"];
+var WARNA_BENDA = [["🍎", "apel", "Merah"], ["🍌", "pisang", "Kuning"], ["🥦", "brokoli", "Hijau"], ["🍆", "terong", "Ungu"], ["🥕", "wortel", "Oranye"], ["🐘", "gajah", "Abu-abu"], ["🍫", "cokelat batangan", "Cokelat"], ["🌊", "air laut", "Biru"], ["🍓", "stroberi", "Merah"], ["🍋", "lemon", "Kuning"], ["🐸", "katak", "Hijau"], ["🍇", "anggur", "Ungu"], ["🍊", "jeruk", "Oranye"], ["☁️", "awan", "Putih"], ["🐻", "beruang", "Cokelat"]];
+var BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["papan rambu jalan berbentuk segitiga", "Segitiga"], ["ubin lantai", "Persegi"], ["kotak bekal berbentuk sama sisi", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"]];
+var BENTUK_EMOJI = [["🔴", "Lingkaran"], ["🟦", "Persegi"], ["🔺", "Segitiga"], ["⭐", "Bintang"], ["❤️", "Hati"]];
+var kecil = function kecil() {
+  return G() < 0 ? 5 : 10;
+};
+var GEN_TK_HURUF = [function () {
+  var _ambil43 = ambil(KATA_GAMBAR),
+    _ambil44 = _slicedToArray(_ambil43, 2),
+    e = _ambil44[0],
+    k = _ambil44[1],
+    h = k[0];
+  return pg("".concat(e, " ").concat(k, " diawali huruf ..."), h, ABJAD, "".concat(k, " diawali huruf ").concat(h, "."));
+}, function () {
+  var i = rnd(0, 24),
+    h = ABJAD[i + 1];
+  return pg("Huruf setelah ".concat(ABJAD[i], " adalah ..."), h, ABJAD.slice(Math.max(0, i - 2), i + 4), "Urutan: ".concat(ABJAD[i], ", ").concat(h, ", ").concat(ABJAD[i + 2] || ""));
+}, function () {
+  var h = ambil(ABJAD);
+  return pg("Huruf kecil dari \"".concat(h, "\" adalah ..."), h.toLowerCase(), acak(ABJAD).slice(0, 6).map(function (x) {
+    return x.toLowerCase();
+  }), "".concat(h, " besar = ").concat(h.toLowerCase(), " kecil."));
+}, function () {
+  var _ambil45 = ambil(KATA_GAMBAR),
+    _ambil46 = _slicedToArray(_ambil45, 2),
+    e = _ambil46[0],
+    k = _ambil46[1],
+    lain = KATA_GAMBAR.filter(function (x) {
+      return x[1][0] !== k[0];
+    }).map(function (x) {
+      return x[0] + " " + x[1];
+    });
+  return pg("Gambar yang namanya diawali huruf ".concat(k[0], " adalah ..."), e + " " + k, lain, "".concat(k, " diawali huruf ").concat(k[0], "."));
+}];
+var GEN_TK_ANGKA = [function () {
+  var n = rnd(1, kecil()),
+    e = ambil(BENDA_HITUNG);
+  return angkaSoal("Ada berapa gambar ini? ".concat(e.repeat(n)), n, "Ayo hitung satu per satu: ada ".concat(n, "."), "", opsiKecil);
+}, function () {
+  var n = rnd(1, G() < 0 ? 8 : 19);
+  return angkaSoal("Angka setelah ".concat(n, " adalah ..."), n + 1, "".concat(n, ", lalu ").concat(n + 1, "."), "", opsiKecil);
+}, function () {
+  var n = rnd(2, G() < 0 ? 9 : 20);
+  return angkaSoal("Angka sebelum ".concat(n, " adalah ..."), n - 1, "".concat(n - 1, ", lalu ").concat(n, "."), "", opsiKecil);
+}, function () {
+  var e = ambil(BENDA_HITUNG);
+  var a = rnd(1, kecil()),
+    b;
+  do {
+    b = rnd(1, kecil());
+  } while (b === a);
+  var banyak = Math.max(a, b);
+  return pg("Mana yang lebih banyak?", e.repeat(banyak), [e.repeat(a), e.repeat(b)], "".concat(e.repeat(banyak), " ada ").concat(banyak, ", lebih banyak."));
+}, function () {
+  var n = rnd(1, 10);
+  return pg("Angka ".concat(n, " dibaca ..."), kapital(ANGKA_KATA[n]), ANGKA_KATA.slice(1).map(kapital), "".concat(n, " dibaca ").concat(ANGKA_KATA[n], "."));
+}, function () {
+  var a = rnd(1, G() < 0 ? 3 : 5),
+    b = rnd(1, G() < 0 ? 3 : 5),
+    e = ambil(BENDA_HITUNG);
+  return angkaSoal("".concat(e.repeat(a), " + ").concat(e.repeat(b), " = ..."), a + b, "".concat(a, " + ").concat(b, " = ").concat(a + b, "."), "", opsiKecil);
+}];
+var GEN_TK_WARNA = [function () {
+  var _ambil47 = ambil(WARNA_BENDA),
+    _ambil48 = _slicedToArray(_ambil47, 3),
+    e = _ambil48[0],
+    n = _ambil48[1],
+    w = _ambil48[2];
+  return pg("".concat(e, " Warna ").concat(n, " biasanya ..."), w, WARNA_BENDA.map(function (x) {
+    return x[2];
+  }), "".concat(kapital(n), " berwarna ").concat(w.toLowerCase(), "."));
+}, function () {
+  var _ambil49 = ambil(BENTUK_BENDA),
+    _ambil50 = _slicedToArray(_ambil49, 2),
+    b = _ambil50[0],
+    s = _ambil50[1];
+  return pg("Bentuk ".concat(b, " seperti ..."), s, ["Lingkaran", "Segitiga", "Persegi", "Persegi panjang"], "".concat(kapital(b), " berbentuk ").concat(s.toLowerCase(), "."));
+}, function () {
+  var _ambil51 = ambil(BENTUK_EMOJI),
+    _ambil52 = _slicedToArray(_ambil51, 2),
+    e = _ambil52[0],
+    s = _ambil52[1];
+  return pg("Gambar ".concat(e, " berbentuk ..."), s, BENTUK_EMOJI.map(function (x) {
+    return x[1];
+  }), "".concat(e, " adalah ").concat(s.toLowerCase(), "."));
+}, function () {
+  var w = ambil(["Merah", "Kuning", "Hijau", "Ungu", "Oranye"]),
+    benda = WARNA_BENDA.filter(function (x) {
+      return x[2] === w;
+    }),
+    _ambil53 = ambil(benda),
+    _ambil54 = _slicedToArray(_ambil53, 2),
+    e = _ambil54[0],
+    n = _ambil54[1];
+  return pg("Benda yang berwarna ".concat(w.toLowerCase(), " adalah ..."), "".concat(e, " ").concat(kapital(n)), WARNA_BENDA.filter(function (x) {
+    return x[2] !== w;
+  }).map(function (x) {
+    return "".concat(x[0], " ").concat(kapital(x[1]));
+  }), "".concat(kapital(n), " berwarna ").concat(w.toLowerCase(), "."));
+}];
+
+/* ---------- MATEMATIKA per kelas (kelas 3 memakai GEN_MTK dengan level) ---------- */
+var JAM_KATA = function JAM_KATA(j, m) {
+  return String(j).padStart(2, "0") + "." + (m ? "30" : "00");
+};
+var GEN_MTK1 = [function () {
+  var a = rnd(1, 10),
+    b = rnd(1, 10);
+  return angkaSoal("".concat(a, " + ").concat(b, " = ..."), a + b, "".concat(a, " + ").concat(b, " = ").concat(a + b, "."), "", opsiKecil);
+}, function () {
+  var a = rnd(5, 20),
+    b = rnd(1, a - 1);
+  return angkaSoal("".concat(a, " \u2212 ").concat(b, " = ..."), a - b, "".concat(a, " \u2212 ").concat(b, " = ").concat(a - b, "."), "", opsiKecil);
+}, function () {
+  var p = rnd(1, 9),
+    s = rnd(0, 9);
+  return angkaSoal("".concat(p, " puluhan dan ").concat(s, " satuan adalah ..."), p * 10 + s, "".concat(p, " puluhan = ").concat(p * 10, ", ditambah ").concat(s, " menjadi ").concat(p * 10 + s, "."));
+}, function () {
+  var x = rnd(10, 99);
+  var y;
+  do {
+    y = rnd(10, 99);
+  } while (y === x);
+  var t = x > y ? ">" : "<";
+  return {
+    t: "Tanda yang tepat: ".concat(x, " ... ").concat(y),
+    o: [t, t === ">" ? "<" : ">", "="],
+    j: 0,
+    p: "".concat(x, " ").concat(t === ">" ? "lebih dari" : "kurang dari", " ").concat(y, ".")
+  };
+}, function () {
+  var j = rnd(1, 12);
+  return pg("Jarum pendek menunjuk angka ".concat(j, " dan jarum panjang menunjuk angka 12. Pukul berapa?"), JAM_KATA(j, 0), [JAM_KATA(j, 1), JAM_KATA(j % 12 + 1, 0), JAM_KATA(12, 0), JAM_KATA(j === 6 ? 7 : 6, 0)], "Jarum panjang di 12 berarti tepat. Jadi pukul ".concat(JAM_KATA(j, 0), "."));
+}, function () {
+  var nm = ambil(NAMA),
+    bd = ambil(BENDA),
+    a = rnd(2, 9),
+    b = rnd(1, 9);
+  return angkaSoal("".concat(nm, " punya ").concat(a, " ").concat(bd, ", lalu diberi ").concat(b, " lagi. Sekarang ada ..."), a + b, "".concat(a, " + ").concat(b, " = ").concat(a + b, "."), "", opsiKecil);
+}, GEN_TK_WARNA[1]];
+var GEN_MTK2 = [function () {
+  var a = rnd(20, 80),
+    b = rnd(10, 99 - a);
+  return angkaSoal("".concat(a, " + ").concat(b, " = ..."), a + b, "".concat(a, " + ").concat(b, " = ").concat(a + b, "."));
+}, function () {
+  var a = rnd(30, 99),
+    b = rnd(10, a - 5);
+  return angkaSoal("".concat(a, " \u2212 ").concat(b, " = ..."), a - b, "".concat(a, " \u2212 ").concat(b, " = ").concat(a - b, "."));
+}, function () {
+  var a = rnd(2, 5),
+    b = rnd(1, 10);
+  return angkaSoal("".concat(a, " \xD7 ").concat(b, " = ..."), a * b, "".concat(a, " \xD7 ").concat(b, " = ").concat(b, " dijumlahkan ").concat(a, " kali = ").concat(a * b, "."));
+}, function () {
+  var b = rnd(2, 5),
+    c = rnd(1, 10);
+  return angkaSoal("".concat(b * c, " : ").concat(b, " = ..."), c, "Karena ".concat(b, " \xD7 ").concat(c, " = ").concat(b * c, "."));
+}, function () {
+  var r = rnd(1, 9),
+    p = rnd(0, 9),
+    s = rnd(0, 9),
+    n = r * 100 + p * 10 + s;
+  return angkaSoal("".concat(r, " ratusan, ").concat(p, " puluhan, dan ").concat(s, " satuan adalah ..."), n, "".concat(r * 100, " + ").concat(p * 10, " + ").concat(s, " = ").concat(n, "."));
+}, function () {
+  var j = rnd(1, 11);
+  return pg("Jarum pendek di antara angka ".concat(j, " dan ").concat(j + 1, ", jarum panjang menunjuk angka 6. Pukul berapa?"), JAM_KATA(j, 1), [JAM_KATA(j, 0), JAM_KATA(j + 1, 1), JAM_KATA(j + 1, 0), JAM_KATA(6, 0)], "Jarum panjang di 6 berarti setengah (30 menit). Jadi pukul ".concat(JAM_KATA(j, 1), "."));
+}, function () {
+  var k = [500, 1000, 2000, 5000],
+    a = ambil(k),
+    b = ambil(k),
+    h = a + b;
+  return pg("Uang Rp".concat(fmt(a), " ditambah Rp").concat(fmt(b), " jumlahnya ..."), "Rp" + fmt(h), [h + 500, h + 1000, Math.max(500, h - 500), h * 2].map(function (x) {
+    return "Rp" + fmt(x);
+  }), "Rp".concat(fmt(a), " + Rp").concat(fmt(b), " = Rp").concat(fmt(h), "."));
+}, function () {
+  var s = rnd(2, 20),
+    d = ambil([2, 5, 10]),
+    ds = [0, 1, 2, 3].map(function (i) {
+      return s + d * i;
+    });
+  return angkaSoal("Lanjutkan pola: ".concat(ds.join(", "), ", ..."), s + d * 4, "Selalu bertambah ".concat(d, "."));
+}];
+var GEN_MTK4 = [function () {
+  var a = ambil([4, 6, 8, 9, 10, 12, 15]),
+    b = ambil([6, 8, 10, 12, 14, 15, 18, 20]);
+  if (a === b) return GEN_MTK4[1]();
+  return angkaSoal("KPK dari ".concat(a, " dan ").concat(b, " adalah ..."), kpk(a, b), "Kelipatan persekutuan terkecil ".concat(a, " dan ").concat(b, " adalah ").concat(kpk(a, b), "."));
+}, function () {
+  var f = rnd(2, 9),
+    a = f * rnd(2, 6),
+    b = f * rnd(2, 6);
+  if (a === b) return GEN_MTK4[0]();
+  return angkaSoal("FPB dari ".concat(a, " dan ").concat(b, " adalah ..."), _fpb(a, b), "Faktor persekutuan terbesar ".concat(a, " dan ").concat(b, " adalah ").concat(_fpb(a, b), "."));
+}, function () {
+  var d = rnd(2, 6),
+    n = rnd(1, d - 1),
+    k = rnd(2, 5);
+  return pg("Pecahan yang senilai dengan ".concat(n, "/").concat(d, " adalah ..."), "".concat(n * k, "/").concat(d * k), ["".concat(n + k, "/").concat(d + k), "".concat(n * k, "/").concat(d), "".concat(n, "/").concat(d * k), "".concat(n * k + 1, "/").concat(d * k)], "".concat(n, "/").concat(d, " = ").concat(n, "\xD7").concat(k, " / ").concat(d, "\xD7").concat(k, " = ").concat(n * k, "/").concat(d * k, "."));
+}, function () {
+  var p = rnd(4, 20),
+    l = rnd(2, p - 1);
+  return angkaSoal("Luas persegi panjang dengan panjang ".concat(p, " cm dan lebar ").concat(l, " cm adalah ..."), p * l, "Luas = p \xD7 l = ".concat(p, " \xD7 ").concat(l, " = ").concat(p * l, " cm\xB2."), " cm²");
+}, function () {
+  var s = rnd(3, 25);
+  return angkaSoal("Luas persegi dengan sisi ".concat(s, " cm adalah ..."), s * s, "Luas = s \xD7 s = ".concat(s, " \xD7 ").concat(s, " = ").concat(s * s, " cm\xB2."), " cm²");
+}, function () {
+  var a = rnd(11, 40),
+    b = rnd(11, 30);
+  return angkaSoal("".concat(a, " \xD7 ").concat(b, " = ..."), a * b, "".concat(a, " \xD7 ").concat(b, " = ").concat(a * b, "."));
+}, function () {
+  var b = rnd(3, 12),
+    c = rnd(11, 40);
+  return angkaSoal("".concat(b * c, " : ").concat(b, " = ..."), c, "".concat(b, " \xD7 ").concat(c, " = ").concat(b * c, "."));
+}, function () {
+  var x = rnd(1001, 9999),
+    h = Math.round(x / 1000) * 1000;
+  return angkaSoal("".concat(fmt(x), " dibulatkan ke ribuan terdekat menjadi ..."), h, "Lihat angka ratusannya: ".concat(Math.floor(x / 100) % 10, ". ").concat(Math.floor(x / 100) % 10 >= 5 ? "5 atau lebih dibulatkan ke atas" : "Kurang dari 5 dibulatkan ke bawah", "."));
+}];
+var DESIMAL = [["1/2", "0,5"], ["1/4", "0,25"], ["3/4", "0,75"], ["1/5", "0,2"], ["2/5", "0,4"], ["3/5", "0,6"], ["1/10", "0,1"], ["7/10", "0,7"], ["1/8", "0,125"]];
+var GEN_MTK5 = [function () {
+  var d = rnd(4, 12),
+    a = rnd(1, d - 2),
+    b = rnd(1, d - a - 1);
+  return pg("".concat(a, "/").concat(d, " + ").concat(b, "/").concat(d, " = ..."), "".concat(a + b, "/").concat(d), ["".concat(a + b, "/").concat(d * 2), "".concat(a * b, "/").concat(d), "".concat(a + b + 1, "/").concat(d), "".concat(Math.abs(a - b), "/").concat(d)], "Penyebut sama, jumlahkan pembilangnya: ".concat(a, " + ").concat(b, " = ").concat(a + b, "."));
+}, pasangan(DESIMAL, function (a) {
+  return "Pecahan ".concat(a, " jika ditulis desimal adalah ...");
+}, function (b) {
+  return "Bilangan desimal ".concat(b, " jika ditulis pecahan adalah ...");
+}), function () {
+  var p = ambil([10, 20, 25, 50, 75]),
+    n = ambil([20, 40, 60, 80, 100, 120, 200]);
+  return angkaSoal("".concat(p, "% dari ").concat(n, " adalah ..."), p * n / 100, "".concat(p, "/100 \xD7 ").concat(n, " = ").concat(p * n / 100, "."));
+}, function () {
+  var s = rnd(2, 12);
+  return angkaSoal("Volume kubus dengan rusuk ".concat(s, " cm adalah ..."), s * s * s, "V = s \xD7 s \xD7 s = ".concat(s, "\xB3 = ").concat(s * s * s, " cm\xB3."), " cm³");
+}, function () {
+  var p = rnd(3, 15),
+    l = rnd(2, 10),
+    t = rnd(2, 10);
+  return angkaSoal("Volume balok dengan panjang ".concat(p, " cm, lebar ").concat(l, " cm, dan tinggi ").concat(t, " cm adalah ..."), p * l * t, "V = p \xD7 l \xD7 t = ".concat(p, " \xD7 ").concat(l, " \xD7 ").concat(t, " = ").concat(p * l * t, " cm\xB3."), " cm³");
+}, function () {
+  var v = ambil([40, 50, 60, 70, 80]),
+    t = rnd(2, 5);
+  return angkaSoal("Sebuah mobil menempuh ".concat(v * t, " km dalam ").concat(t, " jam. Kecepatannya ..."), v, "Kecepatan = jarak : waktu = ".concat(v * t, " : ").concat(t, " = ").concat(v, " km/jam."), " km/jam");
+}, function () {
+  var sk = ambil([100000, 200000, 500000, 1000000]),
+    cm = rnd(2, 9),
+    km = sk * cm / 100000;
+  return angkaSoal("Skala peta 1 : ".concat(fmt(sk), ". Jarak pada peta ").concat(cm, " cm. Jarak sebenarnya ..."), km, "".concat(cm, " \xD7 ").concat(fmt(sk), " cm = ").concat(fmt(sk * cm), " cm = ").concat(fmt(km), " km."), " km");
+}];
+var GEN_MTK6 = [function () {
+  var a = rnd(-15, 15),
+    b = rnd(-15, 15),
+    h = a + b;
+  return angkaSoal("(".concat(a, ") + (").concat(b, ") = ...").replace(/-/g, "−"), h, "Hasilnya ".concat(String(h).replace("-", "−"), "."), "", opsiBulat);
+}, function () {
+  var a = rnd(-20, 10),
+    b = rnd(-10, 15),
+    h = a - b;
+  return angkaSoal("(".concat(a, ") \u2212 (").concat(b, ") = ...").replace(/-/g, "−"), h, "Mengurangi sama dengan menambah lawannya. Hasilnya ".concat(String(h).replace("-", "−"), "."), "", opsiBulat);
+}, function () {
+  var k = rnd(1, 3),
+    r = 7 * k,
+    h = 154 * k * k;
+  return angkaSoal("Luas lingkaran dengan jari-jari ".concat(r, " cm adalah ... (\u03C0 = 22/7)"), h, "L = \u03C0 \xD7 r \xD7 r = 22/7 \xD7 ".concat(r, " \xD7 ").concat(r, " = ").concat(h, " cm\xB2."), " cm²");
+}, function () {
+  var k = rnd(1, 4),
+    r = 7 * k,
+    h = 44 * k;
+  return angkaSoal("Keliling lingkaran dengan jari-jari ".concat(r, " cm adalah ... (\u03C0 = 22/7)"), h, "K = 2 \xD7 \u03C0 \xD7 r = 2 \xD7 22/7 \xD7 ".concat(r, " = ").concat(h, " cm."), " cm");
+}, function () {
+  var t = rnd(2, 10);
+  return angkaSoal("Volume tabung dengan jari-jari 7 cm dan tinggi ".concat(t, " cm adalah ... (\u03C0 = 22/7)"), 154 * t, "V = \u03C0 \xD7 r\xB2 \xD7 t = 22/7 \xD7 49 \xD7 ".concat(t, " = ").concat(154 * t, " cm\xB3."), " cm³");
+}, function () {
+  var m = rnd(60, 90),
+    d = [rnd(1, 8), rnd(1, 8)],
+    ns = [m - d[0], m + d[0], m - d[1], m + d[1], m];
+  return angkaSoal("Rata-rata dari nilai ".concat(acak(ns).join(", "), " adalah ..."), m, "Jumlah semua nilai = ".concat(m * 5, ", dibagi 5 = ").concat(m, "."));
+}, function () {
+  var mo = rnd(5, 9),
+    ns = acak([mo, mo, mo, rnd(5, 9), rnd(5, 9), rnd(5, 9)]);
+  var c = {};
+  ns.forEach(function (x) {
+    return c[x] = (c[x] || 0) + 1;
+  });
+  var top = Object.keys(c).filter(function (x) {
+    return c[x] === Math.max.apply(Math, _toConsumableArray(Object.values(c)));
+  });
+  if (top.length > 1) return GEN_MTK6[5]();
+  return angkaSoal("Modus dari data ".concat(ns.join(", "), " adalah ..."), Number(top[0]), "Modus adalah nilai yang paling sering muncul: ".concat(top[0], "."), "", opsiKecil);
+}, function () {
+  var a = ambil([4, 5, 6, 8, 10, 12]),
+    b = ambil([6, 9, 10, 15, 20]);
+  if (a === b) return GEN_MTK6[0]();
+  var h = kpk(a, b);
+  return angkaSoal("Lampu A berkedip setiap ".concat(a, " detik dan lampu B setiap ").concat(b, " detik. Jika berkedip bersamaan, keduanya akan berkedip bersamaan lagi setelah ... detik"), h, "Cari KPK ".concat(a, " dan ").concat(b, " = ").concat(h, "."));
+}];
+var GEN_MTK7 = [function () {
+  var a = rnd(-12, 12) || 3,
+    b = rnd(-9, 9) || -2;
+  return angkaSoal("(".concat(a, ") \xD7 (").concat(b, ") = ...").replace(/-/g, "−"), a * b, "Tanda sama hasilnya positif, beda tanda hasilnya negatif.", "", opsiBulat);
+}, function () {
+  var b = ambil([-6, -5, -4, -3, -2, 2, 3, 4]),
+    c = rnd(-9, 9) || 4,
+    a = b * c;
+  return angkaSoal("(".concat(a, ") : (").concat(b, ") = ...").replace(/-/g, "−"), c, "".concat(a, " : ").concat(b, " = ").concat(c, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var a = rnd(2, 9),
+    b = rnd(2, 9),
+    c = rnd(1, a + b - 1),
+    h = a + b - c;
+  return pg("Bentuk sederhana dari ".concat(a, "x + ").concat(b, "x \u2212 ").concat(c, "x adalah ..."), "".concat(h, "x"), ["".concat(a + b + c, "x"), "".concat(h, "x\xB2"), "".concat(a + b, "x"), "".concat(h + 1, "x")], "Jumlahkan koefisiennya: ".concat(a, " + ").concat(b, " \u2212 ").concat(c, " = ").concat(h, "."));
+}, function () {
+  var a = rnd(2, 9),
+    x = rnd(-6, 12),
+    b = rnd(-15, 15),
+    c = a * x + b;
+  return angkaSoal("Nilai x dari ".concat(a, "x ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), " = ").concat(c, " adalah ...").replace(/= -/, "= −"), x, "".concat(a, "x = ").concat(c, " ").concat(b < 0 ? "+" : "−", " ").concat(Math.abs(b), " = ").concat(a * x, ", jadi x = ").concat(x, "."), "", opsiBulat);
+}, function () {
+  var a = rnd(1, 5),
+    b = rnd(1, 5);
+  if (a === b) return GEN_MTK7[0]();
+  var k = rnd(3, 12),
+    tot = (a + b) * k;
+  return angkaSoal("Perbandingan kelereng Ali dan Budi ".concat(a, " : ").concat(b, ". Jumlah kelereng mereka ").concat(tot, ". Kelereng Ali ada ..."), a * k, "Kelereng Ali = ".concat(a, "/").concat(a + b, " \xD7 ").concat(tot, " = ").concat(a * k, "."));
+}, function () {
+  var h = rnd(4, 40) * 5000,
+    d = ambil([10, 20, 25, 30, 50]),
+    bayar = h * (100 - d) / 100;
+  return pg("Harga sepatu Rp".concat(fmt(h), " mendapat diskon ").concat(d, "%. Harga yang dibayar ..."), "Rp" + fmt(bayar), [h * d / 100, h - d * 1000, bayar + 5000, bayar - 5000].filter(function (x) {
+    return x > 0;
+  }).map(function (x) {
+    return "Rp" + fmt(x);
+  }), "Diskon = ".concat(d, "% \xD7 Rp").concat(fmt(h), " = Rp").concat(fmt(h * d / 100), ". Bayar = Rp").concat(fmt(bayar), "."));
+}, function () {
+  var beli = rnd(5, 40) * 10000,
+    p = ambil([10, 20, 25, 50]),
+    jual = beli * (100 + p) / 100;
+  return pg("Pedagang membeli barang Rp".concat(fmt(beli), " dan menjualnya Rp").concat(fmt(jual), ". Persentase keuntungannya ..."), p + "%", [10, 15, 20, 25, 30, 50].filter(function (x) {
+    return x !== p;
+  }).map(function (x) {
+    return x + "%";
+  }), "Untung = Rp".concat(fmt(jual - beli), ". Persentase = untung/beli \xD7 100% = ").concat(p, "%."));
+}];
+var GEN_MTK8 = [function () {
+  var a = rnd(1, 20),
+    b = rnd(2, 9),
+    n = rnd(8, 30);
+  return angkaSoal("Suku ke-".concat(n, " dari barisan ").concat(a, ", ").concat(a + b, ", ").concat(a + 2 * b, ", ").concat(a + 3 * b, ", ... adalah"), a + (n - 1) * b, "Un = a + (n \u2212 1)b = ".concat(a, " + ").concat(n - 1, " \xD7 ").concat(b, " = ").concat(a + (n - 1) * b, "."));
+}, function () {
+  var a = rnd(2, 7),
+    b = rnd(-9, 9),
+    x = rnd(-5, 8),
+    h = a * x + b;
+  return angkaSoal("Jika f(x) = ".concat(a, "x ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), ", maka f(").concat(x, ") = ...").replace("f(-", "f(−"), h, "f(".concat(x, ") = ").concat(a, " \xD7 ").concat(x, " ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), " = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var m = rnd(-4, 5) || 2,
+    x1 = rnd(-5, 5),
+    y1 = rnd(-5, 5),
+    dx = rnd(1, 5);
+  return angkaSoal("Gradien garis yang melalui titik (".concat(x1, ", ").concat(y1, ") dan (").concat(x1 + dx, ", ").concat(y1 + m * dx, ") adalah ...").replace(/-/g, "−"), m, "m = (y\u2082 \u2212 y\u2081)/(x\u2082 \u2212 x\u2081) = ".concat(m * dx, "/").concat(dx, " = ").concat(m, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var _ambil55 = ambil([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [6, 8, 10], [9, 12, 15]]),
+    _ambil56 = _slicedToArray(_ambil55, 3),
+    a = _ambil56[0],
+    b = _ambil56[1],
+    c = _ambil56[2],
+    k = rnd(1, 3);
+  if (Math.random() < 0.5) return angkaSoal("Segitiga siku-siku dengan sisi tegak ".concat(a * k, " cm dan ").concat(b * k, " cm. Panjang sisi miringnya ..."), c * k, "c = \u221A(".concat(a * k, "\xB2 + ").concat(b * k, "\xB2) = ").concat(c * k, " cm."), " cm");
+  return angkaSoal("Segitiga siku-siku dengan sisi miring ".concat(c * k, " cm dan salah satu sisi tegak ").concat(a * k, " cm. Sisi tegak lainnya ..."), b * k, "b = \u221A(".concat(c * k, "\xB2 \u2212 ").concat(a * k, "\xB2) = ").concat(b * k, " cm."), " cm");
+}, function () {
+  var x = rnd(1, 15),
+    y = rnd(1, 15);
+  return angkaSoal("Jika x + y = ".concat(x + y, " dan x \u2212 y = ").concat(x - y, ", maka nilai x = ...").replace("= -", "= −"), x, "Jumlahkan kedua persamaan: 2x = ".concat(2 * x, ", jadi x = ").concat(x, "."), "", opsiBulat);
+}, GEN_MTK7[3], GEN_MTK7[6]];
+var GEN_MTK9 = [function () {
+  var a = ambil([2, 3, 5]),
+    m = rnd(2, 6),
+    n = rnd(2, 6);
+  return pg("Bentuk sederhana dari ".concat(a).concat(sup(m), " \xD7 ").concat(a).concat(sup(n), " adalah ..."), "".concat(a).concat(sup(m + n)), ["".concat(a).concat(sup(m * n)), "".concat(a * a).concat(sup(m + n)), "".concat(a).concat(sup(Math.abs(m - n) || 1)), "".concat(a * 2).concat(sup(m + n))], "Pangkat dijumlahkan: ".concat(m, " + ").concat(n, " = ").concat(m + n, "."));
+}, function () {
+  var a = rnd(2, 5),
+    n = rnd(2, a === 2 ? 8 : 4);
+  return angkaSoal("Nilai dari ".concat(a).concat(sup(n), " adalah ..."), Math.pow(a, n), "".concat(a).concat(sup(n), " = ").concat(Array(n).fill(a).join(" × "), " = ").concat(Math.pow(a, n), "."));
+}, function () {
+  var r = rnd(4, 25);
+  return angkaSoal("Nilai dari \u221A".concat(r * r, " adalah ..."), r, "".concat(r, " \xD7 ").concat(r, " = ").concat(r * r, ", jadi \u221A").concat(r * r, " = ").concat(r, "."));
+}, function () {
+  var p = rnd(-6, 6),
+    q = rnd(-6, 6);
+  if (p === q || p === -q || p === 0 || q === 0) return GEN_MTK9[2]();
+  var b = -(p + q),
+    c = p * q,
+    f = function f(v) {
+      return v < 0 ? "− " + Math.abs(v) : "+ " + v;
+    };
+  var s = function s(x, y) {
+    return "x = ".concat(Math.min(x, y), " atau x = ").concat(Math.max(x, y)).replace(/-/g, "−");
+  };
+  return pg("Akar-akar persamaan x\xB2 ".concat(f(b), "x ").concat(f(c), " = 0 adalah ...").replace(" + 0x", "").replace(" 1x", " x").replace("− 1x", "− x"), s(p, q), [s(-p, -q), s(p, -q), s(-p, q), s(p + 1, q)], "Faktorkan: (x ".concat(f(-p), ")(x ").concat(f(-q), ") = 0.").replace(/-/g, "−"));
+}, function () {
+  var t = rnd(3, 12);
+  return angkaSoal("Volume kerucut dengan jari-jari 7 cm dan tinggi ".concat(t * 3, " cm adalah ... (\u03C0 = 22/7)"), 154 * t, "V = 1/3 \xD7 \u03C0 \xD7 r\xB2 \xD7 t = 1/3 \xD7 154 \xD7 ".concat(t * 3, " = ").concat(154 * t, " cm\xB3."), " cm³");
+}, function () {
+  var _ambil57 = ambil([["angka genap", "1/2"], ["angka ganjil", "1/2"], ["angka 6", "1/6"], ["angka lebih dari 4", "1/3"], ["angka kurang dari 3", "1/3"], ["angka prima", "1/2"]]),
+    _ambil58 = _slicedToArray(_ambil57, 2),
+    k = _ambil58[0],
+    b = _ambil58[1];
+  return pg("Sebuah dadu dilempar sekali. Peluang muncul ".concat(k, " adalah ..."), b, ["1/6", "1/3", "1/2", "2/3", "5/6"], "Ruang sampel dadu ada 6 kemungkinan. Peluangnya ".concat(b, "."));
+}];
+var TRIGO = [["sin 30°", "1/2"], ["cos 60°", "1/2"], ["tan 45°", "1"], ["sin 90°", "1"], ["cos 0°", "1"], ["sin 0°", "0"], ["cos 90°", "0"], ["sin 45°", "½√2"], ["cos 30°", "½√3"], ["sin 60°", "½√3"], ["tan 60°", "√3"], ["tan 30°", "⅓√3"]];
+var LOG = [[2, 8, 3], [2, 16, 4], [2, 32, 5], [2, 64, 6], [3, 9, 2], [3, 27, 3], [3, 81, 4], [5, 25, 2], [5, 125, 3], [10, 100, 2], [10, 1000, 3], [4, 64, 3]];
+var GEN_MTK10 = [function () {
+  var a = ambil([2, 3]),
+    m = rnd(2, 5),
+    n = rnd(1, 4);
+  return angkaSoal("Nilai dari ".concat(a).concat(sup(m), " \xD7 ").concat(a).concat(sup(n), " : ").concat(a).concat(sup(m + n - 1), " adalah ..."), a, "".concat(a).concat(sup(m + n), " : ").concat(a).concat(sup(m + n - 1), " = ").concat(a, "\xB9 = ").concat(a, "."), "", opsiKecil);
+}, function () {
+  var _ambil59 = ambil(LOG),
+    _ambil60 = _slicedToArray(_ambil59, 3),
+    b = _ambil60[0],
+    x = _ambil60[1],
+    h = _ambil60[2];
+  return angkaSoal("Nilai dari ".concat(b === 10 ? "" : sup(b), "log ").concat(x, " adalah ..."), h, "".concat(b).concat(sup(h), " = ").concat(x, ", jadi ").concat(b === 10 ? "" : sup(b), "log ").concat(x, " = ").concat(h, "."), "", opsiKecil);
+}, function () {
+  var a = rnd(1, 5),
+    b = rnd(-5, 5),
+    c = rnd(1, 4),
+    d = rnd(-5, 5),
+    k = rnd(-3, 4),
+    g = c * k + d,
+    h = a * g + b;
+  var f = function f(p, q) {
+    return "".concat(p === 1 ? "" : p, "x ").concat(q < 0 ? "−" : "+", " ").concat(Math.abs(q));
+  };
+  return angkaSoal("Diketahui f(x) = ".concat(f(a, b), " dan g(x) = ").concat(f(c, d), ". Nilai (f\u2218g)(").concat(k, ") = ...").replace("(-", "(−"), h, "g(".concat(k, ") = ").concat(g, ", lalu f(").concat(g, ") = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var a = rnd(2, 10),
+    r = ambil([2, 3]),
+    n = rnd(4, 7);
+  return angkaSoal("Suku ke-".concat(n, " barisan geometri ").concat(a, ", ").concat(a * r, ", ").concat(a * r * r, ", ... adalah"), a * Math.pow(r, n - 1), "Un = a \xD7 r".concat(sup("n−1"), " = ").concat(a, " \xD7 ").concat(r).concat(sup(n - 1), " = ").concat(a * Math.pow(r, n - 1), "."));
+}, function () {
+  var _ambil61 = ambil(TRIGO),
+    _ambil62 = _slicedToArray(_ambil61, 2),
+    k = _ambil62[0],
+    v = _ambil62[1];
+  return pg("Nilai ".concat(k, " adalah ..."), v, TRIGO.map(function (x) {
+    return x[1];
+  }), "".concat(k, " = ").concat(v, " (sudut istimewa)."));
+}, GEN_MTK8[0]];
+var GEN_MTK11 = [function () {
+  var a = rnd(1, 5),
+    b = rnd(-6, 6),
+    c = rnd(-9, 9),
+    k = rnd(-3, 4),
+    h = a * k * k + b * k + c;
+  return angkaSoal("Nilai lim x\u2192".concat(k, " (").concat(a === 1 ? "" : a, "x\xB2 ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), "x ").concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c), ") = ...").replace("→-", "→−"), h, "Substitusi x = ".concat(k, ": hasilnya ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var a = rnd(1, 9);
+  return angkaSoal("Nilai lim x\u2192".concat(a, " (x\xB2 \u2212 ").concat(a * a, ")/(x \u2212 ").concat(a, ") = ..."), 2 * a, "(x\xB2 \u2212 ".concat(a * a, ")/(x \u2212 ").concat(a, ") = x + ").concat(a, ". Untuk x = ").concat(a, ", hasilnya ").concat(2 * a, "."));
+}, function () {
+  var a = rnd(2, 9),
+    n = rnd(2, 6);
+  return pg("Turunan dari f(x) = ".concat(a, "x").concat(sup(n), " adalah ..."), "".concat(a * n, "x").concat(n - 1 === 1 ? "" : sup(n - 1)), ["".concat(a, "x").concat(sup(n - 1)), "".concat(a * n, "x").concat(sup(n)), "".concat(a + n, "x").concat(n - 1 === 1 ? "" : sup(n - 1)), "".concat(a * (n - 1), "x").concat(n - 1 === 1 ? "" : sup(n - 1))], "f'(x) = ".concat(n, " \xD7 ").concat(a, "x").concat(sup(n - 1), " = ").concat(a * n, "x").concat(n - 1 === 1 ? "" : sup(n - 1), "."));
+}, function () {
+  var a = rnd(1, 5),
+    b = rnd(-8, 8),
+    c = rnd(-9, 9),
+    k = rnd(-3, 4),
+    h = 2 * a * k + b;
+  return angkaSoal("Jika f(x) = ".concat(a === 1 ? "" : a, "x\xB2 ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), "x ").concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c), ", maka f'(").concat(k, ") = ...").replace("(-", "(−"), h, "f'(x) = ".concat(2 * a, "x ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), ", jadi f'(").concat(k, ") = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var a = rnd(-5, 9),
+    b = rnd(-5, 9),
+    c = rnd(-5, 9),
+    d = rnd(-5, 9),
+    h = a * d - b * c;
+  return angkaSoal("Determinan matriks [".concat(a, " ").concat(b, "; ").concat(c, " ").concat(d, "] adalah ...").replace(/-/g, "−"), h, "det = ad \u2212 bc = (".concat(a, ")(").concat(d, ") \u2212 (").concat(b, ")(").concat(c, ") = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var n = rnd(4, 12),
+    h = n * (n - 1) / 2;
+  return angkaSoal("Dari ".concat(n, " siswa akan dipilih 2 orang sebagai perwakilan. Banyak cara memilih ..."), h, "C(".concat(n, ", 2) = ").concat(n, " \xD7 ").concat(n - 1, " / 2 = ").concat(h, "."));
+}, function () {
+  var n = rnd(4, 10),
+    h = n * (n - 1);
+  return angkaSoal("Dari ".concat(n, " siswa akan dipilih ketua dan wakil ketua. Banyak susunan yang mungkin ..."), h, "P(".concat(n, ", 2) = ").concat(n, " \xD7 ").concat(n - 1, " = ").concat(h, "."));
+}];
+var GEN_MTK12 = [function () {
+  var k = rnd(2, 10);
+  return angkaSoal("Nilai integral 2x dx dari x = 0 sampai x = ".concat(k, " adalah ..."), k * k, "\u222B2x dx = x\xB2. Dari 0 sampai ".concat(k, ": ").concat(k, "\xB2 \u2212 0 = ").concat(k * k, "."));
+}, function () {
+  var k = rnd(1, 5);
+  return angkaSoal("Nilai integral 3x\xB2 dx dari x = 0 sampai x = ".concat(k, " adalah ..."), k * k * k, "\u222B3x\xB2 dx = x\xB3. Dari 0 sampai ".concat(k, ": ").concat(k, "\xB3 = ").concat(k * k * k, "."));
+}, function () {
+  var c = rnd(2, 9),
+    a = rnd(0, 4),
+    b = a + rnd(1, 6);
+  return angkaSoal("Nilai integral ".concat(c, " dx dari x = ").concat(a, " sampai x = ").concat(b, " adalah ..."), c * (b - a), "\u222B".concat(c, " dx = ").concat(c, "x. ").concat(c, " \xD7 (").concat(b, " \u2212 ").concat(a, ") = ").concat(c * (b - a), "."));
+}, function () {
+  var a = rnd(2, 9),
+    n = rnd(2, 5);
+  return pg("Hasil dari \u222B ".concat(a * (n + 1), "x").concat(sup(n), " dx adalah ..."), "".concat(a, "x").concat(sup(n + 1), " + C"), ["".concat(a * (n + 1) * n, "x").concat(sup(n - 1), " + C"), "".concat(a * (n + 1), "x").concat(sup(n + 1), " + C"), "".concat(a, "x").concat(sup(n), " + C"), "".concat(a + 1, "x").concat(sup(n + 1), " + C")], "\u222Bax".concat(sup("n"), " dx = a/(n+1) x").concat(sup("n+1"), " + C."));
+}, function () {
+  var a = [rnd(-5, 6), rnd(-5, 6)],
+    b = [rnd(-5, 6), rnd(-5, 6)],
+    h = a[0] * b[0] + a[1] * b[1];
+  return angkaSoal("Jika a = (".concat(a[0], ", ").concat(a[1], ") dan b = (").concat(b[0], ", ").concat(b[1], "), maka a \xB7 b = ...").replace(/-/g, "−"), h, "a \xB7 b = ".concat(a[0], "\xD7").concat(b[0], " + ").concat(a[1], "\xD7").concat(b[1], " = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+}, function () {
+  var a = rnd(1, 15) * 4;
+  return angkaSoal("Jumlah deret geometri tak hingga ".concat(a, " + ").concat(a / 2, " + ").concat(a / 4, " + ... adalah"), 2 * a, "S\u221E = a/(1 \u2212 r) = ".concat(a, "/(1 \u2212 1/2) = ").concat(2 * a, "."));
+}, GEN_MTK11[5], GEN_MTK10[4]];
+
+/* ---------- BAHASA INDONESIA tambahan ---------- */
+var SUKU_KATA = [["buku", "bu"], ["meja", "me"], ["kuda", "ku"], ["sapi", "sa"], ["roti", "ro"], ["topi", "to"], ["gigi", "gi"], ["lada", "la"], ["nasi", "na"], ["pagi", "pa"], ["dasi", "da"], ["jari", "ja"]];
+var IMBUHAN_ME = [["sapu", "menyapu"], ["tulis", "menulis"], ["baca", "membaca"], ["potong", "memotong"], ["kirim", "mengirim"], ["ambil", "mengambil"], ["gambar", "menggambar"], ["cuci", "mencuci"], ["jahit", "menjahit"], ["pukul", "memukul"], ["tanam", "menanam"], ["lempar", "melempar"], ["rawat", "merawat"], ["sikat", "menyikat"], ["cat", "mengecat"], ["pakai", "memakai"], ["dengar", "mendengar"], ["jual", "menjual"], ["beli", "membeli"], ["tarik", "menarik"], ["kupas", "mengupas"]];
+var PERIBAHASA = [["Bagai air di daun talas", "tidak tetap pendirian"], ["Ada gula ada semut", "di mana ada kesenangan, di situ banyak orang datang"], ["Berat sama dipikul, ringan sama dijinjing", "susah dan senang ditanggung bersama"], ["Bagai pinang dibelah dua", "sangat mirip"], ["Tong kosong nyaring bunyinya", "orang yang kurang ilmunya biasanya banyak bicara"], ["Sedikit demi sedikit, lama-lama menjadi bukit", "hasil kecil yang dikumpulkan terus akan menjadi banyak"], ["Bagai kacang lupa kulitnya", "lupa pada asal-usulnya"], ["Nasi sudah menjadi bubur", "sudah telanjur dan tidak dapat diperbaiki"], ["Malu bertanya sesat di jalan", "tidak mau bertanya akan merugi sendiri"], ["Seperti katak dalam tempurung", "pengetahuannya sempit"], ["Rajin pangkal pandai", "rajin belajar membuat orang menjadi pandai"], ["Air susu dibalas air tuba", "kebaikan dibalas dengan kejahatan"]];
+var MAJAS = {
+  "Personifikasi": ["Angin berbisik lembut di telingaku.", "Daun nyiur melambai-lambai di tepi pantai.", "Matahari tersenyum cerah pagi ini."],
+  "Hiperbola": ["Suaranya menggelegar membelah langit.", "Tumpukan tugasnya setinggi gunung.", "Tangisnya membanjiri seisi rumah."],
+  "Metafora": ["Ayah adalah tulang punggung keluarga.", "Buku adalah jendela dunia.", "Dia menjadi bintang kelas di sekolahnya."],
+  "Simile": ["Wajahnya bagai bulan purnama.", "Mereka seperti kucing dan anjing, selalu bertengkar.", "Hatinya lembut seperti kapas."],
+  "Litotes": ["Mampirlah ke gubuk kami yang sederhana.", "Terimalah hadiah yang tak seberapa ini."],
+  "Ironi": ["Rapi sekali kamarmu, seperti kapal pecah.", "Pagi sekali kamu datang, sudah pukul sepuluh."]
+};
+var KATA_BAKU = [["aktif", "aktip"], ["apotek", "apotik"], ["praktik", "praktek"], ["kualitas", "kwalitas"], ["sistem", "sistim"], ["nasihat", "nasehat"], ["risiko", "resiko"], ["jadwal", "jadual"], ["karier", "karir"], ["kategori", "katagori"], ["objek", "obyek"], ["ijazah", "ijasah"], ["izin", "ijin"], ["teknik", "tehnik"], ["analisis", "analisa"], ["hakikat", "hakekat"], ["silakan", "silahkan"], ["telur", "telor"], ["rezeki", "rejeki"], ["sekadar", "sekedar"]];
+var JENIS_TEKS = [["Narasi", "menceritakan suatu peristiwa secara berurutan"], ["Deskripsi", "menggambarkan suatu objek secara rinci seolah-olah pembaca melihatnya"], ["Eksposisi", "memaparkan informasi atau pengetahuan secara jelas"], ["Argumentasi", "menyampaikan pendapat disertai alasan dan bukti"], ["Persuasi", "membujuk pembaca agar melakukan sesuatu"], ["Prosedur", "berisi langkah-langkah melakukan sesuatu"], ["Laporan hasil observasi", "menyampaikan hasil pengamatan terhadap suatu objek"]];
+var GEN_BIND_EXTRA = {
+  sukuKata: function sukuKata() {
+    var _ambil63 = ambil(SUKU_KATA),
+      _ambil64 = _slicedToArray(_ambil63, 2),
+      k = _ambil64[0],
+      s = _ambil64[1];
+    return pg("Suku kata pertama dari kata \"".concat(k, "\" adalah ..."), s, SUKU_KATA.map(function (x) {
+      return x[1];
+    }), "".concat(k, " = ").concat(s, "-").concat(k.slice(s.length), "."));
+  },
+  hurufAwal: GEN_TK_HURUF[0],
+  imbuhan: function imbuhan() {
+    var _ambil65 = ambil(IMBUHAN_ME),
+      _ambil66 = _slicedToArray(_ambil65, 2),
+      d = _ambil66[0],
+      b = _ambil66[1],
+      salah = ["me" + d, "men" + d, "mem" + d, "meng" + d, "meny" + d.slice(1), "menge" + d].filter(function (x) {
+        return x !== b;
+      });
+    return pg("Kata dasar \"".concat(d, "\" mendapat awalan me- menjadi ..."), b, salah, "".concat(d, " + me- = ").concat(b, "."));
+  },
+  peribahasa: function peribahasa() {
+    var _ambil67 = ambil(PERIBAHASA),
+      _ambil68 = _slicedToArray(_ambil67, 2),
+      pb = _ambil68[0],
+      a = _ambil68[1];
+    if (Math.random() < 0.6) return pg("Arti peribahasa \"".concat(pb, "\" adalah ..."), kapital(a), PERIBAHASA.map(function (x) {
+      return kapital(x[1]);
+    }), "\"".concat(pb, "\" artinya ").concat(a, "."));
+    return pg("Peribahasa yang artinya \"".concat(a, "\" adalah ..."), pb, PERIBAHASA.map(function (x) {
+      return x[0];
+    }), "\"".concat(pb, "\" artinya ").concat(a, "."));
+  },
+  majas: function majas() {
+    var jenis = ambil(Object.keys(MAJAS)),
+      k = ambil(MAJAS[jenis]);
+    return pg("Kalimat \"".concat(k, "\" menggunakan majas ..."), jenis, Object.keys(MAJAS), "Kalimat ini termasuk majas ".concat(jenis.toLowerCase(), "."));
+  },
+  baku: function baku() {
+    var _ambil69 = ambil(KATA_BAKU),
+      _ambil70 = _slicedToArray(_ambil69, 1),
+      b = _ambil70[0],
+      salah = KATA_BAKU.filter(function (x) {
+        return x[0] !== b;
+      }).map(function (x) {
+        return x[1];
+      });
+    return pg("Penulisan kata yang baku adalah ...", b, salah, "\"".concat(b, "\" adalah bentuk baku menurut KBBI."));
+  },
+  bakuDari: function bakuDari() {
+    var _ambil71 = ambil(KATA_BAKU),
+      _ambil72 = _slicedToArray(_ambil71, 2),
+      b = _ambil72[0],
+      tb = _ambil72[1],
+      lain = KATA_BAKU.filter(function (x) {
+        return x[0] !== b;
+      }).map(function (x) {
+        return x[0];
+      });
+    return pg("Bentuk baku dari kata \"".concat(tb, "\" adalah ..."), b, lain, "Bentuk bakunya \"".concat(b, "\"."));
+  },
+  jenisTeks: pasangan(JENIS_TEKS, function (a) {
+    return "Teks ".concat(a.toLowerCase(), " adalah teks yang ...");
+  }, function (b) {
+    return "Teks yang ".concat(b, " disebut teks ...");
+  }, function (x) {
+    return x;
+  }, kapital)
+};
+
+/* ---------- BAHASA INGGRIS tambahan ---------- */
+var BE = [["I", "am"], ["You", "are"], ["We", "are"], ["They", "are"], ["He", "is"], ["She", "is"], ["It", "is"], ["My mother", "is"], ["The cats", "are"], ["Andi and Budi", "are"], ["My teacher", "is"]];
+var KETERANGAN_BE = ["happy", "at home", "in the garden", "very tired", "hungry", "at school"];
+var PLURAL = [["book", "books"], ["box", "boxes"], ["baby", "babies"], ["child", "children"], ["mouse", "mice"], ["foot", "feet"], ["tooth", "teeth"], ["man", "men"], ["woman", "women"], ["knife", "knives"], ["bus", "buses"], ["city", "cities"], ["toy", "toys"], ["person", "people"]];
+var PRONOUN = [["I", "me", "my"], ["you", "you", "your"], ["he", "him", "his"], ["she", "her", "her"], ["it", "it", "its"], ["we", "us", "our"], ["they", "them", "their"]];
+var KERJA_EN = [["go", "goes", "to school"], ["read", "reads", "a book"], ["eat", "eats", "rice"], ["drink", "drinks", "milk"], ["watch", "watches", "TV"], ["play", "plays", "football"], ["study", "studies", "English"], ["wash", "washes", "the dishes"], ["have", "has", "breakfast"], ["ride", "rides", "a bike"]];
+var SUBJ_EN = [["I", 0], ["You", 0], ["We", 0], ["They", 0], ["He", 1], ["She", 1], ["My brother", 1], ["Siti", 1]];
+var IRREGULAR = [["go", "went", "gone"], ["eat", "ate", "eaten"], ["drink", "drank", "drunk"], ["swim", "swam", "swum"], ["write", "wrote", "written"], ["see", "saw", "seen"], ["buy", "bought", "bought"], ["take", "took", "taken"], ["give", "gave", "given"], ["run", "ran", "run"], ["sing", "sang", "sung"], ["speak", "spoke", "spoken"], ["come", "came", "come"], ["make", "made", "made"], ["sleep", "slept", "slept"], ["teach", "taught", "taught"], ["bring", "brought", "brought"], ["find", "found", "found"], ["begin", "began", "begun"], ["break", "broke", "broken"], ["choose", "chose", "chosen"], ["know", "knew", "known"], ["fly", "flew", "flown"], ["forget", "forgot", "forgotten"], ["ride", "rode", "ridden"]];
+var ADJ_EN = [["big", "bigger", "biggest"], ["small", "smaller", "smallest"], ["tall", "taller", "tallest"], ["fast", "faster", "fastest"], ["happy", "happier", "happiest"], ["good", "better", "best"], ["bad", "worse", "worst"], ["beautiful", "more beautiful", "most beautiful"], ["expensive", "more expensive", "most expensive"], ["hot", "hotter", "hottest"], ["heavy", "heavier", "heaviest"], ["long", "longer", "longest"]];
+var PASIF = [["My mother", "cooks", "cooked", "cooked", "rice"], ["Ali", "writes", "wrote", "written", "the letter"], ["The farmer", "plants", "planted", "planted", "the tree"], ["Rina", "cleans", "cleaned", "cleaned", "the room"], ["The students", "read", "read", "read", "the book"], ["My father", "repairs", "repaired", "repaired", "the car"], ["The teacher", "teaches", "taught", "taught", "the lesson"]];
+var KONDISI = [["it rains", "I", "stay", "at home"], ["you study hard", "you", "pass", "the exam"], ["she is hungry", "she", "eat", "some bread"], ["we leave now", "we", "catch", "the bus"], ["they practice every day", "they", "win", "the match"], ["you heat ice", "it", "melt", "quickly"]];
+var TAG = [["She is a teacher", "isn't she"], ["They are students", "aren't they"], ["He can swim", "can't he"], ["You like apples", "don't you"], ["Ani went to Bali", "didn't she"], ["It isn't hot today", "is it"], ["We will win", "won't we"], ["Budi doesn't eat meat", "does he"]];
+var subjTengah = function subjTengah(s) {
+  return ["You", "We", "They", "He", "She", "It"].indexOf(s) >= 0 ? s.toLowerCase() : s;
+};
+var bentukIng = function bentukIng(v) {
+  return /[^e]e$/.test(v) ? v.slice(0, -1) + "ing" : v + "ing";
+};
+var GEN_BING_EXTRA = {
+  toBe: function toBe() {
+    var _ambil73 = ambil(BE),
+      _ambil74 = _slicedToArray(_ambil73, 2),
+      s = _ambil74[0],
+      b = _ambil74[1];
+    return {
+      t: "".concat(s, " ___ ").concat(ambil(KETERANGAN_BE), "."),
+      o: ["am", "is", "are"],
+      j: ["am", "is", "are"].indexOf(b),
+      p: "\"".concat(s, "\" memakai \"").concat(b, "\".")
+    };
+  },
+  plural: function plural() {
+    var _ambil75 = ambil(PLURAL),
+      _ambil76 = _slicedToArray(_ambil75, 2),
+      a = _ambil76[0],
+      b = _ambil76[1],
+      salah = [a + "s", a + "es", a.replace(/y$/, "ies"), a + "en"].filter(function (x) {
+        return x !== b;
+      });
+    return pg("Bentuk jamak (plural) dari \"".concat(a, "\" adalah ..."), b, salah, "".concat(a, " \u2192 ").concat(b, "."));
+  },
+  pronoun: function pronoun() {
+    var _ambil77 = ambil(PRONOUN),
+      _ambil78 = _slicedToArray(_ambil77, 3),
+      s = _ambil78[0],
+      o = _ambil78[1],
+      p = _ambil78[2];
+    if (Math.random() < 0.5) return pg("Kata ganti objek dari \"".concat(s, "\" adalah ..."), o, PRONOUN.map(function (x) {
+      return x[1];
+    }), "".concat(s, " \u2192 ").concat(o, "."));
+    return pg("Kata ganti kepemilikan dari \"".concat(s, "\" adalah ..."), p, PRONOUN.map(function (x) {
+      return x[2];
+    }), "".concat(s, " \u2192 ").concat(p, "."));
+  },
+  present: function present() {
+    var _ambil79 = ambil(KERJA_EN),
+      _ambil80 = _slicedToArray(_ambil79, 3),
+      v = _ambil80[0],
+      vs = _ambil80[1],
+      obj = _ambil80[2],
+      _ambil81 = ambil(SUBJ_EN),
+      _ambil82 = _slicedToArray(_ambil81, 2),
+      s = _ambil82[0],
+      tiga = _ambil82[1],
+      b = tiga ? vs : v;
+    return pg("".concat(s, " ___ ").concat(obj, " every day."), b, [v, vs, bentukIng(v), v === "have" ? "had" : v + "ed"], "Simple present: ".concat(tiga ? "subjek orang ketiga tunggal memakai -s/-es" : "subjek ini memakai kata kerja bentuk dasar", "."));
+  },
+  past: function past() {
+    var _ambil83 = ambil(IRREGULAR),
+      _ambil84 = _slicedToArray(_ambil83, 3),
+      v = _ambil84[0],
+      v2 = _ambil84[1],
+      v3 = _ambil84[2],
+      _ambil85 = ambil(SUBJ_EN),
+      _ambil86 = _slicedToArray(_ambil85, 1),
+      s = _ambil86[0];
+    return pg("Yesterday, ".concat(subjTengah(s), " ___ (").concat(v, ")."), v2, [v, v + "ed", v3 !== v2 ? v3 : v + "ing", v + "s"], "Simple past memakai V2: ".concat(v, " \u2192 ").concat(v2, "."));
+  },
+  v2v3: function v2v3() {
+    var _ambil87 = ambil(IRREGULAR),
+      _ambil88 = _slicedToArray(_ambil87, 3),
+      v = _ambil88[0],
+      v2 = _ambil88[1],
+      v3 = _ambil88[2],
+      tanya3 = Math.random() < 0.5,
+      b = tanya3 ? v3 : v2;
+    return pg("Bentuk ".concat(tanya3 ? "ketiga (V3)" : "kedua (V2)", " dari \"").concat(v, "\" adalah ..."), b, [v, v + "ed", tanya3 ? v2 : v3, v + "ing"], "".concat(v, " \u2013 ").concat(v2, " \u2013 ").concat(v3, "."));
+  },
+  continuous: function continuous() {
+    var _ambil89 = ambil(KERJA_EN),
+      _ambil90 = _slicedToArray(_ambil89, 3),
+      v = _ambil90[0],
+      obj = _ambil90[2],
+      _ambil91 = ambil(BE.slice(0, 7)),
+      _ambil92 = _slicedToArray(_ambil91, 2),
+      s = _ambil92[0],
+      b = _ambil92[1],
+      ing = bentukIng(v);
+    return pg("Look! ".concat(s, " ___ ").concat(obj, " now."), "".concat(b, " ").concat(ing), ["am", "is", "are"].filter(function (x) {
+      return x !== b;
+    }).map(function (x) {
+      return "".concat(x, " ").concat(ing);
+    }).concat(["".concat(b, " ").concat(v), v + "ed"]), "Present continuous: ".concat(s, " + ").concat(b, " + V-ing."));
+  },
+  comparative: function comparative() {
+    var _ambil93 = ambil(ADJ_EN),
+      _ambil94 = _slicedToArray(_ambil93, 3),
+      a = _ambil94[0],
+      c = _ambil94[1],
+      s = _ambil94[2],
+      sup2 = Math.random() < 0.4,
+      b = sup2 ? s : c;
+    return pg("Bentuk ".concat(sup2 ? "superlative" : "comparative", " dari \"").concat(a, "\" adalah ..."), b, [sup2 ? c : s, "more " + a, a + "er", "most " + a].filter(function (x) {
+      return x !== b;
+    }), "".concat(a, " \u2013 ").concat(c, " \u2013 ").concat(s, "."));
+  },
+  pasif: function pasif() {
+    var _ambil95 = ambil(PASIF),
+      _ambil96 = _slicedToArray(_ambil95, 5),
+      s = _ambil96[0],
+      v1 = _ambil96[1],
+      v2 = _ambil96[2],
+      v3 = _ambil96[3],
+      o = _ambil96[4],
+      lalu = Math.random() < 0.5,
+      aux = lalu ? "was" : o.endsWith("s") ? "are" : "is";
+    var aktif = "".concat(s, " ").concat(lalu ? v2 : v1, " ").concat(o).concat(lalu ? " yesterday" : "", ".");
+    return pg("Aktif: \"".concat(aktif, "\" Pasif: \"").concat(kapital(o), " ___ by ").concat(s.toLowerCase().startsWith("the ") || s.toLowerCase().startsWith("my ") ? s.toLowerCase() : s).concat(lalu ? " yesterday" : "", ".\""), "".concat(aux, " ").concat(v3), ["".concat(lalu ? "is" : "was", " ").concat(v3), "".concat(aux, " ").concat(v1), "has ".concat(v3), "".concat(lalu ? v2 : v1)], "Kalimat pasif: to be (".concat(aux, ") + V3 (").concat(v3, ")."));
+  },
+  perfect: function perfect() {
+    var _ambil97 = ambil(IRREGULAR),
+      _ambil98 = _slicedToArray(_ambil97, 3),
+      v = _ambil98[0],
+      v3 = _ambil98[2],
+      _ambil99 = ambil(SUBJ_EN.filter(function (x) {
+        return x[0] !== "You";
+      })),
+      _ambil100 = _slicedToArray(_ambil99, 2),
+      s = _ambil100[0],
+      tiga = _ambil100[1],
+      h = tiga ? "has" : "have";
+    return pg("".concat(s, " ").concat(h, " just ___ (").concat(v, ")."), v3, [v, v3 === v ? v + "ed" : v + "ed"].concat(_toConsumableArray(IRREGULAR.filter(function (x) {
+      return x[0] === v;
+    }).map(function (x) {
+      return x[1];
+    })), [v + "ing"]), "Present perfect: has/have + V3 (".concat(v3, ")."));
+  },
+  kondisi: function kondisi() {
+    var _ambil101 = ambil(KONDISI),
+      _ambil102 = _slicedToArray(_ambil101, 4),
+      c = _ambil102[0],
+      s = _ambil102[1],
+      v = _ambil102[2],
+      rest = _ambil102[3];
+    return pg("If ".concat(c, ", ").concat(s, " ___ ").concat(rest, "."), "will ".concat(v), ["would ".concat(v), v + "ed", v + "ing", "will ".concat(v, "ed")], "Conditional tipe 1: If + simple present, will + V1.");
+  },
+  tag: function tag() {
+    var _ambil103 = ambil(TAG),
+      _ambil104 = _slicedToArray(_ambil103, 2),
+      k = _ambil104[0],
+      t = _ambil104[1];
+    return pg("".concat(k, ", ___?"), t, TAG.map(function (x) {
+      return x[1];
+    }), "Question tag yang tepat: \"".concat(t, "\"."));
+  }
+};
+
+/* ---------- IPA SD 5–6, IPA SMP, Fisika, Kimia, Biologi ---------- */
+var PLANET = [["Merkurius", "planet yang paling dekat dengan Matahari"], ["Venus", "planet paling panas di tata surya"], ["Bumi", "satu-satunya planet yang diketahui dihuni makhluk hidup"], ["Mars", "planet yang dijuluki planet merah"], ["Jupiter", "planet terbesar di tata surya"], ["Saturnus", "planet yang terkenal dengan cincinnya yang indah"], ["Neptunus", "planet yang paling jauh dari Matahari"]];
+var ORGAN = [["Jantung", "memompa darah ke seluruh tubuh"], ["Paru-paru", "tempat pertukaran oksigen dan karbon dioksida"], ["Lambung", "mencerna makanan dengan bantuan asam lambung"], ["Ginjal", "menyaring darah dan membentuk urine"], ["Otak", "mengatur dan mengendalikan seluruh kegiatan tubuh"], ["Hati", "menawarkan racun dan menghasilkan empedu"], ["Usus halus", "menyerap sari-sari makanan"]];
+var CAHAYA = [["Bayangan pohon terbentuk di tanah saat siang hari", "Cahaya merambat lurus"], ["Wajah kita terlihat di cermin", "Cahaya dapat dipantulkan"], ["Pensil di dalam gelas berisi air terlihat patah", "Cahaya dapat dibiaskan"], ["Pelangi muncul setelah hujan", "Cahaya dapat diuraikan"]];
+var DAUR_AIR = [["Evaporasi", "penguapan air laut, sungai, dan danau oleh panas matahari"], ["Kondensasi", "pengembunan uap air menjadi titik-titik air yang membentuk awan"], ["Presipitasi", "turunnya air dari awan ke bumi dalam bentuk hujan"], ["Infiltrasi", "meresapnya air hujan ke dalam tanah"]];
+var SATUAN_SI = [["Panjang", "meter (m)"], ["Massa", "kilogram (kg)"], ["Waktu", "sekon (s)"], ["Suhu", "kelvin (K)"], ["Kuat arus listrik", "ampere (A)"], ["Jumlah zat", "mol"], ["Intensitas cahaya", "kandela (cd)"]];
+var UNSUR = [["H", "Hidrogen", 1], ["He", "Helium", 2], ["Li", "Litium", 3], ["Be", "Berilium", 4], ["B", "Boron", 5], ["C", "Karbon", 6], ["N", "Nitrogen", 7], ["O", "Oksigen", 8], ["F", "Fluorin", 9], ["Ne", "Neon", 10], ["Na", "Natrium", 11], ["Mg", "Magnesium", 12], ["Al", "Aluminium", 13], ["Si", "Silikon", 14], ["P", "Fosfor", 15], ["S", "Belerang", 16], ["Cl", "Klorin", 17], ["Ar", "Argon", 18], ["K", "Kalium", 19], ["Ca", "Kalsium", 20], ["Fe", "Besi", 26], ["Cu", "Tembaga", 29], ["Zn", "Seng", 30], ["Ag", "Perak", 47], ["Au", "Emas", 79], ["Pb", "Timbal", 82]];
+var ASAM_BASA = {
+  "Asam": ["cuka", "air jeruk nipis", "asam lambung", "air aki", "minuman bersoda"],
+  "Basa": ["sabun", "pasta gigi", "air kapur", "soda kue", "obat maag"],
+  "Netral": ["air murni", "larutan gula", "larutan garam dapur"]
+};
+var VERTEBRATA = {
+  "Mamalia": ["kucing", "paus", "kelelawar", "sapi", "lumba-lumba"],
+  "Aves (burung)": ["ayam", "elang", "penguin", "merpati"],
+  "Reptil": ["ular", "kadal", "buaya", "kura-kura"],
+  "Amfibi": ["katak", "salamander", "kodok"],
+  "Pisces (ikan)": ["ikan mas", "hiu", "lele", "kuda laut"]
+};
+var SENYAWA = [["H₂O", "air"], ["NaCl", "natrium klorida (garam dapur)"], ["CO₂", "karbon dioksida"], ["CH₄", "metana"], ["NH₃", "amonia"], ["HCl", "asam klorida"], ["NaOH", "natrium hidroksida"], ["H₂SO₄", "asam sulfat"], ["C₆H₁₂O₆", "glukosa"], ["CaCO₃", "kalsium karbonat"]];
+var MR = [["H₂O", 18, "H = 1, O = 16"], ["CO₂", 44, "C = 12, O = 16"], ["NH₃", 17, "N = 14, H = 1"], ["CH₄", 16, "C = 12, H = 1"], ["H₂SO₄", 98, "H = 1, S = 32, O = 16"], ["NaOH", 40, "Na = 23, O = 16, H = 1"], ["CaCO₃", 100, "Ca = 40, C = 12, O = 16"], ["MgO", 40, "Mg = 24, O = 16"], ["C₆H₁₂O₆", 180, "C = 12, H = 1, O = 16"], ["HNO₃", 63, "H = 1, N = 14, O = 16"], ["KOH", 56, "K = 39, O = 16, H = 1"], ["SO₂", 64, "S = 32, O = 16"]];
+var IKATAN = {
+  "Ion": ["NaCl", "KCl", "MgO", "CaCl₂", "NaBr"],
+  "Kovalen": ["H₂O", "CO₂", "CH₄", "NH₃", "HCl"]
+};
+var VALENSI = UNSUR.filter(function (u) {
+  return u[2] <= 20 && u[0] !== "He";
+}).map(function (u) {
+  var z = u[2],
+    v = z <= 2 ? z : z <= 10 ? z - 2 : z <= 18 ? z - 10 : z - 18;
+  return [u[0], u[1], v];
+});
+var ORGANEL = [["Mitokondria", "tempat respirasi sel yang menghasilkan energi"], ["Ribosom", "tempat sintesis protein"], ["Kloroplas", "tempat fotosintesis"], ["Nukleus (inti sel)", "mengatur seluruh kegiatan sel dan menyimpan DNA"], ["Lisosom", "mencerna zat di dalam sel"], ["Badan Golgi", "mengemas dan menyekresikan zat"], ["Membran sel", "mengatur keluar masuknya zat ke dalam sel"], ["Dinding sel", "melindungi dan memberi bentuk tetap pada sel tumbuhan"]];
+var SEL_DARAH = [["Eritrosit (sel darah merah)", "mengangkut oksigen ke seluruh tubuh"], ["Leukosit (sel darah putih)", "melawan kuman penyakit"], ["Trombosit (keping darah)", "membantu pembekuan darah"]];
+var ENZIM = [["Amilase (ptialin)", "mengubah amilum menjadi maltosa"], ["Pepsin", "mengubah protein menjadi pepton"], ["Lipase", "mengubah lemak menjadi asam lemak dan gliserol"], ["Renin", "menggumpalkan protein susu (kasein)"], ["Tripsin", "mengubah protein menjadi asam amino dan peptida"]];
+var KINGDOM = {
+  "Monera": ["bakteri Escherichia coli", "bakteri Lactobacillus", "ganggang hijau-biru (Cyanobacteria)"],
+  "Protista": ["Amoeba", "Paramecium", "Euglena"],
+  "Fungi": ["jamur tempe (Rhizopus)", "ragi roti (Saccharomyces)", "jamur tiram"],
+  "Plantae": ["padi", "pohon mangga", "paku-pakuan"],
+  "Animalia": ["kucing", "cacing tanah", "kupu-kupu"]
+};
+var TAKSON = ["Kingdom", "Filum/Divisi", "Kelas", "Ordo", "Famili", "Genus", "Spesies"];
+var RANTAI = [["padi", "tikus", "ular", "elang"], ["rumput", "belalang", "katak", "ular"], ["fitoplankton", "zooplankton", "ikan kecil", "ikan besar"], ["daun", "ulat", "burung pipit", "elang"]];
+var PERAN_RANTAI = ["produsen", "konsumen tingkat I", "konsumen tingkat II", "konsumen tingkat III"];
+var GEN_SAINS = {
+  planet: pasangan(PLANET, function (a) {
+    return "Planet ".concat(a, " dikenal sebagai ...");
+  }, function (b) {
+    return "Planet yang merupakan ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  organ: pasangan(ORGAN, function (a) {
+    return "Fungsi ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "Organ yang berfungsi ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  cahaya: function cahaya() {
+    var _ambil105 = ambil(CAHAYA),
+      _ambil106 = _slicedToArray(_ambil105, 2),
+      k = _ambil106[0],
+      s = _ambil106[1];
+    return pg("Peristiwa \"".concat(k, "\" menunjukkan sifat ..."), s, CAHAYA.map(function (x) {
+      return x[1];
+    }), "".concat(k, ": ").concat(s.toLowerCase(), "."));
+  },
+  daurAir: pasangan(DAUR_AIR, function (a) {
+    return "Dalam daur air, ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "Proses ".concat(b, " disebut ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  satuan: pasangan(SATUAN_SI, function (a) {
+    return "Satuan SI untuk besaran ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "".concat(kapital(b), " adalah satuan SI untuk besaran ...");
+  }),
+  suhu: function suhu() {
+    var c = rnd(0, 20) * 5;
+    if (Math.random() < 0.5) return angkaSoal("Suhu ".concat(c, "\xB0C sama dengan ... K"), c + 273, "K = \xB0C + 273 = ".concat(c + 273, " K."), " K");
+    return angkaSoal("Suhu ".concat(c, "\xB0C sama dengan ... \xB0F"), 9 * c / 5 + 32, "\xB0F = 9/5 \xD7 \xB0C + 32 = ".concat(9 * c / 5 + 32, "\xB0F."), "°F");
+  },
+  massaJenis: function massaJenis() {
+    var r = ambil([1, 2, 3, 4, 5, 8]),
+      v = rnd(2, 20) * 5;
+    return angkaSoal("Sebuah benda bermassa ".concat(r * v, " gram dan bervolume ").concat(v, " cm\xB3. Massa jenisnya ..."), r, "\u03C1 = m/V = ".concat(r * v, "/").concat(v, " = ").concat(r, " g/cm\xB3."), " g/cm³", opsiKecil);
+  },
+  kecepatan: function kecepatan() {
+    var v = rnd(2, 25),
+      t = rnd(2, 20);
+    return angkaSoal("Sebuah benda bergerak lurus beraturan menempuh ".concat(v * t, " m dalam ").concat(t, " s. Kecepatannya ..."), v, "v = s/t = ".concat(v * t, "/").concat(t, " = ").concat(v, " m/s."), " m/s");
+  },
+  gaya: function gaya() {
+    var m = rnd(2, 20),
+      a = rnd(1, 10);
+    return angkaSoal("Benda bermassa ".concat(m, " kg mendapat percepatan ").concat(a, " m/s\xB2. Gaya yang bekerja ..."), m * a, "F = m \xD7 a = ".concat(m, " \xD7 ").concat(a, " = ").concat(m * a, " N."), " N");
+  },
+  tekanan: function tekanan() {
+    var A = ambil([2, 4, 5, 10]),
+      P = rnd(5, 50) * 10;
+    return angkaSoal("Gaya ".concat(P * A, " N bekerja pada bidang seluas ").concat(A, " m\xB2. Tekanannya ..."), P, "P = F/A = ".concat(P * A, "/").concat(A, " = ").concat(P, " N/m\xB2."), " N/m²");
+  },
+  unsur: function unsur() {
+    var _ambil107 = ambil(UNSUR),
+      _ambil108 = _slicedToArray(_ambil107, 2),
+      s = _ambil108[0],
+      n = _ambil108[1];
+    if (Math.random() < 0.5) return pg("Lambang unsur ".concat(n.toLowerCase(), " adalah ..."), s, UNSUR.map(function (x) {
+      return x[0];
+    }), "".concat(n, " dilambangkan ").concat(s, "."));
+    return pg("Unsur dengan lambang ".concat(s, " adalah ..."), n, UNSUR.map(function (x) {
+      return x[1];
+    }), "".concat(s, " adalah lambang ").concat(n.toLowerCase(), "."));
+  },
+  asamBasa: function asamBasa() {
+    var jenis = ambil(Object.keys(ASAM_BASA)),
+      z = ambil(ASAM_BASA[jenis]);
+    return {
+      t: "".concat(kapital(z), " bersifat ..."),
+      o: Object.keys(ASAM_BASA),
+      j: Object.keys(ASAM_BASA).indexOf(jenis),
+      p: "".concat(kapital(z), " bersifat ").concat(jenis.toLowerCase(), ".")
+    };
+  },
+  vertebrata: function vertebrata() {
+    var k = ambil(Object.keys(VERTEBRATA)),
+      h = ambil(VERTEBRATA[k]);
+    return {
+      t: "Hewan ".concat(h, " termasuk kelompok ..."),
+      o: Object.keys(VERTEBRATA),
+      j: Object.keys(VERTEBRATA).indexOf(k),
+      p: "".concat(kapital(h), " termasuk ").concat(k.toLowerCase(), ".")
+    };
+  },
+  // Fisika SMA (g = 10 m/s²)
+  glbbV: function glbbV() {
+    var v0 = rnd(0, 10),
+      a = rnd(1, 5),
+      t = rnd(2, 10);
+    return angkaSoal("Mobil bergerak dengan kecepatan awal ".concat(v0, " m/s dan percepatan ").concat(a, " m/s\xB2. Kecepatannya setelah ").concat(t, " s adalah ..."), v0 + a * t, "v = v\u2080 + a\xB7t = ".concat(v0, " + ").concat(a, "\xD7").concat(t, " = ").concat(v0 + a * t, " m/s."), " m/s");
+  },
+  glbbS: function glbbS() {
+    var v0 = rnd(0, 10),
+      a = ambil([2, 4, 6]),
+      t = rnd(2, 8),
+      s = v0 * t + a * t * t / 2;
+    return angkaSoal("Benda dengan kecepatan awal ".concat(v0, " m/s dipercepat ").concat(a, " m/s\xB2 selama ").concat(t, " s. Jarak yang ditempuh ..."), s, "s = v\u2080t + \xBDat\xB2 = ".concat(v0 * t, " + ").concat(a * t * t / 2, " = ").concat(s, " m."), " m");
+  },
+  usaha: function usaha() {
+    var F = rnd(5, 50),
+      s = rnd(2, 20);
+    return angkaSoal("Gaya ".concat(F, " N memindahkan benda sejauh ").concat(s, " m searah gaya. Usahanya ..."), F * s, "W = F \xD7 s = ".concat(F * s, " J."), " J");
+  },
+  ep: function ep() {
+    var m = rnd(1, 20),
+      h = rnd(2, 30);
+    return angkaSoal("Energi potensial benda bermassa ".concat(m, " kg pada ketinggian ").concat(h, " m adalah ... (g = 10 m/s\xB2)"), m * 10 * h, "Ep = m\xB7g\xB7h = ".concat(m, "\xD710\xD7").concat(h, " = ").concat(m * 10 * h, " J."), " J");
+  },
+  ek: function ek() {
+    var m = rnd(1, 10) * 2,
+      v = rnd(2, 12);
+    return angkaSoal("Energi kinetik benda bermassa ".concat(m, " kg yang bergerak ").concat(v, " m/s adalah ..."), m * v * v / 2, "Ek = \xBDmv\xB2 = \xBD\xD7".concat(m, "\xD7").concat(v, "\xB2 = ").concat(m * v * v / 2, " J."), " J");
+  },
+  daya: function daya() {
+    var t = rnd(2, 10),
+      P = rnd(5, 100);
+    return angkaSoal("Mesin melakukan usaha ".concat(P * t, " J dalam ").concat(t, " s. Dayanya ..."), P, "P = W/t = ".concat(P * t, "/").concat(t, " = ").concat(P, " W."), " W");
+  },
+  ohm: function ohm() {
+    var I = rnd(1, 10),
+      R = rnd(2, 30);
+    if (Math.random() < 0.5) return angkaSoal("Arus ".concat(I, " A mengalir melalui hambatan ").concat(R, " \u03A9. Tegangannya ..."), I * R, "V = I \xD7 R = ".concat(I, " \xD7 ").concat(R, " = ").concat(I * R, " V."), " V");
+    return angkaSoal("Tegangan ".concat(I * R, " V dipasang pada hambatan ").concat(R, " \u03A9. Kuat arusnya ..."), I, "I = V/R = ".concat(I * R, "/").concat(R, " = ").concat(I, " A."), " A", opsiKecil);
+  },
+  hambatan: function hambatan() {
+    var R = rnd(2, 12) * 2;
+    if (Math.random() < 0.5) {
+      var a = rnd(2, 20),
+        b = rnd(2, 20),
+        c = rnd(2, 20);
+      return angkaSoal("Tiga hambatan ".concat(a, " \u03A9, ").concat(b, " \u03A9, dan ").concat(c, " \u03A9 disusun seri. Hambatan totalnya ..."), a + b + c, "Seri: R = ".concat(a, " + ").concat(b, " + ").concat(c, " = ").concat(a + b + c, " \u03A9."), " Ω");
+    }
+    return angkaSoal("Dua hambatan masing-masing ".concat(R, " \u03A9 disusun paralel. Hambatan totalnya ..."), R / 2, "Paralel dua hambatan sama: R/2 = ".concat(R / 2, " \u03A9."), " Ω");
+  },
+  momentum: function momentum() {
+    var m = rnd(1, 20),
+      v = rnd(2, 15);
+    return angkaSoal("Momentum benda bermassa ".concat(m, " kg yang bergerak ").concat(v, " m/s adalah ..."), m * v, "p = m \xD7 v = ".concat(m * v, " kg\xB7m/s."), " kg·m/s");
+  },
+  gelombang: function gelombang() {
+    var l = rnd(1, 10),
+      f = rnd(2, 50);
+    return angkaSoal("Gelombang dengan panjang ".concat(l, " m dan frekuensi ").concat(f, " Hz memiliki cepat rambat ..."), l * f, "v = \u03BB \xD7 f = ".concat(l, " \xD7 ").concat(f, " = ").concat(l * f, " m/s."), " m/s");
+  },
+  kmjam: function kmjam() {
+    var k = rnd(1, 8);
+    return angkaSoal("Kecepatan ".concat(18 * k, " km/jam sama dengan ... m/s"), 5 * k, "".concat(18 * k, " \xD7 1000/3600 = ").concat(5 * k, " m/s."), " m/s");
+  },
+  // Kimia
+  nomorAtom: function nomorAtom() {
+    var u = ambil(UNSUR.filter(function (x) {
+      return x[2] <= 20;
+    }));
+    return angkaSoal("Nomor atom unsur ".concat(u[1].toLowerCase(), " (").concat(u[0], ") adalah ..."), u[2], "".concat(u[1], " memiliki ").concat(u[2], " proton, jadi nomor atomnya ").concat(u[2], "."), "", opsiKecil);
+  },
+  valensi: function valensi() {
+    var _ambil109 = ambil(VALENSI),
+      _ambil110 = _slicedToArray(_ambil109, 3),
+      s = _ambil110[0],
+      n = _ambil110[1],
+      v = _ambil110[2];
+    return angkaSoal("Jumlah elektron valensi atom ".concat(n.toLowerCase(), " (").concat(s, ") adalah ..."), v, "Konfigurasi elektron ".concat(s, " berakhir dengan ").concat(v, " elektron di kulit terluar."), "", opsiKecil);
+  },
+  mr: function mr() {
+    var _ambil111 = ambil(MR),
+      _ambil112 = _slicedToArray(_ambil111, 3),
+      r = _ambil112[0],
+      m = _ambil112[1],
+      ar = _ambil112[2];
+    return angkaSoal("Massa molekul relatif (Mr) ".concat(r, " adalah ... (Ar ").concat(ar, ")"), m, "Jumlahkan Ar semua atom dalam ".concat(r, ": ").concat(m, "."));
+  },
+  mol: function mol() {
+    var _ambil113 = ambil(MR),
+      _ambil114 = _slicedToArray(_ambil113, 2),
+      r = _ambil114[0],
+      m = _ambil114[1],
+      n = rnd(1, 5);
+    return angkaSoal("Jumlah mol dari ".concat(n * m, " gram ").concat(r, " (Mr = ").concat(m, ") adalah ..."), n, "n = massa/Mr = ".concat(n * m, "/").concat(m, " = ").concat(n, " mol."), " mol", opsiKecil);
+  },
+  ph: function ph() {
+    var n = rnd(1, 6);
+    if (Math.random() < 0.5) return angkaSoal("Larutan asam kuat dengan [H\u207A] = 10".concat(sup(-n), " M memiliki pH ..."), n, "pH = \u2212log[H\u207A] = ".concat(n, "."), "", opsiKecil);
+    return angkaSoal("Larutan basa kuat dengan [OH\u207B] = 10".concat(sup(-n), " M memiliki pH ..."), 14 - n, "pOH = ".concat(n, ", pH = 14 \u2212 ").concat(n, " = ").concat(14 - n, "."), "", opsiKecil);
+  },
+  ikatan: function ikatan() {
+    var jenis = ambil(Object.keys(IKATAN)),
+      z = ambil(IKATAN[jenis]);
+    return {
+      t: "Senyawa ".concat(z, " memiliki ikatan ..."),
+      o: ["Ion", "Kovalen", "Logam"],
+      j: ["Ion", "Kovalen"].indexOf(jenis),
+      p: jenis === "Ion" ? "Ikatan ion terjadi antara logam dan nonlogam." : "Ikatan kovalen terjadi antarnonlogam (pemakaian bersama elektron)."
+    };
+  },
+  senyawa: pasangan(SENYAWA, function (a) {
+    return "Nama senyawa ".concat(a, " adalah ...");
+  }, function (b) {
+    return "Rumus kimia ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  // Biologi
+  organel: pasangan(ORGANEL, function (a) {
+    return "Fungsi ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "Organel sel dengan fungsi ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  darah: pasangan(SEL_DARAH, function (a) {
+    return "Fungsi ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "Sel darah yang berfungsi ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  enzim: pasangan(ENZIM, function (a) {
+    return "Fungsi enzim ".concat(a.toLowerCase(), " adalah ...");
+  }, function (b) {
+    return "Enzim yang ".concat(b, " adalah ...");
+  }, function (x) {
+    return x;
+  }, kapital),
+  kingdom: function kingdom() {
+    var k = ambil(Object.keys(KINGDOM)),
+      o = ambil(KINGDOM[k]);
+    return {
+      t: "".concat(kapital(o), " termasuk kingdom ..."),
+      o: Object.keys(KINGDOM),
+      j: Object.keys(KINGDOM).indexOf(k),
+      p: "".concat(kapital(o), " termasuk ").concat(k, ".")
+    };
+  },
+  takson: function takson() {
+    var i = rnd(0, 5);
+    return pg("Urutan takson dari tingkat tinggi ke rendah: setelah ".concat(TAKSON[i], " adalah ..."), TAKSON[i + 1], TAKSON, "Urutannya: ".concat(TAKSON.join(" → "), "."));
+  },
+  rantai: function rantai() {
+    var r = ambil(RANTAI),
+      i = rnd(0, 3);
+    return pg("Pada rantai makanan ".concat(r.join(" → "), ", yang berperan sebagai ").concat(PERAN_RANTAI[i], " adalah ..."), kapital(r[i]), r.map(kapital), "".concat(kapital(r[i]), " adalah ").concat(PERAN_RANTAI[i], "."));
+  },
+  genetika: function genetika() {
+    var _ambil115 = ambil([["Perbandingan fenotip F2 persilangan monohibrid dominan penuh adalah ...", "3 : 1"], ["Perbandingan genotip F2 persilangan monohibrid (AA : Aa : aa) adalah ...", "1 : 2 : 1"], ["Perbandingan fenotip F2 persilangan dihibrid dominan penuh adalah ...", "9 : 3 : 3 : 1"]]),
+      _ambil116 = _slicedToArray(_ambil115, 2),
+      t = _ambil116[0],
+      b = _ambil116[1];
+    return pg(t, b, ["3 : 1", "1 : 2 : 1", "9 : 3 : 3 : 1", "1 : 1", "12 : 3 : 1"], "Menurut hukum Mendel, jawabannya ".concat(b, "."));
+  }
+};
+var S = GEN_SAINS,
+  BX = GEN_BIND_EXTRA,
+  EX = GEN_BING_EXTRA;
+
+/* ---------- Pelajaran per kelas ---------- */
+var MAPEL_INFO = {
+  huruf: {
+    nama: "Mengenal Huruf",
+    ikon: "🔤",
+    warna: "#ffd6e0"
+  },
+  angka: {
+    nama: "Mengenal Angka",
+    ikon: "🔢",
+    warna: "#ffe3a3"
+  },
+  warna: {
+    nama: "Warna & Bentuk",
+    ikon: "🎨",
+    warna: "#c9f2dd"
+  },
+  mtk: {
+    nama: "Matematika",
+    ikon: "🔢",
+    warna: "#ffe3a3"
+  },
+  bind: {
+    nama: "Bahasa Indonesia",
+    ikon: "📖",
+    warna: "#ffd6e0"
+  },
+  bing: {
+    nama: "Bahasa Inggris",
+    ikon: "🇬🇧",
+    warna: "#ffdcc2"
+  },
+  ipas: {
+    nama: "IPAS",
+    ikon: "🌱",
+    warna: "#c9f2dd"
+  },
+  ipa: {
+    nama: "IPA",
+    ikon: "🔬",
+    warna: "#c9f2dd"
+  },
+  fisika: {
+    nama: "Fisika",
+    ikon: "🧲",
+    warna: "#d6e4ff"
+  },
+  kimia: {
+    nama: "Kimia",
+    ikon: "⚗️",
+    warna: "#eadcff"
+  },
+  biologi: {
+    nama: "Biologi",
+    ikon: "🦠",
+    warna: "#c9f2dd"
+  },
+  pai: {
+    nama: "Pendidikan Agama Islam",
+    ikon: "🕌",
+    warna: "#d6e4ff"
+  },
+  fiqih: {
+    nama: "Fiqih",
+    ikon: "🤲",
+    warna: "#cdeffd"
+  },
+  arab: {
+    nama: "Bahasa Arab",
+    ikon: "🌙",
+    warna: "#eadcff"
+  },
+  campur: {
+    nama: "Campuran",
+    ikon: "🎲",
+    warna: "#fff1b8"
+  }
+};
+var JENJANG = {
+  tk: {
+    nama: "TK",
+    ikon: "🧸"
+  },
+  sd: {
+    nama: "SD/MI",
+    ikon: "🎒"
+  },
+  smp: {
+    nama: "SMP/MTs",
+    ikon: "📘"
+  },
+  sma: {
+    nama: "SMA/MA",
+    ikon: "🎓"
+  }
+};
+var KELAS_INFO = {
+  tka: {
+    nama: "TK A",
+    jenjang: "tk",
+    g: -1
+  },
+  tkb: {
+    nama: "TK B",
+    jenjang: "tk",
+    g: 0
+  }
+};
+for (var k = 1; k <= 12; k++) KELAS_INFO[String(k)] = {
+  nama: "Kelas " + k,
+  jenjang: k <= 6 ? "sd" : k <= 9 ? "smp" : "sma",
+  g: k
+};
+function mapelKelas(kelas) {
+  var g = KELAS_INFO[kelas].g;
+  if (g <= 0) return ["huruf", "angka", "warna"];
+  if (g <= 6) return ["mtk", "bind", "bing", "ipas", "pai", "fiqih", "arab"];
+  if (g <= 9) return ["mtk", "bind", "bing", "ipa"];
+  return ["mtk", "bind", "bing", "fisika", "kimia", "biologi"];
+}
+// Daftar pembuat soal untuk satu pelajaran di satu kelas
+function generatorKelas(mapel, kelas) {
+  var g = KELAS_INFO[kelas].g;
+  var B = GEN_BIND,
+    I = GEN_IPAS;
+  switch (mapel) {
+    case "huruf":
+      return GEN_TK_HURUF;
+    case "angka":
+      return GEN_TK_ANGKA;
+    case "warna":
+      return GEN_TK_WARNA;
+    case "mtk":
+      return [null, GEN_MTK1, GEN_MTK2, GEN_MTK, GEN_MTK4, GEN_MTK5, GEN_MTK6, GEN_MTK7, GEN_MTK8, GEN_MTK9, GEN_MTK10, GEN_MTK11, GEN_MTK12][g];
+    case "bind":
+      if (g <= 2) return [BX.hurufAwal, BX.sukuKata, B[0], B[1], B[2], B[4], B[5]];
+      if (g <= 4) return B;
+      if (g <= 6) return B.concat([BX.imbuhan, BX.peribahasa, BX.baku]);
+      if (g <= 9) return [B[0], B[1], B[4], BX.imbuhan, BX.peribahasa, BX.majas, BX.baku, BX.bakuDari, BX.jenisTeks];
+      return [BX.majas, BX.baku, BX.bakuDari, BX.jenisTeks, BX.peribahasa, BX.imbuhan];
+    case "bing":
+      if (g <= 3) return GEN_BING;
+      if (g <= 6) return GEN_BING.concat([EX.toBe, EX.plural, EX.pronoun]);
+      if (g <= 9) return [GEN_BING[0], EX.toBe, EX.plural, EX.pronoun, EX.present, EX.past, EX.continuous, EX.comparative];
+      return [EX.v2v3, EX.past, EX.pasif, EX.perfect, EX.kondisi, EX.tag, EX.comparative, EX.present];
+    case "ipas":
+      return g <= 4 ? I : I.concat([S.planet, S.organ, S.cahaya, S.daurAir]);
+    case "ipa":
+      return g === 7 ? [S.satuan, S.suhu, S.massaJenis, S.unsur, S.asamBasa, S.vertebrata, S.planet] : g === 8 ? [S.gaya, S.tekanan, S.kecepatan, S.organ, S.darah, S.usaha, S.cahaya] : [S.ohm, S.hambatan, S.gelombang, S.genetika, S.unsur, S.asamBasa, S.ep];
+    case "fisika":
+      return g === 10 ? [S.glbbV, S.glbbS, S.kmjam, S.gaya, S.satuan] : g === 11 ? [S.usaha, S.ep, S.ek, S.daya, S.momentum, S.gaya] : [S.ohm, S.hambatan, S.gelombang, S.momentum, S.daya];
+    case "kimia":
+      return g === 10 ? [S.nomorAtom, S.valensi, S.unsur, S.ikatan, S.senyawa] : g === 11 ? [S.mr, S.mol, S.ph, S.senyawa, S.ikatan] : [S.mol, S.mr, S.ph, S.valensi, S.senyawa];
+    case "biologi":
+      return g === 10 ? [S.kingdom, S.takson, S.rantai, S.vertebrata] : g === 11 ? [S.organel, S.darah, S.enzim, S.organ] : [S.genetika, S.organel, S.enzim, S.rantai, S.kingdom];
+    case "pai":
+      return GEN_PAI;
+    case "fiqih":
+      return GEN_FIQIH;
+    case "arab":
+      return GEN_ARAB;
+  }
+  return [];
+}
+
+/* =========================================================
    MEMILIH SOAL — selalu soal yang belum pernah dijawab
    ========================================================= */
-function soalTetapBaru(kode, riwayat) {
-  return acak(BANK[kode].soal.map(function (s) {
+// ID riwayat: kelas 3 memakai awalan lama (mis. "mtk|") supaya riwayat lama tetap terbaca
+var awalanId = function awalanId(k) {
+  return kelasAktif === "3" ? k : kelasAktif + ":" + k;
+};
+function soalTetapBaru(k, riwayat) {
+  if (kelasAktif !== "3" || !BANK[k]) return [];
+  return acak(BANK[k].soal.map(function (s) {
     return Object.assign({}, s, {
-      id: idSoal(kode, s)
+      id: idSoal(k, s)
     });
   }).filter(function (s) {
     return !riwayat.has(s.id);
   }));
 }
-function buatSoalOtomatis(kode, dipakai) {
+function buatSoalOtomatis(k, dipakai) {
+  var gens = generatorKelas(k, kelasAktif);
   for (var i = 0; i < 300; i++) {
-    var s = ambil(GENERATOR[kode])();
-    s.id = idSoal(kode, s);
+    var s = ambil(gens)();
+    s.id = idSoal(awalanId(k), s);
     if (!dipakai.has(s.id)) return s;
   }
   return null;
@@ -1786,7 +3116,7 @@ function pilihSoalBaru(kode) {
   var riwayat = bacaRiwayat(nama),
     dipakai = new Set(riwayat),
     hasil = [];
-  var daftarKode = kode === "campur" ? Object.keys(BANK) : [kode];
+  var daftarKode = kode === "campur" ? mapelKelas(kelasAktif) : [kode];
   var tetap = acak(daftarKode.flatMap(function (k) {
     return soalTetapBaru(k, riwayat).map(function (s) {
       return Object.assign({}, s, {
@@ -1800,13 +3130,13 @@ function pilihSoalBaru(kode) {
   });
   var gagal = 0;
   while (hasil.length < JUMLAH_SOAL && gagal < 50) {
-    var k = ambil(daftarKode),
-      s = buatSoalOtomatis(k, dipakai);
+    var _k = ambil(daftarKode),
+      s = buatSoalOtomatis(_k, dipakai);
     if (!s) {
       gagal++;
       continue;
     }
-    s.kode = k;
+    s.kode = _k;
     dipakai.add(s.id);
     hasil.push(s);
   }
@@ -1815,7 +3145,7 @@ function pilihSoalBaru(kode) {
     // Soal baru habis: soal yang PALING LAMA dikerjakan boleh muncul lagi untuk mengulang
     var milik = _toConsumableArray(riwayat).filter(function (id) {
       return daftarKode.some(function (k) {
-        return id.startsWith(k + "|");
+        return id.indexOf(awalanId(k) + "|") === 0;
       });
     });
     milik.slice(0, Math.ceil(milik.length / 2)).forEach(function (id) {
@@ -1827,17 +3157,17 @@ function pilihSoalBaru(kode) {
       return dipakai.add(s.id);
     });
     while (hasil.length < JUMLAH_SOAL) {
-      var _k = ambil(daftarKode),
-        _s = buatSoalOtomatis(_k, dipakai);
+      var _k2 = ambil(daftarKode),
+        _s = buatSoalOtomatis(_k2, dipakai);
       if (!_s) break;
-      _s.kode = _k;
+      _s.kode = _k2;
       dipakai.add(_s.id);
       hasil.push(_s);
     }
     info = "🌟 MasyaAllah! Hampir semua soal pelajaran ini sudah kamu kerjakan. Beberapa soal lama muncul lagi untuk mengulang pelajaran.";
   }
   if (kode === "campur") hasil.forEach(function (s) {
-    return s.ikon = BANK[s.kode].ikon;
+    return s.ikon = MAPEL_INFO[s.kode].ikon;
   });
   return {
     terpilih: acak(hasil),
@@ -1850,9 +3180,13 @@ function tandaiDijawab(id) {
   simpanRiwayat(nama, r);
 }
 function jumlahDikerjakan(kode, n) {
-  var r = _toConsumableArray(bacaRiwayat(n));
-  return kode === "campur" ? r.length : r.filter(function (id) {
-    return id.startsWith(kode + "|");
+  var awal = (kode === "campur" ? mapelKelas(kelasAktif) : [kode]).map(function (k) {
+    return awalanId(k) + "|";
+  });
+  return _toConsumableArray(bacaRiwayat(n)).filter(function (id) {
+    return awal.some(function (a) {
+      return id.indexOf(a) === 0;
+    });
   }).length;
 }
 
@@ -1911,45 +3245,86 @@ function tampilkan(id) {
   }
 }
 
-/* Daftar mapel */
+/* Pemilih jenjang, kelas, dan pelajaran */
+var jenjangAktif = "sd";
+var namaMapel = function namaMapel(k) {
+  return MAPEL_INFO[k];
+};
 function buatDaftarMapel() {
-  var semua = Object.assign({}, BANK, {
-    campur: MODE_CAMPUR
+  var simpan = baca("kuisMI3:kelas", "3");
+  kelasAktif = KELAS_INFO[simpan] ? simpan : "3";
+  jenjangAktif = KELAS_INFO[kelasAktif].jenjang;
+  renderPilihan();
+}
+function tombolChip(teks, aktif, klik) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "chip-pilih" + (aktif ? " aktif" : "");
+  b.textContent = teks;
+  b.addEventListener("click", klik);
+  return b;
+}
+function renderPilihan() {
+  var wj = $("daftarJenjang"),
+    wk = $("daftarKelas"),
+    wm = $("daftarMapel");
+  wj.innerHTML = "";
+  wk.innerHTML = "";
+  wm.innerHTML = "";
+  Object.keys(JENJANG).forEach(function (j) {
+    return wj.appendChild(tombolChip(JENJANG[j].ikon + " " + JENJANG[j].nama, j === jenjangAktif, function () {
+      if (j === jenjangAktif) return;
+      jenjangAktif = j;
+      kelasAktif = Object.keys(KELAS_INFO).filter(function (k) {
+        return KELAS_INFO[k].jenjang === j;
+      })[0];
+      tulis("kuisMI3:kelas", kelasAktif);
+      pilihanMapel = null;
+      renderPilihan();
+    }));
   });
-  var wadah = $("daftarMapel");
-  Object.entries(semua).forEach(function (_ref10) {
-    var _ref11 = _slicedToArray(_ref10, 2),
-      kode = _ref11[0],
-      m = _ref11[1];
-    var b = document.createElement("button");
+  Object.keys(KELAS_INFO).filter(function (k) {
+    return KELAS_INFO[k].jenjang === jenjangAktif;
+  }).forEach(function (k) {
+    return wk.appendChild(tombolChip(KELAS_INFO[k].nama, k === kelasAktif, function () {
+      kelasAktif = k;
+      tulis("kuisMI3:kelas", k);
+      pilihanMapel = null;
+      renderPilihan();
+    }));
+  });
+  mapelKelas(kelasAktif).concat(["campur"]).forEach(function (kode) {
+    var m = namaMapel(kode),
+      b = document.createElement("button");
     b.type = "button";
-    b.className = "mapel";
+    b.className = "mapel" + (kode === pilihanMapel ? " dipilih" : "");
     b.style.background = m.warna;
     b.dataset.kode = kode;
     b.innerHTML = "<span class=\"ikon\">".concat(m.ikon, "</span><b>").concat(m.nama, "</b><small></small>");
     b.addEventListener("click", function () {
-      document.querySelectorAll(".mapel").forEach(function (x) {
+      wm.querySelectorAll(".mapel").forEach(function (x) {
         return x.classList.remove("dipilih");
       });
       b.classList.add("dipilih");
       pilihanMapel = kode;
       $("pesanError").textContent = "";
-      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama;
+      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (jenjangAktif === "tk" ? "" : " " + JENJANG[jenjangAktif].nama);
     });
-    wadah.appendChild(b);
+    wm.appendChild(b);
   });
+  $("infoPilihan").textContent = "";
   perbaruiInfoMapel();
 }
 
-/* Tulisan kecil di kartu pelajaran: berapa soal yang belum dikerjakan */
+/* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
 function perbaruiInfoMapel() {
   var n = $("namaSiswa").value.trim();
-  document.querySelectorAll(".mapel").forEach(function (b) {
+  document.querySelectorAll("#daftarMapel .mapel").forEach(function (b) {
     var kode = b.dataset.kode;
     var teks = "♾️ Soal selalu baru";
     if (n) {
       teks = "\u2705 ".concat(jumlahDikerjakan(kode, n), " soal dikerjakan");
-      if (kode === "mtk") teks += " \u2022 Level ".concat(bacaLevel(n, "mtk"));
+      if (kode === "mtk" && kelasAktif === "3") teks += " \u2022 Level ".concat(bacaLevel(n, "mtk"));
     }
     b.querySelector("small").textContent = teks;
   });
@@ -1966,7 +3341,7 @@ function mulai() {
     $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚";
     return;
   }
-  levelAktif = bacaLevel(nama, "mtk");
+  levelAktif = kelasAktif === "3" ? bacaLevel(nama, "mtk") : 1;
   var _pilihSoalBaru = pilihSoalBaru(pilihanMapel),
     terpilih = _pilihSoalBaru.terpilih,
     info = _pilihSoalBaru.info;
@@ -1987,8 +3362,8 @@ function mulai() {
   nomor = 0;
   skor = 0;
   catatan = [];
-  var m = pilihanMapel === "campur" ? MODE_CAMPUR : BANK[pilihanMapel];
-  $("infoMapel").textContent = m.ikon + " " + m.nama + (pilihanMapel === "mtk" ? " • Level " + levelAktif : "");
+  var m = namaMapel(pilihanMapel);
+  $("infoMapel").textContent = m.ikon + " " + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" ? " • Level " + levelAktif : "");
   tampilkan("layarKuis");
   tampilSoal();
 }
@@ -2085,7 +3460,7 @@ function selesai() {
   }
 
   // Level Matematika naik/turun mengikuti nilai, supaya anak terus tertantang
-  if (pilihanMapel === "mtk") {
+  if (pilihanMapel === "mtk" && kelasAktif === "3") {
     var lama = levelAktif,
       baru = nilai >= 80 ? Math.min(3, lama + 1) : nilai < 50 ? Math.max(1, lama - 1) : lama;
     simpanLevel(nama, "mtk", baru);
@@ -2153,10 +3528,10 @@ function batang(label, nilai, maks, lemah) {
 }
 // satu pertanyaan: { t, o: [{ teks, nilai }], syarat?(jawaban) }
 var opsi = function opsi(daftar) {
-  return daftar.map(function (_ref12) {
-    var _ref13 = _slicedToArray(_ref12, 2),
-      teks = _ref13[0],
-      nilai = _ref13[1];
+  return daftar.map(function (_ref10) {
+    var _ref11 = _slicedToArray(_ref10, 2),
+      teks = _ref11[0],
+      nilai = _ref11[1];
     return {
       teks: teks,
       nilai: nilai
@@ -2456,19 +3831,19 @@ var GEN_OTAK = {
     return pg("Mana yang berbeda dari yang lain? ".concat(d.join(" ")), lain, d, "".concat(lain, " tidak satu kelompok dengan yang lain."));
   }],
   kata: [function () {
-    var _ambil43 = ambil(SOAL_KATA),
-      _ambil44 = _slicedToArray(_ambil43, 3),
-      t = _ambil44[0],
-      b = _ambil44[1],
-      s = _ambil44[2];
+    var _ambil117 = ambil(SOAL_KATA),
+      _ambil118 = _slicedToArray(_ambil117, 3),
+      t = _ambil118[0],
+      b = _ambil118[1],
+      s = _ambil118[2];
     return pg(t, b, s, "Jawabannya ".concat(b, "."));
   }],
   logika: [function () {
-    var _ambil45 = ambil(SOAL_LOGIKA),
-      _ambil46 = _slicedToArray(_ambil45, 3),
-      t = _ambil46[0],
-      b = _ambil46[1],
-      s = _ambil46[2];
+    var _ambil119 = ambil(SOAL_LOGIKA),
+      _ambil120 = _slicedToArray(_ambil119, 3),
+      t = _ambil120[0],
+      b = _ambil120[1],
+      s = _ambil120[2];
     return pg(t, b, s, "Jawabannya ".concat(b, "."));
   }]
 };
@@ -2550,16 +3925,16 @@ var PILIH_DARAH = opsi([["🅰️ A", "A"], ["🅱️ B", "B"], ["🆎 AB", "AB"
 /* ---------- DAFTAR TES ---------- */
 var TES = {
   mesin: {
-    nama: "Gaya Belajar 5 Mesin",
+    nama: "Tes Gaya Belajar (ala STIFIn)",
     ikon: "🧬",
     warna: "#e2c2ff",
     tglLahir: true,
     intro: "<p>Jawab 15 pertanyaan dengan jujur. Pilih jawaban yang <b>paling mirip</b> dengan dirimu. Tidak ada jawaban benar atau salah.</p>\n      <p class=\"catatan-ortu\">\u2139\uFE0F Tes ini terinspirasi 5 jenis kecerdasan dalam konsep STIFIn (Sensing, Thinking, Intuiting, Feeling, Insting). <b>Tes STIFIn resmi memakai pemindaian sidik jari</b> oleh lembaga resminya. Tanggal lahir tidak bisa menentukan tipe kecerdasan, jadi di sini tanggal lahir hanya dipakai untuk menghitung usia. Tipe ditentukan dari jawaban.</p>",
     soal: function soal() {
-      return SOAL_MESIN.map(function (_ref14) {
-        var _ref15 = _slicedToArray(_ref14, 2),
-          t = _ref15[0],
-          pil = _ref15[1];
+      return SOAL_MESIN.map(function (_ref12) {
+        var _ref13 = _slicedToArray(_ref12, 2),
+          t = _ref13[0],
+          pil = _ref13[1];
         return {
           t: t,
           o: acak(pil.map(function (teks, i) {
@@ -2746,8 +4121,8 @@ var TES = {
     }
   },
   otak: {
-    nama: "Tes Asah Otak (IQ)",
-    ikon: "🧩",
+    nama: "Tes Kecerdasan (ala IQ)",
+    ikon: "🧠",
     warna: "#c9f2dd",
     intro: "<p>Ada <b>20 soal</b> tentang angka, pola gambar, kata, dan logika. Kerjakan sendiri tanpa bantuan, ya. Waktu pengerjaan dicatat.</p>\n      <p class=\"catatan-ortu\">\u2139\uFE0F Ini <b>latihan kemampuan berpikir</b>, bukan tes IQ resmi. Skor IQ yang sah hanya bisa didapat dari tes terstandar yang dilakukan psikolog, jadi tes ini <b>tidak memberi angka IQ</b>. Hasilnya berupa skor dan kekuatan berpikir per bidang.</p>",
     soal: soalOtak,
@@ -2869,10 +4244,10 @@ function hitungKepribadian(j) {
   j.forEach(function (v) {
     return n[v] = (n[v] || 0) + 1;
   });
-  var type = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]].map(function (_ref16) {
-    var _ref17 = _slicedToArray(_ref16, 2),
-      a = _ref17[0],
-      b = _ref17[1];
+  var type = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]].map(function (_ref14) {
+    var _ref15 = _slicedToArray(_ref14, 2),
+      a = _ref15[0],
+      b = _ref15[1];
     return (n["m:" + a] || 0) >= (n["m:" + b] || 0) ? a : b;
   }).join("");
   var d = {},
@@ -3006,11 +4381,11 @@ function gambarKartu(R) {
   c.fillStyle = TC[R.tk[0]];
   c.fillRect(0, 0, W, H);
   c.fillStyle = "rgba(255,255,255,.25)";
-  [[120, 140, 90], [960, 260, 130], [90, 1700, 120], [1000, 1820, 90]].forEach(function (_ref18) {
-    var _ref19 = _slicedToArray(_ref18, 3),
-      x = _ref19[0],
-      y = _ref19[1],
-      r = _ref19[2];
+  [[120, 140, 90], [960, 260, 130], [90, 1700, 120], [1000, 1820, 90]].forEach(function (_ref16) {
+    var _ref17 = _slicedToArray(_ref16, 3),
+      x = _ref17[0],
+      y = _ref17[1],
+      r = _ref17[2];
     c.beginPath();
     c.arc(x, y, r, 0, 7);
     c.fill();
@@ -3033,18 +4408,18 @@ function gambarKartu(R) {
   img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(maskot(R.tk[0]));
 }
 TES.kepribadian = {
-  nama: "Tes Kepribadian (MBTI, DISC, Temperamen)",
+  nama: "Tes Kepribadian (ala MBTI, DISC, Temperamen)",
   ikon: "🎭",
   warna: "#ffe0dd",
   intro: "<div style=\"display:flex;justify-content:center;gap:6px;flex-wrap:wrap\">".concat(["K", "S", "M", "P"].map(function (m) {
     return "<div style=\"width:70px;text-align:center;font-size:13px;font-weight:800\">".concat(maskot(m).replace('width="150" height="162"', 'width="70" height="76"')).concat(TN[m], "</div>");
   }).join(""), "</div>\n    <p>MBTI, DISC, dan temperamen dalam <b>28 pertanyaan singkat</b>. Cocok untuk segala umur, termasuk Ayah dan Bunda. Selesai sekitar 5 menit.</p>\n    <p>Tidak ada jawaban benar atau salah. Pilih yang <b>paling mirip dirimu sehari-hari</b>, bukan yang kamu inginkan.</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Tes ini untuk hiburan dan refleksi diri, bukan pengganti tes psikologi resmi.</p>"),
   soal: function soal() {
-    return SOAL_KEPRIBADIAN.map(function (_ref20) {
-      var _ref21 = _slicedToArray(_ref20, 3),
-        bagian = _ref21[0],
-        t = _ref21[1],
-        pil = _ref21[2];
+    return SOAL_KEPRIBADIAN.map(function (_ref18) {
+      var _ref19 = _slicedToArray(_ref18, 3),
+        bagian = _ref19[0],
+        t = _ref19[1],
+        pil = _ref19[2];
       return {
         t: t,
         bagian: bagian,
@@ -3102,7 +4477,7 @@ function kirimKeSheet(info, ortu) {
   } catch (e) {}
 }
 function isiPromo(el, info, ortu) {
-  var teksWA = "Assalamu'alaikum HadirFlow, saya ".concat(ortu.nama, ", orang tua dari ").concat(nama, ". Anak saya baru mengerjakan \"").concat(info.tes, "\" di Kuis Pintar Kelas 3 MI dengan hasil: ").concat(info.hasil, ". Saya ingin konsultasi.");
+  var teksWA = "Assalamu'alaikum HadirFlow, saya ".concat(ortu.nama, ", orang tua dari ").concat(nama, ". Anak saya baru mengerjakan \"").concat(info.tes, "\" di Tes Gratis HadirFlow dengan hasil: ").concat(info.hasil, ". Saya ingin konsultasi.");
   el.innerHTML = "\n    ".concat(NOMOR_WA_ADMIN ? "<div class=\"kotak-promo\"><b>\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67 Untuk ".concat(esc(ortu.nama), "</b>\n      <p>Ingin tahu arti hasil ").concat(esc(nama), " dan cara mendampinginya belajar? Chat kami, gratis.</p>\n      <a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/").concat(NOMOR_WA_ADMIN, "?text=").concat(encodeURIComponent(teksWA), "\">\uD83D\uDCAC Konsultasi via WhatsApp</a></div>") : "", "\n    <div class=\"kotak-promo hf\"><b>\uD83C\uDFE2 Kenalan dengan HadirFlow</b>\n      <p>Aplikasi absensi wajah anti titip absen dan penggajian karyawan otomatis untuk bisnis Anda. Hadir tercatat, gaji tepat.</p>\n      <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"").concat(LINK_HADIRFLOW, "\">\uD83D\uDE80 Buka HadirFlow</a></div>\n    <p class=\"sub-kecil\">Bukan ").concat(esc(ortu.nama), "? <button type=\"button\" class=\"link-reset\" data-ganti-ortu>Ganti data orang tua</button></p>");
   var b = el.querySelector("[data-ganti-ortu]");
   if (b) b.addEventListener("click", function () {
@@ -3188,7 +4563,7 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  Object.keys(TES).forEach(function (id) {
+  ["otak", "mesin", "kepribadian", "kekuatan", "mood", "darah"].forEach(function (id) {
     var t = TES[id],
       b = document.createElement("button"),
       akhir = n ? baca(kunci("tes-" + id, n), null) : null;
@@ -3334,6 +4709,26 @@ $("btnTesMundur").addEventListener("click", mundurTes);
 $("btnKembaliTes").addEventListener("click", function () {
   gantiTab("tabDiri");
   tampilkan("layarMulai");
+});
+document.querySelectorAll("[data-buka]").forEach(function (b) {
+  return b.addEventListener("click", function () {
+    var id = b.getAttribute("data-buka");
+    if (id === "pelajaran") {
+      gantiTab("tabPelajaran");
+      $("daftarJenjang").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+      return;
+    }
+    gantiTab("tabDiri");
+    if (!$("namaSiswa").value.trim()) {
+      $("namaSiswa").focus();
+      $("pesanError").textContent = "Tulis nama anak dulu, lalu pilih tesnya. 😊";
+      return;
+    }
+    bukaTes(id);
+  });
 });
 $("btnGerbang").addEventListener("click", kirimGerbang);
 $("ortuWA").addEventListener("keydown", function (e) {

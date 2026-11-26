@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kuis Pintar Kelas 3 MI</title>
+<title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -104,6 +104,13 @@
   .promo-ortu a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
   .tombol.wa { background: #1faa59; box-shadow: 0 5px 0 #168544; }
   .tombol.hf { background: #ffd23f; color: #072B6B; box-shadow: 0 5px 0 #d9ad00; }
+  .lencana { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; text-align: left; }
+  .lencana button { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fff; color: var(--ink); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow); touch-action: manipulation; }
+  .lencana button small { font-weight: 500; color: var(--muted); }
+  .lencana button b { float: right; background: var(--primary); color: #fff; border-radius: 999px; padding: 0 10px; font-size: 13px; line-height: 1.8; }
+  .pilih-chip { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-pilih { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fffdf7; color: var(--ink); border-radius: 999px; padding: 6px 14px; touch-action: manipulation; }
+  .chip-pilih.aktif { background: var(--primary); border-color: var(--primary); color: #fff; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -182,6 +189,7 @@
   .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
   @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
 
+  @media (max-width: 520px) { .lencana { grid-template-columns: 1fr; } }
   @media (max-width: 480px) {
     body { font-size: 17px; }
     .kartu { padding: 16px; border-radius: 20px; }
@@ -199,8 +207,14 @@
   <section id="layarMulai" class="screen aktif">
     <div class="header">
       <span class="maskot" aria-hidden="true">🦉</span>
-      <h1>Kuis Pintar Kelas 3 MI</h1>
-      <p class="sub">Ayo belajar sambil bermain dan kenali dirimu!</p>
+      <h1>Tes Gratis HadirFlow</h1>
+      <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA. Semua gratis!</p>
+      <div class="lencana">
+        <button type="button" data-buka="otak">🧠 Tes Kecerdasan <small>(ala IQ)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="mesin">🧬 Tes Gaya Belajar <small>(ala STIFIn)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="kepribadian">🎭 Tes Kepribadian <small>(ala MBTI)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="pelajaran">📚 Kuis Pelajaran TK–SMA <b>Gratis</b></button>
+      </div>
     </div>
     <div class="kartu">
       <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
@@ -212,7 +226,11 @@
       </div>
 
       <div id="tabPelajaran" class="isi-tab aktif">
-        <p class="judul">📚 Pilih pelajaran:</p>
+        <p class="judul">🎒 Pilih jenjang:</p>
+        <div class="pilih-chip" id="daftarJenjang"></div>
+        <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
+        <div class="pilih-chip" id="daftarKelas"></div>
+        <p class="judul" style="margin-top:12px">📚 Pilih pelajaran:</p>
         <div class="mapel-grid" id="daftarMapel"></div>
         <div class="info-pilihan" id="infoPilihan"></div>
         <div class="tengah">
@@ -337,6 +355,7 @@
 if (!Array.prototype.flat) Array.prototype.flat = function () { return [].concat.apply([], this); };
 if (!Array.prototype.flatMap) Array.prototype.flatMap = function (fn) { return [].concat.apply([], this.map(fn)); };
 if (!String.prototype.padStart) String.prototype.padStart = function (n, c) { var s = String(this); while (s.length < n) s = c + s; return s; };
+if (!Object.values) Object.values = function (o) { return Object.keys(o).map(function (k) { return o[k]; }); };
 if (!Object.entries) Object.entries = function (o) { return Object.keys(o).map(function (k) { return [k, o[k]]; }); };
 if (!Array.from) Array.from = function (a, fn) { var r = []; for (var i = 0; i < a.length; i++) r.push(fn ? fn(a[i], i) : a[i]); return r; };
 window.onerror = function (msg, src, baris) {
@@ -478,7 +497,6 @@ const LINK_HADIRFLOW = "https://hadirflow.my.id/?ref=kuistes";
 /* Pengaturan */
 const JUMLAH_SOAL = 10;      // jumlah soal per kuis
 const MAKS_SOAL_TETAP = 3;   // paling banyak soal dari BANK SOAL per kuis; sisanya dibuat otomatis
-const MODE_CAMPUR = { nama: "Campuran", ikon: "🎲", warna: "#fff1b8" };
 
 /* ========================================================= */
 const $ = (id) => document.getElementById(id);
@@ -818,22 +836,394 @@ const GEN_BING = [
 const GENERATOR = { mtk: GEN_MTK, bind: GEN_BIND, ipas: GEN_IPAS, pai: GEN_PAI, fiqih: GEN_FIQIH, arab: GEN_ARAB, bing: GEN_BING };
 
 /* =========================================================
+   KURIKULUM TK–SMA — pembuat soal otomatis per kelas
+   g = tingkat kelas: TK A = -1, TK B = 0, SD 1–6, SMP 7–9, SMA 10–12
+   ========================================================= */
+let kelasAktif = "3";
+const G = () => KELAS_INFO[kelasAktif].g;
+const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+const sup = (n) => String(n).split("").map((c) => SUP[c] || c).join("");
+// Pengecoh untuk bilangan kecil (TK/SD awal) dan bilangan bulat (boleh negatif)
+function opsiKecil(benar, akhiran = "") {
+  const calon = acak([benar + 1, benar - 1, benar + 2, benar - 2, benar + 3]).filter((x) => x > 0 && x !== benar);
+  return { o: [benar, ...calon.slice(0, 3)].map((x) => fmt(x) + akhiran), j: 0 };
+}
+function opsiBulat(benar, akhiran = "") {
+  const calon = acak([benar + 1, benar - 1, -benar, benar + 2, benar - 2, benar + 10, benar - 10]).filter((x) => x !== benar);
+  return { o: [benar, ...[...new Set(calon)].slice(0, 3)].map((x) => String(x).replace("-", "−") + akhiran), j: 0 };
+}
+const angkaSoal = (t, benar, p, akhiran = "", fn = opsiAngka) => Object.assign({ t, p }, fn(benar, akhiran));
+const fpb = (a, b) => (b ? fpb(b, a % b) : a);
+const kpk = (a, b) => (a * b) / fpb(a, b);
+
+/* ---------- TK: huruf, angka, warna & bentuk ---------- */
+const KATA_GAMBAR = [["🍎", "Apel"], ["🐱", "Kucing"], ["🚗", "Mobil"], ["🐟", "Ikan"], ["🌙", "Bulan"], ["☀️", "Matahari"], ["🐘", "Gajah"], ["🦆", "Bebek"], ["🍌", "Pisang"], ["🐄", "Sapi"], ["⭐", "Bintang"], ["🌸", "Bunga"], ["🍇", "Anggur"], ["🐍", "Ular"], ["🥚", "Telur"], ["🐰", "Kelinci"], ["🦁", "Singa"], ["🐔", "Ayam"], ["🏠", "Rumah"], ["⚽", "Bola"], ["🌳", "Pohon"], ["🍉", "Semangka"], ["🐊", "Buaya"], ["🐸", "Katak"], ["🦒", "Jerapah"], ["🥕", "Wortel"], ["🐭", "Tikus"], ["🍊", "Jeruk"], ["🐒", "Monyet"], ["🐝", "Lebah"], ["🍞", "Roti"], ["🥛", "Susu"], ["🌽", "Jagung"], ["🐐", "Kambing"], ["🐴", "Kuda"], ["🐧", "Penguin"], ["🦀", "Kepiting"], ["🍓", "Stroberi"], ["🐛", "Ulat"], ["🦉", "Burung hantu"]];
+const ABJAD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const BENDA_HITUNG = ["🍎", "⭐", "🐟", "🌸", "🍌", "⚽", "🐥", "🍓", "🚗", "🎈"];
+const ANGKA_KATA = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh"];
+const WARNA_BENDA = [["🍎", "apel", "Merah"], ["🍌", "pisang", "Kuning"], ["🥦", "brokoli", "Hijau"], ["🍆", "terong", "Ungu"], ["🥕", "wortel", "Oranye"], ["🐘", "gajah", "Abu-abu"], ["🍫", "cokelat batangan", "Cokelat"], ["🌊", "air laut", "Biru"], ["🍓", "stroberi", "Merah"], ["🍋", "lemon", "Kuning"], ["🐸", "katak", "Hijau"], ["🍇", "anggur", "Ungu"], ["🍊", "jeruk", "Oranye"], ["☁️", "awan", "Putih"], ["🐻", "beruang", "Cokelat"]];
+const BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["papan rambu jalan berbentuk segitiga", "Segitiga"], ["ubin lantai", "Persegi"], ["kotak bekal berbentuk sama sisi", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"]];
+const BENTUK_EMOJI = [["🔴", "Lingkaran"], ["🟦", "Persegi"], ["🔺", "Segitiga"], ["⭐", "Bintang"], ["❤️", "Hati"]];
+const kecil = () => (G() < 0 ? 5 : 10);
+const GEN_TK_HURUF = [
+  () => { const [e, k] = ambil(KATA_GAMBAR), h = k[0]; return pg(`${e} ${k} diawali huruf ...`, h, ABJAD, `${k} diawali huruf ${h}.`); },
+  () => { const i = rnd(0, 24), h = ABJAD[i + 1]; return pg(`Huruf setelah ${ABJAD[i]} adalah ...`, h, ABJAD.slice(Math.max(0, i - 2), i + 4), `Urutan: ${ABJAD[i]}, ${h}, ${ABJAD[i + 2] || ""}`); },
+  () => { const h = ambil(ABJAD); return pg(`Huruf kecil dari "${h}" adalah ...`, h.toLowerCase(), acak(ABJAD).slice(0, 6).map((x) => x.toLowerCase()), `${h} besar = ${h.toLowerCase()} kecil.`); },
+  () => { const [e, k] = ambil(KATA_GAMBAR), lain = KATA_GAMBAR.filter((x) => x[1][0] !== k[0]).map((x) => x[0] + " " + x[1]);
+    return pg(`Gambar yang namanya diawali huruf ${k[0]} adalah ...`, e + " " + k, lain, `${k} diawali huruf ${k[0]}.`); }
+];
+const GEN_TK_ANGKA = [
+  () => { const n = rnd(1, kecil()), e = ambil(BENDA_HITUNG); return angkaSoal(`Ada berapa gambar ini? ${e.repeat(n)}`, n, `Ayo hitung satu per satu: ada ${n}.`, "", opsiKecil); },
+  () => { const n = rnd(1, G() < 0 ? 8 : 19); return angkaSoal(`Angka setelah ${n} adalah ...`, n + 1, `${n}, lalu ${n + 1}.`, "", opsiKecil); },
+  () => { const n = rnd(2, G() < 0 ? 9 : 20); return angkaSoal(`Angka sebelum ${n} adalah ...`, n - 1, `${n - 1}, lalu ${n}.`, "", opsiKecil); },
+  () => { const e = ambil(BENDA_HITUNG); let a = rnd(1, kecil()), b; do { b = rnd(1, kecil()); } while (b === a);
+    const banyak = Math.max(a, b); return pg(`Mana yang lebih banyak?`, e.repeat(banyak), [e.repeat(a), e.repeat(b)], `${e.repeat(banyak)} ada ${banyak}, lebih banyak.`); },
+  () => { const n = rnd(1, 10); return pg(`Angka ${n} dibaca ...`, kapital(ANGKA_KATA[n]), ANGKA_KATA.slice(1).map(kapital), `${n} dibaca ${ANGKA_KATA[n]}.`); },
+  () => { const a = rnd(1, G() < 0 ? 3 : 5), b = rnd(1, G() < 0 ? 3 : 5), e = ambil(BENDA_HITUNG);
+    return angkaSoal(`${e.repeat(a)} + ${e.repeat(b)} = ...`, a + b, `${a} + ${b} = ${a + b}.`, "", opsiKecil); }
+];
+const GEN_TK_WARNA = [
+  () => { const [e, n, w] = ambil(WARNA_BENDA); return pg(`${e} Warna ${n} biasanya ...`, w, WARNA_BENDA.map((x) => x[2]), `${kapital(n)} berwarna ${w.toLowerCase()}.`); },
+  () => { const [b, s] = ambil(BENTUK_BENDA); return pg(`Bentuk ${b} seperti ...`, s, ["Lingkaran", "Segitiga", "Persegi", "Persegi panjang"], `${kapital(b)} berbentuk ${s.toLowerCase()}.`); },
+  () => { const [e, s] = ambil(BENTUK_EMOJI); return pg(`Gambar ${e} berbentuk ...`, s, BENTUK_EMOJI.map((x) => x[1]), `${e} adalah ${s.toLowerCase()}.`); },
+  () => { const w = ambil(["Merah", "Kuning", "Hijau", "Ungu", "Oranye"]), benda = WARNA_BENDA.filter((x) => x[2] === w), [e, n] = ambil(benda);
+    return pg(`Benda yang berwarna ${w.toLowerCase()} adalah ...`, `${e} ${kapital(n)}`, WARNA_BENDA.filter((x) => x[2] !== w).map((x) => `${x[0]} ${kapital(x[1])}`), `${kapital(n)} berwarna ${w.toLowerCase()}.`); }
+];
+
+/* ---------- MATEMATIKA per kelas (kelas 3 memakai GEN_MTK dengan level) ---------- */
+const JAM_KATA = (j, m) => String(j).padStart(2, "0") + "." + (m ? "30" : "00");
+const GEN_MTK1 = [
+  () => { const a = rnd(1, 10), b = rnd(1, 10); return angkaSoal(`${a} + ${b} = ...`, a + b, `${a} + ${b} = ${a + b}.`, "", opsiKecil); },
+  () => { const a = rnd(5, 20), b = rnd(1, a - 1); return angkaSoal(`${a} − ${b} = ...`, a - b, `${a} − ${b} = ${a - b}.`, "", opsiKecil); },
+  () => { const p = rnd(1, 9), s = rnd(0, 9); return angkaSoal(`${p} puluhan dan ${s} satuan adalah ...`, p * 10 + s, `${p} puluhan = ${p * 10}, ditambah ${s} menjadi ${p * 10 + s}.`); },
+  () => { const x = rnd(10, 99); let y; do { y = rnd(10, 99); } while (y === x); const t = x > y ? ">" : "<";
+    return { t: `Tanda yang tepat: ${x} ... ${y}`, o: [t, t === ">" ? "<" : ">", "="], j: 0, p: `${x} ${t === ">" ? "lebih dari" : "kurang dari"} ${y}.` }; },
+  () => { const j = rnd(1, 12); return pg(`Jarum pendek menunjuk angka ${j} dan jarum panjang menunjuk angka 12. Pukul berapa?`, JAM_KATA(j, 0), [JAM_KATA(j, 1), JAM_KATA(j % 12 + 1, 0), JAM_KATA(12, 0), JAM_KATA(j === 6 ? 7 : 6, 0)], `Jarum panjang di 12 berarti tepat. Jadi pukul ${JAM_KATA(j, 0)}.`); },
+  () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = rnd(2, 9), b = rnd(1, 9); return angkaSoal(`${nm} punya ${a} ${bd}, lalu diberi ${b} lagi. Sekarang ada ...`, a + b, `${a} + ${b} = ${a + b}.`, "", opsiKecil); },
+  GEN_TK_WARNA[1]
+];
+const GEN_MTK2 = [
+  () => { const a = rnd(20, 80), b = rnd(10, 99 - a); return angkaSoal(`${a} + ${b} = ...`, a + b, `${a} + ${b} = ${a + b}.`); },
+  () => { const a = rnd(30, 99), b = rnd(10, a - 5); return angkaSoal(`${a} − ${b} = ...`, a - b, `${a} − ${b} = ${a - b}.`); },
+  () => { const a = rnd(2, 5), b = rnd(1, 10); return angkaSoal(`${a} × ${b} = ...`, a * b, `${a} × ${b} = ${b} dijumlahkan ${a} kali = ${a * b}.`); },
+  () => { const b = rnd(2, 5), c = rnd(1, 10); return angkaSoal(`${b * c} : ${b} = ...`, c, `Karena ${b} × ${c} = ${b * c}.`); },
+  () => { const r = rnd(1, 9), p = rnd(0, 9), s = rnd(0, 9), n = r * 100 + p * 10 + s; return angkaSoal(`${r} ratusan, ${p} puluhan, dan ${s} satuan adalah ...`, n, `${r * 100} + ${p * 10} + ${s} = ${n}.`); },
+  () => { const j = rnd(1, 11); return pg(`Jarum pendek di antara angka ${j} dan ${j + 1}, jarum panjang menunjuk angka 6. Pukul berapa?`, JAM_KATA(j, 1), [JAM_KATA(j, 0), JAM_KATA(j + 1, 1), JAM_KATA(j + 1, 0), JAM_KATA(6, 0)], `Jarum panjang di 6 berarti setengah (30 menit). Jadi pukul ${JAM_KATA(j, 1)}.`); },
+  () => { const k = [500, 1000, 2000, 5000], a = ambil(k), b = ambil(k), h = a + b; return pg(`Uang Rp${fmt(a)} ditambah Rp${fmt(b)} jumlahnya ...`, "Rp" + fmt(h), [h + 500, h + 1000, Math.max(500, h - 500), h * 2].map((x) => "Rp" + fmt(x)), `Rp${fmt(a)} + Rp${fmt(b)} = Rp${fmt(h)}.`); },
+  () => { const s = rnd(2, 20), d = ambil([2, 5, 10]), ds = [0, 1, 2, 3].map((i) => s + d * i); return angkaSoal(`Lanjutkan pola: ${ds.join(", ")}, ...`, s + d * 4, `Selalu bertambah ${d}.`); }
+];
+const GEN_MTK4 = [
+  () => { const a = ambil([4, 6, 8, 9, 10, 12, 15]), b = ambil([6, 8, 10, 12, 14, 15, 18, 20]); if (a === b) return GEN_MTK4[1](); return angkaSoal(`KPK dari ${a} dan ${b} adalah ...`, kpk(a, b), `Kelipatan persekutuan terkecil ${a} dan ${b} adalah ${kpk(a, b)}.`); },
+  () => { const f = rnd(2, 9), a = f * rnd(2, 6), b = f * rnd(2, 6); if (a === b) return GEN_MTK4[0](); return angkaSoal(`FPB dari ${a} dan ${b} adalah ...`, fpb(a, b), `Faktor persekutuan terbesar ${a} dan ${b} adalah ${fpb(a, b)}.`); },
+  () => { const d = rnd(2, 6), n = rnd(1, d - 1), k = rnd(2, 5); return pg(`Pecahan yang senilai dengan ${n}/${d} adalah ...`, `${n * k}/${d * k}`, [`${n + k}/${d + k}`, `${n * k}/${d}`, `${n}/${d * k}`, `${n * k + 1}/${d * k}`], `${n}/${d} = ${n}×${k} / ${d}×${k} = ${n * k}/${d * k}.`); },
+  () => { const p = rnd(4, 20), l = rnd(2, p - 1); return angkaSoal(`Luas persegi panjang dengan panjang ${p} cm dan lebar ${l} cm adalah ...`, p * l, `Luas = p × l = ${p} × ${l} = ${p * l} cm².`, " cm²"); },
+  () => { const s = rnd(3, 25); return angkaSoal(`Luas persegi dengan sisi ${s} cm adalah ...`, s * s, `Luas = s × s = ${s} × ${s} = ${s * s} cm².`, " cm²"); },
+  () => { const a = rnd(11, 40), b = rnd(11, 30); return angkaSoal(`${a} × ${b} = ...`, a * b, `${a} × ${b} = ${a * b}.`); },
+  () => { const b = rnd(3, 12), c = rnd(11, 40); return angkaSoal(`${b * c} : ${b} = ...`, c, `${b} × ${c} = ${b * c}.`); },
+  () => { const x = rnd(1001, 9999), h = Math.round(x / 1000) * 1000; return angkaSoal(`${fmt(x)} dibulatkan ke ribuan terdekat menjadi ...`, h, `Lihat angka ratusannya: ${Math.floor(x / 100) % 10}. ${Math.floor(x / 100) % 10 >= 5 ? "5 atau lebih dibulatkan ke atas" : "Kurang dari 5 dibulatkan ke bawah"}.`); }
+];
+const DESIMAL = [["1/2", "0,5"], ["1/4", "0,25"], ["3/4", "0,75"], ["1/5", "0,2"], ["2/5", "0,4"], ["3/5", "0,6"], ["1/10", "0,1"], ["7/10", "0,7"], ["1/8", "0,125"]];
+const GEN_MTK5 = [
+  () => { const d = rnd(4, 12), a = rnd(1, d - 2), b = rnd(1, d - a - 1); return pg(`${a}/${d} + ${b}/${d} = ...`, `${a + b}/${d}`, [`${a + b}/${d * 2}`, `${a * b}/${d}`, `${a + b + 1}/${d}`, `${Math.abs(a - b)}/${d}`], `Penyebut sama, jumlahkan pembilangnya: ${a} + ${b} = ${a + b}.`); },
+  pasangan(DESIMAL, (a) => `Pecahan ${a} jika ditulis desimal adalah ...`, (b) => `Bilangan desimal ${b} jika ditulis pecahan adalah ...`),
+  () => { const p = ambil([10, 20, 25, 50, 75]), n = ambil([20, 40, 60, 80, 100, 120, 200]); return angkaSoal(`${p}% dari ${n} adalah ...`, (p * n) / 100, `${p}/100 × ${n} = ${(p * n) / 100}.`); },
+  () => { const s = rnd(2, 12); return angkaSoal(`Volume kubus dengan rusuk ${s} cm adalah ...`, s * s * s, `V = s × s × s = ${s}³ = ${s * s * s} cm³.`, " cm³"); },
+  () => { const p = rnd(3, 15), l = rnd(2, 10), t = rnd(2, 10); return angkaSoal(`Volume balok dengan panjang ${p} cm, lebar ${l} cm, dan tinggi ${t} cm adalah ...`, p * l * t, `V = p × l × t = ${p} × ${l} × ${t} = ${p * l * t} cm³.`, " cm³"); },
+  () => { const v = ambil([40, 50, 60, 70, 80]), t = rnd(2, 5); return angkaSoal(`Sebuah mobil menempuh ${v * t} km dalam ${t} jam. Kecepatannya ...`, v, `Kecepatan = jarak : waktu = ${v * t} : ${t} = ${v} km/jam.`, " km/jam"); },
+  () => { const sk = ambil([100000, 200000, 500000, 1000000]), cm = rnd(2, 9), km = (sk * cm) / 100000; return angkaSoal(`Skala peta 1 : ${fmt(sk)}. Jarak pada peta ${cm} cm. Jarak sebenarnya ...`, km, `${cm} × ${fmt(sk)} cm = ${fmt(sk * cm)} cm = ${fmt(km)} km.`, " km"); }
+];
+const GEN_MTK6 = [
+  () => { const a = rnd(-15, 15), b = rnd(-15, 15), h = a + b; return angkaSoal(`(${a}) + (${b}) = ...`.replace(/-/g, "−"), h, `Hasilnya ${String(h).replace("-", "−")}.`, "", opsiBulat); },
+  () => { const a = rnd(-20, 10), b = rnd(-10, 15), h = a - b; return angkaSoal(`(${a}) − (${b}) = ...`.replace(/-/g, "−"), h, `Mengurangi sama dengan menambah lawannya. Hasilnya ${String(h).replace("-", "−")}.`, "", opsiBulat); },
+  () => { const k = rnd(1, 3), r = 7 * k, h = 154 * k * k; return angkaSoal(`Luas lingkaran dengan jari-jari ${r} cm adalah ... (π = 22/7)`, h, `L = π × r × r = 22/7 × ${r} × ${r} = ${h} cm².`, " cm²"); },
+  () => { const k = rnd(1, 4), r = 7 * k, h = 44 * k; return angkaSoal(`Keliling lingkaran dengan jari-jari ${r} cm adalah ... (π = 22/7)`, h, `K = 2 × π × r = 2 × 22/7 × ${r} = ${h} cm.`, " cm"); },
+  () => { const t = rnd(2, 10); return angkaSoal(`Volume tabung dengan jari-jari 7 cm dan tinggi ${t} cm adalah ... (π = 22/7)`, 154 * t, `V = π × r² × t = 22/7 × 49 × ${t} = ${154 * t} cm³.`, " cm³"); },
+  () => { const m = rnd(60, 90), d = [rnd(1, 8), rnd(1, 8)], ns = [m - d[0], m + d[0], m - d[1], m + d[1], m]; return angkaSoal(`Rata-rata dari nilai ${acak(ns).join(", ")} adalah ...`, m, `Jumlah semua nilai = ${m * 5}, dibagi 5 = ${m}.`); },
+  () => { const mo = rnd(5, 9), ns = acak([mo, mo, mo, rnd(5, 9), rnd(5, 9), rnd(5, 9)]); const c = {}; ns.forEach((x) => (c[x] = (c[x] || 0) + 1)); const top = Object.keys(c).filter((x) => c[x] === Math.max(...Object.values(c)));
+    if (top.length > 1) return GEN_MTK6[5](); return angkaSoal(`Modus dari data ${ns.join(", ")} adalah ...`, Number(top[0]), `Modus adalah nilai yang paling sering muncul: ${top[0]}.`, "", opsiKecil); },
+  () => { const a = ambil([4, 5, 6, 8, 10, 12]), b = ambil([6, 9, 10, 15, 20]); if (a === b) return GEN_MTK6[0](); const h = kpk(a, b); return angkaSoal(`Lampu A berkedip setiap ${a} detik dan lampu B setiap ${b} detik. Jika berkedip bersamaan, keduanya akan berkedip bersamaan lagi setelah ... detik`, h, `Cari KPK ${a} dan ${b} = ${h}.`); }
+];
+const GEN_MTK7 = [
+  () => { const a = rnd(-12, 12) || 3, b = rnd(-9, 9) || -2; return angkaSoal(`(${a}) × (${b}) = ...`.replace(/-/g, "−"), a * b, `Tanda sama hasilnya positif, beda tanda hasilnya negatif.`, "", opsiBulat); },
+  () => { const b = ambil([-6, -5, -4, -3, -2, 2, 3, 4]), c = rnd(-9, 9) || 4, a = b * c; return angkaSoal(`(${a}) : (${b}) = ...`.replace(/-/g, "−"), c, `${a} : ${b} = ${c}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const a = rnd(2, 9), b = rnd(2, 9), c = rnd(1, a + b - 1), h = a + b - c; return pg(`Bentuk sederhana dari ${a}x + ${b}x − ${c}x adalah ...`, `${h}x`, [`${a + b + c}x`, `${h}x²`, `${a + b}x`, `${h + 1}x`], `Jumlahkan koefisiennya: ${a} + ${b} − ${c} = ${h}.`); },
+  () => { const a = rnd(2, 9), x = rnd(-6, 12), b = rnd(-15, 15), c = a * x + b; return angkaSoal(`Nilai x dari ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c} adalah ...`.replace(/= -/, "= −"), x, `${a}x = ${c} ${b < 0 ? "+" : "−"} ${Math.abs(b)} = ${a * x}, jadi x = ${x}.`, "", opsiBulat); },
+  () => { const a = rnd(1, 5), b = rnd(1, 5); if (a === b) return GEN_MTK7[0](); const k = rnd(3, 12), tot = (a + b) * k; return angkaSoal(`Perbandingan kelereng Ali dan Budi ${a} : ${b}. Jumlah kelereng mereka ${tot}. Kelereng Ali ada ...`, a * k, `Kelereng Ali = ${a}/${a + b} × ${tot} = ${a * k}.`); },
+  () => { const h = rnd(4, 40) * 5000, d = ambil([10, 20, 25, 30, 50]), bayar = h * (100 - d) / 100; return pg(`Harga sepatu Rp${fmt(h)} mendapat diskon ${d}%. Harga yang dibayar ...`, "Rp" + fmt(bayar), [h * d / 100, h - d * 1000, bayar + 5000, bayar - 5000].filter((x) => x > 0).map((x) => "Rp" + fmt(x)), `Diskon = ${d}% × Rp${fmt(h)} = Rp${fmt(h * d / 100)}. Bayar = Rp${fmt(bayar)}.`); },
+  () => { const beli = rnd(5, 40) * 10000, p = ambil([10, 20, 25, 50]), jual = beli * (100 + p) / 100; return pg(`Pedagang membeli barang Rp${fmt(beli)} dan menjualnya Rp${fmt(jual)}. Persentase keuntungannya ...`, p + "%", [10, 15, 20, 25, 30, 50].filter((x) => x !== p).map((x) => x + "%"), `Untung = Rp${fmt(jual - beli)}. Persentase = untung/beli × 100% = ${p}%.`); }
+];
+const GEN_MTK8 = [
+  () => { const a = rnd(1, 20), b = rnd(2, 9), n = rnd(8, 30); return angkaSoal(`Suku ke-${n} dari barisan ${a}, ${a + b}, ${a + 2 * b}, ${a + 3 * b}, ... adalah`, a + (n - 1) * b, `Un = a + (n − 1)b = ${a} + ${n - 1} × ${b} = ${a + (n - 1) * b}.`); },
+  () => { const a = rnd(2, 7), b = rnd(-9, 9), x = rnd(-5, 8), h = a * x + b; return angkaSoal(`Jika f(x) = ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}, maka f(${x}) = ...`.replace("f(-", "f(−"), h, `f(${x}) = ${a} × ${x} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const m = rnd(-4, 5) || 2, x1 = rnd(-5, 5), y1 = rnd(-5, 5), dx = rnd(1, 5); return angkaSoal(`Gradien garis yang melalui titik (${x1}, ${y1}) dan (${x1 + dx}, ${y1 + m * dx}) adalah ...`.replace(/-/g, "−"), m, `m = (y₂ − y₁)/(x₂ − x₁) = ${m * dx}/${dx} = ${m}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const [a, b, c] = ambil([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [6, 8, 10], [9, 12, 15]]), k = rnd(1, 3);
+    if (Math.random() < 0.5) return angkaSoal(`Segitiga siku-siku dengan sisi tegak ${a * k} cm dan ${b * k} cm. Panjang sisi miringnya ...`, c * k, `c = √(${a * k}² + ${b * k}²) = ${c * k} cm.`, " cm");
+    return angkaSoal(`Segitiga siku-siku dengan sisi miring ${c * k} cm dan salah satu sisi tegak ${a * k} cm. Sisi tegak lainnya ...`, b * k, `b = √(${c * k}² − ${a * k}²) = ${b * k} cm.`, " cm"); },
+  () => { const x = rnd(1, 15), y = rnd(1, 15); return angkaSoal(`Jika x + y = ${x + y} dan x − y = ${x - y}, maka nilai x = ...`.replace("= -", "= −"), x, `Jumlahkan kedua persamaan: 2x = ${2 * x}, jadi x = ${x}.`, "", opsiBulat); },
+  GEN_MTK7[3], GEN_MTK7[6]
+];
+const GEN_MTK9 = [
+  () => { const a = ambil([2, 3, 5]), m = rnd(2, 6), n = rnd(2, 6); return pg(`Bentuk sederhana dari ${a}${sup(m)} × ${a}${sup(n)} adalah ...`, `${a}${sup(m + n)}`, [`${a}${sup(m * n)}`, `${a * a}${sup(m + n)}`, `${a}${sup(Math.abs(m - n) || 1)}`, `${a * 2}${sup(m + n)}`], `Pangkat dijumlahkan: ${m} + ${n} = ${m + n}.`); },
+  () => { const a = rnd(2, 5), n = rnd(2, a === 2 ? 8 : 4); return angkaSoal(`Nilai dari ${a}${sup(n)} adalah ...`, Math.pow(a, n), `${a}${sup(n)} = ${Array(n).fill(a).join(" × ")} = ${Math.pow(a, n)}.`); },
+  () => { const r = rnd(4, 25); return angkaSoal(`Nilai dari √${r * r} adalah ...`, r, `${r} × ${r} = ${r * r}, jadi √${r * r} = ${r}.`); },
+  () => { const p = rnd(-6, 6), q = rnd(-6, 6); if (p === q || p === -q || p === 0 || q === 0) return GEN_MTK9[2](); const b = -(p + q), c = p * q, f = (v) => (v < 0 ? "− " + Math.abs(v) : "+ " + v);
+    const s = (x, y) => `x = ${Math.min(x, y)} atau x = ${Math.max(x, y)}`.replace(/-/g, "−");
+    return pg(`Akar-akar persamaan x² ${f(b)}x ${f(c)} = 0 adalah ...`.replace(" + 0x", "").replace(" 1x", " x").replace("− 1x", "− x"), s(p, q), [s(-p, -q), s(p, -q), s(-p, q), s(p + 1, q)], `Faktorkan: (x ${f(-p)})(x ${f(-q)}) = 0.`.replace(/-/g, "−")); },
+  () => { const t = rnd(3, 12); return angkaSoal(`Volume kerucut dengan jari-jari 7 cm dan tinggi ${t * 3} cm adalah ... (π = 22/7)`, 154 * t, `V = 1/3 × π × r² × t = 1/3 × 154 × ${t * 3} = ${154 * t} cm³.`, " cm³"); },
+  () => { const [k, b] = ambil([["angka genap", "1/2"], ["angka ganjil", "1/2"], ["angka 6", "1/6"], ["angka lebih dari 4", "1/3"], ["angka kurang dari 3", "1/3"], ["angka prima", "1/2"]]);
+    return pg(`Sebuah dadu dilempar sekali. Peluang muncul ${k} adalah ...`, b, ["1/6", "1/3", "1/2", "2/3", "5/6"], `Ruang sampel dadu ada 6 kemungkinan. Peluangnya ${b}.`); }
+];
+const TRIGO = [["sin 30°", "1/2"], ["cos 60°", "1/2"], ["tan 45°", "1"], ["sin 90°", "1"], ["cos 0°", "1"], ["sin 0°", "0"], ["cos 90°", "0"], ["sin 45°", "½√2"], ["cos 30°", "½√3"], ["sin 60°", "½√3"], ["tan 60°", "√3"], ["tan 30°", "⅓√3"]];
+const LOG = [[2, 8, 3], [2, 16, 4], [2, 32, 5], [2, 64, 6], [3, 9, 2], [3, 27, 3], [3, 81, 4], [5, 25, 2], [5, 125, 3], [10, 100, 2], [10, 1000, 3], [4, 64, 3]];
+const GEN_MTK10 = [
+  () => { const a = ambil([2, 3]), m = rnd(2, 5), n = rnd(1, 4); return angkaSoal(`Nilai dari ${a}${sup(m)} × ${a}${sup(n)} : ${a}${sup(m + n - 1)} adalah ...`, a, `${a}${sup(m + n)} : ${a}${sup(m + n - 1)} = ${a}¹ = ${a}.`, "", opsiKecil); },
+  () => { const [b, x, h] = ambil(LOG); return angkaSoal(`Nilai dari ${b === 10 ? "" : sup(b)}log ${x} adalah ...`, h, `${b}${sup(h)} = ${x}, jadi ${b === 10 ? "" : sup(b)}log ${x} = ${h}.`, "", opsiKecil); },
+  () => { const a = rnd(1, 5), b = rnd(-5, 5), c = rnd(1, 4), d = rnd(-5, 5), k = rnd(-3, 4), g = c * k + d, h = a * g + b;
+    const f = (p, q) => `${p === 1 ? "" : p}x ${q < 0 ? "−" : "+"} ${Math.abs(q)}`; return angkaSoal(`Diketahui f(x) = ${f(a, b)} dan g(x) = ${f(c, d)}. Nilai (f∘g)(${k}) = ...`.replace("(-", "(−"), h, `g(${k}) = ${g}, lalu f(${g}) = ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const a = rnd(2, 10), r = ambil([2, 3]), n = rnd(4, 7); return angkaSoal(`Suku ke-${n} barisan geometri ${a}, ${a * r}, ${a * r * r}, ... adalah`, a * Math.pow(r, n - 1), `Un = a × r${sup("n−1")} = ${a} × ${r}${sup(n - 1)} = ${a * Math.pow(r, n - 1)}.`); },
+  () => { const [k, v] = ambil(TRIGO); return pg(`Nilai ${k} adalah ...`, v, TRIGO.map((x) => x[1]), `${k} = ${v} (sudut istimewa).`); },
+  GEN_MTK8[0]
+];
+const GEN_MTK11 = [
+  () => { const a = rnd(1, 5), b = rnd(-6, 6), c = rnd(-9, 9), k = rnd(-3, 4), h = a * k * k + b * k + c; return angkaSoal(`Nilai lim x→${k} (${a === 1 ? "" : a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}x ${c < 0 ? "−" : "+"} ${Math.abs(c)}) = ...`.replace("→-", "→−"), h, `Substitusi x = ${k}: hasilnya ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const a = rnd(1, 9); return angkaSoal(`Nilai lim x→${a} (x² − ${a * a})/(x − ${a}) = ...`, 2 * a, `(x² − ${a * a})/(x − ${a}) = x + ${a}. Untuk x = ${a}, hasilnya ${2 * a}.`); },
+  () => { const a = rnd(2, 9), n = rnd(2, 6); return pg(`Turunan dari f(x) = ${a}x${sup(n)} adalah ...`, `${a * n}x${n - 1 === 1 ? "" : sup(n - 1)}`, [`${a}x${sup(n - 1)}`, `${a * n}x${sup(n)}`, `${a + n}x${n - 1 === 1 ? "" : sup(n - 1)}`, `${a * (n - 1)}x${n - 1 === 1 ? "" : sup(n - 1)}`], `f'(x) = ${n} × ${a}x${sup(n - 1)} = ${a * n}x${n - 1 === 1 ? "" : sup(n - 1)}.`); },
+  () => { const a = rnd(1, 5), b = rnd(-8, 8), c = rnd(-9, 9), k = rnd(-3, 4), h = 2 * a * k + b; return angkaSoal(`Jika f(x) = ${a === 1 ? "" : a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}x ${c < 0 ? "−" : "+"} ${Math.abs(c)}, maka f'(${k}) = ...`.replace("(-", "(−"), h, `f'(x) = ${2 * a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}, jadi f'(${k}) = ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const a = rnd(-5, 9), b = rnd(-5, 9), c = rnd(-5, 9), d = rnd(-5, 9), h = a * d - b * c; return angkaSoal(`Determinan matriks [${a} ${b}; ${c} ${d}] adalah ...`.replace(/-/g, "−"), h, `det = ad − bc = (${a})(${d}) − (${b})(${c}) = ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const n = rnd(4, 12), h = (n * (n - 1)) / 2; return angkaSoal(`Dari ${n} siswa akan dipilih 2 orang sebagai perwakilan. Banyak cara memilih ...`, h, `C(${n}, 2) = ${n} × ${n - 1} / 2 = ${h}.`); },
+  () => { const n = rnd(4, 10), h = n * (n - 1); return angkaSoal(`Dari ${n} siswa akan dipilih ketua dan wakil ketua. Banyak susunan yang mungkin ...`, h, `P(${n}, 2) = ${n} × ${n - 1} = ${h}.`); }
+];
+const GEN_MTK12 = [
+  () => { const k = rnd(2, 10); return angkaSoal(`Nilai integral 2x dx dari x = 0 sampai x = ${k} adalah ...`, k * k, `∫2x dx = x². Dari 0 sampai ${k}: ${k}² − 0 = ${k * k}.`); },
+  () => { const k = rnd(1, 5); return angkaSoal(`Nilai integral 3x² dx dari x = 0 sampai x = ${k} adalah ...`, k * k * k, `∫3x² dx = x³. Dari 0 sampai ${k}: ${k}³ = ${k * k * k}.`); },
+  () => { const c = rnd(2, 9), a = rnd(0, 4), b = a + rnd(1, 6); return angkaSoal(`Nilai integral ${c} dx dari x = ${a} sampai x = ${b} adalah ...`, c * (b - a), `∫${c} dx = ${c}x. ${c} × (${b} − ${a}) = ${c * (b - a)}.`); },
+  () => { const a = rnd(2, 9), n = rnd(2, 5); return pg(`Hasil dari ∫ ${a * (n + 1)}x${sup(n)} dx adalah ...`, `${a}x${sup(n + 1)} + C`, [`${a * (n + 1) * n}x${sup(n - 1)} + C`, `${a * (n + 1)}x${sup(n + 1)} + C`, `${a}x${sup(n)} + C`, `${a + 1}x${sup(n + 1)} + C`], `∫ax${sup("n")} dx = a/(n+1) x${sup("n+1")} + C.`); },
+  () => { const a = [rnd(-5, 6), rnd(-5, 6)], b = [rnd(-5, 6), rnd(-5, 6)], h = a[0] * b[0] + a[1] * b[1]; return angkaSoal(`Jika a = (${a[0]}, ${a[1]}) dan b = (${b[0]}, ${b[1]}), maka a · b = ...`.replace(/-/g, "−"), h, `a · b = ${a[0]}×${b[0]} + ${a[1]}×${b[1]} = ${h}.`.replace(/-/g, "−"), "", opsiBulat); },
+  () => { const a = rnd(1, 15) * 4; return angkaSoal(`Jumlah deret geometri tak hingga ${a} + ${a / 2} + ${a / 4} + ... adalah`, 2 * a, `S∞ = a/(1 − r) = ${a}/(1 − 1/2) = ${2 * a}.`); },
+  GEN_MTK11[5], GEN_MTK10[4]
+];
+
+/* ---------- BAHASA INDONESIA tambahan ---------- */
+const SUKU_KATA = [["buku", "bu"], ["meja", "me"], ["kuda", "ku"], ["sapi", "sa"], ["roti", "ro"], ["topi", "to"], ["gigi", "gi"], ["lada", "la"], ["nasi", "na"], ["pagi", "pa"], ["dasi", "da"], ["jari", "ja"]];
+const IMBUHAN_ME = [["sapu", "menyapu"], ["tulis", "menulis"], ["baca", "membaca"], ["potong", "memotong"], ["kirim", "mengirim"], ["ambil", "mengambil"], ["gambar", "menggambar"], ["cuci", "mencuci"], ["jahit", "menjahit"], ["pukul", "memukul"], ["tanam", "menanam"], ["lempar", "melempar"], ["rawat", "merawat"], ["sikat", "menyikat"], ["cat", "mengecat"], ["pakai", "memakai"], ["dengar", "mendengar"], ["jual", "menjual"], ["beli", "membeli"], ["tarik", "menarik"], ["kupas", "mengupas"]];
+const PERIBAHASA = [["Bagai air di daun talas", "tidak tetap pendirian"], ["Ada gula ada semut", "di mana ada kesenangan, di situ banyak orang datang"], ["Berat sama dipikul, ringan sama dijinjing", "susah dan senang ditanggung bersama"], ["Bagai pinang dibelah dua", "sangat mirip"], ["Tong kosong nyaring bunyinya", "orang yang kurang ilmunya biasanya banyak bicara"], ["Sedikit demi sedikit, lama-lama menjadi bukit", "hasil kecil yang dikumpulkan terus akan menjadi banyak"], ["Bagai kacang lupa kulitnya", "lupa pada asal-usulnya"], ["Nasi sudah menjadi bubur", "sudah telanjur dan tidak dapat diperbaiki"], ["Malu bertanya sesat di jalan", "tidak mau bertanya akan merugi sendiri"], ["Seperti katak dalam tempurung", "pengetahuannya sempit"], ["Rajin pangkal pandai", "rajin belajar membuat orang menjadi pandai"], ["Air susu dibalas air tuba", "kebaikan dibalas dengan kejahatan"]];
+const MAJAS = {
+  "Personifikasi": ["Angin berbisik lembut di telingaku.", "Daun nyiur melambai-lambai di tepi pantai.", "Matahari tersenyum cerah pagi ini."],
+  "Hiperbola": ["Suaranya menggelegar membelah langit.", "Tumpukan tugasnya setinggi gunung.", "Tangisnya membanjiri seisi rumah."],
+  "Metafora": ["Ayah adalah tulang punggung keluarga.", "Buku adalah jendela dunia.", "Dia menjadi bintang kelas di sekolahnya."],
+  "Simile": ["Wajahnya bagai bulan purnama.", "Mereka seperti kucing dan anjing, selalu bertengkar.", "Hatinya lembut seperti kapas."],
+  "Litotes": ["Mampirlah ke gubuk kami yang sederhana.", "Terimalah hadiah yang tak seberapa ini."],
+  "Ironi": ["Rapi sekali kamarmu, seperti kapal pecah.", "Pagi sekali kamu datang, sudah pukul sepuluh."]
+};
+const KATA_BAKU = [["aktif", "aktip"], ["apotek", "apotik"], ["praktik", "praktek"], ["kualitas", "kwalitas"], ["sistem", "sistim"], ["nasihat", "nasehat"], ["risiko", "resiko"], ["jadwal", "jadual"], ["karier", "karir"], ["kategori", "katagori"], ["objek", "obyek"], ["ijazah", "ijasah"], ["izin", "ijin"], ["teknik", "tehnik"], ["analisis", "analisa"], ["hakikat", "hakekat"], ["silakan", "silahkan"], ["telur", "telor"], ["rezeki", "rejeki"], ["sekadar", "sekedar"]];
+const JENIS_TEKS = [["Narasi", "menceritakan suatu peristiwa secara berurutan"], ["Deskripsi", "menggambarkan suatu objek secara rinci seolah-olah pembaca melihatnya"], ["Eksposisi", "memaparkan informasi atau pengetahuan secara jelas"], ["Argumentasi", "menyampaikan pendapat disertai alasan dan bukti"], ["Persuasi", "membujuk pembaca agar melakukan sesuatu"], ["Prosedur", "berisi langkah-langkah melakukan sesuatu"], ["Laporan hasil observasi", "menyampaikan hasil pengamatan terhadap suatu objek"]];
+const GEN_BIND_EXTRA = {
+  sukuKata: () => { const [k, s] = ambil(SUKU_KATA); return pg(`Suku kata pertama dari kata "${k}" adalah ...`, s, SUKU_KATA.map((x) => x[1]), `${k} = ${s}-${k.slice(s.length)}.`); },
+  hurufAwal: GEN_TK_HURUF[0],
+  imbuhan: () => { const [d, b] = ambil(IMBUHAN_ME), salah = ["me" + d, "men" + d, "mem" + d, "meng" + d, "meny" + d.slice(1), "menge" + d].filter((x) => x !== b);
+    return pg(`Kata dasar "${d}" mendapat awalan me- menjadi ...`, b, salah, `${d} + me- = ${b}.`); },
+  peribahasa: () => { const [pb, a] = ambil(PERIBAHASA);
+    if (Math.random() < 0.6) return pg(`Arti peribahasa "${pb}" adalah ...`, kapital(a), PERIBAHASA.map((x) => kapital(x[1])), `"${pb}" artinya ${a}.`);
+    return pg(`Peribahasa yang artinya "${a}" adalah ...`, pb, PERIBAHASA.map((x) => x[0]), `"${pb}" artinya ${a}.`); },
+  majas: () => { const jenis = ambil(Object.keys(MAJAS)), k = ambil(MAJAS[jenis]); return pg(`Kalimat "${k}" menggunakan majas ...`, jenis, Object.keys(MAJAS), `Kalimat ini termasuk majas ${jenis.toLowerCase()}.`); },
+  baku: () => { const [b] = ambil(KATA_BAKU), salah = KATA_BAKU.filter((x) => x[0] !== b).map((x) => x[1]); return pg(`Penulisan kata yang baku adalah ...`, b, salah, `"${b}" adalah bentuk baku menurut KBBI.`); },
+  bakuDari: () => { const [b, tb] = ambil(KATA_BAKU), lain = KATA_BAKU.filter((x) => x[0] !== b).map((x) => x[0]); return pg(`Bentuk baku dari kata "${tb}" adalah ...`, b, lain, `Bentuk bakunya "${b}".`); },
+  jenisTeks: pasangan(JENIS_TEKS, (a) => `Teks ${a.toLowerCase()} adalah teks yang ...`, (b) => `Teks yang ${b} disebut teks ...`, (x) => x, kapital)
+};
+
+/* ---------- BAHASA INGGRIS tambahan ---------- */
+const BE = [["I", "am"], ["You", "are"], ["We", "are"], ["They", "are"], ["He", "is"], ["She", "is"], ["It", "is"], ["My mother", "is"], ["The cats", "are"], ["Andi and Budi", "are"], ["My teacher", "is"]];
+const KETERANGAN_BE = ["happy", "at home", "in the garden", "very tired", "hungry", "at school"];
+const PLURAL = [["book", "books"], ["box", "boxes"], ["baby", "babies"], ["child", "children"], ["mouse", "mice"], ["foot", "feet"], ["tooth", "teeth"], ["man", "men"], ["woman", "women"], ["knife", "knives"], ["bus", "buses"], ["city", "cities"], ["toy", "toys"], ["person", "people"]];
+const PRONOUN = [["I", "me", "my"], ["you", "you", "your"], ["he", "him", "his"], ["she", "her", "her"], ["it", "it", "its"], ["we", "us", "our"], ["they", "them", "their"]];
+const KERJA_EN = [["go", "goes", "to school"], ["read", "reads", "a book"], ["eat", "eats", "rice"], ["drink", "drinks", "milk"], ["watch", "watches", "TV"], ["play", "plays", "football"], ["study", "studies", "English"], ["wash", "washes", "the dishes"], ["have", "has", "breakfast"], ["ride", "rides", "a bike"]];
+const SUBJ_EN = [["I", 0], ["You", 0], ["We", 0], ["They", 0], ["He", 1], ["She", 1], ["My brother", 1], ["Siti", 1]];
+const IRREGULAR = [["go", "went", "gone"], ["eat", "ate", "eaten"], ["drink", "drank", "drunk"], ["swim", "swam", "swum"], ["write", "wrote", "written"], ["see", "saw", "seen"], ["buy", "bought", "bought"], ["take", "took", "taken"], ["give", "gave", "given"], ["run", "ran", "run"], ["sing", "sang", "sung"], ["speak", "spoke", "spoken"], ["come", "came", "come"], ["make", "made", "made"], ["sleep", "slept", "slept"], ["teach", "taught", "taught"], ["bring", "brought", "brought"], ["find", "found", "found"], ["begin", "began", "begun"], ["break", "broke", "broken"], ["choose", "chose", "chosen"], ["know", "knew", "known"], ["fly", "flew", "flown"], ["forget", "forgot", "forgotten"], ["ride", "rode", "ridden"]];
+const ADJ_EN = [["big", "bigger", "biggest"], ["small", "smaller", "smallest"], ["tall", "taller", "tallest"], ["fast", "faster", "fastest"], ["happy", "happier", "happiest"], ["good", "better", "best"], ["bad", "worse", "worst"], ["beautiful", "more beautiful", "most beautiful"], ["expensive", "more expensive", "most expensive"], ["hot", "hotter", "hottest"], ["heavy", "heavier", "heaviest"], ["long", "longer", "longest"]];
+const PASIF = [["My mother", "cooks", "cooked", "cooked", "rice"], ["Ali", "writes", "wrote", "written", "the letter"], ["The farmer", "plants", "planted", "planted", "the tree"], ["Rina", "cleans", "cleaned", "cleaned", "the room"], ["The students", "read", "read", "read", "the book"], ["My father", "repairs", "repaired", "repaired", "the car"], ["The teacher", "teaches", "taught", "taught", "the lesson"]];
+const KONDISI = [["it rains", "I", "stay", "at home"], ["you study hard", "you", "pass", "the exam"], ["she is hungry", "she", "eat", "some bread"], ["we leave now", "we", "catch", "the bus"], ["they practice every day", "they", "win", "the match"], ["you heat ice", "it", "melt", "quickly"]];
+const TAG = [["She is a teacher", "isn't she"], ["They are students", "aren't they"], ["He can swim", "can't he"], ["You like apples", "don't you"], ["Ani went to Bali", "didn't she"], ["It isn't hot today", "is it"], ["We will win", "won't we"], ["Budi doesn't eat meat", "does he"]];
+const subjTengah = (s) => (["You", "We", "They", "He", "She", "It"].indexOf(s) >= 0 ? s.toLowerCase() : s);
+const bentukIng = (v) => (/[^e]e$/.test(v) ? v.slice(0, -1) + "ing" : v + "ing");
+const GEN_BING_EXTRA = {
+  toBe: () => { const [s, b] = ambil(BE); return { t: `${s} ___ ${ambil(KETERANGAN_BE)}.`, o: ["am", "is", "are"], j: ["am", "is", "are"].indexOf(b), p: `"${s}" memakai "${b}".` }; },
+  plural: () => { const [a, b] = ambil(PLURAL), salah = [a + "s", a + "es", a.replace(/y$/, "ies"), a + "en"].filter((x) => x !== b); return pg(`Bentuk jamak (plural) dari "${a}" adalah ...`, b, salah, `${a} → ${b}.`); },
+  pronoun: () => { const [s, o, p] = ambil(PRONOUN);
+    if (Math.random() < 0.5) return pg(`Kata ganti objek dari "${s}" adalah ...`, o, PRONOUN.map((x) => x[1]), `${s} → ${o}.`);
+    return pg(`Kata ganti kepemilikan dari "${s}" adalah ...`, p, PRONOUN.map((x) => x[2]), `${s} → ${p}.`); },
+  present: () => { const [v, vs, obj] = ambil(KERJA_EN), [s, tiga] = ambil(SUBJ_EN), b = tiga ? vs : v; return pg(`${s} ___ ${obj} every day.`, b, [v, vs, bentukIng(v), v === "have" ? "had" : v + "ed"], `Simple present: ${tiga ? "subjek orang ketiga tunggal memakai -s/-es" : "subjek ini memakai kata kerja bentuk dasar"}.`); },
+  past: () => { const [v, v2, v3] = ambil(IRREGULAR), [s] = ambil(SUBJ_EN); return pg(`Yesterday, ${subjTengah(s)} ___ (${v}).`, v2, [v, v + "ed", v3 !== v2 ? v3 : v + "ing", v + "s"], `Simple past memakai V2: ${v} → ${v2}.`); },
+  v2v3: () => { const [v, v2, v3] = ambil(IRREGULAR), tanya3 = Math.random() < 0.5, b = tanya3 ? v3 : v2;
+    return pg(`Bentuk ${tanya3 ? "ketiga (V3)" : "kedua (V2)"} dari "${v}" adalah ...`, b, [v, v + "ed", tanya3 ? v2 : v3, v + "ing"], `${v} – ${v2} – ${v3}.`); },
+  continuous: () => { const [v, , obj] = ambil(KERJA_EN), [s, b] = ambil(BE.slice(0, 7)), ing = bentukIng(v);
+    return pg(`Look! ${s} ___ ${obj} now.`, `${b} ${ing}`, ["am", "is", "are"].filter((x) => x !== b).map((x) => `${x} ${ing}`).concat([`${b} ${v}`, v + "ed"]), `Present continuous: ${s} + ${b} + V-ing.`); },
+  comparative: () => { const [a, c, s] = ambil(ADJ_EN), sup2 = Math.random() < 0.4, b = sup2 ? s : c;
+    return pg(`Bentuk ${sup2 ? "superlative" : "comparative"} dari "${a}" adalah ...`, b, [sup2 ? c : s, "more " + a, a + "er", "most " + a].filter((x) => x !== b), `${a} – ${c} – ${s}.`); },
+  pasif: () => { const [s, v1, v2, v3, o] = ambil(PASIF), lalu = Math.random() < 0.5, aux = lalu ? "was" : (o.endsWith("s") ? "are" : "is");
+    const aktif = `${s} ${lalu ? v2 : v1} ${o}${lalu ? " yesterday" : ""}.`;
+    return pg(`Aktif: "${aktif}" Pasif: "${kapital(o)} ___ by ${s.toLowerCase().startsWith("the ") || s.toLowerCase().startsWith("my ") ? s.toLowerCase() : s}${lalu ? " yesterday" : ""}."`, `${aux} ${v3}`, [`${lalu ? "is" : "was"} ${v3}`, `${aux} ${v1}`, `has ${v3}`, `${lalu ? v2 : v1}`], `Kalimat pasif: to be (${aux}) + V3 (${v3}).`); },
+  perfect: () => { const [v, , v3] = ambil(IRREGULAR), [s, tiga] = ambil(SUBJ_EN.filter((x) => x[0] !== "You")), h = tiga ? "has" : "have";
+    return pg(`${s} ${h} just ___ (${v}).`, v3, [v, v3 === v ? v + "ed" : v + "ed", ...IRREGULAR.filter((x) => x[0] === v).map((x) => x[1]), v + "ing"], `Present perfect: has/have + V3 (${v3}).`); },
+  kondisi: () => { const [c, s, v, rest] = ambil(KONDISI); return pg(`If ${c}, ${s} ___ ${rest}.`, `will ${v}`, [`would ${v}`, v + "ed", v + "ing", `will ${v}ed`], `Conditional tipe 1: If + simple present, will + V1.`); },
+  tag: () => { const [k, t] = ambil(TAG); return pg(`${k}, ___?`, t, TAG.map((x) => x[1]), `Question tag yang tepat: "${t}".`); }
+};
+
+/* ---------- IPA SD 5–6, IPA SMP, Fisika, Kimia, Biologi ---------- */
+const PLANET = [["Merkurius", "planet yang paling dekat dengan Matahari"], ["Venus", "planet paling panas di tata surya"], ["Bumi", "satu-satunya planet yang diketahui dihuni makhluk hidup"], ["Mars", "planet yang dijuluki planet merah"], ["Jupiter", "planet terbesar di tata surya"], ["Saturnus", "planet yang terkenal dengan cincinnya yang indah"], ["Neptunus", "planet yang paling jauh dari Matahari"]];
+const ORGAN = [["Jantung", "memompa darah ke seluruh tubuh"], ["Paru-paru", "tempat pertukaran oksigen dan karbon dioksida"], ["Lambung", "mencerna makanan dengan bantuan asam lambung"], ["Ginjal", "menyaring darah dan membentuk urine"], ["Otak", "mengatur dan mengendalikan seluruh kegiatan tubuh"], ["Hati", "menawarkan racun dan menghasilkan empedu"], ["Usus halus", "menyerap sari-sari makanan"]];
+const CAHAYA = [["Bayangan pohon terbentuk di tanah saat siang hari", "Cahaya merambat lurus"], ["Wajah kita terlihat di cermin", "Cahaya dapat dipantulkan"], ["Pensil di dalam gelas berisi air terlihat patah", "Cahaya dapat dibiaskan"], ["Pelangi muncul setelah hujan", "Cahaya dapat diuraikan"]];
+const DAUR_AIR = [["Evaporasi", "penguapan air laut, sungai, dan danau oleh panas matahari"], ["Kondensasi", "pengembunan uap air menjadi titik-titik air yang membentuk awan"], ["Presipitasi", "turunnya air dari awan ke bumi dalam bentuk hujan"], ["Infiltrasi", "meresapnya air hujan ke dalam tanah"]];
+const SATUAN_SI = [["Panjang", "meter (m)"], ["Massa", "kilogram (kg)"], ["Waktu", "sekon (s)"], ["Suhu", "kelvin (K)"], ["Kuat arus listrik", "ampere (A)"], ["Jumlah zat", "mol"], ["Intensitas cahaya", "kandela (cd)"]];
+const UNSUR = [["H", "Hidrogen", 1], ["He", "Helium", 2], ["Li", "Litium", 3], ["Be", "Berilium", 4], ["B", "Boron", 5], ["C", "Karbon", 6], ["N", "Nitrogen", 7], ["O", "Oksigen", 8], ["F", "Fluorin", 9], ["Ne", "Neon", 10], ["Na", "Natrium", 11], ["Mg", "Magnesium", 12], ["Al", "Aluminium", 13], ["Si", "Silikon", 14], ["P", "Fosfor", 15], ["S", "Belerang", 16], ["Cl", "Klorin", 17], ["Ar", "Argon", 18], ["K", "Kalium", 19], ["Ca", "Kalsium", 20], ["Fe", "Besi", 26], ["Cu", "Tembaga", 29], ["Zn", "Seng", 30], ["Ag", "Perak", 47], ["Au", "Emas", 79], ["Pb", "Timbal", 82]];
+const ASAM_BASA = { "Asam": ["cuka", "air jeruk nipis", "asam lambung", "air aki", "minuman bersoda"], "Basa": ["sabun", "pasta gigi", "air kapur", "soda kue", "obat maag"], "Netral": ["air murni", "larutan gula", "larutan garam dapur"] };
+const VERTEBRATA = { "Mamalia": ["kucing", "paus", "kelelawar", "sapi", "lumba-lumba"], "Aves (burung)": ["ayam", "elang", "penguin", "merpati"], "Reptil": ["ular", "kadal", "buaya", "kura-kura"], "Amfibi": ["katak", "salamander", "kodok"], "Pisces (ikan)": ["ikan mas", "hiu", "lele", "kuda laut"] };
+const SENYAWA = [["H₂O", "air"], ["NaCl", "natrium klorida (garam dapur)"], ["CO₂", "karbon dioksida"], ["CH₄", "metana"], ["NH₃", "amonia"], ["HCl", "asam klorida"], ["NaOH", "natrium hidroksida"], ["H₂SO₄", "asam sulfat"], ["C₆H₁₂O₆", "glukosa"], ["CaCO₃", "kalsium karbonat"]];
+const MR = [["H₂O", 18, "H = 1, O = 16"], ["CO₂", 44, "C = 12, O = 16"], ["NH₃", 17, "N = 14, H = 1"], ["CH₄", 16, "C = 12, H = 1"], ["H₂SO₄", 98, "H = 1, S = 32, O = 16"], ["NaOH", 40, "Na = 23, O = 16, H = 1"], ["CaCO₃", 100, "Ca = 40, C = 12, O = 16"], ["MgO", 40, "Mg = 24, O = 16"], ["C₆H₁₂O₆", 180, "C = 12, H = 1, O = 16"], ["HNO₃", 63, "H = 1, N = 14, O = 16"], ["KOH", 56, "K = 39, O = 16, H = 1"], ["SO₂", 64, "S = 32, O = 16"]];
+const IKATAN = { "Ion": ["NaCl", "KCl", "MgO", "CaCl₂", "NaBr"], "Kovalen": ["H₂O", "CO₂", "CH₄", "NH₃", "HCl"] };
+const VALENSI = UNSUR.filter((u) => u[2] <= 20 && u[0] !== "He").map((u) => { const z = u[2], v = z <= 2 ? z : z <= 10 ? z - 2 : z <= 18 ? z - 10 : z - 18; return [u[0], u[1], v]; });
+const ORGANEL = [["Mitokondria", "tempat respirasi sel yang menghasilkan energi"], ["Ribosom", "tempat sintesis protein"], ["Kloroplas", "tempat fotosintesis"], ["Nukleus (inti sel)", "mengatur seluruh kegiatan sel dan menyimpan DNA"], ["Lisosom", "mencerna zat di dalam sel"], ["Badan Golgi", "mengemas dan menyekresikan zat"], ["Membran sel", "mengatur keluar masuknya zat ke dalam sel"], ["Dinding sel", "melindungi dan memberi bentuk tetap pada sel tumbuhan"]];
+const SEL_DARAH = [["Eritrosit (sel darah merah)", "mengangkut oksigen ke seluruh tubuh"], ["Leukosit (sel darah putih)", "melawan kuman penyakit"], ["Trombosit (keping darah)", "membantu pembekuan darah"]];
+const ENZIM = [["Amilase (ptialin)", "mengubah amilum menjadi maltosa"], ["Pepsin", "mengubah protein menjadi pepton"], ["Lipase", "mengubah lemak menjadi asam lemak dan gliserol"], ["Renin", "menggumpalkan protein susu (kasein)"], ["Tripsin", "mengubah protein menjadi asam amino dan peptida"]];
+const KINGDOM = { "Monera": ["bakteri Escherichia coli", "bakteri Lactobacillus", "ganggang hijau-biru (Cyanobacteria)"], "Protista": ["Amoeba", "Paramecium", "Euglena"], "Fungi": ["jamur tempe (Rhizopus)", "ragi roti (Saccharomyces)", "jamur tiram"], "Plantae": ["padi", "pohon mangga", "paku-pakuan"], "Animalia": ["kucing", "cacing tanah", "kupu-kupu"] };
+const TAKSON = ["Kingdom", "Filum/Divisi", "Kelas", "Ordo", "Famili", "Genus", "Spesies"];
+const RANTAI = [["padi", "tikus", "ular", "elang"], ["rumput", "belalang", "katak", "ular"], ["fitoplankton", "zooplankton", "ikan kecil", "ikan besar"], ["daun", "ulat", "burung pipit", "elang"]];
+const PERAN_RANTAI = ["produsen", "konsumen tingkat I", "konsumen tingkat II", "konsumen tingkat III"];
+const GEN_SAINS = {
+  planet: pasangan(PLANET, (a) => `Planet ${a} dikenal sebagai ...`, (b) => `Planet yang merupakan ${b} adalah ...`, (x) => x, kapital),
+  organ: pasangan(ORGAN, (a) => `Fungsi ${a.toLowerCase()} adalah ...`, (b) => `Organ yang berfungsi ${b} adalah ...`, (x) => x, kapital),
+  cahaya: () => { const [k, s] = ambil(CAHAYA); return pg(`Peristiwa "${k}" menunjukkan sifat ...`, s, CAHAYA.map((x) => x[1]), `${k}: ${s.toLowerCase()}.`); },
+  daurAir: pasangan(DAUR_AIR, (a) => `Dalam daur air, ${a.toLowerCase()} adalah ...`, (b) => `Proses ${b} disebut ...`, (x) => x, kapital),
+  satuan: pasangan(SATUAN_SI, (a) => `Satuan SI untuk besaran ${a.toLowerCase()} adalah ...`, (b) => `${kapital(b)} adalah satuan SI untuk besaran ...`),
+  suhu: () => { const c = rnd(0, 20) * 5; if (Math.random() < 0.5) return angkaSoal(`Suhu ${c}°C sama dengan ... K`, c + 273, `K = °C + 273 = ${c + 273} K.`, " K");
+    return angkaSoal(`Suhu ${c}°C sama dengan ... °F`, (9 * c) / 5 + 32, `°F = 9/5 × °C + 32 = ${(9 * c) / 5 + 32}°F.`, "°F"); },
+  massaJenis: () => { const r = ambil([1, 2, 3, 4, 5, 8]), v = rnd(2, 20) * 5; return angkaSoal(`Sebuah benda bermassa ${r * v} gram dan bervolume ${v} cm³. Massa jenisnya ...`, r, `ρ = m/V = ${r * v}/${v} = ${r} g/cm³.`, " g/cm³", opsiKecil); },
+  kecepatan: () => { const v = rnd(2, 25), t = rnd(2, 20); return angkaSoal(`Sebuah benda bergerak lurus beraturan menempuh ${v * t} m dalam ${t} s. Kecepatannya ...`, v, `v = s/t = ${v * t}/${t} = ${v} m/s.`, " m/s"); },
+  gaya: () => { const m = rnd(2, 20), a = rnd(1, 10); return angkaSoal(`Benda bermassa ${m} kg mendapat percepatan ${a} m/s². Gaya yang bekerja ...`, m * a, `F = m × a = ${m} × ${a} = ${m * a} N.`, " N"); },
+  tekanan: () => { const A = ambil([2, 4, 5, 10]), P = rnd(5, 50) * 10; return angkaSoal(`Gaya ${P * A} N bekerja pada bidang seluas ${A} m². Tekanannya ...`, P, `P = F/A = ${P * A}/${A} = ${P} N/m².`, " N/m²"); },
+  unsur: () => { const [s, n] = ambil(UNSUR);
+    if (Math.random() < 0.5) return pg(`Lambang unsur ${n.toLowerCase()} adalah ...`, s, UNSUR.map((x) => x[0]), `${n} dilambangkan ${s}.`);
+    return pg(`Unsur dengan lambang ${s} adalah ...`, n, UNSUR.map((x) => x[1]), `${s} adalah lambang ${n.toLowerCase()}.`); },
+  asamBasa: () => { const jenis = ambil(Object.keys(ASAM_BASA)), z = ambil(ASAM_BASA[jenis]); return { t: `${kapital(z)} bersifat ...`, o: Object.keys(ASAM_BASA), j: Object.keys(ASAM_BASA).indexOf(jenis), p: `${kapital(z)} bersifat ${jenis.toLowerCase()}.` }; },
+  vertebrata: () => { const k = ambil(Object.keys(VERTEBRATA)), h = ambil(VERTEBRATA[k]); return { t: `Hewan ${h} termasuk kelompok ...`, o: Object.keys(VERTEBRATA), j: Object.keys(VERTEBRATA).indexOf(k), p: `${kapital(h)} termasuk ${k.toLowerCase()}.` }; },
+  // Fisika SMA (g = 10 m/s²)
+  glbbV: () => { const v0 = rnd(0, 10), a = rnd(1, 5), t = rnd(2, 10); return angkaSoal(`Mobil bergerak dengan kecepatan awal ${v0} m/s dan percepatan ${a} m/s². Kecepatannya setelah ${t} s adalah ...`, v0 + a * t, `v = v₀ + a·t = ${v0} + ${a}×${t} = ${v0 + a * t} m/s.`, " m/s"); },
+  glbbS: () => { const v0 = rnd(0, 10), a = ambil([2, 4, 6]), t = rnd(2, 8), s = v0 * t + (a * t * t) / 2; return angkaSoal(`Benda dengan kecepatan awal ${v0} m/s dipercepat ${a} m/s² selama ${t} s. Jarak yang ditempuh ...`, s, `s = v₀t + ½at² = ${v0 * t} + ${(a * t * t) / 2} = ${s} m.`, " m"); },
+  usaha: () => { const F = rnd(5, 50), s = rnd(2, 20); return angkaSoal(`Gaya ${F} N memindahkan benda sejauh ${s} m searah gaya. Usahanya ...`, F * s, `W = F × s = ${F * s} J.`, " J"); },
+  ep: () => { const m = rnd(1, 20), h = rnd(2, 30); return angkaSoal(`Energi potensial benda bermassa ${m} kg pada ketinggian ${h} m adalah ... (g = 10 m/s²)`, m * 10 * h, `Ep = m·g·h = ${m}×10×${h} = ${m * 10 * h} J.`, " J"); },
+  ek: () => { const m = rnd(1, 10) * 2, v = rnd(2, 12); return angkaSoal(`Energi kinetik benda bermassa ${m} kg yang bergerak ${v} m/s adalah ...`, (m * v * v) / 2, `Ek = ½mv² = ½×${m}×${v}² = ${(m * v * v) / 2} J.`, " J"); },
+  daya: () => { const t = rnd(2, 10), P = rnd(5, 100); return angkaSoal(`Mesin melakukan usaha ${P * t} J dalam ${t} s. Dayanya ...`, P, `P = W/t = ${P * t}/${t} = ${P} W.`, " W"); },
+  ohm: () => { const I = rnd(1, 10), R = rnd(2, 30); if (Math.random() < 0.5) return angkaSoal(`Arus ${I} A mengalir melalui hambatan ${R} Ω. Tegangannya ...`, I * R, `V = I × R = ${I} × ${R} = ${I * R} V.`, " V");
+    return angkaSoal(`Tegangan ${I * R} V dipasang pada hambatan ${R} Ω. Kuat arusnya ...`, I, `I = V/R = ${I * R}/${R} = ${I} A.`, " A", opsiKecil); },
+  hambatan: () => { const R = rnd(2, 12) * 2; if (Math.random() < 0.5) { const a = rnd(2, 20), b = rnd(2, 20), c = rnd(2, 20); return angkaSoal(`Tiga hambatan ${a} Ω, ${b} Ω, dan ${c} Ω disusun seri. Hambatan totalnya ...`, a + b + c, `Seri: R = ${a} + ${b} + ${c} = ${a + b + c} Ω.`, " Ω"); }
+    return angkaSoal(`Dua hambatan masing-masing ${R} Ω disusun paralel. Hambatan totalnya ...`, R / 2, `Paralel dua hambatan sama: R/2 = ${R / 2} Ω.`, " Ω"); },
+  momentum: () => { const m = rnd(1, 20), v = rnd(2, 15); return angkaSoal(`Momentum benda bermassa ${m} kg yang bergerak ${v} m/s adalah ...`, m * v, `p = m × v = ${m * v} kg·m/s.`, " kg·m/s"); },
+  gelombang: () => { const l = rnd(1, 10), f = rnd(2, 50); return angkaSoal(`Gelombang dengan panjang ${l} m dan frekuensi ${f} Hz memiliki cepat rambat ...`, l * f, `v = λ × f = ${l} × ${f} = ${l * f} m/s.`, " m/s"); },
+  kmjam: () => { const k = rnd(1, 8); return angkaSoal(`Kecepatan ${18 * k} km/jam sama dengan ... m/s`, 5 * k, `${18 * k} × 1000/3600 = ${5 * k} m/s.`, " m/s"); },
+  // Kimia
+  nomorAtom: () => { const u = ambil(UNSUR.filter((x) => x[2] <= 20)); return angkaSoal(`Nomor atom unsur ${u[1].toLowerCase()} (${u[0]}) adalah ...`, u[2], `${u[1]} memiliki ${u[2]} proton, jadi nomor atomnya ${u[2]}.`, "", opsiKecil); },
+  valensi: () => { const [s, n, v] = ambil(VALENSI); return angkaSoal(`Jumlah elektron valensi atom ${n.toLowerCase()} (${s}) adalah ...`, v, `Konfigurasi elektron ${s} berakhir dengan ${v} elektron di kulit terluar.`, "", opsiKecil); },
+  mr: () => { const [r, m, ar] = ambil(MR); return angkaSoal(`Massa molekul relatif (Mr) ${r} adalah ... (Ar ${ar})`, m, `Jumlahkan Ar semua atom dalam ${r}: ${m}.`); },
+  mol: () => { const [r, m] = ambil(MR), n = rnd(1, 5); return angkaSoal(`Jumlah mol dari ${n * m} gram ${r} (Mr = ${m}) adalah ...`, n, `n = massa/Mr = ${n * m}/${m} = ${n} mol.`, " mol", opsiKecil); },
+  ph: () => { const n = rnd(1, 6); if (Math.random() < 0.5) return angkaSoal(`Larutan asam kuat dengan [H⁺] = 10${sup(-n)} M memiliki pH ...`, n, `pH = −log[H⁺] = ${n}.`, "", opsiKecil);
+    return angkaSoal(`Larutan basa kuat dengan [OH⁻] = 10${sup(-n)} M memiliki pH ...`, 14 - n, `pOH = ${n}, pH = 14 − ${n} = ${14 - n}.`, "", opsiKecil); },
+  ikatan: () => { const jenis = ambil(Object.keys(IKATAN)), z = ambil(IKATAN[jenis]); return { t: `Senyawa ${z} memiliki ikatan ...`, o: ["Ion", "Kovalen", "Logam"], j: ["Ion", "Kovalen"].indexOf(jenis), p: jenis === "Ion" ? "Ikatan ion terjadi antara logam dan nonlogam." : "Ikatan kovalen terjadi antarnonlogam (pemakaian bersama elektron)." }; },
+  senyawa: pasangan(SENYAWA, (a) => `Nama senyawa ${a} adalah ...`, (b) => `Rumus kimia ${b} adalah ...`, (x) => x, kapital),
+  // Biologi
+  organel: pasangan(ORGANEL, (a) => `Fungsi ${a.toLowerCase()} adalah ...`, (b) => `Organel sel dengan fungsi ${b} adalah ...`, (x) => x, kapital),
+  darah: pasangan(SEL_DARAH, (a) => `Fungsi ${a.toLowerCase()} adalah ...`, (b) => `Sel darah yang berfungsi ${b} adalah ...`, (x) => x, kapital),
+  enzim: pasangan(ENZIM, (a) => `Fungsi enzim ${a.toLowerCase()} adalah ...`, (b) => `Enzim yang ${b} adalah ...`, (x) => x, kapital),
+  kingdom: () => { const k = ambil(Object.keys(KINGDOM)), o = ambil(KINGDOM[k]); return { t: `${kapital(o)} termasuk kingdom ...`, o: Object.keys(KINGDOM), j: Object.keys(KINGDOM).indexOf(k), p: `${kapital(o)} termasuk ${k}.` }; },
+  takson: () => { const i = rnd(0, 5); return pg(`Urutan takson dari tingkat tinggi ke rendah: setelah ${TAKSON[i]} adalah ...`, TAKSON[i + 1], TAKSON, `Urutannya: ${TAKSON.join(" → ")}.`); },
+  rantai: () => { const r = ambil(RANTAI), i = rnd(0, 3); return pg(`Pada rantai makanan ${r.join(" → ")}, yang berperan sebagai ${PERAN_RANTAI[i]} adalah ...`, kapital(r[i]), r.map(kapital), `${kapital(r[i])} adalah ${PERAN_RANTAI[i]}.`); },
+  genetika: () => { const [t, b] = ambil([["Perbandingan fenotip F2 persilangan monohibrid dominan penuh adalah ...", "3 : 1"], ["Perbandingan genotip F2 persilangan monohibrid (AA : Aa : aa) adalah ...", "1 : 2 : 1"], ["Perbandingan fenotip F2 persilangan dihibrid dominan penuh adalah ...", "9 : 3 : 3 : 1"]]);
+    return pg(t, b, ["3 : 1", "1 : 2 : 1", "9 : 3 : 3 : 1", "1 : 1", "12 : 3 : 1"], `Menurut hukum Mendel, jawabannya ${b}.`); }
+};
+const S = GEN_SAINS, BX = GEN_BIND_EXTRA, EX = GEN_BING_EXTRA;
+
+/* ---------- Pelajaran per kelas ---------- */
+const MAPEL_INFO = {
+  huruf: { nama: "Mengenal Huruf", ikon: "🔤", warna: "#ffd6e0" },
+  angka: { nama: "Mengenal Angka", ikon: "🔢", warna: "#ffe3a3" },
+  warna: { nama: "Warna & Bentuk", ikon: "🎨", warna: "#c9f2dd" },
+  mtk: { nama: "Matematika", ikon: "🔢", warna: "#ffe3a3" },
+  bind: { nama: "Bahasa Indonesia", ikon: "📖", warna: "#ffd6e0" },
+  bing: { nama: "Bahasa Inggris", ikon: "🇬🇧", warna: "#ffdcc2" },
+  ipas: { nama: "IPAS", ikon: "🌱", warna: "#c9f2dd" },
+  ipa: { nama: "IPA", ikon: "🔬", warna: "#c9f2dd" },
+  fisika: { nama: "Fisika", ikon: "🧲", warna: "#d6e4ff" },
+  kimia: { nama: "Kimia", ikon: "⚗️", warna: "#eadcff" },
+  biologi: { nama: "Biologi", ikon: "🦠", warna: "#c9f2dd" },
+  pai: { nama: "Pendidikan Agama Islam", ikon: "🕌", warna: "#d6e4ff" },
+  fiqih: { nama: "Fiqih", ikon: "🤲", warna: "#cdeffd" },
+  arab: { nama: "Bahasa Arab", ikon: "🌙", warna: "#eadcff" },
+  campur: { nama: "Campuran", ikon: "🎲", warna: "#fff1b8" }
+};
+const JENJANG = { tk: { nama: "TK", ikon: "🧸" }, sd: { nama: "SD/MI", ikon: "🎒" }, smp: { nama: "SMP/MTs", ikon: "📘" }, sma: { nama: "SMA/MA", ikon: "🎓" } };
+const KELAS_INFO = { tka: { nama: "TK A", jenjang: "tk", g: -1 }, tkb: { nama: "TK B", jenjang: "tk", g: 0 } };
+for (let k = 1; k <= 12; k++) KELAS_INFO[String(k)] = { nama: "Kelas " + k, jenjang: k <= 6 ? "sd" : k <= 9 ? "smp" : "sma", g: k };
+function mapelKelas(kelas) {
+  const g = KELAS_INFO[kelas].g;
+  if (g <= 0) return ["huruf", "angka", "warna"];
+  if (g <= 6) return ["mtk", "bind", "bing", "ipas", "pai", "fiqih", "arab"];
+  if (g <= 9) return ["mtk", "bind", "bing", "ipa"];
+  return ["mtk", "bind", "bing", "fisika", "kimia", "biologi"];
+}
+// Daftar pembuat soal untuk satu pelajaran di satu kelas
+function generatorKelas(mapel, kelas) {
+  const g = KELAS_INFO[kelas].g;
+  const B = GEN_BIND, I = GEN_IPAS;
+  switch (mapel) {
+    case "huruf": return GEN_TK_HURUF;
+    case "angka": return GEN_TK_ANGKA;
+    case "warna": return GEN_TK_WARNA;
+    case "mtk": return [null, GEN_MTK1, GEN_MTK2, GEN_MTK, GEN_MTK4, GEN_MTK5, GEN_MTK6, GEN_MTK7, GEN_MTK8, GEN_MTK9, GEN_MTK10, GEN_MTK11, GEN_MTK12][g];
+    case "bind":
+      if (g <= 2) return [BX.hurufAwal, BX.sukuKata, B[0], B[1], B[2], B[4], B[5]];
+      if (g <= 4) return B;
+      if (g <= 6) return B.concat([BX.imbuhan, BX.peribahasa, BX.baku]);
+      if (g <= 9) return [B[0], B[1], B[4], BX.imbuhan, BX.peribahasa, BX.majas, BX.baku, BX.bakuDari, BX.jenisTeks];
+      return [BX.majas, BX.baku, BX.bakuDari, BX.jenisTeks, BX.peribahasa, BX.imbuhan];
+    case "bing":
+      if (g <= 3) return GEN_BING;
+      if (g <= 6) return GEN_BING.concat([EX.toBe, EX.plural, EX.pronoun]);
+      if (g <= 9) return [GEN_BING[0], EX.toBe, EX.plural, EX.pronoun, EX.present, EX.past, EX.continuous, EX.comparative];
+      return [EX.v2v3, EX.past, EX.pasif, EX.perfect, EX.kondisi, EX.tag, EX.comparative, EX.present];
+    case "ipas": return g <= 4 ? I : I.concat([S.planet, S.organ, S.cahaya, S.daurAir]);
+    case "ipa": return g === 7 ? [S.satuan, S.suhu, S.massaJenis, S.unsur, S.asamBasa, S.vertebrata, S.planet]
+      : g === 8 ? [S.gaya, S.tekanan, S.kecepatan, S.organ, S.darah, S.usaha, S.cahaya]
+      : [S.ohm, S.hambatan, S.gelombang, S.genetika, S.unsur, S.asamBasa, S.ep];
+    case "fisika": return g === 10 ? [S.glbbV, S.glbbS, S.kmjam, S.gaya, S.satuan] : g === 11 ? [S.usaha, S.ep, S.ek, S.daya, S.momentum, S.gaya] : [S.ohm, S.hambatan, S.gelombang, S.momentum, S.daya];
+    case "kimia": return g === 10 ? [S.nomorAtom, S.valensi, S.unsur, S.ikatan, S.senyawa] : g === 11 ? [S.mr, S.mol, S.ph, S.senyawa, S.ikatan] : [S.mol, S.mr, S.ph, S.valensi, S.senyawa];
+    case "biologi": return g === 10 ? [S.kingdom, S.takson, S.rantai, S.vertebrata] : g === 11 ? [S.organel, S.darah, S.enzim, S.organ] : [S.genetika, S.organel, S.enzim, S.rantai, S.kingdom];
+    case "pai": return GEN_PAI;
+    case "fiqih": return GEN_FIQIH;
+    case "arab": return GEN_ARAB;
+  }
+  return [];
+}
+
+
+/* =========================================================
    MEMILIH SOAL — selalu soal yang belum pernah dijawab
    ========================================================= */
-function soalTetapBaru(kode, riwayat) {
-  return acak(BANK[kode].soal.map((s) => Object.assign({}, s, { id: idSoal(kode, s) })).filter((s) => !riwayat.has(s.id)));
+// ID riwayat: kelas 3 memakai awalan lama (mis. "mtk|") supaya riwayat lama tetap terbaca
+const awalanId = (k) => (kelasAktif === "3" ? k : kelasAktif + ":" + k);
+function soalTetapBaru(k, riwayat) {
+  if (kelasAktif !== "3" || !BANK[k]) return [];
+  return acak(BANK[k].soal.map((s) => Object.assign({}, s, { id: idSoal(k, s) })).filter((s) => !riwayat.has(s.id)));
 }
-function buatSoalOtomatis(kode, dipakai) {
+function buatSoalOtomatis(k, dipakai) {
+  const gens = generatorKelas(k, kelasAktif);
   for (let i = 0; i < 300; i++) {
-    const s = ambil(GENERATOR[kode])();
-    s.id = idSoal(kode, s);
+    const s = ambil(gens)();
+    s.id = idSoal(awalanId(k), s);
     if (!dipakai.has(s.id)) return s;
   }
   return null;
 }
 function pilihSoalBaru(kode) {
   const riwayat = bacaRiwayat(nama), dipakai = new Set(riwayat), hasil = [];
-  const daftarKode = kode === "campur" ? Object.keys(BANK) : [kode];
+  const daftarKode = kode === "campur" ? mapelKelas(kelasAktif) : [kode];
   const tetap = acak(daftarKode.flatMap((k) => soalTetapBaru(k, riwayat).map((s) => Object.assign({}, s, { kode: k })))).slice(0, rnd(1, MAKS_SOAL_TETAP));
   tetap.forEach((s) => { dipakai.add(s.id); hasil.push(s); });
   let gagal = 0;
@@ -845,7 +1235,7 @@ function pilihSoalBaru(kode) {
   let info = "";
   if (hasil.length < JUMLAH_SOAL) {
     // Soal baru habis: soal yang PALING LAMA dikerjakan boleh muncul lagi untuk mengulang
-    const milik = [...riwayat].filter((id) => daftarKode.some((k) => id.startsWith(k + "|")));
+    const milik = [...riwayat].filter((id) => daftarKode.some((k) => id.indexOf(awalanId(k) + "|") === 0));
     milik.slice(0, Math.ceil(milik.length / 2)).forEach((id) => { riwayat.delete(id); dipakai.delete(id); });
     simpanRiwayat(nama, riwayat);
     hasil.forEach((s) => dipakai.add(s.id));
@@ -856,15 +1246,15 @@ function pilihSoalBaru(kode) {
     }
     info = "🌟 MasyaAllah! Hampir semua soal pelajaran ini sudah kamu kerjakan. Beberapa soal lama muncul lagi untuk mengulang pelajaran.";
   }
-  if (kode === "campur") hasil.forEach((s) => (s.ikon = BANK[s.kode].ikon));
+  if (kode === "campur") hasil.forEach((s) => (s.ikon = MAPEL_INFO[s.kode].ikon));
   return { terpilih: acak(hasil), info };
 }
 function tandaiDijawab(id) {
   const r = bacaRiwayat(nama); r.add(id); simpanRiwayat(nama, r);
 }
 function jumlahDikerjakan(kode, n) {
-  const r = [...bacaRiwayat(n)];
-  return kode === "campur" ? r.length : r.filter((id) => id.startsWith(kode + "|")).length;
+  const awal = (kode === "campur" ? mapelKelas(kelasAktif) : [kode]).map((k) => awalanId(k) + "|");
+  return [...bacaRiwayat(n)].filter((id) => awal.some((a) => id.indexOf(a) === 0)).length;
 }
 
 /* Suara sederhana (tanpa file) */
@@ -907,38 +1297,59 @@ function tampilkan(id) {
   try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
 }
 
-/* Daftar mapel */
+/* Pemilih jenjang, kelas, dan pelajaran */
+let jenjangAktif = "sd";
+const namaMapel = (k) => MAPEL_INFO[k];
 function buatDaftarMapel() {
-  const semua = Object.assign({}, BANK, { campur: MODE_CAMPUR });
-  const wadah = $("daftarMapel");
-  Object.entries(semua).forEach(([kode, m]) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "mapel";
-    b.style.background = m.warna;
-    b.dataset.kode = kode;
+  const simpan = baca("kuisMI3:kelas", "3");
+  kelasAktif = KELAS_INFO[simpan] ? simpan : "3";
+  jenjangAktif = KELAS_INFO[kelasAktif].jenjang;
+  renderPilihan();
+}
+function tombolChip(teks, aktif, klik) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "chip-pilih" + (aktif ? " aktif" : ""); b.textContent = teks;
+  b.addEventListener("click", klik);
+  return b;
+}
+function renderPilihan() {
+  const wj = $("daftarJenjang"), wk = $("daftarKelas"), wm = $("daftarMapel");
+  wj.innerHTML = ""; wk.innerHTML = ""; wm.innerHTML = "";
+  Object.keys(JENJANG).forEach((j) => wj.appendChild(tombolChip(JENJANG[j].ikon + " " + JENJANG[j].nama, j === jenjangAktif, () => {
+    if (j === jenjangAktif) return;
+    jenjangAktif = j;
+    kelasAktif = Object.keys(KELAS_INFO).filter((k) => KELAS_INFO[k].jenjang === j)[0];
+    tulis("kuisMI3:kelas", kelasAktif); pilihanMapel = null; renderPilihan();
+  })));
+  Object.keys(KELAS_INFO).filter((k) => KELAS_INFO[k].jenjang === jenjangAktif).forEach((k) => wk.appendChild(tombolChip(KELAS_INFO[k].nama, k === kelasAktif, () => {
+    kelasAktif = k; tulis("kuisMI3:kelas", k); pilihanMapel = null; renderPilihan();
+  })));
+  mapelKelas(kelasAktif).concat(["campur"]).forEach((kode) => {
+    const m = namaMapel(kode), b = document.createElement("button");
+    b.type = "button"; b.className = "mapel" + (kode === pilihanMapel ? " dipilih" : ""); b.style.background = m.warna; b.dataset.kode = kode;
     b.innerHTML = `<span class="ikon">${m.ikon}</span><b>${m.nama}</b><small></small>`;
     b.addEventListener("click", () => {
-      document.querySelectorAll(".mapel").forEach((x) => x.classList.remove("dipilih"));
+      wm.querySelectorAll(".mapel").forEach((x) => x.classList.remove("dipilih"));
       b.classList.add("dipilih");
       pilihanMapel = kode;
       $("pesanError").textContent = "";
-      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama;
+      $("infoPilihan").textContent = "✅ Kamu memilih: " + m.ikon + " " + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (jenjangAktif === "tk" ? "" : " " + JENJANG[jenjangAktif].nama);
     });
-    wadah.appendChild(b);
+    wm.appendChild(b);
   });
+  $("infoPilihan").textContent = "";
   perbaruiInfoMapel();
 }
 
-/* Tulisan kecil di kartu pelajaran: berapa soal yang belum dikerjakan */
+/* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
 function perbaruiInfoMapel() {
   const n = $("namaSiswa").value.trim();
-  document.querySelectorAll(".mapel").forEach((b) => {
+  document.querySelectorAll("#daftarMapel .mapel").forEach((b) => {
     const kode = b.dataset.kode;
     let teks = "♾️ Soal selalu baru";
     if (n) {
       teks = `✅ ${jumlahDikerjakan(kode, n)} soal dikerjakan`;
-      if (kode === "mtk") teks += ` • Level ${bacaLevel(n, "mtk")}`;
+      if (kode === "mtk" && kelasAktif === "3") teks += ` • Level ${bacaLevel(n, "mtk")}`;
     }
     b.querySelector("small").textContent = teks;
   });
@@ -950,7 +1361,7 @@ function mulai() {
   if (!nama) { $("pesanError").textContent = "Tulis namamu dulu, ya! 😊"; $("namaSiswa").focus(); return; }
   if (!pilihanMapel) { $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚"; return; }
 
-  levelAktif = bacaLevel(nama, "mtk");
+  levelAktif = kelasAktif === "3" ? bacaLevel(nama, "mtk") : 1;
   const { terpilih, info } = pilihSoalBaru(pilihanMapel);
   $("infoPutaran").textContent = info;
   $("infoPutaran").style.display = info ? "block" : "none";
@@ -960,8 +1371,8 @@ function mulai() {
     return Object.assign({}, s, { opsi: urut });
   });
   nomor = 0; skor = 0; catatan = [];
-  const m = pilihanMapel === "campur" ? MODE_CAMPUR : BANK[pilihanMapel];
-  $("infoMapel").textContent = m.ikon + " " + m.nama + (pilihanMapel === "mtk" ? " • Level " + levelAktif : "");
+  const m = namaMapel(pilihanMapel);
+  $("infoMapel").textContent = m.ikon + " " + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" ? " • Level " + levelAktif : "");
   tampilkan("layarKuis");
   tampilSoal();
 }
@@ -1031,7 +1442,7 @@ function selesai() {
   else                  { jmlBintang = 0; emoji = "💪"; judul = "Semangat, " + nama + "!"; pesan = "Tidak apa-apa. Baca lagi materinya, lalu coba sekali lagi, ya!"; }
 
   // Level Matematika naik/turun mengikuti nilai, supaya anak terus tertantang
-  if (pilihanMapel === "mtk") {
+  if (pilihanMapel === "mtk" && kelasAktif === "3") {
     const lama = levelAktif, baru = nilai >= 80 ? Math.min(3, lama + 1) : nilai < 50 ? Math.max(1, lama - 1) : lama;
     simpanLevel(nama, "mtk", baru);
     if (baru > lama) pesan += ` 🚀 Kamu naik ke Level ${baru}! Soal berikutnya lebih menantang.`;
@@ -1243,7 +1654,7 @@ const PILIH_DARAH = opsi([["🅰️ A", "A"], ["🅱️ B", "B"], ["🆎 AB", "A
 /* ---------- DAFTAR TES ---------- */
 const TES = {
   mesin: {
-    nama: "Gaya Belajar 5 Mesin", ikon: "🧬", warna: "#e2c2ff", tglLahir: true,
+    nama: "Tes Gaya Belajar (ala STIFIn)", ikon: "🧬", warna: "#e2c2ff", tglLahir: true,
     intro: `<p>Jawab 15 pertanyaan dengan jujur. Pilih jawaban yang <b>paling mirip</b> dengan dirimu. Tidak ada jawaban benar atau salah.</p>
       <p class="catatan-ortu">ℹ️ Tes ini terinspirasi 5 jenis kecerdasan dalam konsep STIFIn (Sensing, Thinking, Intuiting, Feeling, Insting). <b>Tes STIFIn resmi memakai pemindaian sidik jari</b> oleh lembaga resminya. Tanggal lahir tidak bisa menentukan tipe kecerdasan, jadi di sini tanggal lahir hanya dipakai untuk menghitung usia. Tipe ditentukan dari jawaban.</p>`,
     soal: () => SOAL_MESIN.map(([t, pil]) => ({ t, o: acak(pil.map((teks, i) => ({ teks: kapital(teks), nilai: KODE_MESIN[i] }))) })),
@@ -1350,7 +1761,7 @@ const TES = {
     }
   },
   otak: {
-    nama: "Tes Asah Otak (IQ)", ikon: "🧩", warna: "#c9f2dd",
+    nama: "Tes Kecerdasan (ala IQ)", ikon: "🧠", warna: "#c9f2dd",
     intro: `<p>Ada <b>20 soal</b> tentang angka, pola gambar, kata, dan logika. Kerjakan sendiri tanpa bantuan, ya. Waktu pengerjaan dicatat.</p>
       <p class="catatan-ortu">ℹ️ Ini <b>latihan kemampuan berpikir</b>, bukan tes IQ resmi. Skor IQ yang sah hanya bisa didapat dari tes terstandar yang dilakukan psikolog, jadi tes ini <b>tidak memberi angka IQ</b>. Hasilnya berupa skor dan kekuatan berpikir per bidang.</p>`,
     soal: soalOtak,
@@ -1510,7 +1921,7 @@ function gambarKartu(R) {
 }
 
 TES.kepribadian = {
-  nama: "Tes Kepribadian (MBTI, DISC, Temperamen)", ikon: "🎭", warna: "#ffe0dd",
+  nama: "Tes Kepribadian (ala MBTI, DISC, Temperamen)", ikon: "🎭", warna: "#ffe0dd",
   intro: `<div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">${["K", "S", "M", "P"].map((m) => `<div style="width:70px;text-align:center;font-size:13px;font-weight:800">${maskot(m).replace('width="150" height="162"', 'width="70" height="76"')}${TN[m]}</div>`).join("")}</div>
     <p>MBTI, DISC, dan temperamen dalam <b>28 pertanyaan singkat</b>. Cocok untuk segala umur, termasuk Ayah dan Bunda. Selesai sekitar 5 menit.</p>
     <p>Tidak ada jawaban benar atau salah. Pilih yang <b>paling mirip dirimu sehari-hari</b>, bukan yang kamu inginkan.</p>
@@ -1564,7 +1975,7 @@ function kirimKeSheet(info, ortu) {
   try { new Image().src = URL_SHEET + (URL_SHEET.indexOf("?") >= 0 ? "&" : "?") + qs + "&t=" + Date.now(); } catch (e) {}
 }
 function isiPromo(el, info, ortu) {
-  const teksWA = `Assalamu'alaikum HadirFlow, saya ${ortu.nama}, orang tua dari ${nama}. Anak saya baru mengerjakan "${info.tes}" di Kuis Pintar Kelas 3 MI dengan hasil: ${info.hasil}. Saya ingin konsultasi.`;
+  const teksWA = `Assalamu'alaikum HadirFlow, saya ${ortu.nama}, orang tua dari ${nama}. Anak saya baru mengerjakan "${info.tes}" di Tes Gratis HadirFlow dengan hasil: ${info.hasil}. Saya ingin konsultasi.`;
   el.innerHTML = `
     ${NOMOR_WA_ADMIN ? `<div class="kotak-promo"><b>👨‍👩‍👧 Untuk ${esc(ortu.nama)}</b>
       <p>Ingin tahu arti hasil ${esc(nama)} dan cara mendampinginya belajar? Chat kami, gratis.</p>
@@ -1618,7 +2029,7 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  Object.keys(TES).forEach((id) => {
+  ["otak", "mesin", "kepribadian", "kekuatan", "mood", "darah"].forEach((id) => {
     const t = TES[id], b = document.createElement("button"), akhir = n ? baca(kunci("tes-" + id, n), null) : null;
     b.type = "button"; b.className = "mapel"; b.style.background = t.warna;
     b.innerHTML = `<span class="ikon">${t.ikon}</span><b>${t.nama}</b><small>${akhir ? "Terakhir: " + esc(akhir.ringkas) : "Belum dicoba"}</small>`;
@@ -1700,6 +2111,13 @@ $("btnMulaiTes").addEventListener("click", mulaiTes);
 $("btnBatalTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
 $("btnTesMundur").addEventListener("click", mundurTes);
 $("btnKembaliTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
+document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("click", () => {
+  const id = b.getAttribute("data-buka");
+  if (id === "pelajaran") { gantiTab("tabPelajaran"); $("daftarJenjang").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+  gantiTab("tabDiri");
+  if (!$("namaSiswa").value.trim()) { $("namaSiswa").focus(); $("pesanError").textContent = "Tulis nama anak dulu, lalu pilih tesnya. 😊"; return; }
+  bukaTes(id);
+}));
 $("btnGerbang").addEventListener("click", kirimGerbang);
 $("ortuWA").addEventListener("keydown", (e) => { if (e.key === "Enter") kirimGerbang(); });
 $("btnCetak").addEventListener("click", () => { try { window.print(); } catch (e) {} });

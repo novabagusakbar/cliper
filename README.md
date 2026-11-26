@@ -1,8 +1,17 @@
-# Kuis Pintar Kelas 3 MI 🦉
+# Tes Gratis HadirFlow 🦉
 
 Kuis interaktif untuk siswa kelas 3 Madrasah Ibtidaiyah, siap ditempel di **Google Sites**.
 
 Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
+
+## Isi
+- 🧠 Tes Kecerdasan (ala IQ), 🧬 Tes Gaya Belajar (ala STIFIn), 🎭 Tes Kepribadian (ala MBTI, DISC, Temperamen), plus Kelebihanku, Mood, dan Golongan Darah.
+- 📚 **Kuis Pelajaran TK–SMA**: pilih jenjang → kelas → pelajaran. Soal dibuat otomatis per kelas (`generatorKelas` di `src/`).
+  - TK A/B: Mengenal Huruf, Mengenal Angka, Warna & Bentuk
+  - SD/MI 1–6: Matematika, Bahasa Indonesia, Bahasa Inggris, IPAS, PAI, Fiqih, Bahasa Arab
+  - SMP/MTs 7–9: Matematika, Bahasa Indonesia, Bahasa Inggris, IPA
+  - SMA/MA 10–12: Matematika, Bahasa Indonesia, Bahasa Inggris, Fisika, Kimia, Biologi
+  - Setiap kelas punya mode Campuran. Matematika kelas 3 tetap memakai level 1–3.
 
 ## Isi kuis
 Soal **dibuat otomatis** dari daftar kata, angka, dan fakta, jadi hampir setiap soal berbeda.
