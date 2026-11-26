@@ -14,7 +14,7 @@ if [ "$(id -u)" -ne 0 ]; then echo "❌ Jalankan dengan sudo (sebagai root)."; e
 
 echo "1) Mengunduh kuis terbaru..."
 mkdir -p "$FOLDER"
-curl -fsSL "$SUMBER" -o "$FOLDER/index.html.baru"
+curl -fsSL "$SUMBER?v=$(date +%s)" -o "$FOLDER/index.html.baru"
 grep -q "Kuis Pintar Kelas 3 MI" "$FOLDER/index.html.baru" || { echo "❌ File yang diunduh tidak sesuai."; rm -f "$FOLDER/index.html.baru"; exit 1; }
 mv "$FOLDER/index.html.baru" "$FOLDER/index.html"
 chmod 755 "$FOLDER"; chmod 644 "$FOLDER/index.html"

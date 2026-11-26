@@ -2749,6 +2749,290 @@ var TES = {
   }
 };
 
+/* ---------- 6. TES KEPRIBADIAN: MBTI, DISC, Temperamen (28 soal) ---------- */
+var TC = {
+  K: "#ff6b5e",
+  S: "#ffc93c",
+  M: "#7c8cff",
+  P: "#3fcf9f"
+};
+var TN = {
+  K: "Koleris",
+  S: "Sanguinis",
+  M: "Melankolis",
+  P: "Plegmatis"
+};
+function maskot(m) {
+  var k = "#1d1a2f",
+    c = TC[m];
+  var mata = m === "P" ? "<path d=\"M37 58q9 8 18 0M65 58q9 8 18 0\" stroke=\"".concat(k, "\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\"/>") : "<circle cx=\"46\" cy=\"58\" r=\"10\" fill=\"#fff\"/><circle cx=\"74\" cy=\"58\" r=\"10\" fill=\"#fff\"/><circle cx=\"48\" cy=\"60\" r=\"5\" fill=\"".concat(k, "\"/><circle cx=\"76\" cy=\"60\" r=\"5\" fill=\"").concat(k, "\"/>");
+  var alis = m === "K" ? "<path d=\"M34 42l19 7M86 42l-19 7\" stroke=\"".concat(k, "\" stroke-width=\"5\" stroke-linecap=\"round\"/>") : m === "M" ? "<path d=\"M36 44q10-6 20 0M64 44q10-6 20 0\" stroke=\"".concat(k, "\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>") : "";
+  var mulut = {
+    K: "<path d=\"M47 84q13 -7 26 0\" stroke=\"".concat(k, "\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"),
+    S: "<path d=\"M43 76q17 24 34 0z\" fill=\"".concat(k, "\"/><ellipse cx=\"60\" cy=\"86\" rx=\"7\" ry=\"4\" fill=\"#ff8f8f\"/>"),
+    M: "<path d=\"M52 83q8 4 16 0\" stroke=\"".concat(k, "\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\"/>"),
+    P: "<path d=\"M49 80q11 9 22 0\" stroke=\"".concat(k, "\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\"/>")
+  }[m];
+  return "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" width=\"150\" height=\"162\"><ellipse cx=\"60\" cy=\"123\" rx=\"38\" ry=\"6\" fill=\"#000\" opacity=\".14\"/><path d=\"M60 10c30 0 50 22 50 54s-18 54-50 54S10 96 10 64 30 10 60 10z\" fill=\"".concat(c, "\"/><path d=\"M60 118c-28 0-46-20-49-48 8 26 26 40 49 40s41-14 49-40c-3 28-21 48-49 48z\" fill=\"#000\" opacity=\".12\"/><ellipse cx=\"40\" cy=\"30\" rx=\"15\" ry=\"8\" fill=\"#fff\" opacity=\".5\" transform=\"rotate(-25 40 30)\"/>").concat(alis).concat(mata, "<circle cx=\"31\" cy=\"76\" r=\"7\" fill=\"#fff\" opacity=\".4\"/><circle cx=\"89\" cy=\"76\" r=\"7\" fill=\"#fff\" opacity=\".4\"/>").concat(mulut, "</svg>");
+}
+// [bagian, pertanyaan, [[jawaban, kode], ...]]; kode diawali m: (MBTI), d: (DISC), t: (temperamen)
+var SOAL_KEPRIBADIAN = [["MBTI", "Setelah seharian sibuk, cara kamu mengisi energi lagi:", [["Ngobrol atau main bersama teman", "m:E"], ["Menyendiri dan istirahat dengan tenang", "m:I"]]], ["MBTI", "Di acara yang banyak orang baru, kamu biasanya:", [["Aktif berkenalan dan memulai obrolan", "m:E"], ["Menunggu diajak, atau dekat dengan yang sudah kenal", "m:I"]]], ["MBTI", "Saat memikirkan masalah, kamu lebih suka:", [["Langsung membicarakannya dengan orang lain", "m:E"], ["Merenungkannya dulu sendirian", "m:I"]]], ["MBTI", "Kamu lebih percaya pada:", [["Fakta dan pengalaman nyata", "m:S"], ["Firasat dan berbagai kemungkinan", "m:N"]]], ["MBTI", "Saat belajar hal baru, kamu suka:", [["Contoh nyata, langkah demi langkah", "m:S"], ["Gambaran besarnya dulu, detail belakangan", "m:N"]]], ["MBTI", "Obrolan yang paling kamu nikmati:", [["Hal sehari-hari: kerjaan, sekolah, kejadian", "m:S"], ["Ide, khayalan, dan masa depan", "m:N"]]], ["MBTI", "Saat mengambil keputusan penting, kamu utamakan:", [["Logika dan untung-ruginya", "m:T"], ["Perasaan orang-orang yang terlibat", "m:F"]]], ["MBTI", "Temanmu curhat soal masalahnya. Kamu cenderung:", [["Langsung memberi solusi", "m:T"], ["Mendengarkan dan menghibur dulu", "m:F"]]], ["MBTI", "Kamu lebih senang dikenal sebagai orang yang:", [["Adil dan masuk akal", "m:T"], ["Baik hati dan pengertian", "m:F"]]], ["MBTI", "Soal rencana liburan, kamu:", [["Menyusun jadwal dari jauh hari", "m:J"], ["Jalan saja, lihat nanti di sana", "m:P"]]], ["MBTI", "Kalau ada tugas dengan batas waktu, kamu:", [["Menyelesaikannya lebih awal", "m:J"], ["Paling semangat menjelang batas waktu", "m:P"]]], ["MBTI", "Kamar atau meja kerjamu biasanya:", [["Rapi dan tertata", "m:J"], ["Agak berantakan, tapi aku tahu letak barangnya", "m:P"]]], ["DISC", "Dalam kelompok, peran yang paling kamu suka:", [["Memimpin dan menentukan arah", "d:D"], ["Menyemangati dan menghidupkan suasana", "d:I"], ["Membantu dan menjaga kekompakan", "d:S"], ["Memastikan semuanya benar dan rapi", "d:C"]]], ["DISC", "Saat ada masalah mendadak, kamu:", [["Langsung bertindak", "d:D"], ["Mengajak orang lain berdiskusi", "d:I"], ["Tetap tenang, pelan-pelan saja", "d:S"], ["Mencari tahu penyebabnya dulu", "d:C"]]], ["DISC", "Yang paling bikin kamu kesal:", [["Orang yang lambat dan bertele-tele", "d:D"], ["Suasana yang kaku dan membosankan", "d:I"], ["Perubahan mendadak dan pertengkaran", "d:S"], ["Pekerjaan asal-asalan", "d:C"]]], ["DISC", "Pujian yang paling kamu suka:", [["Kamu hebat, targetnya tercapai", "d:D"], ["Kamu seru dan menginspirasi", "d:I"], ["Kamu bisa diandalkan", "d:S"], ["Hasilmu teliti dan rapi", "d:C"]]], ["DISC", "Cara kamu berbicara:", [["Langsung ke inti dan tegas", "d:D"], ["Ekspresif dan banyak cerita", "d:I"], ["Lembut dan sabar", "d:S"], ["Runtut dan pakai alasan yang jelas", "d:C"]]], ["DISC", "Yang paling kamu hindari:", [["Kehilangan kendali", "d:D"], ["Tidak disukai orang", "d:I"], ["Kehilangan rasa aman", "d:S"], ["Melakukan kesalahan", "d:C"]]], ["DISC", "Suasana kerja atau belajar idealmu:", [["Penuh tantangan dan target", "d:D"], ["Ramai dan banyak kerja sama", "d:I"], ["Tenang dan harmonis", "d:S"], ["Aturannya jelas dan teratur", "d:C"]]], ["DISC", "Saat mengambil keputusan, kamu:", [["Cepat dan berani ambil risiko", "d:D"], ["Mengikuti semangat dan perasaan", "d:I"], ["Pelan-pelan, minta pendapat orang", "d:S"], ["Hati-hati, cek semua detailnya", "d:C"]]], ["Temperamen", "Teman-temanmu paling sering bilang kamu:", [["Tegas dan suka mengatur", "t:K"], ["Heboh dan lucu", "t:S"], ["Serius dan perasa", "t:M"], ["Santai dan kalem", "t:P"]]], ["Temperamen", "Kelemahan terbesarmu:", [["Tidak sabaran, gampang marah", "t:K"], ["Pelupa, kurang konsisten", "t:S"], ["Terlalu banyak berpikir, gampang kecewa", "t:M"], ["Suka menunda-nunda", "t:P"]]], ["Temperamen", "Waktu luang idealmu:", [["Mengerjakan target atau proyek pribadi", "t:K"], ["Jalan-jalan ramai-ramai", "t:S"], ["Membaca, berkarya, atau merenung", "t:M"], ["Rebahan dan bersantai", "t:P"]]], ["Temperamen", "Saat ada pertengkaran, kamu:", [["Menghadapi langsung, ingin menang", "t:K"], ["Mencairkan suasana dengan candaan", "t:S"], ["Memendam dan memikirkannya lama", "t:M"], ["Menghindar, yang penting damai", "t:P"]]], ["Temperamen", "Kelebihan utamamu:", [["Berani mengambil keputusan", "t:K"], ["Gampang akrab dengan siapa saja", "t:S"], ["Teliti dan berstandar tinggi", "t:M"], ["Sabar dan pendengar yang baik", "t:P"]]], ["Temperamen", "Rencana yang batal mendadak membuatmu:", [["Kesal, lalu langsung cari rencana lain", "t:K"], ["Santai, cari keseruan lain", "t:S"], ["Kecewa dan terus kepikiran", "t:M"], ["Tenang saja, malah bisa istirahat", "t:P"]]], ["Temperamen", "Di grup WhatsApp, kamu biasanya:", [["Yang mengatur dan memutuskan", "t:K"], ["Paling ramai kirim pesan dan stiker", "t:S"], ["Jarang muncul, tapi sekali bicara panjang", "t:M"], ["Lebih sering membaca saja", "t:P"]]], ["Temperamen", "Cara kerjamu:", [["Cepat dan fokus pada hasil", "t:K"], ["Semangat sekali di awal", "t:S"], ["Detail, rapi, dan perfeksionis", "t:M"], ["Santai tapi stabil", "t:P"]]]];
+var MB = {
+  INTJ: ["Sang Arsitek", "Pemikir strategis yang suka merencanakan jauh ke depan dan memecahkan masalah rumit.", "perencana strategi, peneliti, programmer, insinyur"],
+  INTP: ["Sang Pemikir", "Penuh rasa ingin tahu, suka teori, dan senang menganalisis cara kerja segala hal.", "ilmuwan, analis data, pengembang software, penulis teknis"],
+  ENTJ: ["Sang Komandan", "Pemimpin tegas yang pandai mengatur orang dan sumber daya untuk mencapai tujuan.", "manajer, pengusaha, konsultan, pemimpin proyek"],
+  ENTP: ["Sang Pendebat", "Kreatif, cerdas, dan suka tantangan ide baru. Senang berdiskusi seru.", "wirausaha, marketing, pembuat konten, inovator produk"],
+  INFJ: ["Sang Penasihat", "Peka, berprinsip, dan punya visi untuk membantu orang lain bertumbuh.", "konselor, guru, penulis, pekerja sosial"],
+  INFP: ["Sang Mediator", "Idealis yang lembut, kreatif, dan setia pada nilai-nilai hidupnya.", "penulis, desainer, seniman, pendamping komunitas"],
+  ENFJ: ["Sang Pembimbing", "Hangat dan karismatik, senang menyemangati dan memimpin orang lain.", "guru, pelatih, HRD, pemimpin komunitas"],
+  ENFP: ["Sang Penggerak Semangat", "Antusias, penuh ide, dan mudah menular semangatnya ke orang lain.", "pembuat konten, public relations, trainer, kreator"],
+  ISTJ: ["Sang Pengatur", "Bertanggung jawab, teliti, dan bisa diandalkan menjaga semuanya tetap teratur.", "akuntan, administrasi, auditor, pegawai pemerintahan"],
+  ISFJ: ["Sang Pelindung", "Penyayang, setia, dan suka merawat orang di sekitarnya.", "perawat, guru, layanan pelanggan, administrasi"],
+  ESTJ: ["Sang Eksekutif", "Praktis, tegas, dan jago menjalankan aturan serta organisasi.", "manajer operasional, supervisor, pengelola usaha"],
+  ESFJ: ["Sang Pengasuh", "Ramah dan perhatian, senang membuat orang lain merasa diterima.", "pelayanan, event organizer, guru, tenaga kesehatan"],
+  ISTP: ["Sang Pengrajin", "Tenang, praktis, dan jago memperbaiki atau membuat sesuatu dengan tangan.", "teknisi, mekanik, insinyur, fotografer"],
+  ISFP: ["Sang Seniman", "Lembut, spontan, dan punya selera estetika yang tinggi.", "desainer, seniman, juru masak, perawat hewan"],
+  ESTP: ["Sang Petualang", "Berani, energik, dan suka aksi langsung di lapangan.", "sales, wirausaha, atlet, pemandu wisata"],
+  ESFP: ["Sang Penghibur", "Ceria, spontan, dan suka membuat suasana jadi meriah.", "entertainer, host, sales, event organizer"]
+};
+var DD = {
+  D: ["Dominance", "tegas, cepat mengambil keputusan, berani menghadapi tantangan", "belajar mendengarkan dan sabar menjalani proses", "Bicaralah langsung ke intinya dan fokus pada hasil."],
+  I: ["Influence", "ramah, pandai meyakinkan, mudah memotivasi orang", "lebih fokus dan menuntaskan hal-hal detail", "Ajak ngobrol santai dan beri pujian yang tulus."],
+  S: ["Steadiness", "sabar, setia, dan bisa diandalkan", "lebih berani menyampaikan pendapat dan menerima perubahan", "Beri waktu dan jelaskan perubahan pelan-pelan."],
+  C: ["Conscientiousness", "teliti, analitis, menjaga kualitas", "tidak terlalu takut salah dan berani mencoba", "Sampaikan alasan dan data yang jelas."]
+};
+var TD = {
+  K: ["Pemimpin alami yang ambisius dan tegas.", "berani, tegas, tahan banting", "kurang sabar dan kadang terlalu keras", "Latih kesabaran dan sisihkan waktu mendengar orang lain."],
+  S: ["Si ceria yang gampang akrab dengan siapa saja.", "ceria, ekspresif, pandai bergaul", "mudah lupa dan kurang konsisten", "Gunakan catatan atau pengingat agar janji dan rencana tuntas."],
+  M: ["Si pemikir mendalam yang teratur dan perfeksionis.", "teliti, setia, kreatif", "mudah cemas dan terlalu banyak berpikir", "Ingat bahwa selesai lebih baik daripada sempurna."],
+  P: ["Si penyejuk yang tenang dan cinta damai.", "sabar, kalem, pendengar yang baik", "kurang inisiatif dan suka menunda", "Mulai dari langkah kecil setiap hari agar lebih bergerak."]
+};
+var PASANGAN_DISC = {
+  D: "K",
+  I: "S",
+  S: "P",
+  C: "M"
+};
+var WARNA_DISC = {
+  D: "#ff6b5e",
+  I: "#ffb020",
+  S: "#3fcf9f",
+  C: "#7c8cff"
+};
+var besarAwal = function besarAwal(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+function hitungKepribadian(j) {
+  var n = {};
+  j.forEach(function (v) {
+    return n[v] = (n[v] || 0) + 1;
+  });
+  var type = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]].map(function (_ref16) {
+    var _ref17 = _slicedToArray(_ref16, 2),
+      a = _ref17[0],
+      b = _ref17[1];
+    return (n["m:" + a] || 0) >= (n["m:" + b] || 0) ? a : b;
+  }).join("");
+  var d = {},
+    t = {};
+  ["D", "I", "S", "C"].forEach(function (k) {
+    return d[k] = n["d:" + k] || 0;
+  });
+  ["K", "S", "M", "P"].forEach(function (k) {
+    return t[k] = n["t:" + k] || 0;
+  });
+  var urut = function urut(c, keys) {
+    return keys.slice().sort(function (x, y) {
+      return c[y] - c[x];
+    });
+  };
+  return {
+    type: type,
+    d: d,
+    t: t,
+    dk: urut(d, ["D", "I", "S", "C"]),
+    tk: urut(t, ["K", "S", "M", "P"])
+  };
+}
+function meteran(c, keys, nm, warna) {
+  return keys.map(function (k) {
+    var p = Math.round(c[k] / 8 * 100);
+    return "<div class=\"batang\"><span>".concat(nm[k], "</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(p, "%;background:").concat(warna[k], "\"></div></div><b>").concat(p, "%</b></div>");
+  }).join("");
+}
+function teksBagikan(R) {
+  return "Hasil tes kepribadian ".concat(nama, ":\nMBTI: ").concat(R.type, " (").concat(MB[R.type][0], ")\nDISC: ").concat(DD[R.dk[0]][0], "\nTemperamen: ").concat(TN[R.tk[0]], "\n\nKamu tipe apa? Yuk coba tesnya juga di https://hadirflow.my.id/kuistes");
+}
+function bungkusTeks(ctx, text, x, y, maxW, lh) {
+  var kata = text.split(" "),
+    baris = [];
+  var line = "";
+  kata.forEach(function (w) {
+    var tt = line ? line + " " + w : w;
+    if (ctx.measureText(tt).width > maxW && line) {
+      baris.push(line);
+      line = w;
+    } else line = tt;
+  });
+  baris.push(line);
+  baris.forEach(function (l, i) {
+    return ctx.fillText(l, x, y + i * lh);
+  });
+  return baris.length;
+}
+function kotakBulat(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+// Kartu 1080x1920 untuk Status WA
+function gambarKartu(R) {
+  var mb = MB[R.type],
+    W = 1080,
+    H = 1920,
+    cv = document.createElement("canvas");
+  cv.width = W;
+  cv.height = H;
+  var c = cv.getContext("2d"),
+    ink = "#1d1a2f",
+    F = '"Baloo 2", sans-serif';
+  var selesai = function selesai() {
+    c.fillStyle = "#5b5770";
+    c.textAlign = "center";
+    c.font = "800 50px " + F;
+    c.fillText(nama, W / 2, 590);
+    c.fillStyle = "#ff5a4e";
+    c.font = "800 210px " + F;
+    c.fillText(R.type, W / 2, 790);
+    c.fillStyle = ink;
+    c.font = "800 70px " + F;
+    c.fillText(mb[0], W / 2, 880);
+    c.fillStyle = "#5b5770";
+    c.font = "600 38px " + F;
+    var y = 950 + bungkusTeks(c, mb[1], W / 2, 950, 800, 52) * 52 + 40;
+    c.fillStyle = "#ece6d6";
+    c.fillRect(150, y, W - 300, 4);
+    y += 70;
+    c.textAlign = "left";
+    c.fillStyle = ink;
+    c.font = "800 46px " + F;
+    c.fillText("Gaya DISC: " + DD[R.dk[0]][0], 150, y);
+    y += 30;
+    ["D", "I", "S", "C"].forEach(function (k) {
+      var p = R.d[k] / 8;
+      y += 58;
+      c.fillStyle = "#5b5770";
+      c.font = "800 36px " + F;
+      c.fillText(k, 150, y + 12);
+      kotakBulat(c, 210, y - 14, W - 430, 32, 16);
+      c.fillStyle = "#f1ece0";
+      c.fill();
+      if (p > 0) {
+        kotakBulat(c, 210, y - 14, Math.max(32, (W - 430) * p), 32, 16);
+        c.fillStyle = WARNA_DISC[k];
+        c.fill();
+      }
+      c.fillStyle = "#5b5770";
+      c.textAlign = "right";
+      c.fillText(Math.round(p * 100) + "%", W - 150, y + 12);
+      c.textAlign = "left";
+    });
+    y += 100;
+    c.fillStyle = ink;
+    c.font = "800 46px " + F;
+    c.fillText("Temperamen: " + TN[R.tk[0]], 150, y);
+    y += 56;
+    c.fillStyle = "#5b5770";
+    c.font = "600 36px " + F;
+    c.fillText("Kelebihan: " + TD[R.tk[0]][1], 150, y);
+    c.textAlign = "center";
+    c.fillStyle = ink;
+    c.font = "800 44px " + F;
+    c.fillText("Coba juga di hadirflow.my.id/kuistes", W / 2, 1830);
+    try {
+      var url = cv.toDataURL("image/png");
+      $("kartuGambar").src = url;
+      $("kartuUnduh").href = url;
+    } catch (e) {
+      $("kartuPesan").textContent = "Kartu gambar tidak bisa dibuat di perangkat ini.";
+    }
+  };
+  c.fillStyle = TC[R.tk[0]];
+  c.fillRect(0, 0, W, H);
+  c.fillStyle = "rgba(255,255,255,.25)";
+  [[120, 140, 90], [960, 260, 130], [90, 1700, 120], [1000, 1820, 90]].forEach(function (_ref18) {
+    var _ref19 = _slicedToArray(_ref18, 3),
+      x = _ref19[0],
+      y = _ref19[1],
+      r = _ref19[2];
+    c.beginPath();
+    c.arc(x, y, r, 0, 7);
+    c.fill();
+  });
+  c.textAlign = "center";
+  c.fillStyle = ink;
+  c.font = "800 60px " + F;
+  c.fillText("Hasil tes kepribadianku", W / 2, 110);
+  kotakBulat(c, 70, 240, W - 140, 1500, 64);
+  c.fillStyle = "#fff";
+  c.fill();
+  var img = new Image();
+  img.onload = function () {
+    try {
+      c.drawImage(img, W / 2 - 170, 170, 340, 368);
+    } catch (e) {}
+    selesai();
+  };
+  img.onerror = selesai;
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(maskot(R.tk[0]));
+}
+TES.kepribadian = {
+  nama: "Tes Kepribadian (MBTI, DISC, Temperamen)",
+  ikon: "🎭",
+  warna: "#ffe0dd",
+  intro: "<div style=\"display:flex;justify-content:center;gap:6px;flex-wrap:wrap\">".concat(["K", "S", "M", "P"].map(function (m) {
+    return "<div style=\"width:70px;text-align:center;font-size:13px;font-weight:800\">".concat(maskot(m).replace('width="150" height="162"', 'width="70" height="76"')).concat(TN[m], "</div>");
+  }).join(""), "</div>\n    <p>MBTI, DISC, dan temperamen dalam <b>28 pertanyaan singkat</b>. Cocok untuk segala umur, termasuk Ayah dan Bunda. Selesai sekitar 5 menit.</p>\n    <p>Tidak ada jawaban benar atau salah. Pilih yang <b>paling mirip dirimu sehari-hari</b>, bukan yang kamu inginkan.</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Tes ini untuk hiburan dan refleksi diri, bukan pengganti tes psikologi resmi.</p>"),
+  soal: function soal() {
+    return SOAL_KEPRIBADIAN.map(function (_ref20) {
+      var _ref21 = _slicedToArray(_ref20, 3),
+        bagian = _ref21[0],
+        t = _ref21[1],
+        pil = _ref21[2];
+      return {
+        t: t,
+        bagian: bagian,
+        o: opsi(pil)
+      };
+    });
+  },
+  hasil: function hasil(j) {
+    var R = hitungKepribadian(j),
+      mb = MB[R.type],
+      D0 = DD[R.dk[0]],
+      D1 = DD[R.dk[1]],
+      T0 = TD[R.tk[0]];
+    var cocok = PASANGAN_DISC[R.dk[0]] === R.tk[0],
+      teks = teksBagikan(R);
+    return {
+      ringkas: "".concat(R.type, " \u2022 ").concat(D0[0], " \u2022 ").concat(TN[R.tk[0]]),
+      html: "\n        <div class=\"kotak tengah\" style=\"background:".concat(TC[R.tk[0]], ";border-color:transparent;color:#1d1a2f\">").concat(maskot(R.tk[0]), "\n          <p style=\"margin:8px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Kamu adalah</p>\n          <div style=\"font-size:72px;font-weight:800;line-height:1;letter-spacing:2px\">").concat(R.type, "</div>\n          <h2 style=\"margin:6px 0\">").concat(mb[0], "</h2><p style=\"margin:0\">").concat(mb[1], "</p></div>\n        <div class=\"kotak\"><b>Gaya DISC:</b> ").concat(D0[0], " <span class=\"sub-kecil\">(pendukung: ").concat(D1[0], ")</span><br><b>Temperamen:</b> ").concat(TN[R.tk[0]], " <span class=\"sub-kecil\">(campuran: ").concat(TN[R.tk[1]], ")</span></div>\n        <h3>\uD83D\uDCCA Skor DISC</h3>").concat(meteran(R.d, ["D", "I", "S", "C"], {
+        D: "Dominance (D)",
+        I: "Influence (I)",
+        S: "Steadiness (S)",
+        C: "Conscientiousness (C)"
+      }, WARNA_DISC), "\n        <h3>\uD83D\uDCCA Skor temperamen</h3>").concat(meteran(R.t, ["K", "S", "M", "P"], TN, TC), "\n        <h3>\uD83E\uDE9E Gambaran dirimu</h3><p>").concat(esc(nama), ", kamu adalah ").concat(mb[0].toLowerCase(), " (").concat(R.type, "). ").concat(T0[0], " Dalam bekerja dan bergaul, gayamu cenderung ").concat(D0[0], ": ").concat(D0[1], ", didukung sisi ").concat(D1[0], ". ").concat(cocok ? "Hasil DISC dan temperamenmu saling menguatkan, jadi karaktermu cukup konsisten." : "Hasil DISC dan temperamenmu berbeda arah, artinya kamu punya kombinasi unik dan bisa menyesuaikan diri dengan banyak situasi.", "</p>\n        <h3>\uD83D\uDCAA Kekuatanmu</h3><ul><li>Dari gaya DISC: ").concat(D0[1], ".</li><li>Dari temperamen: ").concat(T0[1], ".</li></ul>\n        <h3>\uD83C\uDF31 Yang bisa dikembangkan</h3><ul><li>").concat(besarAwal(D0[2]), ".</li><li>Waspadai sifat ").concat(T0[2], ".</li><li>").concat(T0[3], "</li></ul>\n        <h3>\uD83D\uDCBC Pekerjaan dan kegiatan yang cocok</h3><p>").concat(besarAwal(mb[2]), ".</p>\n        <h3>\uD83D\uDCAC Cara terbaik berkomunikasi denganmu</h3><p>").concat(D0[3], "</p>\n        <div class=\"kotak tanpa-cetak\"><h3 style=\"margin-top:0\">\uD83D\uDCF2 Bagikan ke Status WA</h3>\n          <p class=\"sub-kecil\" style=\"text-align:left\">Simpan kartu hasil di bawah, lalu buka WhatsApp, pilih Status, dan unggah gambarnya. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>\n          <img id=\"kartuGambar\" alt=\"Kartu hasil tes kepribadian ").concat(esc(nama), "\" style=\"width:100%;max-width:280px;display:block;margin:10px auto;border-radius:16px;border:3px solid var(--line)\">\n          <div class=\"baris-tombol\">\n            <a class=\"tombol\" id=\"kartuUnduh\" download=\"hasil-tes-kepribadian.png\" style=\"text-decoration:none\">\uD83D\uDCBE Simpan gambar</a>\n            <a class=\"tombol\" style=\"background:#1faa59;box-shadow:0 5px 0 #168544;text-decoration:none\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/?text=").concat(encodeURIComponent(teks), "\">\uD83D\uDCAC Kirim ke WhatsApp</a>\n          </div>\n          <p class=\"sub-kecil\" id=\"kartuPesan\"></p></div>\n        <p class=\"catatan-ortu\">Tes ini untuk hiburan dan refleksi diri, bukan pengganti tes psikologi resmi.</p>"),
+      setelah: function setelah() {
+        return gambarKartu(R);
+      }
+    };
+  }
+};
+
 /* ---------- MESIN TES ---------- */
 var tesAktif = null,
   tesSoal = [],
@@ -2855,6 +3139,7 @@ function tampilSoalTes() {
   $("tesNomor").textContent = "".concat(tesRiwayatNo.length + 1, "/").concat(total);
   $("tesProgress").style.width = tesRiwayatNo.length / total * 100 + "%";
   $("tesSoal").textContent = s.t;
+  $("tesNama").textContent = s.bagian ? TES[tesAktif].ikon + " " + s.bagian : TES[tesAktif].ikon + " " + TES[tesAktif].nama;
   $("btnTesMundur").style.visibility = tesRiwayatNo.length ? "visible" : "hidden";
   var wadah = $("tesOpsi");
   wadah.innerHTML = "";
@@ -2894,6 +3179,7 @@ function selesaiTes() {
     tgl: tglHariIni()
   });
   $("isiHasilTes").innerHTML = "<div class=\"hasil-tes\">".concat(h.html, "</div>");
+  if (h.setelah) h.setelah();
   tampilkan("layarHasilTes");
   bunyi("selesai");
   if (tesAktif !== "mood" && tesAktif !== "darah") konfeti(50);
