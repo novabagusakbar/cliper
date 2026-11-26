@@ -28,8 +28,7 @@ Fitur:
 - Bisa dipakai di HP, tablet, dan laptop
 
 ## 🌟 Kenali Diriku (tab kedua di halaman awal)
-> **Saat ini semua kartu tes membuka https://hadirflow.my.id/kuistes di tab baru.**
-> Untuk kembali memakai tes bawaan di bawah ini, buka `src/kuis-kelas3-mi.src.html`, ubah `const LINK_TES = "https://hadirflow.my.id/kuistes";` menjadi `const LINK_TES = "";`, lalu jalankan build.
+> Tes di bawah ini berjalan langsung di dalam kuis. Untuk mengarahkan kartu tes ke halaman lain, isi `const LINK_TES = "...";` di `src/kuis-kelas3-mi.src.html`, lalu jalankan build.
 
 Permainan untuk mengenal minat dan perasaan anak. Ini **bukan tes psikologi resmi**.
 
@@ -47,6 +46,14 @@ Catatan penting:
 - **Kelebihanku** adalah tes buatan sendiri, **bukan ST-30**.
 - **Asah Otak tidak memberi angka IQ**, karena angka IQ yang sah hanya dari tes terstandar oleh psikolog.
 - Hasil terakhir setiap tes tersimpan per nama, dan bisa dicetak atau disimpan sebagai PDF.
+
+## Memasang di website sendiri (hadirflow.my.id/kuistes)
+1. Buka File Manager hosting (cPanel/hPanel), masuk ke folder website (biasanya `public_html`).
+2. Buat folder baru bernama `kuistes`.
+3. Unggah file `kuistes/index.html` dari repo ini ke dalam folder itu.
+4. Buka https://hadirflow.my.id/kuistes untuk mencoba.
+
+Setelah itu, di Google Sites cukup pakai **Sisipkan → Sematkan → Menurut URL** dengan alamat di atas, atau buat tombol yang menautkan ke sana.
 
 ## Cara memasang di Google Sites
 1. Buka file `kuis-kelas3-mi.html`, pilih semua isinya (Ctrl+A), lalu salin (Ctrl+C).

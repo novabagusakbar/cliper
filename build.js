@@ -12,4 +12,7 @@ const out = src.replace(/<script>([\s\S]*?)<\/script>/g, (_, js) => {
   return "<script>\n" + hasil + "\n</script>";
 });
 fs.writeFileSync("kuis-kelas3-mi.html", out);
+// Salinan siap unggah ke hosting: folder kuistes/ -> https://hadirflow.my.id/kuistes/
+fs.mkdirSync("kuistes", { recursive: true });
+fs.writeFileSync("kuistes/index.html", out);
 console.log("Selesai: kuis-kelas3-mi.html (" + out.length + " karakter)");
