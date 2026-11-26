@@ -1,0 +1,3 @@
+#!/bin/bash
+# Perintah pendek: curl -sL raw.githubusercontent.com/novabagusakbar/cliper/HEAD/kuis | sudo bash
+curl -fsSL https://raw.githubusercontent.com/novabagusakbar/cliper/HEAD/deploy/pasang-di-vps.sh | bash
