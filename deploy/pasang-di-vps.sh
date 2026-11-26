@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Memasang kuis di https://hadirflow.my.id/kuistes pada VPS yang memakai nginx.
+# Memasang kuis di https://hadirflow.my.id/kuistes (VPS dengan container Docker nginx, atau nginx biasa).
 # Jalankan di VPS:  curl -fsSL <URL skrip ini> | sudo bash
 # Aman diulang: menjalankan lagi = memperbarui kuis ke versi terbaru.
 set -euo pipefail
@@ -19,6 +19,57 @@ grep -q "Kuis Pintar Kelas 3 MI" "$FOLDER/index.html.baru" || { echo "❌ File y
 mv "$FOLDER/index.html.baru" "$FOLDER/index.html"
 chmod 755 "$FOLDER"; chmod 644 "$FOLDER/index.html"
 echo "   ✅ Tersimpan di $FOLDER/index.html"
+
+# ---------- Mode Docker: HadirFlow berjalan di container nginx (lewat Cloudflare Tunnel) ----------
+KONTAINER="${KONTAINER:-hadirflow_frontend}"
+if command -v docker >/dev/null 2>&1 && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$KONTAINER"; then
+  echo "2) HadirFlow berjalan di container Docker \"$KONTAINER\"."
+  ROOT="$(docker exec "$KONTAINER" sh -c "nginx -T 2>/dev/null | grep -E '^[[:space:]]*root[[:space:]]' | head -1" | awk '{print $2}' | tr -d ';' || true)"
+  [ -n "$ROOT" ] || ROOT="/usr/share/nginx/html"
+  echo "   Folder web di dalam container: $ROOT"
+
+  # Jika folder web berasal dari folder di VPS (bind mount), salin ke sana supaya tidak hilang
+  HOST_DIR=""
+  while IFS='|' read -r SRC DST; do
+    [ -n "$DST" ] || continue
+    case "$ROOT/" in "$DST"/*) HOST_DIR="$SRC${ROOT#"$DST"}";; esac
+  done < <(docker inspect -f '{{range .Mounts}}{{.Source}}|{{.Destination}}{{"\n"}}{{end}}' "$KONTAINER")
+
+  if [ -n "$HOST_DIR" ] && [ -d "$HOST_DIR" ]; then
+    mkdir -p "$HOST_DIR/kuistes"
+    cp "$FOLDER/index.html" "$HOST_DIR/kuistes/index.html"
+    chmod 755 "$HOST_DIR/kuistes"; chmod 644 "$HOST_DIR/kuistes/index.html"
+    echo "   ✅ Disalin ke $HOST_DIR/kuistes/ (folder VPS yang dipakai container)"
+  else
+    docker exec "$KONTAINER" mkdir -p "$ROOT/kuistes"
+    docker cp "$FOLDER/index.html" "$KONTAINER:$ROOT/kuistes/index.html"
+    docker exec "$KONTAINER" chmod 644 "$ROOT/kuistes/index.html"
+    echo "   ✅ Disalin ke dalam container: $ROOT/kuistes/"
+    # Jika container dibuat ulang (deploy HadirFlow baru), salin lagi otomatis setiap 5 menit bila hilang
+    cat > /etc/cron.d/kuistes <<CRON
+# Dibuat oleh pasang-di-vps.sh: memasang ulang kuis bila container HadirFlow dibuat ulang
+*/5 * * * * root docker exec $KONTAINER test -f $ROOT/kuistes/index.html 2>/dev/null || { docker exec $KONTAINER mkdir -p $ROOT/kuistes && docker cp $FOLDER/index.html $KONTAINER:$ROOT/kuistes/index.html; } >/dev/null 2>&1
+CRON
+    chmod 644 /etc/cron.d/kuistes
+    echo "   ✅ Penjaga otomatis dipasang (/etc/cron.d/kuistes): kuis dipasang ulang bila container diperbarui."
+  fi
+
+  echo "3) Memeriksa hasil..."
+  CIRI="Kuis Pintar Kelas 3 MI"
+  ISI_LOKAL="$(docker exec "$KONTAINER" sh -c "wget -qO- http://127.0.0.1/kuistes/ 2>/dev/null || curl -s http://127.0.0.1/kuistes/" 2>/dev/null || true)"
+  ISI_PUBLIK="$(curl -s --max-time 15 "https://$DOMAIN/kuistes/?cek=$(date +%s)" 2>/dev/null || true)"
+  if [[ "$ISI_PUBLIK" == *"$CIRI"* ]]; then
+    echo "🎉 Berhasil! Buka https://$DOMAIN/kuistes"
+  elif [[ "$ISI_LOKAL" == *"$CIRI"* ]]; then
+    echo "✅ Container sudah menyajikan kuis, tetapi dari internet belum terlihat."
+    echo "   Tunggu 1 menit lalu buka https://$DOMAIN/kuistes . Jika masih belum, buka Cloudflare → Caching → Purge Everything."
+  else
+    echo "⚠️  Pengaturan nginx di container belum mengarahkan /kuistes/ ke file kuis."
+    echo "    Kirim hasil perintah ini ke Claude:"
+    echo "    sudo docker exec $KONTAINER cat /etc/nginx/conf.d/default.conf"
+  fi
+  exit 0
+fi
 
 if ! command -v nginx >/dev/null 2>&1; then
   echo
