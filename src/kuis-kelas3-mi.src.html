@@ -69,6 +69,7 @@
     box-shadow: var(--shadow); transition: transform .12s;
   }
   .mapel:hover { transform: translateY(-3px); }
+  a.mapel { display: block; text-decoration: none; }
   .mapel.dipilih { border-color: var(--ink); transform: translateY(-3px) scale(1.03); }
   .mapel .ikon { font-size: 36px; display: block; }
   .mapel b { display: block; font-size: 18px; }
@@ -1336,9 +1337,26 @@ const TES = {
 
 /* ---------- MESIN TES ---------- */
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
+/* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
+const LINK_TES = "https://hadirflow.my.id/kuistes";
+
 function buatDaftarTes() {
   const n = $("namaSiswa").value.trim(), wadah = $("daftarTes");
   wadah.innerHTML = "";
+  if (LINK_TES) {
+    // Kartu berupa tautan biasa, supaya tetap bisa dibuka dari dalam sematan Google Sites
+    Object.keys(TES).forEach((id) => {
+      const t = TES[id], a = document.createElement("a");
+      a.className = "mapel"; a.style.background = t.warna; a.href = LINK_TES; a.target = "_blank"; a.rel = "noopener";
+      a.innerHTML = `<span class="ikon">${t.ikon}</span><b>${t.nama}</b><small>Buka halaman tes ↗</small>`;
+      wadah.appendChild(a);
+    });
+    const tombol = document.createElement("div");
+    tombol.className = "tengah"; tombol.style.gridColumn = "1 / -1";
+    tombol.innerHTML = `<a class="tombol" href="${LINK_TES}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Buka Halaman Tes 🚀</a>`;
+    wadah.appendChild(tombol);
+    return;
+  }
   Object.keys(TES).forEach((id) => {
     const t = TES[id], b = document.createElement("button"), akhir = n ? baca(kunci("tes-" + id, n), null) : null;
     b.type = "button"; b.className = "mapel"; b.style.background = t.warna;

@@ -28,6 +28,9 @@ Fitur:
 - Bisa dipakai di HP, tablet, dan laptop
 
 ## 🌟 Kenali Diriku (tab kedua di halaman awal)
+> **Saat ini semua kartu tes membuka https://hadirflow.my.id/kuistes di tab baru.**
+> Untuk kembali memakai tes bawaan di bawah ini, buka `src/kuis-kelas3-mi.src.html`, ubah `const LINK_TES = "https://hadirflow.my.id/kuistes";` menjadi `const LINK_TES = "";`, lalu jalankan build.
+
 Permainan untuk mengenal minat dan perasaan anak. Ini **bukan tes psikologi resmi**.
 
 | Tes | Isi | Hasil |
