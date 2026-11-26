@@ -80,6 +80,10 @@ Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/ku
 - **Piagam Prestasi**: gambar piagam untuk nilai ≥ 70, Tes Kecerdasan ≥ 12/20, Gaya Belajar, dan Kelebihanku.
 - **Rekap nilai guru** (tab Guru): tempel pesan "Kirim nilai" dari WhatsApp → tabel rekap + unduh untuk Excel. Tanpa server.
 
+## Video belajar YouTube
+- `node deploy/cari-video.js` mencari 3 video per kelas × pelajaran (YouTube Data API v3, SafeSearch ketat, bahasa Indonesia, 2–40 menit, diurutkan dari yang paling banyak ditonton) lalu menyimpannya di `src/video.json`. Dijalankan sekali oleh pengembang; kuota ±7.900 dari 10.000 unit/hari. Kunci API dikirim proxy lingkungan sebagai header `X-Goog-Api-Key`, tidak pernah masuk ke halaman.
+- `build.js` memasukkan daftar video ke halaman hasil kuis (gambar sampul, pemutar `youtube-nocookie.com` baru dimuat setelah diklik) dan ke halaman Google per pelajaran.
+
 ## Halaman Google (SEO) dan aplikasi
 - `build.js` membuat 81 halaman di `kuistes/` (per kelas × pelajaran, plus 3 halaman tes) dan `kuistes/sitemap.xml`.
   Kirim `https://hadirflow.my.id/kuistes/sitemap.xml` di Google Search Console agar lebih cepat terindeks.

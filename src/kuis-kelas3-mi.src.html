@@ -157,6 +157,15 @@
   .tautan-seo .judul { margin: 10px 0 4px; }
   .tautan-seo p { margin: 4px 0; }
   .chip-seo { display: inline-block; background: #fffdf7; border: 2px solid var(--line); border-radius: 999px; padding: 1px 10px; margin: 2px; color: var(--ink); text-decoration: none; }
+  .kotak-promo.video { background: #fff4f4; border-color: #ffd0d0; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
+  .video-kartu { font: inherit; text-align: left; cursor: pointer; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 0 0 8px; position: relative; overflow: hidden; color: var(--ink); }
+  .video-kartu img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #eee; }
+  .video-putar { position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%); background: #e62117; color: #fff; border-radius: 12px; padding: 2px 14px; font-size: 22px; }
+  .video-judul { display: block; font-weight: 700; font-size: 15px; line-height: 1.3; padding: 6px 8px 0; }
+  .video-kartu .sub-kecil { display: block; padding: 2px 8px 0; }
+  .video-main { grid-column: 1 / -1; position: relative; aspect-ratio: 16 / 9; }
+  .video-main iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 12px; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -590,6 +599,8 @@ const BANK = {
    ========================================================= */
 const LINK_HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium=";   // + hasil / guru
 const URL_KUIS = "https://hadirflow.my.id/kuistes/";
+// Video belajar per "kelas|pelajaran", dipilih sekali lewat deploy/cari-video.js (diisi otomatis saat build)
+const VIDEO = /*VIDEO_DATA*/{};
 
 /* Pengaturan */
 const JUMLAH_SOAL = 10;      // jumlah soal per kuis latihan
@@ -1643,7 +1654,8 @@ function selesai() {
   }, "promoHasil", {
     bagikan: `📚 ${nama} mendapat nilai ${nilai} di ${jenis.toLowerCase()} ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}`,
     piagam: nilai >= 70 ? `atas nilai ${nilai} pada ${jenis} ${m.nama} ${KELAS_INFO[kelasAktif].nama}` : null,
-    guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null
+    guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null,
+    video: pilihanMapel === "campur" ? null : kelasAktif + "|" + pilihanMapel
   });
 }
 
@@ -2220,8 +2232,20 @@ function isiPromo(el, opsi) {
       <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
       <img alt="Piagam ${esc(nama)}" data-piagam>
       <a class="tombol kuning" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>` + html;
+  const vid = opsi.video ? VIDEO[opsi.video] || [] : [];
+  if (vid.length) {
+    const [k, m] = opsi.video.split("|");
+    html += `<div class="kotak-promo video"><b>📺 Video belajar ${esc(MAPEL_INFO[m].nama)} ${esc(KELAS_INFO[k].nama)}</b>
+      <p>Tonton bersama Ayah/Bunda untuk mengulang materi.</p><div class="video-grid">
+      ${vid.map((v) => `<button type="button" class="video-kartu" data-video="${esc(v.id)}"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/mqdefault.jpg"><span class="video-putar">▶</span><span class="video-judul">${esc(v.judul)}</span><span class="sub-kecil" style="text-align:left">${esc(v.channel)} • ${Math.round(v.durasi / 60)} menit</span></button>`).join("")}
+      </div></div>`;
+  }
   html += kartuHadirFlow("hasil");
   el.innerHTML = html;
+  el.querySelectorAll("[data-video]").forEach((b) => b.addEventListener("click", () => {
+    const id = b.getAttribute("data-video");
+    b.outerHTML = `<div class="video-main"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0" title="Video belajar" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+  }));
   if (opsi.piagam) { try { const url = gambarPiagam(opsi.piagam); el.querySelector("[data-piagam]").src = url; el.querySelector("[data-unduh-piagam]").href = url; } catch (e) {} }
   const b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });

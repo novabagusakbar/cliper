@@ -99,7 +99,8 @@ ${isi}
 `;
 }
 
-function buatSEO(dirOut) {
+function buatSEO(dirOut, VIDEO) {
+  VIDEO = VIDEO || {};
   const halamanList = [];
   const tulisHalaman = (slug, html) => {
     const d = path.join(dirOut, slug);
@@ -120,6 +121,7 @@ function buatSEO(dirOut) {
     const isi = `<p>Latihan soal <b>${nm} ${lk}</b> secara online dan <b>gratis</b>. Soal dibuat otomatis sehingga selalu baru, lengkap dengan pembahasan setelah menjawab.</p>
 <p><a class="tombol" href="${BASE}?k=${x.k}&amp;m=${x.m}">${ikon} Mulai Latihan ${esc(nm)}</a>${to ? `<a class="tombol kedua" href="${BASE}?k=${x.k}&amp;m=${x.m}&amp;mode=tryout">⏱️ Tryout ${to[0]} soal, ${to[1]} menit</a>` : ""}</p>
 <div class="kartu"><h2>📚 Materi yang dilatih</h2><p>${esc(topik(x.m, x.g))}.</p></div>
+${(VIDEO[x.k + "|" + x.m] || []).length ? `<div class="kartu"><h2>📺 Video belajar ${esc(nm)} ${esc(lk)}</h2>${VIDEO[x.k + "|" + x.m].map((v) => `<p><a href="https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}" rel="noopener"><img loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/mqdefault.jpg" alt="${esc(v.judul)}" width="320" height="180" style="width:100%;max-width:320px;height:auto;border-radius:12px;display:block"></a><b>${esc(v.judul)}</b><br><span class="kecil">${esc(v.channel)} • ${Math.round(v.durasi / 60)} menit</span></p>`).join("")}</div>` : ""}
 <div class="kartu"><h2>✨ Kenapa latihan di sini?</h2><ul>
 <li>Soal selalu berganti, jadi tidak bosan dan tidak hafal jawaban.</li>
 <li>Langsung ada pembahasan setiap kali menjawab.</li>
