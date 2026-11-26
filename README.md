@@ -73,8 +73,13 @@ Untuk **memperbarui** kuis, jalankan perintah yang sama lagi.
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
 
-## Ajakan HadirFlow
-Halaman hasil kuis dan tes menampilkan kartu **Kenalan dengan HadirFlow** yang menautkan ke `LINK_HADIRFLOW` (pengaturan di bagian atas skrip `src/`). Kuis tidak mengumpulkan data pribadi orang tua.
+## Ajakan HadirFlow, berbagi, dan Mode Guru
+- **Kartu HadirFlow** di setiap hasil, ditujukan untuk guru, kepala sekolah, dan pemilik usaha. Link memakai `utm_source=kuistes` (`utm_medium=hasil|guru|header`) supaya kunjungan dari kuis bisa dihitung.
+- **Tombol Bagikan ke WhatsApp** di hasil kuis dan tes (kecuali Mood, yang bersifat pribadi). Tes Kepribadian memakai kartu Status WA sendiri.
+- **Pratinjau link** (Open Graph): judul, deskripsi, dan gambar `kuistes/og.png` muncul saat link dibagikan di WhatsApp.
+- **Mode Guru** (tab 👩‍🏫 Guru): guru mengisi nama, nomor WA, nama kelas, tingkat, dan pelajaran, lalu mendapat link seperti
+  `https://hadirflow.my.id/kuistes/?guru=Bu%20Rina&wa=628...&k=5&m=mtk&r=5A`. Murid yang membuka link langsung masuk ke kelas & pelajaran itu, dan setelah selesai ada tombol **Kirim nilai ke guru** (WhatsApp). Tidak ada data yang disimpan di server.
+- **Tes Kecerdasan per tingkat**: SD 1–3, SD 4–6, SMP, SMA & dewasa.
 
 ## Cara memasang di Google Sites
 1. Buka file `kuis-kelas3-mi.html`, pilih semua isinya (Ctrl+A), lalu salin (Ctrl+C).

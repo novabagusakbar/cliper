@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="kuistes-versi" content="hadirflow">
+<meta name="description" content="Tes gratis untuk anak: Tes Kecerdasan (ala IQ), Gaya Belajar (ala STIFIn), Kepribadian (ala MBTI), dan kuis pelajaran TK–SMA. Langsung ada hasilnya!">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HadirFlow">
+<meta property="og:url" content="https://hadirflow.my.id/kuistes/">
+<meta property="og:title" content="Tes Gratis HadirFlow: IQ, Gaya Belajar, Kepribadian & Kuis TK–SMA">
+<meta property="og:description" content="Kenali kecerdasan, gaya belajar, dan kepribadian anak. Plus kuis pelajaran TK–SMA yang soalnya selalu baru. 100% gratis!">
+<meta property="og:image" content="https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/kuistes/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2f9e6e">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
@@ -95,10 +106,11 @@
   .mapel.dipilih { box-shadow: 0 0 0 4px var(--primary), var(--shadow); }
   .mapel.dipilih::after { content: "✔ Dipilih"; display: block; font-weight: 800; color: var(--primary-dark); font-size: 15px; }
   .promo-ortu { text-align: left; margin-top: 16px; }
-  .promo-ortu .kotak-promo { background: #eef4ff; border: 3px solid #c9dafc; border-radius: 20px; padding: 16px; margin-top: 12px; }
-  .promo-ortu .kotak-promo.hf { background: #072B6B; border-color: #072B6B; color: #fff; }
-  .promo-ortu .kotak-promo.hf p { color: #dbe6ff; }
-  .promo-ortu a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
+  .kotak-promo { background: #eef4ff; border: 3px solid #c9dafc; border-radius: 20px; padding: 16px; margin-top: 12px; }
+  .kotak-promo.hf { background: #072B6B; border-color: #072B6B; color: #fff; }
+  .kotak-promo.hf p { color: #dbe6ff; }
+  a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
+  #hasilLink { margin-top: 16px; }
   .tombol.hf { background: #ffd23f; color: #072B6B; box-shadow: 0 5px 0 #d9ad00; }
   .lencana { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; text-align: left; }
   .lencana button { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fff; color: var(--ink); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow); touch-action: manipulation; }
@@ -107,6 +119,16 @@
   .pilih-chip { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip-pilih { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fffdf7; color: var(--ink); border-radius: 999px; padding: 6px 14px; touch-action: manipulation; }
   .chip-pilih.aktif { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .lencana button.lebar { grid-column: 1 / -1; }
+  .dari-hf { font-size: 14px; color: var(--muted); margin: 12px 0 0; }
+  .dari-hf a { color: #072B6B; font-weight: 800; }
+  .banner-guru { background: #eef4ff; border: 3px solid #c9dafc; border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; }
+  input[type=tel], select, #linkGuru { width: 100%; font: inherit; font-size: 18px; padding: 10px 14px; border-radius: 14px; border: 3px solid var(--line); background: #fffdf7; color: var(--ink); margin-top: 6px; }
+  .dua-kolom { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  @media (max-width: 480px) { .dua-kolom { grid-template-columns: 1fr; } }
+  .tombol.wa { background: #1faa59; box-shadow: 0 5px 0 #168544; }
+  .kotak-promo.bagikan { background: #e9f9ef; border-color: #bfe9cf; }
+  .kotak-promo.guru { background: #fff1b8; border-color: var(--accent); }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -210,15 +232,19 @@
         <button type="button" data-buka="mesin">🧬 Tes Gaya Belajar <small>(ala STIFIn)</small> <b>Gratis</b></button>
         <button type="button" data-buka="kepribadian">🎭 Tes Kepribadian <small>(ala MBTI)</small> <b>Gratis</b></button>
         <button type="button" data-buka="pelajaran">📚 Kuis Pelajaran TK–SMA <b>Gratis</b></button>
+        <button type="button" data-buka="guru" class="lebar">👩‍🏫 Link Kuis untuk Guru <small>(nilai murid masuk ke WhatsApp guru)</small> <b>Gratis</b></button>
       </div>
+      <p class="dari-hf">Dipersembahkan oleh <a href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=header" target="_blank" rel="noopener">HadirFlow</a>: absensi wajah &amp; penggajian otomatis untuk sekolah dan usaha.</p>
     </div>
     <div class="kartu">
+      <div class="banner-guru" id="bannerGuru" style="display:none"></div>
       <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
       <input id="namaSiswa" type="text" maxlength="30" placeholder="Tulis namamu di sini" autocomplete="off">
 
       <div class="tab-bar" role="tablist">
         <button type="button" class="tab aktif" data-tab="tabPelajaran">📚 Kuis Pelajaran</button>
         <button type="button" class="tab" data-tab="tabDiri">🌟 Kenali Diriku</button>
+        <button type="button" class="tab" data-tab="tabGuru">👩‍🏫 Guru</button>
       </div>
 
       <div id="tabPelajaran" class="isi-tab aktif">
@@ -243,6 +269,33 @@
         <p class="catatan-ortu">👨‍👩‍👧 <b>Untuk Ayah/Bunda:</b> tes-tes ini adalah permainan untuk mengenal minat dan perasaan anak. Ini <b>bukan</b> tes psikologi resmi, jadi jangan dipakai untuk memberi label pada anak.</p>
       </div>
 
+      <div id="tabGuru" class="isi-tab">
+        <p class="judul">👩‍🏫 Buat link kuis untuk murid Anda</p>
+        <p class="sub" style="margin-top:0">Murid membuka link, mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>. Nilainya langsung masuk ke WhatsApp Anda. Gratis, tanpa daftar.</p>
+        <label class="judul" for="guruNama" style="margin-top:12px">Nama Bapak/Ibu guru</label>
+        <input id="guruNama" type="text" maxlength="40" placeholder="Contoh: Bu Rina" autocomplete="name">
+        <label class="judul" for="guruWA" style="margin-top:12px">Nomor WhatsApp guru (untuk menerima nilai)</label>
+        <input id="guruWA" type="tel" inputmode="tel" maxlength="18" placeholder="08xxxxxxxxxx" autocomplete="tel">
+        <label class="judul" for="guruRombel" style="margin-top:12px">Nama kelas <span class="sub-kecil">(opsional, mis. 5A)</span></label>
+        <input id="guruRombel" type="text" maxlength="20" placeholder="Contoh: 5A">
+        <div class="dua-kolom">
+          <label class="judul">Tingkat kelas<select id="guruKelas"></select></label>
+          <label class="judul">Pelajaran<select id="guruMapel"></select></label>
+        </div>
+        <div class="pesan-error" id="guruError" role="alert"></div>
+        <div class="tengah"><button class="tombol" id="btnBuatLink" type="button">🔗 Buat Link Kuis</button></div>
+        <div class="kotak-promo" id="hasilLink" style="display:none">
+          <b>✅ Link siap dibagikan ke murid</b>
+          <input id="linkGuru" type="text" readonly>
+          <div class="baris-tombol" style="justify-content:flex-start">
+            <button class="tombol putih" id="btnSalinLink" type="button">📋 Salin link</button>
+            <a class="tombol wa" id="btnLinkWA" target="_blank" rel="noopener">💬 Kirim ke grup kelas</a>
+          </div>
+          <p class="sub-kecil" id="infoSalin" style="text-align:left"></p>
+        </div>
+        <div class="promo-ortu" id="promoGuru"></div>
+      </div>
+
       <div class="pesan-error" id="pesanError" role="alert"></div>
     </div>
     <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
@@ -254,6 +307,10 @@
       <div style="font-size:64px" id="introIkon"></div>
       <h2 id="introJudul"></h2>
       <div id="introIsi" style="text-align:left"></div>
+      <div id="introLevel" style="display:none;text-align:left;margin-top:12px">
+        <p class="judul">🎯 Pilih tingkat:</p>
+        <div class="pilih-chip" id="daftarLevel"></div>
+      </div>
       <div id="introTglLahir" style="display:none;text-align:left;margin-top:12px">
         <label class="judul" for="tglLahir">🎂 Tanggal lahir</label>
         <input id="tglLahir" type="date" class="input-tgl">
@@ -469,7 +526,8 @@ const BANK = {
 /* =========================================================
    PENGATURAN HADIRFLOW
    ========================================================= */
-const LINK_HADIRFLOW = "https://hadirflow.my.id/?ref=kuistes";
+const LINK_HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium=";   // + hasil / guru
+const URL_KUIS = "https://hadirflow.my.id/kuistes/";
 
 /* Pengaturan */
 const JUMLAH_SOAL = 10;      // jumlah soal per kuis
@@ -838,8 +896,10 @@ const KATA_GAMBAR = [["🍎", "Apel"], ["🐱", "Kucing"], ["🚗", "Mobil"], ["
 const ABJAD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const BENDA_HITUNG = ["🍎", "⭐", "🐟", "🌸", "🍌", "⚽", "🐥", "🍓", "🚗", "🎈"];
 const ANGKA_KATA = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh"];
-const WARNA_BENDA = [["🍎", "apel", "Merah"], ["🍌", "pisang", "Kuning"], ["🥦", "brokoli", "Hijau"], ["🍆", "terong", "Ungu"], ["🥕", "wortel", "Oranye"], ["🐘", "gajah", "Abu-abu"], ["🍫", "cokelat batangan", "Cokelat"], ["🌊", "air laut", "Biru"], ["🍓", "stroberi", "Merah"], ["🍋", "lemon", "Kuning"], ["🐸", "katak", "Hijau"], ["🍇", "anggur", "Ungu"], ["🍊", "jeruk", "Oranye"], ["☁️", "awan", "Putih"], ["🐻", "beruang", "Cokelat"]];
-const BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["papan rambu jalan berbentuk segitiga", "Segitiga"], ["ubin lantai", "Persegi"], ["kotak bekal berbentuk sama sisi", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"]];
+const WARNA_BENDA = [["🍎", "apel", "Merah"], ["🍌", "pisang", "Kuning"], ["🥦", "brokoli", "Hijau"], ["🍆", "terong", "Ungu"], ["🥕", "wortel", "Oranye"], ["🐘", "gajah", "Abu-abu"], ["🍫", "cokelat batangan", "Cokelat"], ["🌊", "air laut", "Biru"], ["🍓", "stroberi", "Merah"], ["🍋", "lemon", "Kuning"], ["🐸", "katak", "Hijau"], ["🍇", "anggur", "Ungu"], ["🍊", "jeruk", "Oranye"], ["☁️", "awan", "Putih"], ["🐻", "beruang", "Cokelat"], ["🍅", "tomat", "Merah"], ["🚒", "mobil pemadam", "Merah"], ["🐤", "anak ayam", "Kuning"], ["🌻", "bunga matahari", "Kuning"], ["🥒", "timun", "Hijau"], ["🌲", "pohon cemara", "Hijau"], ["🥚", "telur", "Putih"], ["🥥", "kelapa", "Cokelat"]];
+const CAMPUR_WARNA = [["merah", "kuning", "Oranye"], ["biru", "kuning", "Hijau"], ["merah", "biru", "Ungu"], ["merah", "putih", "Merah muda"], ["hitam", "putih", "Abu-abu"]];
+const SISI_BANGUN = [["segitiga", 3], ["persegi", 4], ["persegi panjang", 4], ["segi lima", 5], ["segi enam", 6]];
+const BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["papan rambu jalan berbentuk segitiga", "Segitiga"], ["ubin lantai", "Persegi"], ["kotak bekal berbentuk sama sisi", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"], ["piring", "Lingkaran"], ["donat", "Lingkaran"], ["papan catur", "Persegi"], ["sapu tangan", "Persegi"], ["layar televisi", "Persegi panjang"], ["amplop surat", "Persegi panjang"]];
 const BENTUK_EMOJI = [["🔴", "Lingkaran"], ["🟦", "Persegi"], ["🔺", "Segitiga"], ["⭐", "Bintang"], ["❤️", "Hati"]];
 const kecil = () => (G() < 0 ? 5 : 10);
 const GEN_TK_HURUF = [
@@ -860,6 +920,8 @@ const GEN_TK_ANGKA = [
     return angkaSoal(`${e.repeat(a)} + ${e.repeat(b)} = ...`, a + b, `${a} + ${b} = ${a + b}.`, "", opsiKecil); }
 ];
 const GEN_TK_WARNA = [
+  () => { const [a, b, h] = ambil(CAMPUR_WARNA); return pg(`Warna ${a} dicampur ${b} menjadi warna ...`, h, CAMPUR_WARNA.map((x) => x[2]), `${kapital(a)} + ${b} = ${h.toLowerCase()}.`); },
+  () => { const [n, k] = ambil(SISI_BANGUN); return angkaSoal(`Bangun ${n} memiliki ... sisi`, k, `${kapital(n)} memiliki ${k} sisi.`, "", opsiKecil); },
   () => { const [e, n, w] = ambil(WARNA_BENDA); return pg(`${e} Warna ${n} biasanya ...`, w, WARNA_BENDA.map((x) => x[2]), `${kapital(n)} berwarna ${w.toLowerCase()}.`); },
   () => { const [b, s] = ambil(BENTUK_BENDA); return pg(`Bentuk ${b} seperti ...`, s, ["Lingkaran", "Segitiga", "Persegi", "Persegi panjang"], `${kapital(b)} berbentuk ${s.toLowerCase()}.`); },
   () => { const [e, s] = ambil(BENTUK_EMOJI); return pg(`Gambar ${e} berbentuk ...`, s, BENTUK_EMOJI.map((x) => x[1]), `${e} adalah ${s.toLowerCase()}.`); },
@@ -877,7 +939,7 @@ const GEN_MTK1 = [
     return { t: `Tanda yang tepat: ${x} ... ${y}`, o: [t, t === ">" ? "<" : ">", "="], j: 0, p: `${x} ${t === ">" ? "lebih dari" : "kurang dari"} ${y}.` }; },
   () => { const j = rnd(1, 12); return pg(`Jarum pendek menunjuk angka ${j} dan jarum panjang menunjuk angka 12. Pukul berapa?`, JAM_KATA(j, 0), [JAM_KATA(j, 1), JAM_KATA(j % 12 + 1, 0), JAM_KATA(12, 0), JAM_KATA(j === 6 ? 7 : 6, 0)], `Jarum panjang di 12 berarti tepat. Jadi pukul ${JAM_KATA(j, 0)}.`); },
   () => { const nm = ambil(NAMA), bd = ambil(BENDA), a = rnd(2, 9), b = rnd(1, 9); return angkaSoal(`${nm} punya ${a} ${bd}, lalu diberi ${b} lagi. Sekarang ada ...`, a + b, `${a} + ${b} = ${a + b}.`, "", opsiKecil); },
-  GEN_TK_WARNA[1]
+  GEN_TK_WARNA[3]
 ];
 const GEN_MTK2 = [
   () => { const a = rnd(20, 80), b = rnd(10, 99 - a); return angkaSoal(`${a} + ${b} = ...`, a + b, `${a} + ${b} = ${a + b}.`); },
@@ -1064,6 +1126,12 @@ const ENZIM = [["Amilase (ptialin)", "mengubah amilum menjadi maltosa"], ["Pepsi
 const KINGDOM = { "Monera": ["bakteri Escherichia coli", "bakteri Lactobacillus", "ganggang hijau-biru (Cyanobacteria)"], "Protista": ["Amoeba", "Paramecium", "Euglena"], "Fungi": ["jamur tempe (Rhizopus)", "ragi roti (Saccharomyces)", "jamur tiram"], "Plantae": ["padi", "pohon mangga", "paku-pakuan"], "Animalia": ["kucing", "cacing tanah", "kupu-kupu"] };
 const TAKSON = ["Kingdom", "Filum/Divisi", "Kelas", "Ordo", "Famili", "Genus", "Spesies"];
 const RANTAI = [["padi", "tikus", "ular", "elang"], ["rumput", "belalang", "katak", "ular"], ["fitoplankton", "zooplankton", "ikan kecil", "ikan besar"], ["daun", "ulat", "burung pipit", "elang"]];
+const JARINGAN_TUMBUHAN = [["Xilem", "mengangkut air dan mineral dari akar ke daun"], ["Floem", "mengangkut hasil fotosintesis ke seluruh bagian tumbuhan"], ["Stomata", "tempat pertukaran gas pada daun"], ["Epidermis", "melindungi jaringan yang ada di bawahnya"], ["Meristem", "terus membelah sehingga tumbuhan bertambah panjang"]];
+const HORMON = [["Insulin", "menurunkan kadar gula darah"], ["Glukagon", "menaikkan kadar gula darah"], ["Adrenalin", "mempercepat detak jantung saat tegang atau takut"], ["Tiroksin", "mengatur metabolisme tubuh"], ["Somatotropin (hormon pertumbuhan)", "merangsang pertumbuhan tulang dan otot"]];
+const SENDI = [["Sendi engsel", "siku dan lutut"], ["Sendi peluru", "bahu dan pangkal paha"], ["Sendi putar", "tulang atlas dan tulang pemutar di leher"], ["Sendi pelana", "pangkal ibu jari"], ["Sendi geser", "antartulang pergelangan tangan"]];
+const EKSKRESI = [["Ginjal", "urine"], ["Kulit", "keringat"], ["Paru-paru", "karbon dioksida dan uap air"], ["Hati", "empedu"]];
+const NAPAS = [["Alveolus", "tempat pertukaran oksigen dan karbon dioksida di dalam paru-paru"], ["Trakea", "saluran udara dari tenggorokan menuju bronkus"], ["Diafragma", "otot sekat rongga dada yang membantu pernapasan perut"], ["Bronkiolus", "cabang-cabang halus bronkus di dalam paru-paru"]];
+const MIKROBA = [["membantu membuat yoghurt", "Lactobacillus"], ["dipakai untuk membuat tempe", "Rhizopus"], ["dipakai untuk membuat roti dan tapai", "Saccharomyces (ragi)"], ["dipakai untuk membuat nata de coco", "Acetobacter xylinum"], ["menyebabkan penyakit TBC", "Mycobacterium tuberculosis"]];
 const PERAN_RANTAI = ["produsen", "konsumen tingkat I", "konsumen tingkat II", "konsumen tingkat III"];
 const GEN_SAINS = {
   planet: pasangan(PLANET, (a) => `Planet ${a} dikenal sebagai ...`, (b) => `Planet yang merupakan ${b} adalah ...`, (x) => x, kapital),
@@ -1112,6 +1180,13 @@ const GEN_SAINS = {
   kingdom: () => { const k = ambil(Object.keys(KINGDOM)), o = ambil(KINGDOM[k]); return { t: `${kapital(o)} termasuk kingdom ...`, o: Object.keys(KINGDOM), j: Object.keys(KINGDOM).indexOf(k), p: `${kapital(o)} termasuk ${k}.` }; },
   takson: () => { const i = rnd(0, 5); return pg(`Urutan takson dari tingkat tinggi ke rendah: setelah ${TAKSON[i]} adalah ...`, TAKSON[i + 1], TAKSON, `Urutannya: ${TAKSON.join(" → ")}.`); },
   rantai: () => { const r = ambil(RANTAI), i = rnd(0, 3); return pg(`Pada rantai makanan ${r.join(" → ")}, yang berperan sebagai ${PERAN_RANTAI[i]} adalah ...`, kapital(r[i]), r.map(kapital), `${kapital(r[i])} adalah ${PERAN_RANTAI[i]}.`); },
+  jaringan: pasangan(JARINGAN_TUMBUHAN, (a) => `Fungsi jaringan ${a.toLowerCase()} pada tumbuhan adalah ...`, (b) => `Jaringan tumbuhan yang berfungsi ${b} adalah ...`, (x) => x, kapital),
+  hormon: pasangan(HORMON, (a) => `Fungsi hormon ${a.split(" (")[0].toLowerCase()} adalah ...`, (b) => `Hormon yang berfungsi ${b} adalah ...`, (x) => x, kapital),
+  sendi: () => { const [s, c] = ambil(SENDI); if (Math.random() < 0.5) return pg(`Contoh ${s.toLowerCase()} terdapat pada ...`, kapital(c), SENDI.map((x) => kapital(x[1])), `${s} terdapat pada ${c}.`);
+    return pg(`Hubungan tulang pada ${c} disebut ...`, s, SENDI.map((x) => x[0]), `${kapital(c)}: ${s.toLowerCase()}.`); },
+  ekskresi: () => { const [o, z] = ambil(EKSKRESI); return pg(`Organ ekskresi yang mengeluarkan ${z} adalah ...`, o, EKSKRESI.map((x) => x[0]), `${o} mengeluarkan ${z}.`); },
+  napas: pasangan(NAPAS, (a) => `Fungsi ${a.toLowerCase()} adalah sebagai ...`, (b) => `Bagian sistem pernapasan yang menjadi ${b} adalah ...`, (x) => x, kapital),
+  mikroba: () => { const [k, n] = ambil(MIKROBA); return pg(`Mikroorganisme yang ${k} adalah ...`, n, MIKROBA.map((x) => x[1]), `${n} ${k}.`); },
   genetika: () => { const [t, b] = ambil([["Perbandingan fenotip F2 persilangan monohibrid dominan penuh adalah ...", "3 : 1"], ["Perbandingan genotip F2 persilangan monohibrid (AA : Aa : aa) adalah ...", "1 : 2 : 1"], ["Perbandingan fenotip F2 persilangan dihibrid dominan penuh adalah ...", "9 : 3 : 3 : 1"]]);
     return pg(t, b, ["3 : 1", "1 : 2 : 1", "9 : 3 : 3 : 1", "1 : 1", "12 : 3 : 1"], `Menurut hukum Mendel, jawabannya ${b}.`); }
 };
@@ -1171,7 +1246,9 @@ function generatorKelas(mapel, kelas) {
       : [S.ohm, S.hambatan, S.gelombang, S.genetika, S.unsur, S.asamBasa, S.ep];
     case "fisika": return g === 10 ? [S.glbbV, S.glbbS, S.kmjam, S.gaya, S.satuan] : g === 11 ? [S.usaha, S.ep, S.ek, S.daya, S.momentum, S.gaya] : [S.ohm, S.hambatan, S.gelombang, S.momentum, S.daya];
     case "kimia": return g === 10 ? [S.nomorAtom, S.valensi, S.unsur, S.ikatan, S.senyawa] : g === 11 ? [S.mr, S.mol, S.ph, S.senyawa, S.ikatan] : [S.mol, S.mr, S.ph, S.valensi, S.senyawa];
-    case "biologi": return g === 10 ? [S.kingdom, S.takson, S.rantai, S.vertebrata] : g === 11 ? [S.organel, S.darah, S.enzim, S.organ] : [S.genetika, S.organel, S.enzim, S.rantai, S.kingdom];
+    case "biologi": return g === 10 ? [S.kingdom, S.takson, S.rantai, S.vertebrata, S.mikroba]
+      : g === 11 ? [S.organel, S.darah, S.enzim, S.organ, S.jaringan, S.hormon, S.sendi, S.ekskresi, S.napas]
+      : [S.genetika, S.organel, S.enzim, S.rantai, S.kingdom, S.hormon, S.mikroba, S.jaringan];
     case "pai": return GEN_PAI;
     case "fiqih": return GEN_FIQIH;
     case "arab": return GEN_ARAB;
@@ -1440,11 +1517,15 @@ function selesai() {
       salah.map((c) => `<li>${c.soal}<br><span class="jwb-salah">✗ Jawabanmu: ${c.dipilih}</span><br><span class="jwb-benar">✓ Jawaban benar: ${c.kunci}</span></li>`).join("") +
       `</ol></details>`;
 
+  const m = namaMapel(pilihanMapel);
   bukaHasil(() => {
     tampilkan("layarHasil");
     bunyi("selesai");
     if (nilai >= 70) konfeti();
-  }, "promoHasil");
+  }, "promoHasil", {
+    bagikan: `📚 ${nama} mendapat nilai ${nilai} di kuis ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}`,
+    guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null
+  });
 }
 
 /* =========================================================
@@ -1568,6 +1649,52 @@ const SOAL_LOGIKA = [
   ["Jika kemarin hari Minggu, maka lusa adalah hari ...", "Rabu", ["Selasa", "Kamis", "Senin"]]
 ];
 const EMOJI_SET = [["🔴", "🔵", "🟢", "🟡"], ["🍎", "🍌", "🍇", "🍊"], ["⭐", "🌙", "☀️", "☁️"], ["🐱", "🐶", "🐰", "🐸"], ["🔺", "🟦", "⚪", "🔶"]];
+// Soal tambahan untuk tingkat SMP / SMA & dewasa
+const SOAL_KATA_LANJUT = [
+  ["Termometer : suhu = Timbangan : ...", "Berat", ["Panjang", "Waktu", "Volume"]],
+  ["Penulis : buku = Komposer : ...", "Lagu", ["Lukisan", "Patung", "Film"]],
+  ["Mikroskop : kecil = Teleskop : ...", "Jauh", ["Besar", "Terang", "Dekat"]],
+  ["Benih : pohon = Telur : ...", "Ayam", ["Sarang", "Cangkang", "Bulu"]],
+  ["Air : haus = Makanan : ...", "Lapar", ["Kenyang", "Lelah", "Kantuk"]],
+  ["Sinonim kata \"efisien\" adalah ...", "Hemat dan tepat guna", ["Boros", "Lambat", "Rumit"]],
+  ["Sinonim kata \"konkret\" adalah ...", "Nyata", ["Abstrak", "Samar", "Khayal"]],
+  ["Sinonim kata \"ambigu\" adalah ...", "Bermakna ganda", ["Jelas", "Tegas", "Lugas"]],
+  ["Antonim kata \"optimis\" adalah ...", "Pesimis", ["Realistis", "Egois", "Agresif"]],
+  ["Antonim kata \"statis\" adalah ...", "Dinamis", ["Tetap", "Diam", "Kaku"]],
+  ["Antonim kata \"abadi\" adalah ...", "Fana", ["Kekal", "Lama", "Kuno"]],
+  ["Kata yang berbeda sendiri: Merkurius, Venus, Bulan, Mars", "Bulan", ["Merkurius", "Venus", "Mars"]],
+  ["Kata yang berbeda sendiri: Segitiga, Persegi, Kubus, Lingkaran", "Kubus", ["Segitiga", "Persegi", "Lingkaran"]]
+];
+const SOAL_LOGIKA_LANJUT = [
+  ["Umur ayah sekarang 3 kali umur Andi. 10 tahun lagi, umur ayah 2 kali umur Andi. Umur Andi sekarang ...", "10 tahun", ["5 tahun", "15 tahun", "20 tahun"]],
+  ["3 kucing menangkap 3 tikus dalam 3 menit. Berapa kucing yang dibutuhkan untuk menangkap 100 tikus dalam 100 menit?", "3", ["100", "33", "9"]],
+  ["5 mesin membuat 5 barang dalam 5 menit. Berapa lama 100 mesin membuat 100 barang?", "5 menit", ["100 menit", "20 menit", "1 menit"]],
+  ["Jika KUCING ditulis LVDJOH, maka ANJING ditulis ...", "BOKJOH", ["BNKJNH", "ZMHHMF", "BOKJOG"]],
+  ["Sudut terkecil antara jarum jam dan jarum menit pada pukul 03.00 adalah ...", "90°", ["45°", "180°", "30°"]],
+  ["Semua siswa kelas 5 memakai topi. Rina tidak memakai topi. Maka ...", "Rina bukan siswa kelas 5", ["Rina siswa kelas 5", "Rina lupa membawa topi", "Semua siswa tidak memakai topi"]],
+  ["Dalam lomba lari, kamu menyalip pelari di posisi kedua. Sekarang kamu di posisi ...", "Kedua", ["Pertama", "Ketiga", "Terakhir"]],
+  ["Harga buku dan pensil Rp11.000. Buku Rp10.000 lebih mahal daripada pensil. Harga pensil ...", "Rp500", ["Rp1.000", "Rp1.500", "Rp10.000"]],
+  ["Sebagian burung bisa berenang. Semua penguin adalah burung. Maka ...", "Belum bisa dipastikan apakah semua penguin bisa berenang", ["Semua penguin pasti bisa berenang", "Semua burung adalah penguin", "Penguin pasti tidak bisa berenang"]],
+  ["Lima anak berbaris. Dodi berdiri tepat di tengah. Ada berapa anak di depan Dodi?", "2", ["1", "3", "4"]]
+];
+const PRIMA = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+let levelOtak = 2; // 1 = SD kelas 1–3, 2 = SD kelas 4–6, 3 = SMP, 4 = SMA & dewasa
+const LEVEL_OTAK = [["SD kelas 1–3", 1], ["SD kelas 4–6", 2], ["SMP/MTs", 3], ["SMA/MA & dewasa", 4]];
+const GEN_OTAK_LANJUT = [
+  () => { const a = rnd(1, 5), b = rnd(1, 6), d = [a, b]; for (let i = 2; i < 6; i++) d.push(d[i - 1] + d[i - 2]); const h = d.pop();
+    return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Setiap bilangan adalah jumlah dua bilangan sebelumnya.` }, opsiAngka(h)); },
+  () => { const a = rnd(1, 6), d = [a]; for (let i = 1; i < 5; i++) d.push(d[i - 1] * 2 + 1); const h = d.pop();
+    return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Polanya: dikali 2 lalu ditambah 1.` }, opsiAngka(h)); },
+  () => { const a = rnd(1, 4), d = Array.from({ length: 5 }, (_, i) => a * Math.pow(3, i)), h = d.pop();
+    return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Setiap bilangan dikali 3.` }, opsiAngka(h)); },
+  () => { const a = rnd(1, 9), b = rnd(10, 30), x = rnd(2, 4), y = rnd(3, 7), d = [a, b, a + x, b + y, a + 2 * x, b + 2 * y];
+    return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Ada dua pola berselang-seling: ${a}, ${a + x}, ${a + 2 * x}, ... (tambah ${x}) dan ${b}, ${b + y}, ... (tambah ${y}).` }, opsiAngka(a + 3 * x)); }
+];
+const GEN_OTAK_SULIT = [
+  () => { const i = rnd(0, 6), d = PRIMA.slice(i, i + 5), h = d.pop(); return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Ini deret bilangan prima.` }, opsiAngka(h)); },
+  () => { const s = rnd(1, 3), d = Array.from({ length: 5 }, (_, i) => Math.pow(s + i, 3)), h = d.pop(); return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Bilangan pangkat tiga: ${s}³, ${s + 1}³, dan seterusnya.` }, opsiAngka(h)); },
+  () => { const s = rnd(1, 4), d = Array.from({ length: 5 }, (_, i) => (s + i) * (s + i) + 1), h = d.pop(); return Object.assign({ t: `Bilangan selanjutnya: ${d.join(", ")}, ...`, p: `Polanya n² + 1.` }, opsiAngka(h)); }
+];
 const GEN_OTAK = {
   angka: [
     () => { const a = rnd(1, 20), k = rnd(2, 9), d = Array.from({ length: 5 }, (_, i) => a + k * i), h = d.pop();
@@ -1595,16 +1722,23 @@ const GEN_OTAK = {
     () => { const [x, y] = acak(EMOJI_SET).slice(0, 2), lain = ambil(y), d = acak([...acak(x).slice(0, 3), lain]);
       return pg(`Mana yang berbeda dari yang lain? ${d.join(" ")}`, lain, d, `${lain} tidak satu kelompok dengan yang lain.`); }
   ],
-  kata: [() => { const [t, b, s] = ambil(SOAL_KATA); return pg(t, b, s, `Jawabannya ${b}.`); }],
-  logika: [() => { const [t, b, s] = ambil(SOAL_LOGIKA); return pg(t, b, s, `Jawabannya ${b}.`); }]
+  kata: [() => { const [t, b, s] = ambil(levelOtak >= 3 && Math.random() < 0.7 ? SOAL_KATA_LANJUT : SOAL_KATA); return pg(t, b, s, `Jawabannya ${b}.`); }],
+  logika: [() => { const [t, b, s] = ambil(levelOtak >= 3 && Math.random() < 0.7 ? SOAL_LOGIKA_LANJUT : SOAL_LOGIKA); return pg(t, b, s, `Jawabannya ${b}.`); }]
 };
+function genAngkaOtak() {
+  const dasar = GEN_OTAK.angka;
+  if (levelOtak === 1) return [dasar[0], dasar[1], dasar[3]];
+  if (levelOtak === 2) return dasar;
+  if (levelOtak === 3) return dasar.slice(2).concat(GEN_OTAK_LANJUT);
+  return GEN_OTAK_LANJUT.concat(GEN_OTAK_SULIT, [dasar[4], dasar[5]]);
+}
 function soalOtak() {
   const hasil = [];
   Object.keys(AREA_OTAK).forEach((area) => {
     const dipakai = new Set();
     let coba = 0;
     while (hasil.filter((s) => s.area === area).length < 5 && coba++ < 200) {
-      const s = ambil(GEN_OTAK[area])();
+      const s = ambil(area === "angka" ? genAngkaOtak() : GEN_OTAK[area])();
       if (dipakai.has(s.t)) continue;
       dipakai.add(s.t);
       hasil.push({ t: s.t, area, o: acak(s.o.map((teks, i) => ({ teks, nilai: i === s.j ? 1 : 0 }))) });
@@ -1738,8 +1872,8 @@ const TES = {
     }
   },
   otak: {
-    nama: "Tes Kecerdasan (ala IQ)", ikon: "🧠", warna: "#c9f2dd",
-    intro: `<p>Ada <b>20 soal</b> tentang angka, pola gambar, kata, dan logika. Kerjakan sendiri tanpa bantuan, ya. Waktu pengerjaan dicatat.</p>
+    nama: "Tes Kecerdasan (ala IQ)", ikon: "🧠", warna: "#c9f2dd", pilihLevel: true,
+    intro: `<p>Ada <b>20 soal</b> tentang angka, pola gambar, kata, dan logika. Pilih tingkat yang sesuai usia, lalu kerjakan sendiri tanpa bantuan, ya. Waktu pengerjaan dicatat.</p>
       <p class="catatan-ortu">ℹ️ Ini <b>latihan kemampuan berpikir</b>, bukan tes IQ resmi. Skor IQ yang sah hanya bisa didapat dari tes terstandar yang dilakukan psikolog, jadi tes ini <b>tidak memberi angka IQ</b>. Hasilnya berupa skor dan kekuatan berpikir per bidang.</p>`,
     soal: soalOtak,
     hasil(j, extra) {
@@ -1749,8 +1883,8 @@ const TES = {
       const kat = total >= 19 ? ["🏆", "Istimewa"] : total >= 16 ? ["🌟", "Sangat Baik"] : total >= 12 ? ["👍", "Baik"] : total >= 8 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
       const urut = Object.keys(AREA_OTAK).sort((a, b) => per[b] - per[a]);
       const salah = extra.soal.map((s, i) => ({ s, ok: j[i] === 1, pilih: extra.teks[i] })).filter((x) => !x.ok);
-      return { ringkas: `${total}/20 (${kat[1]})`, html: `
-        <div class="besar">${kat[0]}</div><h2>Hasil Asah Otak ${esc(nama)}</h2><p class="sub-kecil">${tglHariIni()}</p>
+      return { ringkas: `${total}/20 (${kat[1]})`, bagikan: `🧠 ${nama} mendapat skor ${total}/20 (${kat[1]}) di Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}! Berani coba?`, html: `
+        <div class="besar">${kat[0]}</div><h2>Hasil Tes Kecerdasan ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${LEVEL_OTAK[levelOtak - 1][0]} • ${tglHariIni()}</p>
         <div class="kotak tengah"><div style="font-size:52px;font-weight:800;color:var(--primary-dark)">${total}<span style="font-size:26px">/20</span></div>
           <b>Kategori: ${kat[1]}</b><br>Waktu: ${menit} menit ${detik} detik</div>
         <h3>📊 Kemampuan per bidang</h3>
@@ -1936,13 +2070,98 @@ TES.kepribadian = {
   }
 };
 
-/* ---------- AJAKAN HADIRFLOW DI HALAMAN HASIL ---------- */
-function isiPromo(el) {
-  el.innerHTML = `<div class="kotak-promo hf"><b>🏢 Kenalan dengan HadirFlow</b>
-      <p>Aplikasi absensi wajah anti titip absen dan penggajian karyawan otomatis untuk bisnis Anda. Hadir tercatat, gaji tepat.</p>
-      <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW}">🚀 Buka HadirFlow</a></div>`;
+/* ---------- AJAKAN HADIRFLOW, TOMBOL BAGIKAN, KIRIM NILAI KE GURU ---------- */
+function kartuHadirFlow(sumber) {
+  return `<div class="kotak-promo hf"><b>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>
+      <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. Cocok untuk sekolah, madrasah, pesantren, dan usaha.</p>
+      <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW + sumber}">🚀 Coba HadirFlow</a></div>`;
 }
-function bukaHasil(tampil, wadahPromo) { tampil(); isiPromo($(wadahPromo)); }
+function normalWA(s) {
+  let d = String(s || "").replace(/\D/g, "");
+  if (d.indexOf("0") === 0) d = "62" + d.slice(1); else if (d.indexOf("8") === 0) d = "62" + d;
+  return /^628\d{7,11}$/.test(d) ? d : "";
+}
+// opsi: { bagikan: teks yang dibagikan (atau null), guru: { nama, wa, pesan } }
+function isiPromo(el, opsi) {
+  opsi = opsi || {};
+  let html = "";
+  if (opsi.guru && opsi.guru.wa) html += `<div class="kotak-promo guru"><b>📤 Kirim nilaimu ke ${esc(opsi.guru.nama)}</b>
+      <p>Tekan tombol di bawah, lalu tekan <b>Kirim</b> di WhatsApp.</p>
+      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/${opsi.guru.wa}?text=${encodeURIComponent(opsi.guru.pesan)}">📤 Kirim nilai ke ${esc(opsi.guru.nama)}</a></div>`;
+  if (opsi.bagikan) {
+    const teks = opsi.bagikan + "\n\nCoba gratis juga di sini 👉 " + URL_KUIS;
+    html += `<div class="kotak-promo bagikan"><b>📲 Bagikan hasilnya</b>
+      <p>Ajak teman, saudara, dan grup sekolah mencoba tes gratis ini.</p>
+      <div class="baris-tombol" style="justify-content:flex-start;margin-top:6px">
+        <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(teks)}">💬 Bagikan ke WhatsApp</a>
+        ${navigator.share ? `<button type="button" class="tombol putih" data-bagikan>📤 Bagikan lainnya</button>` : ""}
+      </div></div>`;
+  }
+  html += kartuHadirFlow("hasil");
+  el.innerHTML = html;
+  const b = el.querySelector("[data-bagikan]");
+  if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });
+}
+function bukaHasil(tampil, wadahPromo, opsi) { tampil(); isiPromo($(wadahPromo), opsi); }
+
+/* ---------- MODE GURU ---------- */
+const PARAM = (() => {
+  const o = {};
+  String(location.search || "").replace(/^\?/, "").split("&").forEach((p) => {
+    const i = p.indexOf("=");
+    if (i > 0) { try { o[decodeURIComponent(p.slice(0, i))] = decodeURIComponent(p.slice(i + 1).replace(/\+/g, " ")); } catch (e) {} }
+  });
+  return o;
+})();
+const KUIS_GURU = (() => {
+  if (!PARAM.guru || !KELAS_INFO[PARAM.k]) return null;
+  const m = mapelKelas(PARAM.k).concat(["campur"]).indexOf(PARAM.m) >= 0 ? PARAM.m : "campur";
+  return { nama: PARAM.guru.slice(0, 40), wa: normalWA(PARAM.wa), kelas: PARAM.k, mapel: m, rombel: String(PARAM.r || "").slice(0, 20) };
+})();
+function pesanNilaiGuru(nilai, skor, total) {
+  const g = KUIS_GURU, d = new Date(), jam = String(d.getHours()).padStart(2, "0") + "." + String(d.getMinutes()).padStart(2, "0");
+  return `Assalamu'alaikum ${g.nama}, saya ${nama}${g.rombel ? " (kelas " + g.rombel + ")" : ""}.\n` +
+    `Nilai kuis ${namaMapel(pilihanMapel).nama} ${KELAS_INFO[kelasAktif].nama}: ${nilai} (benar ${skor} dari ${total}).\n` +
+    `Dikerjakan ${tglHariIni()} pukul ${jam}.`;
+}
+function terapkanKuisGuru() {
+  const g = KUIS_GURU;
+  if (!g) return;
+  kelasAktif = g.kelas; jenjangAktif = KELAS_INFO[g.kelas].jenjang; pilihanMapel = g.mapel;
+  renderPilihan();
+  const m = namaMapel(g.mapel);
+  $("infoPilihan").textContent = "✅ Kuis dari guru: " + m.ikon + " " + m.nama + " • " + KELAS_INFO[g.kelas].nama;
+  $("bannerGuru").innerHTML = `📋 Kuis dari <b>${esc(g.nama)}</b>${g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : ""}: ${m.ikon} ${m.nama} • ${KELAS_INFO[g.kelas].nama}.<br>Tulis namamu, lalu tekan <b>Mulai Kuis</b>.${g.wa ? " Setelah selesai, kirim nilaimu ke " + esc(g.nama) + "." : ""}`;
+  $("bannerGuru").style.display = "block";
+}
+function isiPilihanGuru() {
+  const sk = $("guruKelas"), sm = $("guruMapel");
+  sk.innerHTML = Object.keys(KELAS_INFO).map((k) => `<option value="${k}">${KELAS_INFO[k].nama}${KELAS_INFO[k].jenjang === "tk" ? "" : " " + JENJANG[KELAS_INFO[k].jenjang].nama}</option>`).join("");
+  sk.value = kelasAktif;
+  const isiMapel = () => { sm.innerHTML = mapelKelas(sk.value).concat(["campur"]).map((k) => `<option value="${k}">${MAPEL_INFO[k].ikon} ${MAPEL_INFO[k].nama}</option>`).join(""); };
+  sk.onchange = isiMapel; isiMapel();
+  $("promoGuru").innerHTML = kartuHadirFlow("guru");
+}
+function buatLinkGuru() {
+  const n = $("guruNama").value.trim(), wa = normalWA($("guruWA").value), r = $("guruRombel").value.trim();
+  if (n.length < 2) { $("guruError").textContent = "Tulis nama Bapak/Ibu guru dulu."; $("guruNama").focus(); return; }
+  if (!wa) { $("guruError").textContent = "Nomor WhatsApp belum benar. Contoh: 081234567890"; $("guruWA").focus(); return; }
+  $("guruError").textContent = "";
+  const q = { guru: n, wa, k: $("guruKelas").value, m: $("guruMapel").value };
+  if (r) q.r = r;
+  const link = URL_KUIS + "?" + Object.keys(q).map((k) => k + "=" + encodeURIComponent(q[k])).join("&");
+  const m = MAPEL_INFO[q.m], kls = KELAS_INFO[q.k].nama;
+  $("linkGuru").value = link;
+  $("btnLinkWA").href = "https://wa.me/?text=" + encodeURIComponent(`Assalamu'alaikum anak-anak${r ? " kelas " + r : ""} 👋\nAyo kerjakan kuis ${m.nama} (${kls}) dari ${n}. Setelah selesai, jangan lupa tekan "Kirim nilai ke ${n}", ya.\n\n👉 ${link}`);
+  $("hasilLink").style.display = "block";
+  $("infoSalin").textContent = "";
+  tulis("kuisMI3:guru", { n, wa: $("guruWA").value, r });
+}
+function salinLinkGuru() {
+  const el = $("linkGuru"), ok = () => ($("infoSalin").textContent = "✅ Link tersalin. Tempel di grup WhatsApp kelas.");
+  try { navigator.clipboard.writeText(el.value).then(ok, () => { el.select(); document.execCommand("copy"); ok(); }); }
+  catch (e) { el.select(); try { document.execCommand("copy"); ok(); } catch (e2) { $("infoSalin").textContent = "Tekan lama kotak link di atas, lalu pilih Salin."; } }
+}
 
 /* ---------- MESIN TES ---------- */
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
@@ -1981,6 +2200,15 @@ function bukaTes(id) {
   tesAktif = id; const t = TES[id];
   $("introIkon").textContent = t.ikon; $("introJudul").textContent = t.nama; $("introIsi").innerHTML = t.intro;
   $("introTglLahir").style.display = t.tglLahir ? "block" : "none";
+  $("introLevel").style.display = t.pilihLevel ? "block" : "none";
+  if (t.pilihLevel) {
+    levelOtak = baca(kunci("level-otak", nama), KELAS_INFO[kelasAktif].g >= 10 ? 4 : KELAS_INFO[kelasAktif].g >= 7 ? 3 : KELAS_INFO[kelasAktif].g >= 4 ? 2 : 1);
+    const gambarLevel = () => {
+      const w = $("daftarLevel"); w.innerHTML = "";
+      LEVEL_OTAK.forEach(([n, v]) => w.appendChild(tombolChip(n, v === levelOtak, () => { levelOtak = v; tulis(kunci("level-otak", nama), v); gambarLevel(); })));
+    };
+    gambarLevel();
+  }
   if (t.tglLahir) $("tglLahir").value = baca(kunci("tgl-lahir", nama), "");
   $("pesanErrorTes").textContent = "";
   tampilkan("layarIntroTes");
@@ -2035,13 +2263,14 @@ function selesaiTes() {
   bukaHasil(() => {
     tampilkan("layarHasilTes"); bunyi("selesai");
     if (id !== "mood" && id !== "darah") konfeti(50);
-  }, "promoHasilTes");
+  }, "promoHasilTes", { bagikan: id === "mood" || id === "kepribadian" ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`) });
 }
 function gantiTab(id) {
   document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("aktif", b.dataset.tab === id));
   document.querySelectorAll(".isi-tab").forEach((d) => d.classList.toggle("aktif", d.id === id));
   $("pesanError").textContent = "";
   if (id === "tabDiri") buatDaftarTes();
+  if (id === "tabGuru") isiPilihanGuru();
 }
 document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => gantiTab(b.dataset.tab)));
 $("btnMulaiTes").addEventListener("click", mulaiTes);
@@ -2051,6 +2280,7 @@ $("btnKembaliTes").addEventListener("click", () => { gantiTab("tabDiri"); tampil
 document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("click", () => {
   const id = b.getAttribute("data-buka");
   if (id === "pelajaran") { gantiTab("tabPelajaran"); $("daftarJenjang").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+  if (id === "guru") { gantiTab("tabGuru"); $("guruNama").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
   gantiTab("tabDiri");
   if (!$("namaSiswa").value.trim()) { $("namaSiswa").focus(); $("pesanError").textContent = "Tulis nama anak dulu, lalu pilih tesnya. 😊"; return; }
   bukaTes(id);
@@ -2071,7 +2301,11 @@ $("btnReset").addEventListener("click", () => {
     perbaruiInfoMapel();
   }
 });
+$("btnBuatLink").addEventListener("click", buatLinkGuru);
+$("btnSalinLink").addEventListener("click", salinLinkGuru);
+(() => { const g = baca("kuisMI3:guru", null); if (g) { $("guruNama").value = g.n || ""; $("guruWA").value = g.wa || ""; $("guruRombel").value = g.r || ""; } })();
 buatDaftarMapel();
+terapkanKuisGuru();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>
