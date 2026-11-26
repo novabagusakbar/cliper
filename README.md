@@ -27,6 +27,24 @@ Fitur:
 - Suara, nilai 0–100, bintang, konfeti, dan pembahasan soal yang salah
 - Bisa dipakai di HP, tablet, dan laptop
 
+## 🌟 Kenali Diriku (tab kedua di halaman awal)
+Permainan untuk mengenal minat dan perasaan anak. Ini **bukan tes psikologi resmi**.
+
+| Tes | Isi | Hasil |
+|---|---|---|
+| 🧬 Gaya Belajar 5 Mesin | 15 pertanyaan + tanggal lahir | Tipe paling menonjol (terinspirasi konsep STIFIn: Sensing, Thinking, Intuiting, Feeling, Insting), ciri, cara belajar yang cocok, usia |
+| 🩸 Golongan Darahku | golongan darah anak, atau ayah & ibu | Info donor, atau kemungkinan golongan darah anak dari ayah & ibu |
+| 🏅 Kelebihanku | 30 pernyataan, 10 bidang | 3 kelebihan teratas, 2 bidang yang bisa dilatih, grafik semua bidang |
+| 🌤️ Mood Hari Ini | 4 pertanyaan | Saran sesuai perasaan + riwayat perasaan 14 kali terakhir |
+| 🧩 Asah Otak (IQ) | 20 soal angka, pola, kata, logika (selalu berganti) | Skor /20, kategori, waktu, kekuatan per bidang, pembahasan |
+
+Catatan penting:
+- **STIFIn resmi** memakai sidik jari. Tanggal lahir tidak bisa menentukan tipe, jadi di sini hanya dipakai untuk menghitung usia.
+- **Golongan darah** hanya bisa dipastikan dengan tes darah. Golongan darah tidak menentukan sifat anak.
+- **Kelebihanku** adalah tes buatan sendiri, **bukan ST-30**.
+- **Asah Otak tidak memberi angka IQ**, karena angka IQ yang sah hanya dari tes terstandar oleh psikolog.
+- Hasil terakhir setiap tes tersimpan per nama, dan bisa dicetak atau disimpan sebagai PDF.
+
 ## Cara memasang di Google Sites
 1. Buka file `kuis-kelas3-mi.html`, pilih semua isinya (Ctrl+A), lalu salin (Ctrl+C).
 2. Buka situs Anda di **sites.google.com**.

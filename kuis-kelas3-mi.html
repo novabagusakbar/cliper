@@ -140,6 +140,32 @@
   .baris-tombol { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
   footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; }
 
+  /* Tab & Kenali Diriku */
+  .tab-bar { display: flex; gap: 8px; margin: 18px 0 14px; background: #fff6dc; padding: 6px; border-radius: 18px; }
+  .tab { flex: 1; font: inherit; font-weight: 800; font-size: 17px; border: none; border-radius: 14px; padding: 10px 6px; background: transparent; color: var(--muted); cursor: pointer; touch-action: manipulation; }
+  .tab.aktif { background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--line); }
+  .isi-tab { display: none; }
+  .isi-tab.aktif { display: block; }
+  .catatan-ortu { font-size: 15px; color: var(--muted); background: #fffdf7; border: 2px dashed var(--line); border-radius: 14px; padding: 10px 12px; margin-top: 14px; }
+  .input-tgl { width: 100%; font: inherit; font-size: 20px; padding: 10px 14px; border-radius: 16px; border: 3px solid var(--line); background: #fffdf7; }
+  .hasil-tes h2 { text-align: center; }
+  .hasil-tes h3 { margin: 18px 0 6px; font-size: 20px; }
+  .hasil-tes ul { margin: 6px 0; padding-left: 22px; }
+  .hasil-tes .besar { font-size: 56px; text-align: center; line-height: 1.1; }
+  .hasil-tes .kotak { background: #fffdf7; border: 3px solid var(--line); border-radius: 16px; padding: 12px 14px; margin: 10px 0; }
+  .hasil-tes .peringatan { background: #fff1b8; border-color: var(--accent); }
+  .batang { display: grid; grid-template-columns: minmax(110px, 38%) 1fr 34px; gap: 8px; align-items: center; margin: 6px 0; font-size: 16px; }
+  .batang .jalur { background: #f3ecd8; border-radius: 999px; height: 16px; overflow: hidden; }
+  .batang .isi { height: 100%; border-radius: 999px; background: var(--primary); }
+  .batang.lemah .isi { background: var(--accent); }
+  .batang b { text-align: right; }
+  .sub-kecil { font-size: 14px; color: var(--muted); text-align: center; }
+  @media print {
+    body { background: #fff; }
+    .tanpa-cetak, footer, .konfeti { display: none !important; }
+    .kartu { box-shadow: none; }
+  }
+
   /* Konfeti */
   .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
   @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
@@ -162,25 +188,79 @@
     <div class="header">
       <span class="maskot" aria-hidden="true">🦉</span>
       <h1>Kuis Pintar Kelas 3 MI</h1>
-      <p class="sub">Ayo belajar sambil bermain! Pilih pelajaran lalu jawab soalnya, ya.</p>
+      <p class="sub">Ayo belajar sambil bermain dan kenali dirimu!</p>
     </div>
     <div class="kartu">
       <label class="judul" for="namaSiswa">✏️ Siapa namamu?</label>
       <input id="namaSiswa" type="text" maxlength="30" placeholder="Tulis namamu di sini" autocomplete="off">
 
-      <p class="judul" style="margin-top:18px">📚 Pilih pelajaran:</p>
-      <div class="mapel-grid" id="daftarMapel"></div>
+      <div class="tab-bar" role="tablist">
+        <button type="button" class="tab aktif" data-tab="tabPelajaran">📚 Kuis Pelajaran</button>
+        <button type="button" class="tab" data-tab="tabDiri">🌟 Kenali Diriku</button>
+      </div>
 
-      <div class="info-pilihan" id="infoPilihan"></div>
+      <div id="tabPelajaran" class="isi-tab aktif">
+        <p class="judul">📚 Pilih pelajaran:</p>
+        <div class="mapel-grid" id="daftarMapel"></div>
+        <div class="info-pilihan" id="infoPilihan"></div>
+        <div class="tengah">
+          <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
+        </div>
+        <div class="tengah" style="margin-top:12px">
+          <button type="button" class="link-reset" id="btnReset" style="display:none">🗑️ Hapus riwayat soal untuk nama ini</button>
+        </div>
+      </div>
+
+      <div id="tabDiri" class="isi-tab">
+        <p class="judul">🌟 Pilih tes untuk mengenal dirimu:</p>
+        <div class="mapel-grid" id="daftarTes"></div>
+        <p class="catatan-ortu">👨‍👩‍👧 <b>Untuk Ayah/Bunda:</b> tes-tes ini adalah permainan untuk mengenal minat dan perasaan anak. Ini <b>bukan</b> tes psikologi resmi, jadi jangan dipakai untuk memberi label pada anak.</p>
+      </div>
+
       <div class="pesan-error" id="pesanError" role="alert"></div>
-      <div class="tengah">
-        <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
-      </div>
-      <div class="tengah" style="margin-top:12px">
-        <button type="button" class="link-reset" id="btnReset" style="display:none">🗑️ Hapus riwayat soal untuk nama ini</button>
-      </div>
     </div>
     <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
+  </section>
+
+  <!-- LAYAR TES: PEMBUKA -->
+  <section id="layarIntroTes" class="screen">
+    <div class="kartu tengah">
+      <div style="font-size:64px" id="introIkon"></div>
+      <h2 id="introJudul"></h2>
+      <div id="introIsi" style="text-align:left"></div>
+      <div id="introTglLahir" style="display:none;text-align:left;margin-top:12px">
+        <label class="judul" for="tglLahir">🎂 Tanggal lahir</label>
+        <input id="tglLahir" type="date" class="input-tgl">
+      </div>
+      <div class="pesan-error" id="pesanErrorTes" role="alert"></div>
+      <div class="baris-tombol">
+        <button class="tombol" id="btnMulaiTes">Mulai 🚀</button>
+        <button class="tombol putih" id="btnBatalTes">Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYAR TES: PERTANYAAN -->
+  <section id="layarTes" class="screen">
+    <div class="bar-atas">
+      <span class="chip" id="tesNama"></span>
+      <span class="chip" id="tesNomor"></span>
+    </div>
+    <div class="progress" aria-hidden="true"><div id="tesProgress"></div></div>
+    <div class="kartu">
+      <p class="soal" id="tesSoal"></p>
+      <div class="opsi-list" id="tesOpsi"></div>
+      <div class="tengah"><button type="button" class="link-reset" id="btnTesMundur">⬅️ Soal sebelumnya</button></div>
+    </div>
+  </section>
+
+  <!-- LAYAR TES: HASIL -->
+  <section id="layarHasilTes" class="screen">
+    <div class="kartu" id="isiHasilTes"></div>
+    <div class="baris-tombol tanpa-cetak">
+      <button class="tombol kuning" id="btnCetak">🖨️ Cetak / Simpan PDF</button>
+      <button class="tombol putih" id="btnKembaliTes">🌟 Tes Lainnya</button>
+    </div>
   </section>
 
   <!-- LAYAR 2: KUIS -->
@@ -1989,6 +2069,845 @@ function selesai() {
   bunyi("selesai");
   if (nilai >= 70) konfeti();
 }
+
+/* =========================================================
+   KENALI DIRIKU — tes minat, perasaan, dan asah otak
+   Semua tes ini permainan pengenalan diri, BUKAN tes psikologi resmi.
+   ========================================================= */
+var esc = function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;"
+    }[c];
+  });
+};
+var tglHariIni = function tglHariIni() {
+  var d = new Date();
+  return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+};
+function hitungUsia(tgl) {
+  var lahir = new Date(tgl + "T00:00:00"),
+    kini = new Date();
+  if (isNaN(lahir) || lahir > kini) return null;
+  var th = kini.getFullYear() - lahir.getFullYear(),
+    bl = kini.getMonth() - lahir.getMonth();
+  if (kini.getDate() < lahir.getDate()) bl--;
+  if (bl < 0) {
+    th--;
+    bl += 12;
+  }
+  return {
+    th: th,
+    bl: bl
+  };
+}
+function batang(label, nilai, maks, lemah) {
+  var persen = Math.round(nilai / maks * 100);
+  return "<div class=\"batang".concat(lemah ? " lemah" : "", "\"><span>").concat(label, "</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(persen, "%\"></div></div><b>").concat(nilai, "</b></div>");
+}
+// satu pertanyaan: { t, o: [{ teks, nilai }], syarat?(jawaban) }
+var opsi = function opsi(daftar) {
+  return daftar.map(function (_ref12) {
+    var _ref13 = _slicedToArray(_ref12, 2),
+      teks = _ref13[0],
+      nilai = _ref13[1];
+    return {
+      teks: teks,
+      nilai: nilai
+    };
+  });
+};
+
+/* ---------- 1. GAYA BELAJAR 5 MESIN (terinspirasi konsep STIFIn) ---------- */
+var MESIN = {
+  S: {
+    nama: "Si Pengingat",
+    asli: "Sensing",
+    ikon: "💪",
+    warna: "#ffd6a5",
+    sifat: ["Kuat mengingat apa yang pernah dilihat dan dilakukan", "Rajin, tekun, dan suka praktik langsung", "Suka bergerak dan berkompetisi"],
+    belajar: ["Belajar dengan praktik dan contoh nyata", "Mengulang-ulang hafalan sedikit demi sedikit", "Membuat catatan rapi dan merangkum", "Memberi target dan hadiah kecil setelah belajar"],
+    latih: "Latih kesabaran untuk memahami alasan di balik sesuatu, bukan hanya menghafal."
+  },
+  T: {
+    nama: "Si Pemikir",
+    asli: "Thinking",
+    ikon: "🧠",
+    warna: "#bde0fe",
+    sifat: ["Berpikir runtut dan logis", "Suka bertanya “mengapa” dan mencari sebab", "Teliti dan suka keteraturan"],
+    belajar: ["Membuat bagan, tabel, dan urutan langkah", "Mencari tahu alasan dari setiap materi", "Latihan soal logika dan matematika", "Belajar di tempat yang tenang dan rapi"],
+    latih: "Latih kepekaan perasaan dan kerja sama dengan teman."
+  },
+  I: {
+    nama: "Si Kreatif",
+    asli: "Intuiting",
+    ikon: "💡",
+    warna: "#e2c2ff",
+    sifat: ["Penuh ide dan imajinasi", "Suka hal baru dan cara yang berbeda", "Cepat menangkap gambaran besar"],
+    belajar: ["Membuat peta pikiran (mind map) yang berwarna", "Belajar lewat gambar, cerita, dan video", "Mengaitkan pelajaran dengan khayalan atau proyek", "Memberi kebebasan memilih cara belajar"],
+    latih: "Latih ketelitian dan menyelesaikan tugas sampai tuntas."
+  },
+  F: {
+    nama: "Si Perasa",
+    asli: "Feeling",
+    ikon: "💖",
+    warna: "#ffc8dd",
+    sifat: ["Peduli dan mudah merasakan perasaan orang lain", "Pandai berbicara dan bercerita", "Senang bersama teman dan keluarga"],
+    belajar: ["Belajar kelompok dan berdiskusi", "Menjelaskan kembali pelajaran kepada orang lain", "Belajar dengan suasana hangat dan pujian", "Mengaitkan pelajaran dengan kisah tokoh"],
+    latih: "Latih keberanian mengambil keputusan sendiri dan tidak mudah sedih."
+  },
+  In: {
+    nama: "Si Serba Bisa",
+    asli: "Insting",
+    ikon: "🌈",
+    warna: "#caffbf",
+    sifat: ["Mudah menyesuaikan diri di mana saja", "Tenang, suka damai, dan suka menolong", "Menyukai banyak hal sekaligus"],
+    belajar: ["Belajar dengan variasi, jangan monoton", "Belajar sambil mendengarkan atau diselingi gerak", "Mengaitkan pelajaran dengan kegiatan sehari-hari", "Membagi waktu belajar menjadi bagian-bagian pendek"],
+    latih: "Latih fokus pada satu hal sampai menjadi ahli."
+  }
+};
+var SOAL_MESIN = [["Kalau belajar hal baru, aku paling suka ...", ["langsung mencoba sendiri", "tahu dulu alasannya", "membayangkan dan menggambar idenya", "belajar bersama teman sambil ngobrol", "mencoba sedikit dari banyak hal"]], ["Saat bermain, aku paling suka ...", ["permainan yang bergerak dan berlomba", "catur, teka-teki, atau puzzle", "membangun sesuatu sesuai khayalanku", "bermain peran bersama teman", "main apa saja, yang penting seru"]], ["Kalau ada PR, aku biasanya ...", ["langsung mengerjakan sampai selesai", "mengerjakan urut dari nomor satu dengan teliti", "mengerjakan yang paling menarik dulu", "lebih semangat kalau ditemani", "mengerjakan sambil santai"]], ["Teman-teman bilang aku ...", ["rajin dan kuat", "pintar dan teliti", "banyak ide dan unik", "baik hati dan ramah", "tenang dan mudah bergaul"]], ["Pelajaran yang paling aku sukai ...", ["olahraga atau praktik", "matematika", "menggambar atau mengarang", "bahasa atau bercerita", "semua sama sukanya"]], ["Kalau ada masalah, aku ...", ["segera bertindak", "memikirkan cara terbaik dulu", "mencari cara yang belum pernah dicoba", "bercerita kepada orang yang kusayangi", "tetap tenang dan sabar"]], ["Aku paling mudah ingat ...", ["hal yang pernah kulihat dan kulakukan", "rumus dan urutan langkah", "gambar dan cerita", "nama dan wajah orang", "lagu dan irama"]], ["Cita-citaku lebih mirip ...", ["atlet, tentara, atau pengusaha", "dokter, insinyur, atau ilmuwan", "penemu, arsitek, atau desainer", "guru, ustaz/ustazah, atau pembawa acara", "aku punya banyak cita-cita"]], ["Kamarku biasanya ...", ["berisi barang koleksiku", "rapi dan tertata", "penuh gambar dan hasil karyaku", "ada foto keluarga dan teman", "kadang rapi, kadang berantakan"]], ["Saat kerja kelompok, aku senang menjadi ...", ["yang paling banyak mengerjakan", "yang mengatur urutan tugas", "yang memberi ide", "yang membuat teman-teman kompak", "yang membantu bagian mana saja"]], ["Hadiah yang paling aku suka ...", ["bola atau sepeda", "buku ensiklopedia atau teka-teki", "krayon dan buku gambar", "hadiah dari orang yang kusayangi", "kejutan, apa saja"]], ["Kalau kalah lomba, aku ...", ["berlatih lebih keras", "mencari tahu kenapa aku kalah", "mencoba cara baru lain kali", "sedih, tapi senang kalau dihibur", "biasa saja, yang penting sudah ikut"]], ["Aku lebih suka ...", ["melakukan", "memikirkan", "membayangkan", "merasakan", "mengikuti suasana"]], ["Waktu luang, aku ...", ["bermain di luar rumah", "membaca atau bermain teka-teki", "menggambar atau membuat prakarya", "bermain dengan saudara atau teman", "mendengarkan nasyid atau bernyanyi"]], ["Kalau guru menjelaskan, aku paling paham jika ...", ["diberi contoh yang bisa dipegang", "dijelaskan langkah demi langkah", "dibantu gambar atau cerita", "guru ramah dan sabar", "suasana kelas menyenangkan"]]];
+var KODE_MESIN = ["S", "T", "I", "F", "In"];
+
+/* ---------- 3. KELEBIHANKU: 30 pernyataan, 10 bidang ---------- */
+var BIDANG = [{
+  id: "pemimpin",
+  nama: "Pemimpin",
+  ikon: "🧭",
+  s: ["Aku suka memimpin teman saat bermain atau kerja kelompok.", "Aku berani berbicara di depan kelas.", "Aku berani mengambil keputusan."],
+  tip: "Coba jadi ketua kelompok kecil atau memimpin doa sebelum belajar."
+}, {
+  id: "penolong",
+  nama: "Penolong",
+  ikon: "🤝",
+  s: ["Aku senang membantu teman yang kesulitan.", "Aku ikut sedih jika temanku sedih.", "Aku suka berbagi makanan atau mainan."],
+  tip: "Biasakan menolong satu orang setiap hari, misalnya membantu Ibu."
+}, {
+  id: "pemikir",
+  nama: "Pemikir",
+  ikon: "🧠",
+  s: ["Aku suka soal hitungan atau teka-teki.", "Aku sering bertanya “mengapa” tentang sesuatu.", "Aku teliti saat mengerjakan soal."],
+  tip: "Main teka-teki, sudoku anak, atau tebak-tebakan angka bersama keluarga."
+}, {
+  id: "kreatif",
+  nama: "Kreatif",
+  ikon: "🎨",
+  s: ["Aku suka menggambar atau membuat prakarya.", "Aku sering punya ide yang berbeda dari teman.", "Aku suka mengarang cerita."],
+  tip: "Sediakan buku gambar khusus untuk menuangkan ide setiap hari."
+}, {
+  id: "komunikasi",
+  nama: "Pandai Bicara",
+  ikon: "🗣️",
+  s: ["Aku senang bercerita kepada orang lain.", "Aku mudah berkenalan dengan teman baru.", "Aku suka membaca dengan suara keras atau berpidato."],
+  tip: "Latih bercerita 2 menit di depan keluarga tentang kegiatan hari ini."
+}, {
+  id: "gerak",
+  nama: "Gesit & Sportif",
+  ikon: "⚽",
+  s: ["Aku suka berolahraga atau bermain di luar.", "Aku tidak bisa diam lama dan suka bergerak.", "Aku cepat belajar gerakan baru, seperti berenang atau silat."],
+  tip: "Ajak olahraga ringan bersama 15 menit setiap hari."
+}, {
+  id: "disiplin",
+  nama: "Rapi & Disiplin",
+  ikon: "🗂️",
+  s: ["Aku merapikan barang-barangku sendiri.", "Aku mengerjakan PR tepat waktu.", "Aku suka membuat jadwal atau daftar kegiatan."],
+  tip: "Buat jadwal harian bergambar dan beri tanda centang setiap selesai."
+}, {
+  id: "penjelajah",
+  nama: "Si Ingin Tahu",
+  ikon: "🔍",
+  s: ["Aku suka mengamati hewan dan tumbuhan.", "Aku suka mencoba percobaan sederhana.", "Aku senang membaca buku pengetahuan."],
+  tip: "Lakukan satu percobaan sains sederhana setiap pekan."
+}, {
+  id: "seni",
+  nama: "Musik & Irama",
+  ikon: "🎵",
+  s: ["Aku suka bernyanyi atau bersenandung.", "Aku mudah mengingat lagu atau nasyid.", "Aku suka mengetuk-ngetuk irama."],
+  tip: "Hafalkan pelajaran dengan dinyanyikan memakai nada lagu yang disukai."
+}, {
+  id: "ibadah",
+  nama: "Rajin Ibadah",
+  ikon: "🕌",
+  s: ["Aku salat tanpa harus disuruh.", "Aku senang mengaji atau membaca Al-Qur'an.", "Aku suka berdoa dan bersyukur kepada Allah."],
+  tip: "Buat target kecil: salat tepat waktu dan mengaji satu halaman setiap hari."
+}];
+
+/* ---------- 4. MOOD ---------- */
+var MOOD = {
+  senang: {
+    ikon: "😄",
+    nama: "Senang",
+    pesan: "Alhamdulillah, kamu sedang senang! Bagikan kebahagiaanmu dengan tersenyum kepada orang lain, karena senyum itu sedekah.",
+    saran: ["Ucapkan Alhamdulillah", "Ajak temanmu ikut senang", "Gunakan semangatmu untuk belajar"]
+  },
+  biasa: {
+    ikon: "🙂",
+    nama: "Biasa saja",
+    pesan: "Perasaanmu tenang. Ini waktu yang bagus untuk belajar dan berkarya.",
+    saran: ["Coba lakukan satu hal baru hari ini", "Minum air putih yang cukup", "Bermain sebentar di luar"]
+  },
+  sedih: {
+    ikon: "😢",
+    nama: "Sedih",
+    pesan: "Tidak apa-apa merasa sedih. Allah selalu dekat denganmu. Kamu tidak sendirian.",
+    saran: ["Ceritakan perasaanmu kepada ayah, ibu, atau guru", "Peluk orang yang kamu sayangi", "Berdoa: “Ya Allah, mudahkanlah urusanku”"]
+  },
+  marah: {
+    ikon: "😠",
+    nama: "Marah",
+    pesan: "Marah itu wajar, tetapi kita belajar mengendalikannya. Rasulullah mengajarkan kita untuk tenang saat marah.",
+    saran: ["Ucapkan “A'udzu billahi minasy syaithanir rajim”", "Diam sejenak, lalu duduk jika sedang berdiri", "Berwudu supaya hati lebih dingin", "Tarik napas pelan-pelan 5 kali"]
+  },
+  takut: {
+    ikon: "😟",
+    nama: "Khawatir / Takut",
+    pesan: "Rasa khawatir bisa dikurangi. Ingat, Allah selalu menjagamu.",
+    saran: ["Tarik napas dalam-dalam dan hembuskan pelan", "Ceritakan apa yang kamu takutkan kepada orang dewasa", "Baca doa atau ayat kursi"]
+  },
+  capek: {
+    ikon: "😴",
+    nama: "Capek",
+    pesan: "Tubuhmu butuh istirahat. Istirahat juga bagian dari menjaga amanah tubuh dari Allah.",
+    saran: ["Tidur siang sebentar atau tidur lebih awal", "Minum air dan makan buah", "Kurangi bermain gawai"]
+  }
+};
+
+/* ---------- 5. ASAH OTAK ---------- */
+var AREA_OTAK = {
+  angka: "🔢 Angka",
+  pola: "🧩 Pola",
+  kata: "📖 Kata",
+  logika: "🤔 Logika"
+};
+var SOAL_KATA = [["Burung : terbang = Ikan : ...", "Berenang", ["Berlari", "Melompat", "Terbang"]], ["Dokter : rumah sakit = Guru : ...", "Sekolah", ["Pasar", "Sawah", "Kantor polisi"]], ["Kaki : sepatu = Tangan : ...", "Sarung tangan", ["Topi", "Kaus kaki", "Jam"]], ["Mata : melihat = Telinga : ...", "Mendengar", ["Mencium", "Berbicara", "Meraba"]], ["Besar : kecil = Tinggi : ...", "Rendah", ["Panjang", "Lebar", "Berat"]], ["Kucing : anak kucing = Ayam : ...", "Anak ayam", ["Telur", "Bebek", "Burung"]], ["Api : panas = Es : ...", "Dingin", ["Basah", "Keras", "Putih"]], ["Petani : sawah = Nelayan : ...", "Laut", ["Kebun", "Hutan", "Kota"]], ["Pensil : menulis = Gunting : ...", "Memotong", ["Menggambar", "Menghapus", "Mengukur"]], ["Kata yang berbeda sendiri: Apel, Jeruk, Mangga, Wortel", "Wortel", ["Apel", "Jeruk", "Mangga"]], ["Kata yang berbeda sendiri: Merah, Biru, Kursi, Kuning", "Kursi", ["Merah", "Biru", "Kuning"]], ["Kata yang berbeda sendiri: Senin, Rabu, Maret, Jumat", "Maret", ["Senin", "Rabu", "Jumat"]], ["Kata yang berbeda sendiri: Mobil, Sepeda, Kapal, Rumah", "Rumah", ["Mobil", "Sepeda", "Kapal"]], ["Kata yang berbeda sendiri: Sapi, Kambing, Elang, Kuda", "Elang", ["Sapi", "Kambing", "Kuda"]], ["Kata yang berbeda sendiri: Pensil, Pulpen, Spidol, Piring", "Piring", ["Pensil", "Pulpen", "Spidol"]]];
+var SOAL_LOGIKA = [["Ani lebih tinggi dari Budi. Budi lebih tinggi dari Citra. Siapa yang paling pendek?", "Citra", ["Ani", "Budi", "Tidak bisa diketahui"]], ["Semua kucing punya ekor. Mimi adalah kucing. Maka Mimi ...", "Punya ekor", ["Tidak punya ekor", "Bisa terbang", "Seekor anjing"]], ["Hari ini hari Selasa. Dua hari lagi adalah hari ...", "Kamis", ["Rabu", "Jumat", "Senin"]], ["Kemarin hari Jumat. Besok adalah hari ...", "Minggu", ["Sabtu", "Kamis", "Senin"]], ["Ayah lebih tua dari Kakak. Kakak lebih tua dari Adik. Siapa yang paling muda?", "Adik", ["Ayah", "Kakak", "Sama semua"]], ["Dalam barisan, Rina di depan Sari, dan Sari di depan Tono. Siapa yang paling belakang?", "Tono", ["Rina", "Sari", "Tidak bisa diketahui"]], ["Udin punya 2 kakak dan 1 adik. Berapa jumlah anak di keluarga Udin?", "4", ["3", "5", "2"]], ["Ada 3 bola: merah, biru, dan hijau. Bola merah bukan yang pertama. Bola hijau yang terakhir. Bola pertama berwarna ...", "Biru", ["Merah", "Hijau", "Kuning"]], ["Sebuah kotak lebih berat dari bola. Bola lebih berat dari bulu. Benda yang paling ringan adalah ...", "Bulu", ["Kotak", "Bola", "Sama berat"]], ["Lina selalu membawa payung saat hujan. Hari ini Lina membawa payung. Pasti hari ini hujan?", "Belum tentu", ["Ya, pasti", "Tidak mungkin", "Pasti cerah"]], ["Ada 5 burung di pohon. 2 burung terbang pergi, lalu 1 burung datang. Berapa burung di pohon sekarang?", "4", ["3", "5", "6"]], ["Jika kemarin hari Minggu, maka lusa adalah hari ...", "Rabu", ["Selasa", "Kamis", "Senin"]]];
+var EMOJI_SET = [["🔴", "🔵", "🟢", "🟡"], ["🍎", "🍌", "🍇", "🍊"], ["⭐", "🌙", "☀️", "☁️"], ["🐱", "🐶", "🐰", "🐸"], ["🔺", "🟦", "⚪", "🔶"]];
+var GEN_OTAK = {
+  angka: [function () {
+    var a = rnd(1, 20),
+      k = rnd(2, 9),
+      d = Array.from({
+        length: 5
+      }, function (_, i) {
+        return a + k * i;
+      }),
+      h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Selalu bertambah ".concat(k, ".")
+    }, opsiAngka(h));
+  }, function () {
+    var k = rnd(2, 7),
+      a = k * 6 + rnd(0, 20),
+      d = Array.from({
+        length: 5
+      }, function (_, i) {
+        return a - k * i;
+      }),
+      h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Selalu berkurang ".concat(k, ".")
+    }, opsiAngka(h));
+  }, function () {
+    var a = rnd(1, 5),
+      d = Array.from({
+        length: 5
+      }, function (_, i) {
+        return a * Math.pow(2, i);
+      }),
+      h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Setiap bilangan dikali 2."
+    }, opsiAngka(h));
+  }, function () {
+    var a = rnd(1, 10),
+      d = [a];
+    for (var i = 1; i < 5; i++) d.push(d[i - 1] + i);
+    var h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Tambahannya naik: +1, +2, +3, +4."
+    }, opsiAngka(h));
+  }, function () {
+    var x = rnd(2, 5),
+      y = rnd(6, 9),
+      a = rnd(1, 10),
+      d = [a];
+    for (var i = 1; i < 6; i++) d.push(d[i - 1] + (i % 2 ? x : y));
+    var h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Bergantian ditambah ".concat(x, " lalu ").concat(y, ".")
+    }, opsiAngka(h));
+  }, function () {
+    var s = rnd(1, 4),
+      d = Array.from({
+        length: 5
+      }, function (_, i) {
+        return (s + i) * (s + i);
+      }),
+      h = d.pop();
+    return Object.assign({
+      t: "Bilangan selanjutnya: ".concat(d.join(", "), ", ..."),
+      p: "Bilangan kuadrat: ".concat(s, "\xD7").concat(s, ", ").concat(s + 1, "\xD7").concat(s + 1, ", dan seterusnya.")
+    }, opsiAngka(h));
+  }],
+  pola: [function () {
+    var e = acak(ambil(EMOJI_SET)),
+      pj = rnd(2, 3),
+      pola = e.slice(0, pj),
+      n = rnd(5, 7),
+      d = Array.from({
+        length: n
+      }, function (_, i) {
+        return pola[i % pj];
+      }),
+      h = pola[n % pj];
+    return pg("Gambar selanjutnya: ".concat(d.join(" "), " ..."), h, e, "Polanya berulang: ".concat(pola.join(" "), "."));
+  }, function () {
+    var e = acak(ambil(EMOJI_SET)),
+      a = e[0],
+      b = e[1],
+      pola = [a, a, b],
+      n = rnd(5, 8),
+      d = Array.from({
+        length: n
+      }, function (_, i) {
+        return pola[i % 3];
+      }),
+      h = pola[n % 3];
+    return pg("Gambar selanjutnya: ".concat(d.join(" "), " ..."), h, e, "Polanya: ".concat(pola.join(" "), " lalu berulang."));
+  }, function () {
+    var e = ambil(ambil(EMOJI_SET)),
+      n = rnd(3, 4),
+      d = Array.from({
+        length: n
+      }, function (_, i) {
+        return e.repeat(i + 1);
+      }),
+      h = e.repeat(n + 1);
+    return pg("Selanjutnya: ".concat(d.join(" | "), " | ..."), h, [e.repeat(n), e.repeat(n + 2), e.repeat(n - 1), h], "Setiap langkah bertambah satu.");
+  }, function () {
+    var panah = ["⬆️", "➡️", "⬇️", "⬅️"],
+      s = rnd(0, 3),
+      n = rnd(4, 6),
+      d = Array.from({
+        length: n
+      }, function (_, i) {
+        return panah[(s + i) % 4];
+      }),
+      h = panah[(s + n) % 4];
+    return pg("Panah berputar searah jarum jam: ".concat(d.join(" "), " ..."), h, panah, "Panah berputar seperempat putaran ke kanan setiap langkah.");
+  }, function () {
+    var _acak$slice = acak(EMOJI_SET).slice(0, 2),
+      _acak$slice2 = _slicedToArray(_acak$slice, 2),
+      x = _acak$slice2[0],
+      y = _acak$slice2[1],
+      lain = ambil(y),
+      d = acak([].concat(_toConsumableArray(acak(x).slice(0, 3)), [lain]));
+    return pg("Mana yang berbeda dari yang lain? ".concat(d.join(" ")), lain, d, "".concat(lain, " tidak satu kelompok dengan yang lain."));
+  }],
+  kata: [function () {
+    var _ambil43 = ambil(SOAL_KATA),
+      _ambil44 = _slicedToArray(_ambil43, 3),
+      t = _ambil44[0],
+      b = _ambil44[1],
+      s = _ambil44[2];
+    return pg(t, b, s, "Jawabannya ".concat(b, "."));
+  }],
+  logika: [function () {
+    var _ambil45 = ambil(SOAL_LOGIKA),
+      _ambil46 = _slicedToArray(_ambil45, 3),
+      t = _ambil46[0],
+      b = _ambil46[1],
+      s = _ambil46[2];
+    return pg(t, b, s, "Jawabannya ".concat(b, "."));
+  }]
+};
+function soalOtak() {
+  var hasil = [];
+  Object.keys(AREA_OTAK).forEach(function (area) {
+    var dipakai = new Set();
+    var coba = 0;
+    var _loop2 = function _loop2() {
+      var s = ambil(GEN_OTAK[area])();
+      if (dipakai.has(s.t)) return 1; // continue
+      dipakai.add(s.t);
+      hasil.push({
+        t: s.t,
+        area: area,
+        o: acak(s.o.map(function (teks, i) {
+          return {
+            teks: teks,
+            nilai: i === s.j ? 1 : 0
+          };
+        }))
+      });
+    };
+    while (hasil.filter(function (s) {
+      return s.area === area;
+    }).length < 5 && coba++ < 200) {
+      if (_loop2()) continue;
+    }
+  });
+  return acak(hasil);
+}
+
+/* ---------- Golongan darah: pewarisan ABO dari ayah & ibu ---------- */
+var GENOTIPE = {
+  A: ["AA", "AO"],
+  B: ["BB", "BO"],
+  AB: ["AB"],
+  O: ["OO"]
+};
+function kemungkinanDarah(ayah, ibu) {
+  var hasil = new Set(),
+    fenotipe = function fenotipe(g) {
+      var s = g.split("").sort().join("");
+      return s === "OO" ? "O" : s === "AB" ? "AB" : s.indexOf("A") >= 0 ? "A" : "B";
+    };
+  (GENOTIPE[ayah] || []).forEach(function (ga) {
+    return (GENOTIPE[ibu] || []).forEach(function (gi) {
+      return ga.split("").forEach(function (x) {
+        return gi.split("").forEach(function (y) {
+          return hasil.add(fenotipe(x + y));
+        });
+      });
+    });
+  });
+  return ["A", "B", "AB", "O"].filter(function (g) {
+    return hasil.has(g);
+  });
+}
+var INFO_DARAH = {
+  A: {
+    donor: "A dan AB",
+    terima: "A dan O"
+  },
+  B: {
+    donor: "B dan AB",
+    terima: "B dan O"
+  },
+  AB: {
+    donor: "AB saja",
+    terima: "A, B, AB, dan O (penerima universal)"
+  },
+  O: {
+    donor: "A, B, AB, dan O (pendonor universal)",
+    terima: "O saja"
+  }
+};
+var PILIH_DARAH = opsi([["🅰️ A", "A"], ["🅱️ B", "B"], ["🆎 AB", "AB"], ["🅾️ O", "O"], ["❓ Belum tahu", "?"]]);
+
+/* ---------- DAFTAR TES ---------- */
+var TES = {
+  mesin: {
+    nama: "Gaya Belajar 5 Mesin",
+    ikon: "🧬",
+    warna: "#e2c2ff",
+    tglLahir: true,
+    intro: "<p>Jawab 15 pertanyaan dengan jujur. Pilih jawaban yang <b>paling mirip</b> dengan dirimu. Tidak ada jawaban benar atau salah.</p>\n      <p class=\"catatan-ortu\">\u2139\uFE0F Tes ini terinspirasi 5 jenis kecerdasan dalam konsep STIFIn (Sensing, Thinking, Intuiting, Feeling, Insting). <b>Tes STIFIn resmi memakai pemindaian sidik jari</b> oleh lembaga resminya. Tanggal lahir tidak bisa menentukan tipe kecerdasan, jadi di sini tanggal lahir hanya dipakai untuk menghitung usia. Tipe ditentukan dari jawaban.</p>",
+    soal: function soal() {
+      return SOAL_MESIN.map(function (_ref14) {
+        var _ref15 = _slicedToArray(_ref14, 2),
+          t = _ref15[0],
+          pil = _ref15[1];
+        return {
+          t: t,
+          o: acak(pil.map(function (teks, i) {
+            return {
+              teks: kapital(teks),
+              nilai: KODE_MESIN[i]
+            };
+          }))
+        };
+      });
+    },
+    hasil: function hasil(j, extra) {
+      var skor = {
+        S: 0,
+        T: 0,
+        I: 0,
+        F: 0,
+        In: 0
+      };
+      j.forEach(function (x) {
+        return skor[x]++;
+      });
+      var urut = KODE_MESIN.slice().sort(function (a, b) {
+          return skor[b] - skor[a];
+        }),
+        m = MESIN[urut[0]],
+        kedua = MESIN[urut[1]];
+      var usia = extra.usia ? "".concat(extra.usia.th, " tahun ").concat(extra.usia.bl, " bulan") : "";
+      return {
+        ringkas: "".concat(m.ikon, " ").concat(m.nama, " (").concat(m.asli, ")"),
+        html: "\n        <div class=\"besar\">".concat(m.ikon, "</div>\n        <h2>").concat(esc(nama), " adalah ").concat(m.nama, "</h2>\n        <p class=\"sub-kecil\">Kecenderungan: <b>").concat(m.asli, "</b>").concat(usia ? " • Usia " + usia : "", " \u2022 ").concat(tglHariIni(), "</p>\n        <h3>\uD83D\uDCCA Skor kelima mesin</h3>\n        ").concat(urut.map(function (k) {
+          return batang(MESIN[k].ikon + " " + MESIN[k].nama, skor[k], SOAL_MESIN.length);
+        }).join(""), "\n        <h3>\u2728 Ciri-cirimu</h3><ul>").concat(m.sifat.map(function (x) {
+          return "<li>".concat(x, "</li>");
+        }).join(""), "</ul>\n        <h3>\uD83D\uDCDA Cara belajar yang cocok</h3><ul>").concat(m.belajar.map(function (x) {
+          return "<li>".concat(x, "</li>");
+        }).join(""), "</ul>\n        <h3>\uD83C\uDF31 Yang perlu dilatih</h3><p>").concat(m.latih, "</p>\n        ").concat(skor[urut[1]] >= skor[urut[0]] - 1 ? "<div class=\"kotak\">Kamu juga cukup kuat sebagai <b>".concat(kedua.ikon, " ").concat(kedua.nama, "</b>. Coba gabungkan cara belajar keduanya.</div>") : "", "\n        <p class=\"catatan-ortu\">Hasil ini adalah gambaran kecenderungan dari jawaban anak hari ini, bisa berubah seiring waktu. Untuk tes STIFIn resmi, hubungi lembaga STIFIn terdekat.</p>")
+      };
+    }
+  },
+  darah: {
+    nama: "Golongan Darahku",
+    ikon: "🩸",
+    warna: "#ffc8c8",
+    intro: "<p>Golongan darah <b>tidak bisa diketahui dari menjawab pertanyaan</b>, tetapi hanya dari tes darah di puskesmas, klinik, atau PMI.</p>\n      <p>Di sini kamu bisa melihat fakta tentang golongan darahmu. Kalau belum tahu, kita cari <b>kemungkinannya</b> dari golongan darah ayah dan ibu.</p>",
+    soal: function soal() {
+      return [{
+        t: "Apa golongan darahmu?",
+        o: PILIH_DARAH
+      }, {
+        t: "Apa golongan darah Ayah?",
+        o: PILIH_DARAH,
+        syarat: function syarat(j) {
+          return j[0] === "?";
+        }
+      }, {
+        t: "Apa golongan darah Ibu?",
+        o: PILIH_DARAH,
+        syarat: function syarat(j) {
+          return j[0] === "?";
+        }
+      }];
+    },
+    hasil: function hasil(j) {
+      var _j = _slicedToArray(j, 3),
+        anak = _j[0],
+        ayah = _j[1],
+        ibu = _j[2];
+      var isi;
+      if (anak !== "?") {
+        var d = INFO_DARAH[anak];
+        isi = "<div class=\"besar\">\uD83E\uDE78</div><h2>Golongan darah ".concat(esc(nama), ": ").concat(anak, "</h2>\n          <div class=\"kotak\">\uD83D\uDC89 Kelak (mulai usia 17 tahun) kamu bisa <b>mendonorkan darah</b> kepada golongan <b>").concat(d.donor, "</b>.</div>\n          <div class=\"kotak\">\uD83C\uDFE5 Jika suatu saat butuh darah, kamu bisa <b>menerima</b> dari golongan <b>").concat(d.terima, "</b>.</div>");
+      } else if (ayah !== "?" && ibu !== "?") {
+        var mungkin = kemungkinanDarah(ayah, ibu);
+        isi = "<div class=\"besar\">\uD83D\uDD2C</div><h2>Kemungkinan golongan darah ".concat(esc(nama), "</h2>\n          <p class=\"tengah\">Ayah <b>").concat(ayah, "</b> + Ibu <b>").concat(ibu, "</b></p>\n          <div class=\"kotak tengah\" style=\"font-size:26px;font-weight:800\">").concat(mungkin.join(" atau "), "</div>\n          <p>Golongan darah diturunkan dari ayah dan ibu. Ini baru <b>kemungkinan</b>. Untuk tahu pastinya, perlu tes darah di puskesmas, klinik, atau PMI.</p>");
+      } else {
+        isi = "<div class=\"besar\">\u2753</div><h2>Belum bisa diketahui</h2>\n          <p>Untuk mengetahui golongan darahmu, minta ayah/ibu mengantarmu tes darah di <b>puskesmas, klinik, atau PMI</b>. Caranya hanya dengan sedikit tusukan kecil di ujung jari. Bismillah, berani!</p>";
+      }
+      return {
+        ringkas: anak !== "?" ? "Golongan " + anak : "Belum diketahui",
+        html: isi + "\n        <h3>\uD83E\uDDE0 Tahukah kamu?</h3><ul>\n          <li>Ada 4 golongan darah utama: A, B, AB, dan O. Ada juga rhesus positif (+) dan negatif (\u2212).</li>\n          <li>Darah berwarna merah karena ada zat bernama <b>hemoglobin</b> yang membawa oksigen.</li>\n          <li>Tubuh anak seusiamu berisi kira-kira 2 liter darah.</li>\n          <li>Golongan darah <b>tidak menentukan sifat atau kepintaran</b>. Anggapan itu hanya mitos.</li></ul>\n        <h3>\uD83D\uDCAA Supaya darahmu sehat</h3><ul><li>Makan sayur hijau, telur, ikan, dan buah</li><li>Minum air putih yang cukup</li><li>Tidur cukup dan rajin bergerak</li></ul>"
+      };
+    }
+  },
+  kekuatan: {
+    nama: "Kelebihanku (30 Pertanyaan)",
+    ikon: "🏅",
+    warna: "#ffe3a3",
+    intro: "<p>Ada 30 pernyataan. Untuk setiap pernyataan, pilih <b>Sering</b>, <b>Kadang-kadang</b>, atau <b>Tidak</b>, sesuai dirimu <b>saat ini</b>.</p>\n      <p>Hasilnya menunjukkan kelebihanmu sekarang dan hal yang bisa dilatih supaya makin hebat.</p>\n      <p class=\"catatan-ortu\">\u2139\uFE0F Ini tes buatan sendiri untuk mengenal minat anak. Tes ini bukan ST-30 atau tes bakat resmi lainnya.</p>",
+    soal: function soal() {
+      return acak(BIDANG.flatMap(function (b) {
+        return b.s.map(function (t) {
+          return {
+            t: t,
+            bidang: b.id,
+            o: opsi([["😄 Sering", 2], ["🙂 Kadang-kadang", 1], ["🙁 Tidak", 0]])
+          };
+        });
+      }));
+    },
+    hasil: function hasil(j, extra) {
+      var skor = {};
+      BIDANG.forEach(function (b) {
+        return skor[b.id] = 0;
+      });
+      extra.soal.forEach(function (s, i) {
+        return skor[s.bidang] += j[i] || 0;
+      });
+      var urut = BIDANG.slice().sort(function (a, b) {
+          return skor[b.id] - skor[a.id];
+        }),
+        top = urut.slice(0, 3),
+        bawah = urut.slice(-2).reverse();
+      return {
+        ringkas: top.map(function (b) {
+          return b.ikon + " " + b.nama;
+        }).join(", "),
+        html: "\n        <div class=\"besar\">\uD83C\uDFC5</div><h2>Kelebihan ".concat(esc(nama), " saat ini</h2><p class=\"sub-kecil\">").concat(tglHariIni(), "</p>\n        ").concat(top.map(function (b, i) {
+          return "<div class=\"kotak\"><b>".concat(["🥇", "🥈", "🥉"][i], " ").concat(b.ikon, " ").concat(b.nama, "</b> (skor ").concat(skor[b.id], "/6)<br>Terus kembangkan: ").concat(b.tip, "</div>");
+        }).join(""), "\n        <h3>\uD83C\uDF31 Yang bisa dilatih</h3>\n        ").concat(bawah.map(function (b) {
+          return "<div class=\"kotak peringatan\"><b>".concat(b.ikon, " ").concat(b.nama, "</b> (skor ").concat(skor[b.id], "/6)<br>Coba: ").concat(b.tip, "</div>");
+        }).join(""), "\n        <h3>\uD83D\uDCCA Semua bidang</h3>\n        ").concat(urut.map(function (b) {
+          return batang(b.ikon + " " + b.nama, skor[b.id], 6, bawah.indexOf(b) >= 0);
+        }).join(""), "\n        <p class=\"catatan-ortu\">Setiap anak punya kelebihan yang berbeda. Bidang yang skornya rendah bukan kekurangan permanen. Itu peluang untuk dilatih. Ulangi tes ini beberapa bulan lagi untuk melihat perkembangannya.</p>")
+      };
+    }
+  },
+  mood: {
+    nama: "Mood Hari Ini",
+    ikon: "🌤️",
+    warna: "#cdeffd",
+    intro: "<p>Yuk ceritakan perasaanmu hari ini. Hanya 4 pertanyaan singkat. Isi setiap hari supaya kamu bisa melihat perasaanmu dari hari ke hari.</p>",
+    soal: function soal() {
+      return [{
+        t: "Bagaimana perasaanmu sekarang?",
+        o: Object.keys(MOOD).map(function (k) {
+          return {
+            teks: MOOD[k].ikon + " " + MOOD[k].nama,
+            nilai: k
+          };
+        })
+      }, {
+        t: "Tadi malam tidurmu bagaimana?",
+        o: opsi([["😴 Nyenyak", "baik"], ["😐 Kurang nyenyak", "kurang"], ["😫 Tidak bisa tidur", "buruk"]])
+      }, {
+        t: "Hari ini kamu sudah sarapan atau makan?",
+        o: opsi([["🍚 Sudah", "sudah"], ["🙅 Belum", "belum"]])
+      }, {
+        t: "Apa yang paling membuatmu merasa begitu?",
+        o: opsi([["🏫 Sekolah atau teman", "sekolah"], ["🏠 Keluarga di rumah", "rumah"], ["📚 Pelajaran atau PR", "pelajaran"], ["🤒 Badan kurang sehat", "sakit"], ["🤷 Tidak tahu", "lain"]])
+      }];
+    },
+    hasil: function hasil(j) {
+      var _j2 = _slicedToArray(j, 4),
+        m = _j2[0],
+        tidur = _j2[1],
+        makan = _j2[2],
+        sebab = _j2[3],
+        d = MOOD[m];
+      var k = kunci("mood", nama),
+        riwayat = baca(k, []).concat([{
+          m: m,
+          tgl: tglHariIni()
+        }]).slice(-14);
+      tulis(k, riwayat);
+      var akhir = riwayat.slice(-5),
+        berat = akhir.filter(function (x) {
+          return ["sedih", "marah", "takut"].indexOf(x.m) >= 0;
+        }).length;
+      var tambahan = [];
+      if (tidur !== "baik") tambahan.push("😴 Tidurmu kurang nyenyak. Coba tidur lebih awal dan baca doa sebelum tidur.");
+      if (makan === "belum") tambahan.push("🍚 Kamu belum makan. Makan dulu, ya, supaya tubuh dan otakmu kuat.");
+      if (sebab === "sakit") tambahan.push("🤒 Badanmu kurang sehat. Beri tahu ayah atau ibu, ya.");
+      return {
+        ringkas: d.ikon + " " + d.nama,
+        html: "\n        <div class=\"besar\">".concat(d.ikon, "</div><h2>").concat(esc(nama), " merasa ").concat(d.nama.toLowerCase(), "</h2><p class=\"sub-kecil\">").concat(tglHariIni(), "</p>\n        <div class=\"kotak\">").concat(d.pesan, "</div>\n        <h3>\uD83D\uDCA1 Yang bisa kamu lakukan</h3><ul>").concat(d.saran.map(function (x) {
+          return "<li>".concat(x, "</li>");
+        }).join(""), "</ul>\n        ").concat(tambahan.map(function (x) {
+          return "<div class=\"kotak peringatan\">".concat(x, "</div>");
+        }).join(""), "\n        <h3>\uD83D\uDCC5 Perasaanmu beberapa hari terakhir</h3>\n        <div class=\"kotak tengah\" style=\"font-size:30px;letter-spacing:4px\">").concat(riwayat.map(function (x) {
+          return "<span title=\"".concat(x.tgl, "\">").concat(MOOD[x.m].ikon, "</span>");
+        }).join(""), "</div>\n        ").concat(berat >= 3 ? "<div class=\"kotak peringatan\">\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67 <b>Untuk Ayah/Bunda:</b> anak beberapa kali merasa sedih, marah, atau khawatir akhir-akhir ini. Ajak ngobrol dengan santai. Jika berlangsung lama, pertimbangkan berkonsultasi dengan guru BK atau psikolog anak.</div>" : "")
+      };
+    }
+  },
+  otak: {
+    nama: "Tes Asah Otak (IQ)",
+    ikon: "🧩",
+    warna: "#c9f2dd",
+    intro: "<p>Ada <b>20 soal</b> tentang angka, pola gambar, kata, dan logika. Kerjakan sendiri tanpa bantuan, ya. Waktu pengerjaan dicatat.</p>\n      <p class=\"catatan-ortu\">\u2139\uFE0F Ini <b>latihan kemampuan berpikir</b>, bukan tes IQ resmi. Skor IQ yang sah hanya bisa didapat dari tes terstandar yang dilakukan psikolog, jadi tes ini <b>tidak memberi angka IQ</b>. Hasilnya berupa skor dan kekuatan berpikir per bidang.</p>",
+    soal: soalOtak,
+    hasil: function hasil(j, extra) {
+      var per = {};
+      Object.keys(AREA_OTAK).forEach(function (a) {
+        return per[a] = 0;
+      });
+      extra.soal.forEach(function (s, i) {
+        return per[s.area] += j[i];
+      });
+      var total = j.reduce(function (a, b) {
+          return a + b;
+        }, 0),
+        menit = Math.floor(extra.detik / 60),
+        detik = extra.detik % 60;
+      var kat = total >= 19 ? ["🏆", "Istimewa"] : total >= 16 ? ["🌟", "Sangat Baik"] : total >= 12 ? ["👍", "Baik"] : total >= 8 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
+      var urut = Object.keys(AREA_OTAK).sort(function (a, b) {
+        return per[b] - per[a];
+      });
+      var salah = extra.soal.map(function (s, i) {
+        return {
+          s: s,
+          ok: j[i] === 1,
+          pilih: extra.teks[i]
+        };
+      }).filter(function (x) {
+        return !x.ok;
+      });
+      return {
+        ringkas: "".concat(total, "/20 (").concat(kat[1], ")"),
+        html: "\n        <div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Asah Otak ").concat(esc(nama), "</h2><p class=\"sub-kecil\">").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(total, "<span style=\"font-size:26px\">/20</span></div>\n          <b>Kategori: ").concat(kat[1], "</b><br>Waktu: ").concat(menit, " menit ").concat(detik, " detik</div>\n        <h3>\uD83D\uDCCA Kemampuan per bidang</h3>\n        ").concat(urut.map(function (a) {
+          return batang(AREA_OTAK[a], per[a], 5, per[a] <= 2);
+        }).join(""), "\n        <h3>\u2728 Kekuatan berpikirmu</h3><p>Kamu paling kuat di bidang <b>").concat(AREA_OTAK[urut[0]], "</b>. ").concat(per[urut[3]] < 5 ? "Ayo latih bidang <b>".concat(AREA_OTAK[urut[3]], "</b> supaya makin hebat!") : "MasyaAllah, semua bidang sempurna!", "</p>\n        ").concat(salah.length ? "<details class=\"kotak\"><summary><b>\uD83D\uDCDD Pembahasan soal yang salah (".concat(salah.length, ")</b></summary><ol>").concat(salah.map(function (x) {
+          return "<li>".concat(x.s.t, "<br><span class=\"jwb-salah\">\u2717 ").concat(x.pilih, "</span> <span class=\"jwb-benar\">\u2713 ").concat(x.s.o.find(function (o) {
+            return o.nilai === 1;
+          }).teks, "</span></li>");
+        }).join(""), "</ol></details>") : "", "\n        <p class=\"catatan-ortu\">Ini bukan skor IQ. Kemampuan berpikir bisa terus dilatih dengan membaca, bermain teka-teki, dan cukup tidur. Soal selalu berganti, jadi tes bisa diulang untuk latihan.</p>")
+      };
+    }
+  }
+};
+
+/* ---------- MESIN TES ---------- */
+var tesAktif = null,
+  tesSoal = [],
+  tesJawab = [],
+  tesTeks = [],
+  tesNo = 0,
+  tesMulai = 0,
+  tesUsia = null,
+  tesRiwayatNo = [];
+function buatDaftarTes() {
+  var n = $("namaSiswa").value.trim(),
+    wadah = $("daftarTes");
+  wadah.innerHTML = "";
+  Object.keys(TES).forEach(function (id) {
+    var t = TES[id],
+      b = document.createElement("button"),
+      akhir = n ? baca(kunci("tes-" + id, n), null) : null;
+    b.type = "button";
+    b.className = "mapel";
+    b.style.background = t.warna;
+    b.innerHTML = "<span class=\"ikon\">".concat(t.ikon, "</span><b>").concat(t.nama, "</b><small>").concat(akhir ? "Terakhir: " + esc(akhir.ringkas) : "Belum dicoba", "</small>");
+    b.addEventListener("click", function () {
+      return bukaTes(id);
+    });
+    wadah.appendChild(b);
+  });
+}
+function bukaTes(id) {
+  nama = $("namaSiswa").value.trim();
+  if (!nama) {
+    $("pesanError").textContent = "Tulis namamu dulu, ya! 😊";
+    $("namaSiswa").focus();
+    return;
+  }
+  $("pesanError").textContent = "";
+  tesAktif = id;
+  var t = TES[id];
+  $("introIkon").textContent = t.ikon;
+  $("introJudul").textContent = t.nama;
+  $("introIsi").innerHTML = t.intro;
+  $("introTglLahir").style.display = t.tglLahir ? "block" : "none";
+  if (t.tglLahir) $("tglLahir").value = baca(kunci("tgl-lahir", nama), "");
+  $("pesanErrorTes").textContent = "";
+  tampilkan("layarIntroTes");
+}
+function mulaiTes() {
+  var t = TES[tesAktif];
+  tesUsia = null;
+  if (t.tglLahir) {
+    var v = $("tglLahir").value;
+    tesUsia = v ? hitungUsia(v) : null;
+    if (!tesUsia) {
+      $("pesanErrorTes").textContent = "Isi tanggal lahir dengan benar dulu, ya. 🎂";
+      return;
+    }
+    tulis(kunci("tgl-lahir", nama), v);
+  }
+  tesSoal = t.soal();
+  tesJawab = [];
+  tesTeks = [];
+  tesNo = 0;
+  tesRiwayatNo = [];
+  tesMulai = Date.now();
+  $("tesNama").textContent = t.ikon + " " + t.nama;
+  tampilkan("layarTes");
+  tampilSoalTes();
+}
+function soalBerlaku(i) {
+  var s = tesSoal[i];
+  return !s.syarat || s.syarat(tesJawab);
+}
+function tampilSoalTes() {
+  while (tesNo < tesSoal.length && !soalBerlaku(tesNo)) {
+    tesJawab[tesNo] = "?";
+    tesNo++;
+  }
+  if (tesNo >= tesSoal.length) return selesaiTes();
+  var s = tesSoal[tesNo],
+    total = tesSoal.filter(function (_, i) {
+      return i <= tesNo || soalBerlaku(i);
+    }).length;
+  $("tesNomor").textContent = "".concat(tesRiwayatNo.length + 1, "/").concat(total);
+  $("tesProgress").style.width = tesRiwayatNo.length / total * 100 + "%";
+  $("tesSoal").textContent = s.t;
+  $("btnTesMundur").style.visibility = tesRiwayatNo.length ? "visible" : "hidden";
+  var wadah = $("tesOpsi");
+  wadah.innerHTML = "";
+  s.o.forEach(function (op, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "opsi";
+    b.innerHTML = "<span class=\"huruf\">".concat("ABCDE"[i], "</span><span>").concat(esc(op.teks), "</span>");
+    b.addEventListener("click", function () {
+      tesJawab[tesNo] = op.nilai;
+      tesTeks[tesNo] = op.teks;
+      tesRiwayatNo.push(tesNo);
+      tesNo++;
+      bunyi("benar");
+      tampilSoalTes();
+    });
+    wadah.appendChild(b);
+  });
+}
+function mundurTes() {
+  if (!tesRiwayatNo.length) return;
+  tesNo = tesRiwayatNo.pop();
+  tesJawab.length = tesNo;
+  tesTeks.length = tesNo;
+  tampilSoalTes();
+}
+function selesaiTes() {
+  var t = TES[tesAktif];
+  var h = t.hasil(tesJawab, {
+    soal: tesSoal,
+    teks: tesTeks,
+    usia: tesUsia,
+    detik: Math.round((Date.now() - tesMulai) / 1000)
+  });
+  tulis(kunci("tes-" + tesAktif, nama), {
+    ringkas: h.ringkas,
+    tgl: tglHariIni()
+  });
+  $("isiHasilTes").innerHTML = "<div class=\"hasil-tes\">".concat(h.html, "</div>");
+  tampilkan("layarHasilTes");
+  bunyi("selesai");
+  if (tesAktif !== "mood" && tesAktif !== "darah") konfeti(50);
+}
+function gantiTab(id) {
+  document.querySelectorAll(".tab").forEach(function (b) {
+    return b.classList.toggle("aktif", b.dataset.tab === id);
+  });
+  document.querySelectorAll(".isi-tab").forEach(function (d) {
+    return d.classList.toggle("aktif", d.id === id);
+  });
+  $("pesanError").textContent = "";
+  if (id === "tabDiri") buatDaftarTes();
+}
+document.querySelectorAll(".tab").forEach(function (b) {
+  return b.addEventListener("click", function () {
+    return gantiTab(b.dataset.tab);
+  });
+});
+$("btnMulaiTes").addEventListener("click", mulaiTes);
+$("btnBatalTes").addEventListener("click", function () {
+  gantiTab("tabDiri");
+  tampilkan("layarMulai");
+});
+$("btnTesMundur").addEventListener("click", mundurTes);
+$("btnKembaliTes").addEventListener("click", function () {
+  gantiTab("tabDiri");
+  tampilkan("layarMulai");
+});
+$("btnCetak").addEventListener("click", function () {
+  try {
+    window.print();
+  } catch (e) {}
+});
+$("namaSiswa").addEventListener("input", function () {
+  if ($("tabDiri").classList.contains("aktif")) buatDaftarTes();
+});
 $("btnMulai").addEventListener("click", mulai);
 $("namaSiswa").addEventListener("keydown", function (e) {
   if (e.key === "Enter") mulai();
