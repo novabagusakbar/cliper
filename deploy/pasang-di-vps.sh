@@ -1,135 +1,130 @@
 #!/usr/bin/env bash
 # Memasang kuis di https://hadirflow.my.id/kuistes (VPS dengan container Docker nginx, atau nginx biasa).
 # Jalankan di VPS:  curl -fsSL <URL skrip ini> | sudo bash
-# Aman diulang. Setelah dijalankan sekali, kuis diperbarui OTOMATIS dari GitHub setiap 10 menit
-# (lihat /usr/local/bin/kuistes-perbarui dan /etc/cron.d/kuistes-perbarui).
+# Aman diulang. Setelah dijalankan, SEMUA file kuis (halaman utama, halaman Google, aplikasi) diperbarui
+# OTOMATIS dari GitHub setiap 10 menit. Setiap file dicek sidik jari SHA-256 dan hanya file statis yang disalin;
+# tidak ada kode yang dijalankan di server.
 set -euo pipefail
 
 DOMAIN="hadirflow.my.id"
-SUMBER="https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/kuistes/index.html"
+SUMBER="${SUMBER:-https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/kuistes}"
 FOLDER="/var/www/kuistes"
+CIRI='name="kuistes-versi"'
+KONTAINER="${KONTAINER:-hadirflow_frontend}"
 PENANDA="# kuistes-mulai"
-CIRI='name="kuistes-versi"'   # penanda yang selalu ada di file kuis
 CADANGAN="/root/kuistes-cadangan/$(date +%Y%m%d-%H%M%S)"
 
 if [ "$(id -u)" -ne 0 ]; then echo "❌ Jalankan dengan sudo (sebagai root)."; exit 1; fi
-
-echo "1) Mengunduh kuis terbaru..."
 mkdir -p "$FOLDER"
-curl -fsSL "$SUMBER?v=$(date +%s)" -o "$FOLDER/index.html.baru"
-grep -q "$CIRI" "$FOLDER/index.html.baru" || { echo "❌ File yang diunduh tidak sesuai."; rm -f "$FOLDER/index.html.baru"; exit 1; }
-mv "$FOLDER/index.html.baru" "$FOLDER/index.html"
-chmod 755 "$FOLDER"; chmod 644 "$FOLDER/index.html"
-echo "   ✅ Tersimpan di $FOLDER/index.html"
 
-# Pembaru otomatis: setiap 10 menit mengambil versi terbaru dari GitHub.
-# Hanya mengganti file HTML statis, dan hanya jika unduhan lengkap, berisi penanda kuis, dan memang berubah.
-pasang_pembaru() {
-  local SALIN="$1"
-  cat > /usr/local/bin/kuistes-perbarui <<PEMBARU
-#!/usr/bin/env bash
-# Dipasang oleh pasang-di-vps.sh: memperbarui kuis di https://$DOMAIN/kuistes dari GitHub.
-set -uo pipefail
-TMP="\$(mktemp)"; trap 'rm -f "\$TMP"' EXIT
-curl -fsSL --max-time 60 "$SUMBER?v=\$(date +%s)" -o "\$TMP" || exit 0
-grep -q '$CIRI' "\$TMP" || exit 0
-[ "\$(wc -c < "\$TMP")" -gt 50000 ] || exit 0
-cmp -s "\$TMP" "$FOLDER/index.html" && exit 0
-install -m 644 "\$TMP" "$FOLDER/index.html"
-$SALIN
-logger -t kuistes "Kuis diperbarui otomatis dari GitHub" 2>/dev/null || true
-PEMBARU
-  chmod 755 /usr/local/bin/kuistes-perbarui
-  echo "*/10 * * * * root /usr/local/bin/kuistes-perbarui >/dev/null 2>&1" > /etc/cron.d/kuistes-perbarui
-  chmod 644 /etc/cron.d/kuistes-perbarui
-  echo "   ✅ Pembaruan otomatis aktif: kuis mengikuti versi terbaru di GitHub setiap 10 menit."
-}
-
-# ---------- Mode Docker: HadirFlow berjalan di container nginx (lewat Cloudflare Tunnel) ----------
-KONTAINER="${KONTAINER:-hadirflow_frontend}"
+# ---------- Menentukan cara HadirFlow dijalankan ----------
+MODE="" ROOT="" HOST_DIR="" SALIN=":"
 if command -v docker >/dev/null 2>&1 && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$KONTAINER"; then
-  echo "2) HadirFlow berjalan di container Docker \"$KONTAINER\"."
+  MODE="docker"
   ROOT="$(docker exec "$KONTAINER" sh -c "nginx -T 2>/dev/null | grep -E '^[[:space:]]*root[[:space:]]' | head -1" | awk '{print $2}' | tr -d ';' || true)"
   [ -n "$ROOT" ] || ROOT="/usr/share/nginx/html"
-  echo "   Folder web di dalam container: $ROOT"
-
-  # Jika folder web berasal dari folder di VPS (bind mount), salin ke sana supaya tidak hilang
-  HOST_DIR=""
   while IFS='|' read -r SRC DST; do
     [ -n "$DST" ] || continue
     case "$ROOT/" in "$DST"/*) HOST_DIR="$SRC${ROOT#"$DST"}";; esac
   done < <(docker inspect -f '{{range .Mounts}}{{.Source}}|{{.Destination}}{{"\n"}}{{end}}' "$KONTAINER")
-
   if [ -n "$HOST_DIR" ] && [ -d "$HOST_DIR" ]; then
-    mkdir -p "$HOST_DIR/kuistes"
-    cp "$FOLDER/index.html" "$HOST_DIR/kuistes/index.html"
-    chmod 755 "$HOST_DIR/kuistes"; chmod 644 "$HOST_DIR/kuistes/index.html"
-    echo "   ✅ Disalin ke $HOST_DIR/kuistes/ (folder VPS yang dipakai container)"
-    pasang_pembaru "install -m 644 $FOLDER/index.html $HOST_DIR/kuistes/index.html"
+    SALIN="mkdir -p $HOST_DIR/kuistes && cp -r $FOLDER/. $HOST_DIR/kuistes/"
   else
-    docker exec "$KONTAINER" mkdir -p "$ROOT/kuistes"
-    docker cp "$FOLDER/index.html" "$KONTAINER:$ROOT/kuistes/index.html"
-    docker exec "$KONTAINER" chmod 644 "$ROOT/kuistes/index.html"
-    echo "   ✅ Disalin ke dalam container: $ROOT/kuistes/"
-    # Jika container dibuat ulang (deploy HadirFlow baru), salin lagi otomatis setiap 5 menit bila hilang
+    HOST_DIR=""
+    SALIN="docker exec $KONTAINER mkdir -p $ROOT/kuistes && docker cp $FOLDER/. $KONTAINER:$ROOT/kuistes/"
+  fi
+elif command -v nginx >/dev/null 2>&1; then
+  MODE="nginx"
+else
+  echo "⚠️  Tidak menemukan container \"$KONTAINER\" maupun nginx di VPS ini."
+  echo "    Kirim hasil perintah ini ke Claude: sudo ss -tlnp | grep -E ':80|:443'; sudo docker ps 2>/dev/null | head"
+  exit 2
+fi
+
+# ---------- 1) Pembaru otomatis ----------
+echo "1) Memasang pembaru otomatis..."
+{
+  printf 'SUMBER=%q\n' "$SUMBER"; printf 'FOLDER=%q\n' "$FOLDER"; printf 'CIRI=%q\n' "$CIRI"; printf 'SALIN=%q\n' "$SALIN"
+} > /etc/kuistes.conf
+chmod 644 /etc/kuistes.conf
+cat > /usr/local/bin/kuistes-perbarui <<'PEMBARU'
+#!/usr/bin/env bash
+# Pembaru otomatis Tes Gratis HadirFlow (dipasang oleh pasang-di-vps.sh).
+# Mengambil daftar-file.txt dari GitHub, lalu hanya mengganti file yang sidik jari SHA-256-nya cocok dengan daftar.
+set -uo pipefail
+. /etc/kuistes.conf
+TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
+V="?v=$(date +%s)"
+curl -fsSL --max-time 60 "$SUMBER/daftar-file.txt$V" -o "$TMP/daftar" || exit 0
+grep -qE '^[0-9a-f]{64}  index\.html$' "$TMP/daftar" || exit 0
+[ "$(wc -l < "$TMP/daftar")" -le 400 ] || exit 0
+BERUBAH=0
+while read -r HASH REL; do
+  [[ "$HASH" =~ ^[0-9a-f]{64}$ ]] || continue
+  [[ "$REL" =~ ^[a-z0-9][a-z0-9._/-]*$ ]] || continue
+  [[ "$REL" != *..* ]] || continue
+  if [ -f "$FOLDER/$REL" ] && [ "$(sha256sum "$FOLDER/$REL" | cut -d' ' -f1)" = "$HASH" ]; then continue; fi
+  curl -fsSL --max-time 60 "$SUMBER/$REL$V" -o "$TMP/f" || continue
+  [ "$(sha256sum "$TMP/f" | cut -d' ' -f1)" = "$HASH" ] || continue
+  if [ "$REL" = "index.html" ] && ! grep -q "$CIRI" "$TMP/f"; then continue; fi
+  mkdir -p "$FOLDER/$(dirname "$REL")"
+  install -m 644 "$TMP/f" "$FOLDER/$REL"
+  BERUBAH=$((BERUBAH + 1))
+done < "$TMP/daftar"
+find "$FOLDER" -type d -exec chmod 755 {} +
+if [ "$BERUBAH" -gt 0 ] || [ "${1:-}" = "--paksa" ]; then
+  eval "$SALIN" >/dev/null 2>&1
+  logger -t kuistes "Kuis diperbarui: $BERUBAH file" 2>/dev/null || true
+fi
+if [ "${1:-}" = "--paksa" ]; then echo "   ✅ $BERUBAH file baru/berubah diambil dari GitHub."; fi
+exit 0
+PEMBARU
+chmod 755 /usr/local/bin/kuistes-perbarui
+/usr/local/bin/kuistes-perbarui --paksa
+grep -q "$CIRI" "$FOLDER/index.html" 2>/dev/null || { echo "❌ Kuis belum berhasil diunduh dari GitHub. Coba jalankan lagi beberapa menit kemudian."; exit 1; }
+echo "*/10 * * * * root /usr/local/bin/kuistes-perbarui >/dev/null 2>&1" > /etc/cron.d/kuistes-perbarui
+chmod 644 /etc/cron.d/kuistes-perbarui
+echo "   ✅ Pembaruan otomatis aktif: semua file kuis mengikuti GitHub setiap 10 menit."
+
+LOKAL_OK=""
+# ---------- 2a) Mode Docker: HadirFlow di container nginx (lewat Cloudflare Tunnel) ----------
+if [ "$MODE" = "docker" ]; then
+  echo "2) HadirFlow berjalan di container Docker \"$KONTAINER\" (folder web: $ROOT)."
+  KONF_REDIRECT="/etc/nginx/conf.d/00-kuistes-redirect.conf"
+  if [ -z "$HOST_DIR" ]; then
+    # Jika container dibuat ulang (deploy HadirFlow baru), kuis dan pengaturan pengalihan dipasang lagi otomatis
     cat > /etc/cron.d/kuistes <<CRON
 # Dibuat oleh pasang-di-vps.sh: memasang ulang kuis bila container HadirFlow dibuat ulang
-*/5 * * * * root docker exec $KONTAINER test -f $ROOT/kuistes/index.html 2>/dev/null || { docker exec $KONTAINER mkdir -p $ROOT/kuistes && docker cp $FOLDER/index.html $KONTAINER:$ROOT/kuistes/index.html; } >/dev/null 2>&1
+*/5 * * * * root docker exec $KONTAINER test -f $ROOT/kuistes/index.html 2>/dev/null || /usr/local/bin/kuistes-perbarui --paksa >/dev/null 2>&1
+*/5 * * * * root docker exec $KONTAINER test -f $KONF_REDIRECT 2>/dev/null || { docker exec $KONTAINER sh -c "echo 'absolute_redirect off;' > $KONF_REDIRECT && nginx -t && nginx -s reload" || docker exec $KONTAINER rm -f $KONF_REDIRECT; } >/dev/null 2>&1
 CRON
     chmod 644 /etc/cron.d/kuistes
-    echo "   ✅ Penjaga otomatis dipasang (/etc/cron.d/kuistes): kuis dipasang ulang bila container diperbarui."
-    pasang_pembaru "docker exec $KONTAINER mkdir -p $ROOT/kuistes && docker cp $FOLDER/index.html $KONTAINER:$ROOT/kuistes/index.html"
+    echo "   ✅ Penjaga otomatis aktif: kuis dipasang ulang bila container HadirFlow diperbarui."
+  else
+    echo "   ✅ Kuis disalin ke $HOST_DIR/kuistes/ (folder VPS yang dipakai container)."
   fi
-
-  # Lewat Cloudflare Tunnel, container menerima HTTP biasa, sehingga pengalihan /kuistes -> /kuistes/
-  # ditulis "http://...". absolute_redirect off membuat pengalihan relatif, jadi tetap di https.
-  KONF_REDIRECT="/etc/nginx/conf.d/00-kuistes-redirect.conf"
+  # Lewat Cloudflare Tunnel, container menerima HTTP biasa; absolute_redirect off menjaga pengalihan tetap https
   if ! docker exec "$KONTAINER" test -f "$KONF_REDIRECT" 2>/dev/null; then
     if docker exec "$KONTAINER" sh -c "echo 'absolute_redirect off;' > $KONF_REDIRECT && nginx -t" >/dev/null 2>&1; then
       docker exec "$KONTAINER" nginx -s reload >/dev/null 2>&1 || true
       echo "   ✅ Pengalihan /kuistes diperbaiki (tetap https)."
     else
       docker exec "$KONTAINER" rm -f "$KONF_REDIRECT" >/dev/null 2>&1 || true
-      echo "   ↪ Pengalihan /kuistes tidak diubah (pengaturan nginx container menolak). Pakai alamat /kuistes/ dengan garis miring."
     fi
   fi
-  if [ -f /etc/cron.d/kuistes ] && ! grep -q "00-kuistes-redirect" /etc/cron.d/kuistes; then
-    echo "*/5 * * * * root docker exec $KONTAINER test -f $KONF_REDIRECT 2>/dev/null || { docker exec $KONTAINER sh -c \"echo 'absolute_redirect off;' > $KONF_REDIRECT && nginx -t && nginx -s reload\" || docker exec $KONTAINER rm -f $KONF_REDIRECT; } >/dev/null 2>&1" >> /etc/cron.d/kuistes
+  LOKAL_OK="$(docker exec "$KONTAINER" sh -c "wget -qO- http://127.0.0.1/kuistes/ 2>/dev/null || curl -s http://127.0.0.1/kuistes/" 2>/dev/null || true)"
+fi
+
+# ---------- 2b) Mode nginx biasa di VPS ----------
+if [ "$MODE" = "nginx" ]; then
+  echo "2) Mengatur nginx untuk $DOMAIN..."
+  mapfile -t FILES < <(grep -rlF "$DOMAIN" /etc/nginx/ 2>/dev/null | sort -u || true)
+  if [ ${#FILES[@]} -eq 0 ]; then
+    echo "❌ Tidak ada pengaturan nginx dengan server_name $DOMAIN."
+    echo "   Kirim hasil perintah ini ke Claude: sudo nginx -T 2>/dev/null | grep -nE 'server_name|listen|include'"
+    exit 3
   fi
-
-  echo "3) Memeriksa hasil..."
-  ISI_LOKAL="$(docker exec "$KONTAINER" sh -c "wget -qO- http://127.0.0.1/kuistes/ 2>/dev/null || curl -s http://127.0.0.1/kuistes/" 2>/dev/null || true)"
-  ISI_PUBLIK="$(curl -s --max-time 15 "https://$DOMAIN/kuistes/?cek=$(date +%s)" 2>/dev/null || true)"
-  if [[ "$ISI_PUBLIK" == *"$CIRI"* ]]; then
-    echo "🎉 Berhasil! Buka https://$DOMAIN/kuistes"
-  elif [[ "$ISI_LOKAL" == *"$CIRI"* ]]; then
-    echo "✅ Container sudah menyajikan kuis, tetapi dari internet belum terlihat."
-    echo "   Tunggu 1 menit lalu buka https://$DOMAIN/kuistes . Jika masih belum, buka Cloudflare → Caching → Purge Everything."
-  else
-    echo "⚠️  Pengaturan nginx di container belum mengarahkan /kuistes/ ke file kuis."
-    echo "    Kirim hasil perintah ini ke Claude:"
-    echo "    sudo docker exec $KONTAINER cat /etc/nginx/conf.d/default.conf"
-  fi
-  exit 0
-fi
-
-if ! command -v nginx >/dev/null 2>&1; then
-  echo
-  echo "⚠️  nginx tidak ditemukan di VPS ini. File kuis sudah diunduh, tetapi web server perlu diatur manual."
-  echo "    Kirim hasil perintah berikut ke Claude supaya bisa dibantu:"
-  echo "    sudo ss -tlnp | grep -E ':80|:443'; docker ps 2>/dev/null | head"
-  exit 2
-fi
-
-echo "2) Mencari pengaturan nginx untuk $DOMAIN..."
-mapfile -t FILES < <(grep -rlF "$DOMAIN" /etc/nginx/ 2>/dev/null | sort -u || true)
-if [ ${#FILES[@]} -eq 0 ]; then
-  echo "❌ Tidak ada pengaturan nginx dengan server_name $DOMAIN."
-  echo "   Kirim hasil perintah ini ke Claude: sudo nginx -T 2>/dev/null | grep -nE 'server_name|listen|include'"
-  exit 3
-fi
-
-BLOK="    $PENANDA (dipasang otomatis untuk kuis)
+  BLOK="    $PENANDA (dipasang otomatis untuk kuis)
     location = /kuistes { return 301 /kuistes/; }
     location /kuistes/ {
         alias $FOLDER/;
@@ -137,56 +132,40 @@ BLOK="    $PENANDA (dipasang otomatis untuk kuis)
         add_header Cache-Control \"no-cache\";
     }
     # kuistes-selesai"
-
-declare -a DIUBAH=()
-for f in "${FILES[@]}"; do
-  if grep -q "$PENANDA" "$f"; then echo "   ↪ $f sudah berisi pengaturan kuis, dilewati."; continue; fi
-  # Sisipkan blok tepat setelah baris "server_name" yang memuat domain persis (masih di dalam blok server)
-  BLOK="$BLOK" DOM="$DOMAIN" awk '
-    { print }
-    /^[ \t]*server_name[ \t]/ {
-      n = split($0, w, /[ \t;]+/)
-      for (i = 2; i <= n; i++) if (w[i] == ENVIRON["DOM"] || w[i] == "www." ENVIRON["DOM"]) { print ENVIRON["BLOK"]; break }
-    }
-  ' "$f" > "$f.kuistes-baru"
-  if cmp -s "$f" "$f.kuistes-baru"; then rm -f "$f.kuistes-baru"; continue; fi
-  mkdir -p "$CADANGAN$(dirname "$f")"
-  cp -p "$f" "$CADANGAN$f"
-  cat "$f.kuistes-baru" > "$f"; rm -f "$f.kuistes-baru"
-  DIUBAH+=("$f")
-  echo "   ✏️  Ditambahkan ke $f (cadangan: $CADANGAN$f)"
-done
-if [ ${#DIUBAH[@]} -eq 0 ] && ! grep -rqF "$PENANDA" /etc/nginx/; then
-  echo "❌ Tidak ada baris server_name yang persis berisi $DOMAIN."
-  echo "   Kirim hasil perintah ini ke Claude: sudo nginx -T 2>/dev/null | grep -nE 'server_name|listen|include'"
-  exit 3
+  declare -a DIUBAH=()
+  for f in "${FILES[@]}"; do
+    if grep -q "$PENANDA" "$f"; then continue; fi
+    BLOK="$BLOK" DOM="$DOMAIN" awk '
+      { print }
+      /^[ \t]*server_name[ \t]/ {
+        n = split($0, w, /[ \t;]+/)
+        for (i = 2; i <= n; i++) if (w[i] == ENVIRON["DOM"] || w[i] == "www." ENVIRON["DOM"]) { print ENVIRON["BLOK"]; break }
+      }
+    ' "$f" > "$f.kuistes-baru"
+    if cmp -s "$f" "$f.kuistes-baru"; then rm -f "$f.kuistes-baru"; continue; fi
+    mkdir -p "$CADANGAN$(dirname "$f")"; cp -p "$f" "$CADANGAN$f"
+    cat "$f.kuistes-baru" > "$f"; rm -f "$f.kuistes-baru"
+    DIUBAH+=("$f"); echo "   ✏️  Ditambahkan ke $f (cadangan: $CADANGAN$f)"
+  done
+  if nginx -t 2>/tmp/kuistes-nginx-test.log; then
+    if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet nginx 2>/dev/null; then systemctl reload nginx; else nginx -s reload; fi
+    echo "   ✅ nginx dimuat ulang."
+  else
+    echo "❌ Pengaturan nginx gagal diperiksa. Semua perubahan dibatalkan:"; cat /tmp/kuistes-nginx-test.log
+    for f in "${DIUBAH[@]}"; do cat "$CADANGAN$f" > "$f"; done
+    exit 4
+  fi
+  ambil() { curl "$@" 2>/dev/null || true; }
+  LOKAL_OK="$(ambil -sk --noproxy "*" --max-time 10 --resolve "$DOMAIN:443:127.0.0.1" "https://$DOMAIN/kuistes/")$(ambil -s --noproxy "*" --max-time 10 -H "Host: $DOMAIN" "http://127.0.0.1/kuistes/")"
 fi
 
-echo "3) Memeriksa pengaturan nginx..."
-if nginx -t 2>/tmp/kuistes-nginx-test.log; then
-  if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet nginx 2>/dev/null; then systemctl reload nginx; else nginx -s reload; fi
-  echo "   ✅ nginx dimuat ulang."
-  pasang_pembaru ":"   # nginx di VPS langsung membaca $FOLDER
-else
-  echo "❌ Pengaturan nginx gagal diperiksa. Semua perubahan dibatalkan:"
-  cat /tmp/kuistes-nginx-test.log
-  for f in "${DIUBAH[@]}"; do cat "$CADANGAN$f" > "$f"; done
-  echo "   Pengaturan lama sudah dikembalikan."
-  exit 4
-fi
-
-echo "4) Memeriksa hasil..."
-ambil() { curl "$@" 2>/dev/null || true; }   # baca dulu seluruh halaman, baru dicari (aman dengan pipefail)
-LOKAL=tidak
-ISI_LOKAL="$(ambil -sk --noproxy "*" --max-time 10 --resolve "$DOMAIN:443:127.0.0.1" "https://$DOMAIN/kuistes/")$(ambil -s --noproxy "*" --max-time 10 -H "Host: $DOMAIN" "http://127.0.0.1/kuistes/")"
-[[ "$ISI_LOKAL" == *"$CIRI"* ]] && LOKAL=ya
-ISI_PUBLIK="$(ambil -s --max-time 15 "https://$DOMAIN/kuistes/?cek=$(date +%s)")"
-if [[ "$ISI_PUBLIK" == *"$CIRI"* ]]; then
+# ---------- 3) Memeriksa hasil ----------
+echo "3) Memeriksa hasil..."
+PUBLIK="$(curl -s --max-time 15 "https://$DOMAIN/kuistes/?cek=$(date +%s)" 2>/dev/null || true)"
+if [[ "$PUBLIK" == *"$CIRI"* ]]; then
   echo "🎉 Berhasil! Buka https://$DOMAIN/kuistes"
-elif [ "$LOKAL" = ya ]; then
-  echo "✅ nginx di VPS sudah menyajikan kuis, tetapi dari internet belum terlihat."
-  echo "   Kemungkinan tertahan cache Cloudflare: buka dasbor Cloudflare → Caching → Purge Everything, lalu coba lagi."
+elif [[ "$LOKAL_OK" == *"$CIRI"* ]]; then
+  echo "✅ Kuis sudah terpasang di VPS, tetapi dari internet belum terlihat. Tunggu 1 menit lalu buka https://$DOMAIN/kuistes"
 else
-  echo "⚠️  Kuis belum terlihat. Kirim seluruh tulisan di atas dan hasil perintah ini ke Claude:"
-  echo "    sudo nginx -T 2>/dev/null | grep -nE 'server_name|listen|location|proxy_pass|include'"
+  echo "⚠️  Kuis belum terlihat. Kirim seluruh tulisan di atas ke Claude."
 fi

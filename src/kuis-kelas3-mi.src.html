@@ -15,6 +15,11 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2f9e6e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="ikon-192.png">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tes HadirFlow">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
@@ -129,6 +134,29 @@
   .tombol.wa { background: #1faa59; box-shadow: 0 5px 0 #168544; }
   .kotak-promo.bagikan { background: #e9f9ef; border-color: #bfe9cf; }
   .kotak-promo.guru { background: #fff1b8; border-color: var(--accent); }
+  .btn-suara { float: right; font: inherit; font-weight: 800; font-size: 15px; border: 3px solid var(--line); background: #fffdf7; border-radius: 999px; padding: 4px 12px; cursor: pointer; margin: 0 0 6px 8px; }
+  .opsi.dipilih-tryout { border-color: var(--primary); background: #e9f9ef; }
+  .chip.waktu-habis { background: #ffe1e8; border-color: var(--salah); }
+  textarea { width: 100%; font: inherit; font-size: 16px; padding: 10px 14px; border-radius: 14px; border: 3px solid var(--line); background: #fffdf7; margin-top: 8px; }
+  .tabel { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 15px; background: #fff; }
+  .tabel th, .tabel td { border-bottom: 2px solid var(--line); padding: 6px 8px; text-align: left; }
+  .tabel th { background: #fff6dc; }
+  .tabel td.angka, .tabel th.angka { text-align: right; font-variant-numeric: tabular-nums; }
+  .ringkas-rapor { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+  .ringkas-rapor div { background: #fffdf7; border: 3px solid var(--line); border-radius: 16px; padding: 10px; text-align: center; }
+  .ringkas-rapor b { display: block; font-size: 30px; color: var(--primary-dark); line-height: 1.1; }
+  .kartu-mapel { border: 3px solid var(--line); border-radius: 16px; padding: 10px 12px; margin: 10px 0; background: #fffdf7; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+  .grafik-nilai { grid-column: 1 / -1; position: relative; height: 70px; }
+  .grafik-nilai svg { position: absolute; inset: 0; width: 100%; height: 70px; }
+  .titik-nilai { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #2f9e6e; border: 2px solid #fffdf7; box-sizing: border-box; }
+  .label-nilai { position: absolute; transform: translate(-110%, -130%); font-size: 13px; font-weight: 800; color: var(--ink); }
+  .kartu-mapel .nilai-akhir { font-size: 32px; font-weight: 800; color: var(--primary-dark); text-align: right; line-height: 1; }
+  .tren-naik { color: var(--primary-dark); } .tren-turun { color: #b4232c; }
+  .kotak-piagam img { width: 100%; max-width: 300px; display: block; margin: 10px auto; border-radius: 12px; border: 3px solid var(--line); }
+  .tautan-seo { margin-top: 16px; font-size: 15px; }
+  .tautan-seo .judul { margin: 10px 0 4px; }
+  .tautan-seo p { margin: 4px 0; }
+  .chip-seo { display: inline-block; background: #fffdf7; border: 2px solid var(--line); border-radius: 999px; padding: 1px 10px; margin: 2px; color: var(--ink); text-decoration: none; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -254,9 +282,14 @@
         <div class="pilih-chip" id="daftarKelas"></div>
         <p class="judul" style="margin-top:12px">📚 Pilih pelajaran:</p>
         <div class="mapel-grid" id="daftarMapel"></div>
+        <div id="pilihMode">
+          <p class="judul" style="margin-top:12px">🎯 Pilih mode:</p>
+          <div class="pilih-chip" id="daftarMode"></div>
+        </div>
         <div class="info-pilihan" id="infoPilihan"></div>
-        <div class="tengah">
+        <div class="baris-tombol">
           <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
+          <button class="tombol putih" id="btnRapor" type="button">📈 Rapor Perkembangan</button>
         </div>
         <div class="tengah" style="margin-top:12px">
           <button type="button" class="link-reset" id="btnReset" style="display:none">🗑️ Hapus riwayat soal untuk nama ini</button>
@@ -293,10 +326,27 @@
           </div>
           <p class="sub-kecil" id="infoSalin" style="text-align:left"></p>
         </div>
+        <div class="kotak-promo" style="margin-top:18px">
+          <b>📊 Rekap nilai murid dari WhatsApp</b>
+          <p>Di WhatsApp, tekan lama pesan nilai dari murid, pilih semua pesan nilai, lalu <b>Salin</b>. Tempelkan di kotak ini, maka tabel rekap langsung jadi.</p>
+          <textarea id="rekapTeks" rows="5" placeholder="Tempel pesan-pesan nilai dari WhatsApp di sini..."></textarea>
+          <div class="baris-tombol" style="justify-content:flex-start"><button class="tombol" id="btnRekap" type="button">📊 Buat Rekap</button></div>
+          <div id="hasilRekap"></div>
+        </div>
         <div class="promo-ortu" id="promoGuru"></div>
       </div>
 
       <div class="pesan-error" id="pesanError" role="alert"></div>
+    </div>
+    <div class="kartu tanpa-cetak" style="margin-top:16px">
+      <p class="judul">📱 Pasang sebagai aplikasi</p>
+      <p class="sub" style="margin-top:0">Supaya mudah dibuka lagi, pasang Tes HadirFlow di layar utama HP. Gratis, tanpa Play Store.</p>
+      <button class="tombol" id="btnPasang" type="button" style="display:none">📲 Pasang di layar HP</button>
+      <p class="sub-kecil" id="infoPasang" style="text-align:left"></p>
+    </div>
+    <div class="kartu tautan-seo">
+      <p class="judul">📚 Latihan soal per kelas</p>
+      <!--TAUTAN_SEO-->
     </div>
     <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
   </section>
@@ -331,6 +381,7 @@
     </div>
     <div class="progress" aria-hidden="true"><div id="tesProgress"></div></div>
     <div class="kartu">
+      <button type="button" class="btn-suara" id="btnSuaraTes" aria-label="Bacakan soal">🔊 Bacakan</button>
       <p class="soal" id="tesSoal"></p>
       <div class="opsi-list" id="tesOpsi"></div>
       <div class="tengah"><button type="button" class="link-reset" id="btnTesMundur">⬅️ Soal sebelumnya</button></div>
@@ -347,6 +398,15 @@
     </div>
   </section>
 
+  <!-- LAYAR RAPOR -->
+  <section id="layarRapor" class="screen">
+    <div class="kartu" id="isiRapor"></div>
+    <div class="baris-tombol tanpa-cetak">
+      <button class="tombol kuning" id="btnCetakRapor" type="button">🖨️ Cetak / Simpan PDF</button>
+      <button class="tombol putih" id="btnTutupRapor" type="button">⬅️ Kembali</button>
+    </div>
+  </section>
+
   <!-- LAYAR 2: KUIS -->
   <section id="layarKuis" class="screen">
     <div class="bar-atas">
@@ -357,6 +417,7 @@
     <div class="progress" aria-hidden="true"><div id="barProgress"></div></div>
     <div class="info-putaran" id="infoPutaran" role="status"></div>
     <div class="kartu">
+      <button type="button" class="btn-suara" id="btnSuara" aria-label="Bacakan soal">🔊 Bacakan</button>
       <p class="soal" id="teksSoal"></p>
       <div class="opsi-list" id="daftarOpsi"></div>
       <div class="umpan" id="umpan" role="status" aria-live="polite"></div>
@@ -380,6 +441,7 @@
       <div class="baris-tombol">
         <button class="tombol" id="btnUlang">Ulangi 🔄</button>
         <button class="tombol putih" id="btnGanti">Ganti Pelajaran 📚</button>
+        <button class="tombol putih" id="btnRaporHasil" type="button">📈 Rapor</button>
       </div>
     </div>
   </section>
@@ -530,7 +592,10 @@ const LINK_HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium="
 const URL_KUIS = "https://hadirflow.my.id/kuistes/";
 
 /* Pengaturan */
-const JUMLAH_SOAL = 10;      // jumlah soal per kuis
+const JUMLAH_SOAL = 10;      // jumlah soal per kuis latihan
+// Tryout: jumlah soal dan waktu (menit) per jenjang
+const TRYOUT = { sd: [20, 30], smp: [30, 60], sma: [40, 90] };
+let modeAktif = "latihan", jumlahSoalAktif = JUMLAH_SOAL, timerTryout = null, sisaDetik = 0;
 const MAKS_SOAL_TETAP = 3;   // paling banyak soal dari BANK SOAL per kuis; sisanya dibuat otomatis
 
 /* ========================================================= */
@@ -1281,19 +1346,19 @@ function pilihSoalBaru(kode) {
   const tetap = acak(daftarKode.flatMap((k) => soalTetapBaru(k, riwayat).map((s) => Object.assign({}, s, { kode: k })))).slice(0, rnd(1, MAKS_SOAL_TETAP));
   tetap.forEach((s) => { dipakai.add(s.id); hasil.push(s); });
   let gagal = 0;
-  while (hasil.length < JUMLAH_SOAL && gagal < 50) {
+  while (hasil.length < jumlahSoalAktif && gagal < 50) {
     const k = ambil(daftarKode), s = buatSoalOtomatis(k, dipakai);
     if (!s) { gagal++; continue; }
     s.kode = k; dipakai.add(s.id); hasil.push(s);
   }
   let info = "";
-  if (hasil.length < JUMLAH_SOAL) {
+  if (hasil.length < jumlahSoalAktif) {
     // Soal baru habis: soal yang PALING LAMA dikerjakan boleh muncul lagi untuk mengulang
     const milik = [...riwayat].filter((id) => daftarKode.some((k) => id.indexOf(awalanId(k) + "|") === 0));
     milik.slice(0, Math.ceil(milik.length / 2)).forEach((id) => { riwayat.delete(id); dipakai.delete(id); });
     simpanRiwayat(nama, riwayat);
     hasil.forEach((s) => dipakai.add(s.id));
-    while (hasil.length < JUMLAH_SOAL) {
+    while (hasil.length < jumlahSoalAktif) {
       const k = ambil(daftarKode), s = buatSoalOtomatis(k, dipakai);
       if (!s) break;
       s.kode = k; dipakai.add(s.id); hasil.push(s);
@@ -1346,6 +1411,7 @@ function konfeti(n = 80) {
 }
 
 function tampilkan(id) {
+  try { if (BISA_BICARA) speechSynthesis.cancel(); } catch (e) {}
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("aktif"));
   $(id).classList.add("aktif");
   try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
@@ -1371,7 +1437,7 @@ function renderPilihan() {
   wj.innerHTML = ""; wk.innerHTML = ""; wm.innerHTML = "";
   Object.keys(JENJANG).forEach((j) => wj.appendChild(tombolChip(JENJANG[j].ikon + " " + JENJANG[j].nama, j === jenjangAktif, () => {
     if (j === jenjangAktif) return;
-    jenjangAktif = j;
+    jenjangAktif = j; modeAktif = "latihan";
     kelasAktif = Object.keys(KELAS_INFO).filter((k) => KELAS_INFO[k].jenjang === j)[0];
     tulis("kuisMI3:kelas", kelasAktif); pilihanMapel = null; renderPilihan();
   })));
@@ -1392,7 +1458,17 @@ function renderPilihan() {
     wm.appendChild(b);
   });
   $("infoPilihan").textContent = "";
+  renderMode();
   perbaruiInfoMapel();
+}
+function renderMode() {
+  const t = TRYOUT[jenjangAktif], w = $("daftarMode");
+  $("pilihMode").style.display = t ? "block" : "none";
+  if (!t) modeAktif = "latihan";
+  w.innerHTML = "";
+  if (!t) return;
+  w.appendChild(tombolChip(`📖 Latihan • ${JUMLAH_SOAL} soal, langsung dibahas`, modeAktif === "latihan", () => { modeAktif = "latihan"; renderMode(); }));
+  w.appendChild(tombolChip(`⏱️ Tryout • ${t[0]} soal, ${t[1]} menit`, modeAktif === "tryout", () => { modeAktif = "tryout"; renderMode(); }));
 }
 
 /* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
@@ -1416,6 +1492,9 @@ function mulai() {
   if (!pilihanMapel) { $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚"; return; }
 
   levelAktif = kelasAktif === "3" ? bacaLevel(nama, "mtk") : 1;
+  if (!TRYOUT[jenjangAktif]) modeAktif = "latihan";
+  jumlahSoalAktif = modeAktif === "tryout" ? TRYOUT[jenjangAktif][0] : JUMLAH_SOAL;
+  hentikanTimer();
   const { terpilih, info } = pilihSoalBaru(pilihanMapel);
   $("infoPutaran").textContent = info;
   $("infoPutaran").style.display = info ? "block" : "none";
@@ -1426,15 +1505,39 @@ function mulai() {
   });
   nomor = 0; skor = 0; catatan = [];
   const m = namaMapel(pilihanMapel);
-  $("infoMapel").textContent = m.ikon + " " + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" ? " • Level " + levelAktif : "");
+  $("infoMapel").textContent = (modeAktif === "tryout" ? "⏱️ Tryout " : m.ikon + " ") + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan" ? " • Level " + levelAktif : "");
   tampilkan("layarKuis");
+  if (modeAktif === "tryout") mulaiTimer(TRYOUT[jenjangAktif][1] * 60);
   tampilSoal();
+}
+function formatWaktu(d) { return Math.floor(d / 60) + ":" + String(d % 60).padStart(2, "0"); }
+function hentikanTimer() { if (timerTryout) { clearInterval(timerTryout); timerTryout = null; } $("infoSkor").classList.remove("waktu-habis"); }
+function mulaiTimer(detik) {
+  sisaDetik = detik;
+  $("infoSkor").textContent = "⏱️ " + formatWaktu(sisaDetik);
+  timerTryout = setInterval(() => {
+    sisaDetik--;
+    $("infoSkor").textContent = "⏱️ " + formatWaktu(Math.max(0, sisaDetik));
+    if (sisaDetik <= 60) $("infoSkor").classList.add("waktu-habis");
+    if (sisaDetik <= 0) { hentikanTimer(); waktuHabis(); }
+  }, 1000);
+}
+function waktuHabis() {
+  // Soal yang belum dijawab dihitung salah
+  for (let i = nomor; i < soalAktif.length; i++) {
+    const s = soalAktif[i];
+    catatan.push({ soal: s.t, dipilih: "(tidak dijawab)", kunci: s.opsi.find((x) => x.benar).teks, benar: false });
+  }
+  nomor = soalAktif.length;
+  $("infoPutaran").textContent = "⏰ Waktu habis! Soal yang belum dijawab dihitung salah.";
+  $("infoPutaran").style.display = "block";
+  selesai();
 }
 
 function tampilSoal() {
   const s = soalAktif[nomor];
   $("infoNomor").textContent = `Soal ${nomor + 1}/${soalAktif.length}`;
-  $("infoSkor").textContent = "⭐ " + skor;
+  if (modeAktif !== "tryout") $("infoSkor").textContent = "⭐ " + skor;
   $("barProgress").style.width = (nomor / soalAktif.length) * 100 + "%";
   $("teksSoal").innerHTML = (s.ikon ? s.ikon + " " : "") + s.t;
   $("umpan").className = "umpan";
@@ -1450,10 +1553,20 @@ function tampilSoal() {
     b.addEventListener("click", () => jawab(b, op));
     wadah.appendChild(b);
   });
+  if (bacaOtomatis()) bacakanSoal(s.t, s.opsi.map((o) => o.teks));
 }
 
 function jawab(tombol, op) {
   const s = soalAktif[nomor];
+  if (modeAktif === "tryout") {
+    document.querySelectorAll("#daftarOpsi .opsi").forEach((b) => (b.disabled = true));
+    tombol.classList.add("dipilih-tryout");
+    if (op.benar) skor++;
+    catatan.push({ soal: s.t, dipilih: op.teks, kunci: s.opsi.find((x) => x.benar).teks, benar: op.benar });
+    tandaiDijawab(s.id);
+    setTimeout(lanjut, 300);
+    return;
+  }
   const semua = [...document.querySelectorAll(".opsi")];
   semua.forEach((b, i) => { b.disabled = true; if (s.opsi[i].benar) b.classList.add("benar"); });
   const u = $("umpan");
@@ -1472,7 +1585,7 @@ function jawab(tombol, op) {
   }
   catatan.push({ soal: s.t, dipilih: op.teks, kunci, benar: op.benar });
   tandaiDijawab(s.id);
-  $("infoSkor").textContent = "⭐ " + skor;
+  if (modeAktif !== "tryout") $("infoSkor").textContent = "⭐ " + skor;
   const btn = $("btnLanjut");
   btn.textContent = nomor + 1 < soalAktif.length ? "Lanjut ➡️" : "Lihat Nilai 🏆";
   btn.style.display = "inline-block";
@@ -1480,12 +1593,15 @@ function jawab(tombol, op) {
 }
 
 function lanjut() {
+  if (nomor >= soalAktif.length) return;
   nomor++;
   if (nomor < soalAktif.length) tampilSoal();
   else selesai();
 }
 
 function selesai() {
+  hentikanTimer();
+  try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {}
   $("barProgress").style.width = "100%";
   const total = soalAktif.length;
   const nilai = Math.round((skor / total) * 100);
@@ -1496,7 +1612,7 @@ function selesai() {
   else                  { jmlBintang = 0; emoji = "💪"; judul = "Semangat, " + nama + "!"; pesan = "Tidak apa-apa. Baca lagi materinya, lalu coba sekali lagi, ya!"; }
 
   // Level Matematika naik/turun mengikuti nilai, supaya anak terus tertantang
-  if (pilihanMapel === "mtk" && kelasAktif === "3") {
+  if (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan") {
     const lama = levelAktif, baru = nilai >= 80 ? Math.min(3, lama + 1) : nilai < 50 ? Math.max(1, lama - 1) : lama;
     simpanLevel(nama, "mtk", baru);
     if (baru > lama) pesan += ` 🚀 Kamu naik ke Level ${baru}! Soal berikutnya lebih menantang.`;
@@ -1517,13 +1633,16 @@ function selesai() {
       salah.map((c) => `<li>${c.soal}<br><span class="jwb-salah">✗ Jawabanmu: ${c.dipilih}</span><br><span class="jwb-benar">✓ Jawaban benar: ${c.kunci}</span></li>`).join("") +
       `</ol></details>`;
 
-  const m = namaMapel(pilihanMapel);
+  const m = namaMapel(pilihanMapel), jenis = modeAktif === "tryout" ? "Tryout" : "Kuis";
+  if (modeAktif === "tryout") $("judulHasil").textContent = "Hasil Tryout " + nama;
+  catatRapor(nilai);
   bukaHasil(() => {
     tampilkan("layarHasil");
     bunyi("selesai");
     if (nilai >= 70) konfeti();
   }, "promoHasil", {
-    bagikan: `📚 ${nama} mendapat nilai ${nilai} di kuis ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}`,
+    bagikan: `📚 ${nama} mendapat nilai ${nilai} di ${jenis.toLowerCase()} ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}`,
+    piagam: nilai >= 70 ? `atas nilai ${nilai} pada ${jenis} ${m.nama} ${KELAS_INFO[kelasAktif].nama}` : null,
     guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null
   });
 }
@@ -1774,7 +1893,7 @@ const TES = {
       j.forEach((x) => skor[x]++);
       const urut = KODE_MESIN.slice().sort((a, b) => skor[b] - skor[a]), m = MESIN[urut[0]], kedua = MESIN[urut[1]];
       const usia = extra.usia ? `${extra.usia.th} tahun ${extra.usia.bl} bulan` : "";
-      return { ringkas: `${m.ikon} ${m.nama} (${m.asli})`, html: `
+      return { ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`, html: `
         <div class="besar">${m.ikon}</div>
         <h2>${esc(nama)} adalah ${m.nama}</h2>
         <p class="sub-kecil">Kecenderungan: <b>${m.asli}</b>${usia ? " • Usia " + usia : ""} • ${tglHariIni()}</p>
@@ -1833,7 +1952,7 @@ const TES = {
       const skor = {}; BIDANG.forEach((b) => (skor[b.id] = 0));
       extra.soal.forEach((s, i) => (skor[s.bidang] += j[i] || 0));
       const urut = BIDANG.slice().sort((a, b) => skor[b.id] - skor[a.id]), top = urut.slice(0, 3), bawah = urut.slice(-2).reverse();
-      return { ringkas: top.map((b) => b.ikon + " " + b.nama).join(", "), html: `
+      return { ringkas: top.map((b) => b.ikon + " " + b.nama).join(", "), piagam: `dengan kelebihan ${top.map((b) => b.nama).join(", ")}`, html: `
         <div class="besar">🏅</div><h2>Kelebihan ${esc(nama)} saat ini</h2><p class="sub-kecil">${tglHariIni()}</p>
         ${top.map((b, i) => `<div class="kotak"><b>${["🥇", "🥈", "🥉"][i]} ${b.ikon} ${b.nama}</b> (skor ${skor[b.id]}/6)<br>Terus kembangkan: ${b.tip}</div>`).join("")}
         <h3>🌱 Yang bisa dilatih</h3>
@@ -1883,7 +2002,7 @@ const TES = {
       const kat = total >= 19 ? ["🏆", "Istimewa"] : total >= 16 ? ["🌟", "Sangat Baik"] : total >= 12 ? ["👍", "Baik"] : total >= 8 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
       const urut = Object.keys(AREA_OTAK).sort((a, b) => per[b] - per[a]);
       const salah = extra.soal.map((s, i) => ({ s, ok: j[i] === 1, pilih: extra.teks[i] })).filter((x) => !x.ok);
-      return { ringkas: `${total}/20 (${kat[1]})`, bagikan: `🧠 ${nama} mendapat skor ${total}/20 (${kat[1]}) di Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}! Berani coba?`, html: `
+      return { ringkas: `${total}/20 (${kat[1]})`, piagam: total >= 12 ? `atas skor ${total}/20 (${kat[1]}) pada Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}` : null, bagikan: `🧠 ${nama} mendapat skor ${total}/20 (${kat[1]}) di Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}! Berani coba?`, html: `
         <div class="besar">${kat[0]}</div><h2>Hasil Tes Kecerdasan ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${LEVEL_OTAK[levelOtak - 1][0]} • ${tglHariIni()}</p>
         <div class="kotak tengah"><div style="font-size:52px;font-weight:800;color:var(--primary-dark)">${total}<span style="font-size:26px">/20</span></div>
           <b>Kategori: ${kat[1]}</b><br>Waktu: ${menit} menit ${detik} detik</div>
@@ -2097,12 +2216,132 @@ function isiPromo(el, opsi) {
         ${navigator.share ? `<button type="button" class="tombol putih" data-bagikan>📤 Bagikan lainnya</button>` : ""}
       </div></div>`;
   }
+  if (opsi.piagam) html = `<div class="kotak-promo kotak-piagam"><b>🏅 Piagam untuk ${esc(nama)}</b>
+      <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
+      <img alt="Piagam ${esc(nama)}" data-piagam>
+      <a class="tombol kuning" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>` + html;
   html += kartuHadirFlow("hasil");
   el.innerHTML = html;
+  if (opsi.piagam) { try { const url = gambarPiagam(opsi.piagam); el.querySelector("[data-piagam]").src = url; el.querySelector("[data-unduh-piagam]").href = url; } catch (e) {} }
   const b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });
 }
 function bukaHasil(tampil, wadahPromo, opsi) { tampil(); isiPromo($(wadahPromo), opsi); }
+
+/* ---------- PIAGAM PRESTASI (gambar 1080 × 1350) ---------- */
+function gambarPiagam(alasan) {
+  const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const c = cv.getContext("2d"), F = '"Baloo 2", sans-serif', emas = "#c9961a", hijau = "#227a54";
+  c.fillStyle = "#fff8e7"; c.fillRect(0, 0, W, H);
+  c.strokeStyle = emas; c.lineWidth = 14; c.strokeRect(40, 40, W - 80, H - 80);
+  c.lineWidth = 4; c.strokeRect(70, 70, W - 140, H - 140);
+  c.textAlign = "center"; c.font = "150px " + F; c.fillText("🏅", W / 2, 290);
+  c.fillStyle = hijau; c.font = "800 92px " + F; c.fillText("PIAGAM PRESTASI", W / 2, 420);
+  c.fillStyle = "#6b6475"; c.font = "600 40px " + F; c.fillText("diberikan kepada", W / 2, 510);
+  c.fillStyle = "#2d2a32"; let ukuran = 110; c.font = `800 ${ukuran}px ${F}`;
+  while (c.measureText(nama).width > W - 200 && ukuran > 50) { ukuran -= 6; c.font = `800 ${ukuran}px ${F}`; }
+  c.fillText(nama, W / 2, 650);
+  c.fillStyle = emas; c.fillRect(W / 2 - 260, 690, 520, 6);
+  c.fillStyle = "#2d2a32"; c.font = "600 46px " + F;
+  const baris = bungkusTeks(c, alasan, W / 2, 790, W - 240, 62);
+  c.fillStyle = "#6b6475"; c.font = "600 38px " + F; c.fillText(tglHariIni(), W / 2, 790 + baris * 62 + 50);
+  c.fillStyle = hijau; c.font = "800 44px " + F; c.fillText("Terus belajar, kamu hebat! 🌟", W / 2, 1110);
+  c.fillStyle = "#072B6B"; c.font = "800 36px " + F; c.fillText("Tes Gratis HadirFlow • hadirflow.my.id/kuistes", W / 2, 1220);
+  return cv.toDataURL("image/png");
+}
+
+/* ---------- SOAL DIBACAKAN (suara bawaan perangkat) ---------- */
+const BISA_BICARA = typeof window.speechSynthesis !== "undefined" && typeof window.SpeechSynthesisUtterance !== "undefined";
+function teksUcapan(t) {
+  return String(t).replace(/<[^>]+>/g, " ")
+    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, " ").replace(/[\u2190-\u21FF\u2600-\u27BF\uFE0F\u200D]/g, " ")
+    .replace(/_{2,}|\.\.\./g, " titik-titik ").replace(/×/g, " kali ").replace(/(\d)\s*:\s*(\d)/g, "$1 dibagi $2")
+    .replace(/(\d)\s*[−-]\s*(\d)/g, "$1 kurang $2").replace(/−/g, " minus ").replace(/=/g, " sama dengan ")
+    .replace(/²/g, " kuadrat").replace(/³/g, " pangkat tiga").replace(/√/g, " akar ").replace(/(\d)\/(\d)/g, "$1 per $2")
+    .replace(/%/g, " persen").replace(/\s+/g, " ").trim();
+}
+function bacakanSoal(t, opsi) {
+  if (!BISA_BICARA) return;
+  try {
+    speechSynthesis.cancel();
+    const teks = teksUcapan(t) + ". " + (opsi || []).map((o, i) => "Pilihan " + "ABCDE"[i] + ": " + teksUcapan(o)).join(". ");
+    const u = new SpeechSynthesisUtterance(teks);
+    u.lang = "id-ID"; u.rate = 0.9;
+    const suara = speechSynthesis.getVoices().filter((v) => /^id/i.test(v.lang))[0];
+    if (suara) u.voice = suara;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+// TK dan SD kelas 1–2: soal dibacakan otomatis
+const bacaOtomatis = () => BISA_BICARA && modeAktif === "latihan" && KELAS_INFO[kelasAktif].g <= 2;
+
+/* ---------- RAPOR PERKEMBANGAN ---------- */
+function catatRapor(nilai) {
+  const k = kunci("rapor", nama), r = baca(k, []);
+  r.push({ t: Date.now(), k: kelasAktif, m: pilihanMapel, n: nilai, mode: modeAktif });
+  tulis(k, r.slice(-300));
+}
+const tglPendek = (t) => { const d = new Date(t); return d.getDate() + "/" + (d.getMonth() + 1); };
+function garisNilai(daftar) {
+  // Satu seri per pelajaran: garis 2px (tidak ikut melebar), titik 8px bulat, label hanya pada nilai terakhir
+  const n = daftar.length, x = (i) => (n === 1 ? 50 : 3 + (i * 94) / (n - 1)), y = (v) => 62 - (v / 100) * 50;
+  const garis = n > 1 ? `<svg viewBox="0 0 100 70" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="${y(70)}" y2="${y(70)}" stroke="#f0e6cf" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline fill="none" stroke="#2f9e6e" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="${daftar.map((e, i) => x(i).toFixed(2) + "," + y(e.n).toFixed(2)).join(" ")}"/></svg>` : "";
+  const titik = daftar.map((e, i) => `<span class="titik-nilai" style="left:${x(i).toFixed(2)}%;top:${y(e.n).toFixed(1)}px" title="${tglPendek(e.t)}: ${e.n}${e.mode === "tryout" ? " (tryout)" : ""}"></span>`).join("");
+  const akhir = daftar[n - 1];
+  return `<div class="grafik-nilai" role="img" aria-label="Grafik ${n} nilai terakhir, nilai terakhir ${akhir.n}">${garis}${titik}<span class="label-nilai" style="left:${x(n - 1).toFixed(2)}%;top:${y(akhir.n).toFixed(1)}px">${akhir.n}</span></div>`;
+}
+function bukaRapor(asal) {
+  nama = $("namaSiswa").value.trim() || nama;
+  if (!nama) { $("pesanError").textContent = "Tulis namamu dulu untuk melihat rapor. 😊"; $("namaSiswa").focus(); return; }
+  const r = baca(kunci("rapor", nama), []), el = $("isiRapor");
+  layarAsalRapor = asal || "layarMulai";
+  if (!r.length) {
+    el.innerHTML = `<div class="tengah"><div style="font-size:56px">📈</div><h2>Rapor ${esc(nama)}</h2><p>Belum ada nilai. Kerjakan kuis dulu, nanti perkembanganmu tampil di sini.</p></div>`;
+    return tampilkan("layarRapor");
+  }
+  const grup = {};
+  r.forEach((e) => { const g = e.k + "|" + e.m; (grup[g] = grup[g] || []).push(e); });
+  const rata = Math.round(r.reduce((a, e) => a + e.n, 0) / r.length);
+  const kunciGrup = Object.keys(grup).sort((a, b) => grup[b][grup[b].length - 1].t - grup[a][grup[a].length - 1].t);
+  const terbaik = kunciGrup.slice().sort((a, b) => rataGrup(grup[b]) - rataGrup(grup[a]))[0];
+  const namaGrup = (g) => { const [k, m] = g.split("|"); return `${MAPEL_INFO[m].ikon} ${MAPEL_INFO[m].nama} • ${KELAS_INFO[k].nama}`; };
+  el.innerHTML = `<div class="tengah"><div style="font-size:56px">📈</div><h2>Rapor Perkembangan ${esc(nama)}</h2><p class="sub-kecil">Dicetak ${tglHariIni()}</p></div>
+    <div class="ringkas-rapor"><div><b>${r.length}</b>kuis dikerjakan</div><div><b>${rata}</b>rata-rata nilai</div><div><b>${MAPEL_INFO[terbaik.split("|")[1]].ikon}</b>terkuat: ${MAPEL_INFO[terbaik.split("|")[1]].nama}</div></div>
+    <h3>📚 Per pelajaran</h3>
+    ${kunciGrup.map((g) => { const d = grup[g].slice(-10), a = d[0].n, z = d[d.length - 1].n, sel = z - a;
+      return `<div class="kartu-mapel"><div><b>${namaGrup(g)}</b><br><span class="sub-kecil" style="text-align:left">${grup[g].length}× • rata-rata ${rataGrup(grup[g])}${d.length > 1 ? ` • <span class="${sel >= 0 ? "tren-naik" : "tren-turun"}">${sel >= 0 ? "▲ naik" : "▼ turun"} ${Math.abs(sel)}</span>` : ""}</span></div>
+        <div class="nilai-akhir">${z}</div>${garisNilai(d)}</div>`; }).join("")}
+    <h3>🗓️ Riwayat terakhir</h3>
+    <table class="tabel"><thead><tr><th>Tanggal</th><th>Pelajaran</th><th>Mode</th><th class="angka">Nilai</th></tr></thead><tbody>
+    ${r.slice(-15).reverse().map((e) => `<tr><td>${tglPendek(e.t)}</td><td>${MAPEL_INFO[e.m].nama} • ${KELAS_INFO[e.k].nama}</td><td>${e.mode === "tryout" ? "Tryout" : "Latihan"}</td><td class="angka"><b>${e.n}</b></td></tr>`).join("")}</tbody></table>
+    <p class="catatan-ortu">Rapor ini tersimpan di perangkat ini saja, untuk nama "${esc(nama)}".</p>`;
+  tampilkan("layarRapor");
+}
+const rataGrup = (d) => Math.round(d.reduce((a, e) => a + e.n, 0) / d.length);
+let layarAsalRapor = "layarMulai";
+
+/* ---------- REKAP NILAI DARI PESAN WHATSAPP (tanpa server) ---------- */
+function bacaRekap(teks) {
+  const pola = /saya ([^\n(]+?)(?: \(kelas ([^)\n]+)\))?\.\s*(?:\[[^\]]*\][^:\n]*:\s*)?Nilai (kuis|tryout) ([^\n:]+?): (\d+) \(benar (\d+) dari (\d+)\)/gi;
+  const data = {}; let m, urut = 0;
+  while ((m = pola.exec(teks))) {
+    const k = (m[1].trim() + "|" + m[4].trim()).toLowerCase();
+    const lama = data[k];
+    data[k] = { nama: m[1].trim(), kelas: (m[2] || "").trim(), pelajaran: (m[3].toLowerCase() === "tryout" ? "Tryout " : "") + m[4].trim(), nilai: +m[5], benar: +m[6], dari: +m[7], kali: lama ? lama.kali + 1 : 1, urut: urut++ };
+  }
+  return Object.keys(data).map((k) => data[k]).sort((a, b) => a.nama.localeCompare(b.nama));
+}
+function buatRekap() {
+  const d = bacaRekap($("rekapTeks").value), el = $("hasilRekap");
+  if (!d.length) { el.innerHTML = `<p class="pesan-error">Belum ada pesan nilai yang terbaca. Pastikan yang ditempel adalah pesan "Kirim nilai" dari murid.</p>`; return; }
+  const ns = d.map((x) => x.nilai), rata = Math.round(ns.reduce((a, b) => a + b, 0) / ns.length);
+  el.innerHTML = `<div class="ringkas-rapor"><div><b>${d.length}</b>murid</div><div><b>${rata}</b>rata-rata</div><div><b>${Math.max(...ns)} / ${Math.min(...ns)}</b>tertinggi / terendah</div></div>
+    <table class="tabel"><thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Pelajaran</th><th class="angka">Nilai</th></tr></thead><tbody>
+    ${d.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.nama)}${x.kali > 1 ? ` <span class="sub-kecil">(${x.kali}×, nilai terakhir)</span>` : ""}</td><td>${esc(x.kelas)}</td><td>${esc(x.pelajaran)}</td><td class="angka"><b>${x.nilai}</b></td></tr>`).join("")}</tbody></table>
+    <div class="baris-tombol" style="justify-content:flex-start"><a class="tombol putih" id="unduhRekap" download="rekap-nilai.csv">⬇️ Unduh untuk Excel</a><button class="tombol putih" type="button" onclick="window.print()">🖨️ Cetak</button></div>`;
+  const csv = "No;Nama;Kelas;Pelajaran;Nilai;Benar;Jumlah Soal\n" + d.map((x, i) => [i + 1, x.nama, x.kelas, x.pelajaran, x.nilai, x.benar, x.dari].map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(";")).join("\n");
+  $("unduhRekap").href = "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + csv);
+}
 
 /* ---------- MODE GURU ---------- */
 const PARAM = (() => {
@@ -2121,8 +2360,21 @@ const KUIS_GURU = (() => {
 function pesanNilaiGuru(nilai, skor, total) {
   const g = KUIS_GURU, d = new Date(), jam = String(d.getHours()).padStart(2, "0") + "." + String(d.getMinutes()).padStart(2, "0");
   return `Assalamu'alaikum ${g.nama}, saya ${nama}${g.rombel ? " (kelas " + g.rombel + ")" : ""}.\n` +
-    `Nilai kuis ${namaMapel(pilihanMapel).nama} ${KELAS_INFO[kelasAktif].nama}: ${nilai} (benar ${skor} dari ${total}).\n` +
+    `Nilai ${modeAktif === "tryout" ? "tryout" : "kuis"} ${namaMapel(pilihanMapel).nama} ${KELAS_INFO[kelasAktif].nama}: ${nilai} (benar ${skor} dari ${total}).\n` +
     `Dikerjakan ${tglHariIni()} pukul ${jam}.`;
+}
+function terapkanTautan() {
+  // Tautan dari halaman lain: ?k=5&m=mtk (kelas & pelajaran) atau ?tes=otak
+  if (KUIS_GURU) return terapkanKuisGuru();
+  if (KELAS_INFO[PARAM.k]) {
+    kelasAktif = PARAM.k; jenjangAktif = KELAS_INFO[PARAM.k].jenjang;
+    pilihanMapel = mapelKelas(PARAM.k).concat(["campur"]).indexOf(PARAM.m) >= 0 ? PARAM.m : null;
+    if (PARAM.mode === "tryout" && TRYOUT[jenjangAktif]) modeAktif = "tryout";
+    renderPilihan();
+    if (pilihanMapel) $("infoPilihan").textContent = "✅ Kamu memilih: " + MAPEL_INFO[pilihanMapel].ikon + " " + MAPEL_INFO[pilihanMapel].nama + " • " + KELAS_INFO[kelasAktif].nama;
+  }
+  if (TES[PARAM.tes]) gantiTab("tabDiri");
+  if (PARAM.tab === "guru") gantiTab("tabGuru");
 }
 function terapkanKuisGuru() {
   const g = KUIS_GURU;
@@ -2164,6 +2416,7 @@ function salinLinkGuru() {
 }
 
 /* ---------- MESIN TES ---------- */
+let tesTerkini = null;
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
 /* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
 const LINK_TES = "";
@@ -2234,6 +2487,7 @@ function tampilSoalTes() {
   $("tesNomor").textContent = `${tesRiwayatNo.length + 1}/${total}`;
   $("tesProgress").style.width = (tesRiwayatNo.length / total) * 100 + "%";
   $("tesSoal").textContent = s.t;
+  tesTerkini = s;
   $("tesNama").textContent = s.bagian ? TES[tesAktif].ikon + " " + s.bagian : TES[tesAktif].ikon + " " + TES[tesAktif].nama;
   $("btnTesMundur").style.visibility = tesRiwayatNo.length ? "visible" : "hidden";
   const wadah = $("tesOpsi"); wadah.innerHTML = "";
@@ -2263,7 +2517,7 @@ function selesaiTes() {
   bukaHasil(() => {
     tampilkan("layarHasilTes"); bunyi("selesai");
     if (id !== "mood" && id !== "darah") konfeti(50);
-  }, "promoHasilTes", { bagikan: id === "mood" || id === "kepribadian" ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`) });
+  }, "promoHasilTes", { bagikan: id === "mood" || id === "kepribadian" ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null });
 }
 function gantiTab(id) {
   document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("aktif", b.dataset.tab === id));
@@ -2292,7 +2546,7 @@ $("btnMulai").addEventListener("click", mulai);
 $("namaSiswa").addEventListener("keydown", (e) => { if (e.key === "Enter") mulai(); });
 $("btnLanjut").addEventListener("click", lanjut);
 $("btnUlang").addEventListener("click", mulai);
-$("btnGanti").addEventListener("click", () => { perbaruiInfoMapel(); tampilkan("layarMulai"); });
+$("btnGanti").addEventListener("click", () => { hentikanTimer(); perbaruiInfoMapel(); tampilkan("layarMulai"); });
 $("namaSiswa").addEventListener("input", perbaruiInfoMapel);
 $("btnReset").addEventListener("click", () => {
   const n = $("namaSiswa").value.trim();
@@ -2302,10 +2556,32 @@ $("btnReset").addEventListener("click", () => {
   }
 });
 $("btnBuatLink").addEventListener("click", buatLinkGuru);
+$("btnRekap").addEventListener("click", buatRekap);
+$("btnRapor").addEventListener("click", () => bukaRapor("layarMulai"));
+$("btnRaporHasil").addEventListener("click", () => bukaRapor("layarHasil"));
+$("btnTutupRapor").addEventListener("click", () => tampilkan(layarAsalRapor));
+$("btnCetakRapor").addEventListener("click", () => { try { window.print(); } catch (e) {} });
+if (BISA_BICARA) {
+  $("btnSuara").addEventListener("click", () => { const s = soalAktif[nomor]; if (s) bacakanSoal(s.t, s.opsi.map((o) => o.teks)); });
+  $("btnSuaraTes").addEventListener("click", () => { if (tesTerkini) bacakanSoal(tesTerkini.t, tesTerkini.o.map((o) => o.teks)); });
+  try { speechSynthesis.getVoices(); } catch (e) {}
+} else { $("btnSuara").style.display = "none"; $("btnSuaraTes").style.display = "none"; }
 $("btnSalinLink").addEventListener("click", salinLinkGuru);
 (() => { const g = baca("kuisMI3:guru", null); if (g) { $("guruNama").value = g.n || ""; $("guruWA").value = g.wa || ""; $("guruRombel").value = g.r || ""; } })();
+// Aplikasi (PWA): hanya aktif di https://hadirflow.my.id/kuistes/
+let promptPasang = null;
+const DI_SITUS = location.protocol === "https:" && location.pathname.indexOf("/kuistes") === 0;
+if (DI_SITUS && "serviceWorker" in navigator) { try { navigator.serviceWorker.register("/kuistes/sw.js", { scope: "/kuistes/" }).catch(() => {}); } catch (e) {} }
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); promptPasang = e; $("btnPasang").style.display = "inline-block"; $("infoPasang").textContent = ""; });
+$("btnPasang").addEventListener("click", () => { if (promptPasang) { promptPasang.prompt(); promptPasang = null; $("btnPasang").style.display = "none"; } });
+(() => {
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (window.navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches)) $("infoPasang").textContent = "✅ Sudah terpasang sebagai aplikasi.";
+  else if (ios) $("infoPasang").textContent = "Di iPhone/iPad: buka di Safari, tekan tombol Bagikan (kotak dengan panah ke atas), lalu pilih \"Tambahkan ke Layar Utama\".";
+  else $("infoPasang").textContent = "Di Android: buka di Chrome, tekan menu ⋮, lalu pilih \"Instal aplikasi\" atau \"Tambahkan ke layar utama\".";
+})();
 buatDaftarMapel();
-terapkanKuisGuru();
+terapkanTautan();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>

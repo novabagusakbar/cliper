@@ -1,0 +1,25 @@
+{
+  "name": "Tes Gratis HadirFlow",
+  "short_name": "Tes HadirFlow",
+  "description": "Tes kecerdasan, gaya belajar, kepribadian, dan kuis pelajaran TK–SMA gratis.",
+  "start_url": "/kuistes/?sumber=aplikasi",
+  "scope": "/kuistes/",
+  "display": "standalone",
+  "background_color": "#fff8e7",
+  "theme_color": "#2f9e6e",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/kuistes/ikon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/kuistes/ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

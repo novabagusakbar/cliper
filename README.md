@@ -69,9 +69,22 @@ Skrip `deploy/pasang-di-vps.sh` akan:
 3. Menjalankan `nginx -t`. Jika gagal, semua perubahan otomatis dibatalkan.
 4. Memeriksa apakah kuis sudah tampil, baik langsung dari VPS maupun dari internet (lewat Cloudflare).
 
-Untuk **memperbarui** kuis, jalankan perintah yang sama lagi.
+Setelah dijalankan, **semua file** di `kuistes/` mengikuti GitHub secara otomatis setiap 10 menit (`/usr/local/bin/kuistes-perbarui`). Setiap file dicek sidik jari SHA-256 terhadap `kuistes/daftar-file.txt`; hanya file statis yang disalin.
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
+
+## Fitur belajar
+- **Mode Tryout** (SD 20 soal/30 menit, SMP 30/60, SMA 40/90): tanpa pembahasan sampai selesai, ada hitung mundur, soal yang belum dijawab dihitung salah saat waktu habis.
+- **Soal dibacakan** (🔊) memakai suara bawaan perangkat; otomatis untuk TK dan SD kelas 1–2.
+- **Rapor Perkembangan**: grafik nilai per pelajaran dan riwayat, tersimpan di perangkat per nama anak.
+- **Piagam Prestasi**: gambar piagam untuk nilai ≥ 70, Tes Kecerdasan ≥ 12/20, Gaya Belajar, dan Kelebihanku.
+- **Rekap nilai guru** (tab Guru): tempel pesan "Kirim nilai" dari WhatsApp → tabel rekap + unduh untuk Excel. Tanpa server.
+
+## Halaman Google (SEO) dan aplikasi
+- `build.js` membuat 81 halaman di `kuistes/` (per kelas × pelajaran, plus 3 halaman tes) dan `kuistes/sitemap.xml`.
+  Kirim `https://hadirflow.my.id/kuistes/sitemap.xml` di Google Search Console agar lebih cepat terindeks.
+- Tautan langsung: `?k=5&m=mtk` (kelas & pelajaran), `&mode=tryout`, `?tes=otak`, `?tab=guru`.
+- **Aplikasi (PWA)**: `manifest.json`, `sw.js` (lingkup `/kuistes/` saja), ikon `ikon-192.png` / `ikon-512.png`.
 
 ## Ajakan HadirFlow, berbagi, dan Mode Guru
 - **Kartu HadirFlow** di setiap hasil, ditujukan untuk guru, kepala sekolah, dan pemilik usaha. Link memakai `utm_source=kuistes` (`utm_medium=hasil|guru|header`) supaya kunjungan dari kuis bisa dihitung.
