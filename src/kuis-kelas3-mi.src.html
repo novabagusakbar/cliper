@@ -93,6 +93,17 @@
   .mapel { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .mapel.dipilih { box-shadow: 0 0 0 4px var(--primary), var(--shadow); }
   .mapel.dipilih::after { content: "✔ Dipilih"; display: block; font-weight: 800; color: var(--primary-dark); font-size: 15px; }
+  input[type=tel] { width: 100%; font: inherit; font-size: 20px; padding: 12px 16px; border-radius: 16px; border: 3px solid var(--line); outline: none; background: #fffdf7; }
+  input[type=tel]:focus { border-color: var(--accent); }
+  .setuju { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; margin-top: 14px; cursor: pointer; }
+  .setuju input { width: 22px; height: 22px; flex: none; margin-top: 2px; }
+  .promo-ortu { text-align: left; margin-top: 16px; }
+  .promo-ortu .kotak-promo { background: #eef4ff; border: 3px solid #c9dafc; border-radius: 20px; padding: 16px; margin-top: 12px; }
+  .promo-ortu .kotak-promo.hf { background: #072B6B; border-color: #072B6B; color: #fff; }
+  .promo-ortu .kotak-promo.hf p { color: #dbe6ff; }
+  .promo-ortu a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
+  .tombol.wa { background: #1faa59; box-shadow: 0 5px 0 #168544; }
+  .tombol.hf { background: #ffd23f; color: #072B6B; box-shadow: 0 5px 0 #d9ad00; }
   .pesan-error { color: var(--salah); font-weight: 700; min-height: 1.4em; margin-top: 10px; }
 
   /* Layar kuis */
@@ -223,6 +234,23 @@
     <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
   </section>
 
+  <!-- LAYAR GERBANG: data orang tua sebelum melihat hasil -->
+  <section id="layarGerbang" class="screen">
+    <div class="kartu">
+      <div class="tengah" style="font-size:56px">🎁</div>
+      <h2 class="tengah">Hasil <span id="gerbangAnak"></span> sudah siap!</h2>
+      <p class="sub tengah">Untuk Ayah/Bunda: isi data singkat ini untuk membuka hasilnya.</p>
+      <label class="judul" for="ortuNama" style="margin-top:16px">👤 Nama Ayah/Bunda</label>
+      <input id="ortuNama" type="text" maxlength="40" placeholder="Contoh: Bunda Aisyah" autocomplete="name">
+      <label class="judul" for="ortuWA" style="margin-top:14px">📱 Nomor WhatsApp</label>
+      <input id="ortuWA" type="tel" inputmode="tel" maxlength="18" placeholder="08xxxxxxxxxx" autocomplete="tel">
+      <label class="setuju"><input type="checkbox" id="ortuSetuju"> Saya setuju nomor ini disimpan dan dihubungi oleh tim HadirFlow melalui WhatsApp.</label>
+      <div class="pesan-error" id="gerbangError" role="alert"></div>
+      <div class="tengah"><button class="tombol" id="btnGerbang">Lihat Hasil 🎉</button></div>
+      <p class="catatan-ortu">🔒 Nomor Anda hanya dipakai oleh HadirFlow dan tidak dibagikan ke pihak lain.</p>
+    </div>
+  </section>
+
   <!-- LAYAR TES: PEMBUKA -->
   <section id="layarIntroTes" class="screen">
     <div class="kartu tengah">
@@ -258,6 +286,7 @@
   <!-- LAYAR TES: HASIL -->
   <section id="layarHasilTes" class="screen">
     <div class="kartu" id="isiHasilTes"></div>
+    <div class="promo-ortu tanpa-cetak" id="promoHasilTes"></div>
     <div class="baris-tombol tanpa-cetak">
       <button class="tombol kuning" id="btnCetak">🖨️ Cetak / Simpan PDF</button>
       <button class="tombol putih" id="btnKembaliTes">🌟 Tes Lainnya</button>
@@ -293,6 +322,7 @@
       <p class="sub" id="rincianHasil"></p>
       <p id="pesanHasil" style="font-weight:700"></p>
       <div class="ulasan" id="ulasan"></div>
+      <div class="promo-ortu tanpa-cetak" id="promoHasil"></div>
       <div class="baris-tombol">
         <button class="tombol" id="btnUlang">Ulangi 🔄</button>
         <button class="tombol putih" id="btnGanti">Ganti Pelajaran 📚</button>
@@ -437,6 +467,13 @@ const BANK = {
     ]
   }
 };
+
+/* =========================================================
+   PENGATURAN HADIRFLOW — isi tiga baris ini
+   ========================================================= */
+const URL_SHEET = "";        // URL Web App Google Apps Script (lihat deploy/google-sheet.gs). Kosong = tidak dikirim.
+const NOMOR_WA_ADMIN = "";   // Nomor WhatsApp Anda, format 628xxxxxxxxxx. Kosong = tombol chat disembunyikan.
+const LINK_HADIRFLOW = "https://hadirflow.my.id/?ref=kuistes";
 
 /* Pengaturan */
 const JUMLAH_SOAL = 10;      // jumlah soal per kuis
@@ -1015,9 +1052,11 @@ function selesai() {
       salah.map((c) => `<li>${c.soal}<br><span class="jwb-salah">✗ Jawabanmu: ${c.dipilih}</span><br><span class="jwb-benar">✓ Jawaban benar: ${c.kunci}</span></li>`).join("") +
       `</ol></details>`;
 
-  tampilkan("layarHasil");
-  bunyi("selesai");
-  if (nilai >= 70) konfeti();
+  bukaHasil({ tes: $("infoMapel").textContent.replace(/^\S+\s/, ""), hasil: `nilai ${nilai} (benar ${skor}/${total})` }, () => {
+    tampilkan("layarHasil");
+    bunyi("selesai");
+    if (nilai >= 70) konfeti();
+  }, "promoHasil");
 }
 
 /* =========================================================
@@ -1509,6 +1548,54 @@ TES.kepribadian = {
   }
 };
 
+/* ---------- DATA ORANG TUA, WHATSAPP & HADIRFLOW ---------- */
+const KUNCI_ORTU = "kuisMI3:ortu";
+let hasilTertunda = null;
+function normalWA(s) {
+  let d = String(s || "").replace(/\D/g, "");
+  if (d.indexOf("0") === 0) d = "62" + d.slice(1);
+  else if (d.indexOf("8") === 0) d = "62" + d;
+  return /^628\d{7,11}$/.test(d) ? d : "";
+}
+function kirimKeSheet(info, ortu) {
+  if (!URL_SHEET) return;
+  const data = { ortu: ortu.nama, wa: ortu.wa, anak: nama, tes: info.tes, hasil: info.hasil, perangkat: navigator.userAgent.slice(0, 120), sumber: location.href.split("?")[0] };
+  const qs = Object.keys(data).map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(data[k])).join("&");
+  try { new Image().src = URL_SHEET + (URL_SHEET.indexOf("?") >= 0 ? "&" : "?") + qs + "&t=" + Date.now(); } catch (e) {}
+}
+function isiPromo(el, info, ortu) {
+  const teksWA = `Assalamu'alaikum HadirFlow, saya ${ortu.nama}, orang tua dari ${nama}. Anak saya baru mengerjakan "${info.tes}" di Kuis Pintar Kelas 3 MI dengan hasil: ${info.hasil}. Saya ingin konsultasi.`;
+  el.innerHTML = `
+    ${NOMOR_WA_ADMIN ? `<div class="kotak-promo"><b>👨‍👩‍👧 Untuk ${esc(ortu.nama)}</b>
+      <p>Ingin tahu arti hasil ${esc(nama)} dan cara mendampinginya belajar? Chat kami, gratis.</p>
+      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(teksWA)}">💬 Konsultasi via WhatsApp</a></div>` : ""}
+    <div class="kotak-promo hf"><b>🏢 Kenalan dengan HadirFlow</b>
+      <p>Aplikasi absensi wajah anti titip absen dan penggajian karyawan otomatis untuk bisnis Anda. Hadir tercatat, gaji tepat.</p>
+      <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW}">🚀 Buka HadirFlow</a></div>
+    <p class="sub-kecil">Bukan ${esc(ortu.nama)}? <button type="button" class="link-reset" data-ganti-ortu>Ganti data orang tua</button></p>`;
+  const b = el.querySelector("[data-ganti-ortu]");
+  if (b) b.addEventListener("click", () => { tulis(KUNCI_ORTU, null); el.innerHTML = `<p class="sub-kecil">Data dihapus. Hasil berikutnya akan meminta data orang tua lagi.</p>`; });
+}
+// Dipanggil saat hasil siap. info = { tes, hasil }, tampil = fungsi yang menampilkan layar hasil
+function bukaHasil(info, tampil, wadahPromo) {
+  const lanjut = (ortu) => { kirimKeSheet(info, ortu); tampil(); isiPromo($(wadahPromo), info, ortu); };
+  const ortu = baca(KUNCI_ORTU, null);
+  if (ortu && ortu.wa) return lanjut(ortu);
+  hasilTertunda = lanjut;
+  $("gerbangAnak").textContent = nama;
+  $("gerbangError").textContent = "";
+  tampilkan("layarGerbang");
+}
+function kirimGerbang() {
+  const namaOrtu = $("ortuNama").value.trim(), wa = normalWA($("ortuWA").value);
+  if (namaOrtu.length < 2) { $("gerbangError").textContent = "Tulis nama Ayah/Bunda dulu, ya."; $("ortuNama").focus(); return; }
+  if (!wa) { $("gerbangError").textContent = "Nomor WhatsApp belum benar. Contoh: 081234567890"; $("ortuWA").focus(); return; }
+  if (!$("ortuSetuju").checked) { $("gerbangError").textContent = "Centang persetujuan dulu untuk melihat hasil."; return; }
+  const ortu = { nama: namaOrtu, wa };
+  tulis(KUNCI_ORTU, ortu);
+  if (hasilTertunda) { const f = hasilTertunda; hasilTertunda = null; f(ortu); }
+}
+
 /* ---------- MESIN TES ---------- */
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
 /* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
@@ -1596,8 +1683,11 @@ function selesaiTes() {
   tulis(kunci("tes-" + tesAktif, nama), { ringkas: h.ringkas, tgl: tglHariIni() });
   $("isiHasilTes").innerHTML = `<div class="hasil-tes">${h.html}</div>`;
   if (h.setelah) h.setelah();
-  tampilkan("layarHasilTes"); bunyi("selesai");
-  if (tesAktif !== "mood" && tesAktif !== "darah") konfeti(50);
+  const id = tesAktif;
+  bukaHasil({ tes: t.nama, hasil: h.ringkas }, () => {
+    tampilkan("layarHasilTes"); bunyi("selesai");
+    if (id !== "mood" && id !== "darah") konfeti(50);
+  }, "promoHasilTes");
 }
 function gantiTab(id) {
   document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("aktif", b.dataset.tab === id));
@@ -1610,6 +1700,8 @@ $("btnMulaiTes").addEventListener("click", mulaiTes);
 $("btnBatalTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
 $("btnTesMundur").addEventListener("click", mundurTes);
 $("btnKembaliTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
+$("btnGerbang").addEventListener("click", kirimGerbang);
+$("ortuWA").addEventListener("keydown", (e) => { if (e.key === "Enter") kirimGerbang(); });
 $("btnCetak").addEventListener("click", () => { try { window.print(); } catch (e) {} });
 $("namaSiswa").addEventListener("input", () => { if ($("tabDiri").classList.contains("aktif")) buatDaftarTes(); });
 

@@ -64,6 +64,12 @@ Untuk **memperbarui** kuis, jalankan perintah yang sama lagi.
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
 
+## Data orang tua → Google Sheet + WhatsApp + HadirFlow
+Sebelum melihat hasil (kuis maupun tes), orang tua mengisi **nama, nomor WhatsApp, dan persetujuan dihubungi**. Cukup sekali per perangkat; hasil berikutnya langsung terbuka dan tetap tercatat.
+- Data dikirim ke Google Sheet lewat Google Apps Script (`deploy/google-sheet.gs`).
+- Halaman hasil menampilkan tombol **Konsultasi via WhatsApp** ke nomor admin dan kartu **Buka HadirFlow**.
+- Pengaturan ada di bagian atas skrip `src/kuis-kelas3-mi.src.html`: `URL_SHEET`, `NOMOR_WA_ADMIN`, `LINK_HADIRFLOW`.
+
 ## Cara memasang di Google Sites
 1. Buka file `kuis-kelas3-mi.html`, pilih semua isinya (Ctrl+A), lalu salin (Ctrl+C).
 2. Buka situs Anda di **sites.google.com**.
