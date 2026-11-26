@@ -54,6 +54,22 @@ CRON
     echo "   ✅ Penjaga otomatis dipasang (/etc/cron.d/kuistes): kuis dipasang ulang bila container diperbarui."
   fi
 
+  # Lewat Cloudflare Tunnel, container menerima HTTP biasa, sehingga pengalihan /kuistes -> /kuistes/
+  # ditulis "http://...". absolute_redirect off membuat pengalihan relatif, jadi tetap di https.
+  KONF_REDIRECT="/etc/nginx/conf.d/00-kuistes-redirect.conf"
+  if ! docker exec "$KONTAINER" test -f "$KONF_REDIRECT" 2>/dev/null; then
+    if docker exec "$KONTAINER" sh -c "echo 'absolute_redirect off;' > $KONF_REDIRECT && nginx -t" >/dev/null 2>&1; then
+      docker exec "$KONTAINER" nginx -s reload >/dev/null 2>&1 || true
+      echo "   ✅ Pengalihan /kuistes diperbaiki (tetap https)."
+    else
+      docker exec "$KONTAINER" rm -f "$KONF_REDIRECT" >/dev/null 2>&1 || true
+      echo "   ↪ Pengalihan /kuistes tidak diubah (pengaturan nginx container menolak). Pakai alamat /kuistes/ dengan garis miring."
+    fi
+  fi
+  if [ -f /etc/cron.d/kuistes ] && ! grep -q "00-kuistes-redirect" /etc/cron.d/kuistes; then
+    echo "*/5 * * * * root docker exec $KONTAINER test -f $KONF_REDIRECT 2>/dev/null || { docker exec $KONTAINER sh -c \"echo 'absolute_redirect off;' > $KONF_REDIRECT && nginx -t && nginx -s reload\" || docker exec $KONTAINER rm -f $KONF_REDIRECT; } >/dev/null 2>&1" >> /etc/cron.d/kuistes
+  fi
+
   echo "3) Memeriksa hasil..."
   CIRI="Kuis Pintar Kelas 3 MI"
   ISI_LOKAL="$(docker exec "$KONTAINER" sh -c "wget -qO- http://127.0.0.1/kuistes/ 2>/dev/null || curl -s http://127.0.0.1/kuistes/" 2>/dev/null || true)"
