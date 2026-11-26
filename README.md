@@ -47,13 +47,22 @@ Catatan penting:
 - **Asah Otak tidak memberi angka IQ**, karena angka IQ yang sah hanya dari tes terstandar oleh psikolog.
 - Hasil terakhir setiap tes tersimpan per nama, dan bisa dicetak atau disimpan sebagai PDF.
 
-## Memasang di website sendiri (hadirflow.my.id/kuistes)
-1. Buka File Manager hosting (cPanel/hPanel), masuk ke folder website (biasanya `public_html`).
-2. Buat folder baru bernama `kuistes`.
-3. Unggah file `kuistes/index.html` dari repo ini ke dalam folder itu.
-4. Buka https://hadirflow.my.id/kuistes untuk mencoba.
+## Memasang di website sendiri (hadirflow.my.id/kuistes, VPS Sumopod + nginx)
+Login SSH ke VPS, lalu jalankan **satu perintah** ini:
 
-Setelah itu, di Google Sites cukup pakai **Sisipkan → Sematkan → Menurut URL** dengan alamat di atas, atau buat tombol yang menautkan ke sana.
+```bash
+curl -fsSL https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/deploy/pasang-di-vps.sh | sudo bash
+```
+
+Skrip `deploy/pasang-di-vps.sh` akan:
+1. Mengunduh kuis terbaru ke `/var/www/kuistes/index.html`.
+2. Menambahkan `location /kuistes/` ke pengaturan nginx untuk `hadirflow.my.id`. Pengaturan lama dicadangkan dulu di `/root/kuistes-cadangan/`.
+3. Menjalankan `nginx -t`. Jika gagal, semua perubahan otomatis dibatalkan.
+4. Memeriksa apakah kuis sudah tampil, baik langsung dari VPS maupun dari internet (lewat Cloudflare).
+
+Untuk **memperbarui** kuis, jalankan perintah yang sama lagi.
+
+Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
 
 ## Cara memasang di Google Sites
 1. Buka file `kuis-kelas3-mi.html`, pilih semua isinya (Ctrl+A), lalu salin (Ctrl+C).
