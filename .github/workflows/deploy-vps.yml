@@ -1,0 +1,55 @@
+# Deploy otomatis kuis ke https://hadirflow.my.id/kuistes setiap ada perubahan.
+# Butuh 3 rahasia di GitHub (Settings → Secrets and variables → Actions):
+#   VPS_HOST = alamat IP VPS, VPS_USER = nama user SSH, VPS_PASSWORD = password user tersebut
+# Yang dijalankan di VPS hanya skrip deploy/pasang-di-vps.sh dari commit ini.
+name: Deploy kuis ke VPS
+
+on:
+  push:
+    branches: [claude/kuis-interaktif-google-sites-1311nm]
+    paths: ["kuistes/**", "deploy/pasang-di-vps.sh", ".github/workflows/deploy-vps.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Cek rahasia sudah diisi
+        id: cek
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_USER" ] || [ -z "$VPS_PASSWORD" ]; then
+            echo "::notice::Deploy dilewati: rahasia VPS_HOST, VPS_USER, dan VPS_PASSWORD belum diisi di Settings → Secrets and variables → Actions."
+            echo "ada=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ada=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pasang dan perbarui kuis di VPS
+        if: steps.cek.outputs.ada == 'true'
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          SKRIP: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/deploy/pasang-di-vps.sh
+          SUDO_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          envs: SKRIP,SUDO_PASSWORD
+          command_timeout: 10m
+          script: |
+            set -e
+            curl -fsSL "$SKRIP" -o /tmp/pasang-kuistes.sh
+            echo "$SUDO_PASSWORD" | sudo -S -p '' bash /tmp/pasang-kuistes.sh
+            rm -f /tmp/pasang-kuistes.sh

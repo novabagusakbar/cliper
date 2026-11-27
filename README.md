@@ -56,6 +56,12 @@ Catatan penting:
 - **Asah Otak tidak memberi angka IQ**, karena angka IQ yang sah hanya dari tes terstandar oleh psikolog.
 - Hasil terakhir setiap tes tersimpan per nama, dan bisa dicetak atau disimpan sebagai PDF.
 
+## Deploy otomatis lewat GitHub Actions (tanpa Terminal)
+`.github/workflows/deploy-vps.yml` menjalankan `deploy/pasang-di-vps.sh` di VPS setiap ada perubahan di `kuistes/` atau skrip deploy.
+Sekali saja, isi 3 rahasia di GitHub → repo ini → **Settings → Secrets and variables → Actions → New repository secret**:
+`VPS_HOST` (IP VPS), `VPS_USER` (mis. `ubuntu`), `VPS_PASSWORD` (password user itu). Tanpa rahasia ini, deploy dilewati.
+Bisa juga dijalankan manual dari tab **Actions → Deploy kuis ke VPS → Run workflow**.
+
 ## Memasang di website sendiri (hadirflow.my.id/kuistes, VPS Sumopod + nginx)
 Login SSH ke VPS, lalu jalankan **satu perintah** ini:
 
