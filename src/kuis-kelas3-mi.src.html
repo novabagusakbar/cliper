@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-title" content="Tes HadirFlow">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,800;1,700&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #fff8e7;
@@ -149,7 +149,11 @@
   .label-nilai { position: absolute; transform: translate(-110%, -130%); font-size: 13px; font-weight: 800; color: var(--ink); }
   .kartu-mapel .nilai-akhir { font-size: 32px; font-weight: 800; color: var(--primary-dark); text-align: right; line-height: 1; }
   .tren-naik { color: var(--primary-dark); } .tren-turun { color: #b4232c; }
-  .kotak-piagam img { width: 100%; max-width: 300px; display: block; margin: 10px auto; border-radius: 12px; border: 3px solid var(--line); }
+  .kotak-promo.kotak-piagam { background: linear-gradient(180deg, #f3f8f5, #eaf3ee); border-color: #cfe5da; }
+  .kotak-piagam > b { font-family: "Playfair Display", Georgia, serif; font-size: 22px; color: #0b5a43; }
+  .kotak-piagam .tombol-piagam { display: block; text-align: center; max-width: 380px; margin: 4px auto 0; }
+  .tombol.tombol-piagam { background: linear-gradient(180deg, #0f7a5a, #0b5a43); color: #fff; border: 3px solid #d9b45a; box-shadow: 0 5px 0 #08402f; text-decoration: none; }
+  .kotak-piagam img { width: 100%; max-width: 380px; display: block; margin: 12px auto; border-radius: 10px; box-shadow: 0 6px 22px rgba(60,40,0,.18); }
   .tautan-seo { margin-top: 16px; font-size: 15px; }
   .tautan-seo .judul { margin: 10px 0 4px; }
   .tautan-seo p { margin: 4px 0; }
@@ -2612,7 +2616,7 @@ function isiPromo(el, opsi) {
   if (opsi.piagam) html = `<div class="kotak-promo kotak-piagam"><b>🏅 Piagam untuk ${esc(nama)}</b>
       <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
       <img alt="Piagam ${esc(nama)}" data-piagam>
-      <a class="tombol kuning" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>` + html;
+      <a class="tombol tombol-piagam" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>` + html;
   const vid = opsi.video ? VIDEO[opsi.video] || [] : [];
   if (vid.length) {
     const [k, m] = opsi.video.split("|");
@@ -2627,7 +2631,10 @@ function isiPromo(el, opsi) {
     const id = b.getAttribute("data-video");
     b.outerHTML = `<div class="video-main"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0" title="Video belajar" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
   }));
-  if (opsi.piagam) { try { const url = gambarPiagam(opsi.piagam); el.querySelector("[data-piagam]").src = url; el.querySelector("[data-unduh-piagam]").href = url; } catch (e) {} }
+  if (opsi.piagam) {
+    const pasang = () => { try { const url = gambarPiagam(opsi.piagam), img = el.querySelector("[data-piagam]"), a = el.querySelector("[data-unduh-piagam]"); if (img) img.src = url; if (a) a.href = url; } catch (e) {} };
+    pasang(); muatHurufPiagam(pasang);
+  }
   const b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });
 }
@@ -2636,23 +2643,88 @@ function bukaHasil(tampil, wadahPromo, opsi) { tampil(); isiPromo($(wadahPromo),
 /* ---------- PIAGAM PRESTASI (gambar 1080 × 1350) ---------- */
 function gambarPiagam(alasan) {
   const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
-  const c = cv.getContext("2d"), F = 'Nunito, sans-serif', emas = "#c9961a", hijau = "#227a54";
-  c.fillStyle = "#fff8e7"; c.fillRect(0, 0, W, H);
-  c.strokeStyle = emas; c.lineWidth = 14; c.strokeRect(40, 40, W - 80, H - 80);
-  c.lineWidth = 4; c.strokeRect(70, 70, W - 140, H - 140);
-  c.textAlign = "center"; c.font = "150px " + F; c.fillText("🏅", W / 2, 290);
-  c.fillStyle = hijau; c.font = "800 92px " + F; c.fillText("PIAGAM PRESTASI", W / 2, 420);
-  c.fillStyle = "#6b6475"; c.font = "600 40px " + F; c.fillText("diberikan kepada", W / 2, 510);
-  c.fillStyle = "#2d2a32"; let ukuran = 110; c.font = `800 ${ukuran}px ${F}`;
-  while (c.measureText(nama).width > W - 200 && ukuran > 50) { ukuran -= 6; c.font = `800 ${ukuran}px ${F}`; }
-  c.fillText(nama, W / 2, 650);
-  c.fillStyle = emas; c.fillRect(W / 2 - 260, 690, 520, 6);
-  c.fillStyle = "#2d2a32"; c.font = "600 46px " + F;
-  const baris = bungkusTeks(c, alasan, W / 2, 790, W - 240, 62);
-  c.fillStyle = "#6b6475"; c.font = "600 38px " + F; c.fillText(tglHariIni(), W / 2, 790 + baris * 62 + 50);
-  c.fillStyle = hijau; c.font = "800 44px " + F; c.fillText("Terus belajar, kamu hebat! 🌟", W / 2, 1110);
-  kakiLogo(c, W, 1225, "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 36px " + F, "#072B6B");
+  const c = cv.getContext("2d"), F = "Nunito, sans-serif", SERIF = '"Playfair Display", Georgia, "Times New Roman", serif';
+  const hijauTua = "#0b5a43", hijau = "#0f7a5a", emasTua = "#a8801f", krem = "#fbf5e8";
+  const emasGrad = (x0, y0, x1, y1) => { const g = c.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, "#b8892a"); g.addColorStop(0.35, "#f3d98b"); g.addColorStop(0.65, "#c9962e"); g.addColorStop(1, "#f0d27a"); return g; };
+  // latar & bingkai emas
+  c.fillStyle = "#efe4cc"; c.fillRect(0, 0, W, H);
+  const bg = c.createRadialGradient(W / 2, H * 0.45, 100, W / 2, H / 2, 800); bg.addColorStop(0, "#fffdf7"); bg.addColorStop(1, "#f6ecd6");
+  c.fillStyle = bg; c.fillRect(28, 28, W - 56, H - 56);
+  c.strokeStyle = emasGrad(0, 0, W, H); c.lineWidth = 22; c.strokeRect(39, 39, W - 78, H - 78);
+  c.strokeStyle = "#d7b45c"; c.lineWidth = 3; c.strokeRect(70, 70, W - 140, H - 140);
+  // lengkung hijau di pojok kiri atas & kanan bawah
+  c.save(); c.beginPath(); c.rect(50, 50, W - 100, H - 100); c.clip();
+  const lengkung = (sx, sy, k) => {
+    c.save(); c.translate(sx ? W : 0, sy ? H : 0); c.scale((sx ? -1 : 1) * k, (sy ? -1 : 1) * k);
+    const g = c.createLinearGradient(0, 0, 380, 380); g.addColorStop(0, hijauTua); g.addColorStop(1, "#14a37a");
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(420, 0); c.bezierCurveTo(300, 40, 120, 120, 0, 380); c.closePath(); c.fillStyle = g; c.fill();
+    c.beginPath(); c.moveTo(460, 0); c.bezierCurveTo(320, 60, 140, 150, 0, 430); c.strokeStyle = emasGrad(0, 0, 460, 430); c.lineWidth = 6; c.stroke();
+    c.beginPath(); c.moveTo(520, 0); c.bezierCurveTo(360, 80, 160, 180, 0, 490); c.strokeStyle = "rgba(201,150,46,.45)"; c.lineWidth = 2.5; c.stroke();
+    c.restore();
+  };
+  lengkung(false, false, 1); lengkung(true, true, 0.62);
+  c.restore();
+  // hiasan emas di pojok kanan atas & kiri bawah
+  const hias = (x, y, sx, sy) => {
+    c.save(); c.translate(x, y); c.scale(sx, sy); c.strokeStyle = "#c9962e"; c.lineWidth = 3;
+    for (let i = 0; i < 3; i++) { c.beginPath(); c.moveTo(0, 20 + i * 16); c.quadraticCurveTo(10 + i * 10, 10 + i * 6, 20 + i * 16, 0); c.stroke(); }
+    c.beginPath(); c.arc(46, 46, 8, 0, Math.PI * 2); c.stroke(); c.beginPath(); c.moveTo(0, 90); c.quadraticCurveTo(40, 40, 90, 0); c.stroke();
+    c.restore();
+  };
+  hias(W - 90, 90, -1, 1); hias(90, H - 90, 0.8, -0.8);
+  // medali dengan pita
+  const mx = W / 2, my = 215;
+  [[-1, "#1e4fa8"], [1, "#c8283c"]].forEach(([arah, warna]) => {
+    c.save(); c.beginPath(); c.moveTo(mx + arah * 8, my - 18); c.lineTo(mx + arah * 72, my - 120); c.lineTo(mx + arah * 30, my - 120); c.lineTo(mx - arah * 26, my - 18); c.closePath();
+    c.fillStyle = warna; c.fill(); c.clip(); c.strokeStyle = "#fff"; c.lineWidth = 9; c.beginPath(); c.moveTo(mx + arah * 2, my - 10); c.lineTo(mx + arah * 52, my - 125); c.stroke(); c.restore();
+  });
+  const gm = c.createRadialGradient(mx - 14, my + 10, 6, mx, my + 26, 62); gm.addColorStop(0, "#ffe9a3"); gm.addColorStop(0.6, "#e0ad3a"); gm.addColorStop(1, "#a8761a");
+  c.beginPath(); c.arc(mx, my + 26, 56, 0, Math.PI * 2); c.fillStyle = gm; c.fill(); c.lineWidth = 5; c.strokeStyle = "#9a6b14"; c.stroke();
+  c.beginPath(); c.arc(mx, my + 26, 40, 0, Math.PI * 2); c.lineWidth = 3; c.strokeStyle = "rgba(154,107,20,.7)"; c.stroke();
+  c.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 13 : 30, a = -Math.PI / 2 + (i * Math.PI) / 5; c[i ? "lineTo" : "moveTo"](mx + r * Math.cos(a), my + 26 + r * Math.sin(a)); } c.closePath(); c.fillStyle = "#9a6b14"; c.fill();
+  // judul
+  c.textAlign = "center"; c.fillStyle = hijauTua; let uj = 92; c.font = `800 ${uj}px ${SERIF}`;
+  while (c.measureText("PIAGAM PRESTASI").width > W - 230 && uj > 60) { uj -= 4; c.font = `800 ${uj}px ${SERIF}`; }
+  c.fillText("PIAGAM PRESTASI", W / 2, 430);
+  const garisPendek = (y, teks, font, warna) => { c.font = font; const lw = c.measureText(teks).width; c.fillStyle = warna; c.fillText(teks, W / 2, y);
+    c.strokeStyle = "#c9a04a"; c.lineWidth = 3; c.beginPath(); c.moveTo(W / 2 - lw / 2 - 30, y - 12); c.lineTo(W / 2 - lw / 2 - 130, y - 12); c.moveTo(W / 2 + lw / 2 + 30, y - 12); c.lineTo(W / 2 + lw / 2 + 130, y - 12); c.stroke(); };
+  garisPendek(505, "diberikan kepada", "600 36px " + F, emasTua);
+  // ranting daun (laurel) kiri & kanan nama
+  const laurel = (sx) => {
+    c.save(); c.translate(W / 2 + sx * 360, 640); c.scale(sx, 1); c.strokeStyle = "rgba(201,160,74,.75)"; c.fillStyle = "rgba(214,178,96,.55)"; c.lineWidth = 4;
+    c.beginPath(); c.arc(60, -10, 120, Math.PI * 0.62, Math.PI * 1.32); c.stroke();
+    for (let i = 0; i < 7; i++) { const a = Math.PI * (0.66 + i * 0.1), x = 60 + 120 * Math.cos(a), y = -10 + 120 * Math.sin(a);
+      c.save(); c.translate(x, y); c.rotate(a + Math.PI * 0.85); c.beginPath(); c.ellipse(0, -16, 9, 22, 0.3, 0, Math.PI * 2); c.fill(); c.restore(); }
+    c.restore();
+  };
+  laurel(-1); laurel(1);
+  // nama
+  c.fillStyle = "#1f2330"; let un = 112; c.font = `italic 700 ${un}px ${SERIF}`;
+  while (c.measureText(nama).width > 640 && un > 54) { un -= 4; c.font = `italic 700 ${un}px ${SERIF}`; }
+  c.fillText(nama, W / 2, 655);
+  c.strokeStyle = emasGrad(W / 2 - 300, 0, W / 2 + 300, 0); c.lineWidth = 4; c.beginPath(); c.moveTo(W / 2 - 290, 705); c.lineTo(W / 2 + 290, 705); c.stroke();
+  c.fillStyle = "#c9962e"; c.beginPath(); c.moveTo(W / 2, 693); c.lineTo(W / 2 + 12, 705); c.lineTo(W / 2, 717); c.lineTo(W / 2 - 12, 705); c.closePath(); c.fill();
+  // alasan & tanggal
+  c.fillStyle = "#2b2b33"; c.font = "600 40px " + F;
+  const baris = bungkusTeks(c, alasan, W / 2, 790, W - 300, 56);
+  const yTgl = 790 + baris * 56 + 50;
+  garisPendek(yTgl, tglHariIni(), "600 34px " + F, "#5d5866");
+  // pita hijau
+  const yPita = Math.max(yTgl + 110, 1085), teksPita = "Terus belajar, kamu hebat! ✨";
+  c.font = "800 40px " + F; const pw = c.measureText(teksPita).width + 110, px = W / 2 - pw / 2;
+  kotakBulat(c, px - 6, yPita - 58, pw + 12, 92, 46); c.fillStyle = emasGrad(px, 0, px + pw, 0); c.fill();
+  const gp = c.createLinearGradient(0, yPita - 52, 0, yPita + 28); gp.addColorStop(0, hijau); gp.addColorStop(1, hijauTua);
+  kotakBulat(c, px, yPita - 52, pw, 80, 40); c.fillStyle = gp; c.fill();
+  c.fillStyle = "#fff"; c.fillText(teksPita, W / 2, yPita + 2);
+  kakiLogo(c, W, Math.min(H - 150, yPita + 115), "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 29px " + F, "#072B6B");
   return cv.toDataURL("image/png");
+}
+// Huruf piagam dimuat dulu; piagam digambar ulang begitu hurufnya siap
+function muatHurufPiagam(lalu) {
+  try {
+    if (!document.fonts || !document.fonts.load) return;
+    Promise.all(['800 40px "Playfair Display"', 'italic 700 40px "Playfair Display"', "800 40px Nunito", "600 40px Nunito"].map((f) => document.fonts.load(f))).then(lalu, () => {});
+  } catch (e) {}
 }
 
 /* ---------- SOAL DIBACAKAN (suara bawaan perangkat) ---------- */

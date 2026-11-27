@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-title" content="Tes HadirFlow">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,800;1,700&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #fff8e7;
@@ -149,7 +149,11 @@
   .label-nilai { position: absolute; transform: translate(-110%, -130%); font-size: 13px; font-weight: 800; color: var(--ink); }
   .kartu-mapel .nilai-akhir { font-size: 32px; font-weight: 800; color: var(--primary-dark); text-align: right; line-height: 1; }
   .tren-naik { color: var(--primary-dark); } .tren-turun { color: #b4232c; }
-  .kotak-piagam img { width: 100%; max-width: 300px; display: block; margin: 10px auto; border-radius: 12px; border: 3px solid var(--line); }
+  .kotak-promo.kotak-piagam { background: linear-gradient(180deg, #f3f8f5, #eaf3ee); border-color: #cfe5da; }
+  .kotak-piagam > b { font-family: "Playfair Display", Georgia, serif; font-size: 22px; color: #0b5a43; }
+  .kotak-piagam .tombol-piagam { display: block; text-align: center; max-width: 380px; margin: 4px auto 0; }
+  .tombol.tombol-piagam { background: linear-gradient(180deg, #0f7a5a, #0b5a43); color: #fff; border: 3px solid #d9b45a; box-shadow: 0 5px 0 #08402f; text-decoration: none; }
+  .kotak-piagam img { width: 100%; max-width: 380px; display: block; margin: 12px auto; border-radius: 10px; box-shadow: 0 6px 22px rgba(60,40,0,.18); }
   .tautan-seo { margin-top: 16px; font-size: 15px; }
   .tautan-seo .judul { margin: 10px 0 4px; }
   .tautan-seo p { margin: 4px 0; }
@@ -5365,7 +5369,7 @@ function isiPromo(el, opsi) {
     var teks = opsi.bagikan + "\n\nCoba gratis juga di sini 👉 " + URL_KUIS;
     html += "<div class=\"kotak-promo bagikan\"><b>\uD83D\uDCF2 Bagikan hasilnya</b>\n      <p>Ajak teman, saudara, dan grup sekolah mencoba tes gratis ini.</p>\n      <div class=\"baris-tombol\" style=\"justify-content:flex-start;margin-top:6px\">\n        <a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/?text=".concat(encodeURIComponent(teks), "\">\uD83D\uDCAC Bagikan ke WhatsApp</a>\n        ").concat(navigator.share ? "<button type=\"button\" class=\"tombol putih\" data-bagikan>\uD83D\uDCE4 Bagikan lainnya</button>" : "", "\n      </div></div>");
   }
-  if (opsi.piagam) html = "<div class=\"kotak-promo kotak-piagam\"><b>\uD83C\uDFC5 Piagam untuk ".concat(esc(nama), "</b>\n      <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>\n      <img alt=\"Piagam ").concat(esc(nama), "\" data-piagam>\n      <a class=\"tombol kuning\" data-unduh-piagam download=\"piagam-").concat(esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase(), ".png\">\uD83D\uDCBE Simpan piagam</a></div>") + html;
+  if (opsi.piagam) html = "<div class=\"kotak-promo kotak-piagam\"><b>\uD83C\uDFC5 Piagam untuk ".concat(esc(nama), "</b>\n      <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>\n      <img alt=\"Piagam ").concat(esc(nama), "\" data-piagam>\n      <a class=\"tombol tombol-piagam\" data-unduh-piagam download=\"piagam-").concat(esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase(), ".png\">\uD83D\uDCBE Simpan piagam</a></div>") + html;
   var vid = opsi.video ? VIDEO[opsi.video] || [] : [];
   if (vid.length) {
     var _opsi$video$split = opsi.video.split("|"),
@@ -5385,11 +5389,17 @@ function isiPromo(el, opsi) {
     });
   });
   if (opsi.piagam) {
-    try {
-      var url = gambarPiagam(opsi.piagam);
-      el.querySelector("[data-piagam]").src = url;
-      el.querySelector("[data-unduh-piagam]").href = url;
-    } catch (e) {}
+    var pasang = function pasang() {
+      try {
+        var url = gambarPiagam(opsi.piagam),
+          img = el.querySelector("[data-piagam]"),
+          a = el.querySelector("[data-unduh-piagam]");
+        if (img) img.src = url;
+        if (a) a.href = url;
+      } catch (e) {}
+    };
+    pasang();
+    muatHurufPiagam(pasang);
   }
   var b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", function () {
@@ -5415,46 +5425,253 @@ function gambarPiagam(alasan) {
   cv.width = W;
   cv.height = H;
   var c = cv.getContext("2d"),
-    F = 'Nunito, sans-serif',
-    emas = "#c9961a",
-    hijau = "#227a54";
-  c.fillStyle = "#fff8e7";
+    F = "Nunito, sans-serif",
+    SERIF = '"Playfair Display", Georgia, "Times New Roman", serif';
+  var hijauTua = "#0b5a43",
+    hijau = "#0f7a5a",
+    emasTua = "#a8801f",
+    krem = "#fbf5e8";
+  var emasGrad = function emasGrad(x0, y0, x1, y1) {
+    var g = c.createLinearGradient(x0, y0, x1, y1);
+    g.addColorStop(0, "#b8892a");
+    g.addColorStop(0.35, "#f3d98b");
+    g.addColorStop(0.65, "#c9962e");
+    g.addColorStop(1, "#f0d27a");
+    return g;
+  };
+  // latar & bingkai emas
+  c.fillStyle = "#efe4cc";
   c.fillRect(0, 0, W, H);
-  c.strokeStyle = emas;
-  c.lineWidth = 14;
-  c.strokeRect(40, 40, W - 80, H - 80);
-  c.lineWidth = 4;
+  var bg = c.createRadialGradient(W / 2, H * 0.45, 100, W / 2, H / 2, 800);
+  bg.addColorStop(0, "#fffdf7");
+  bg.addColorStop(1, "#f6ecd6");
+  c.fillStyle = bg;
+  c.fillRect(28, 28, W - 56, H - 56);
+  c.strokeStyle = emasGrad(0, 0, W, H);
+  c.lineWidth = 22;
+  c.strokeRect(39, 39, W - 78, H - 78);
+  c.strokeStyle = "#d7b45c";
+  c.lineWidth = 3;
   c.strokeRect(70, 70, W - 140, H - 140);
-  c.textAlign = "center";
-  c.font = "150px " + F;
-  c.fillText("🏅", W / 2, 290);
-  c.fillStyle = hijau;
-  c.font = "800 92px " + F;
-  c.fillText("PIAGAM PRESTASI", W / 2, 420);
-  c.fillStyle = "#6b6475";
-  c.font = "600 40px " + F;
-  c.fillText("diberikan kepada", W / 2, 510);
-  c.fillStyle = "#2d2a32";
-  var ukuran = 110;
-  c.font = "800 ".concat(ukuran, "px ").concat(F);
-  while (c.measureText(nama).width > W - 200 && ukuran > 50) {
-    ukuran -= 6;
-    c.font = "800 ".concat(ukuran, "px ").concat(F);
+  // lengkung hijau di pojok kiri atas & kanan bawah
+  c.save();
+  c.beginPath();
+  c.rect(50, 50, W - 100, H - 100);
+  c.clip();
+  var lengkung = function lengkung(sx, sy, k) {
+    c.save();
+    c.translate(sx ? W : 0, sy ? H : 0);
+    c.scale((sx ? -1 : 1) * k, (sy ? -1 : 1) * k);
+    var g = c.createLinearGradient(0, 0, 380, 380);
+    g.addColorStop(0, hijauTua);
+    g.addColorStop(1, "#14a37a");
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(420, 0);
+    c.bezierCurveTo(300, 40, 120, 120, 0, 380);
+    c.closePath();
+    c.fillStyle = g;
+    c.fill();
+    c.beginPath();
+    c.moveTo(460, 0);
+    c.bezierCurveTo(320, 60, 140, 150, 0, 430);
+    c.strokeStyle = emasGrad(0, 0, 460, 430);
+    c.lineWidth = 6;
+    c.stroke();
+    c.beginPath();
+    c.moveTo(520, 0);
+    c.bezierCurveTo(360, 80, 160, 180, 0, 490);
+    c.strokeStyle = "rgba(201,150,46,.45)";
+    c.lineWidth = 2.5;
+    c.stroke();
+    c.restore();
+  };
+  lengkung(false, false, 1);
+  lengkung(true, true, 0.62);
+  c.restore();
+  // hiasan emas di pojok kanan atas & kiri bawah
+  var hias = function hias(x, y, sx, sy) {
+    c.save();
+    c.translate(x, y);
+    c.scale(sx, sy);
+    c.strokeStyle = "#c9962e";
+    c.lineWidth = 3;
+    for (var i = 0; i < 3; i++) {
+      c.beginPath();
+      c.moveTo(0, 20 + i * 16);
+      c.quadraticCurveTo(10 + i * 10, 10 + i * 6, 20 + i * 16, 0);
+      c.stroke();
+    }
+    c.beginPath();
+    c.arc(46, 46, 8, 0, Math.PI * 2);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(0, 90);
+    c.quadraticCurveTo(40, 40, 90, 0);
+    c.stroke();
+    c.restore();
+  };
+  hias(W - 90, 90, -1, 1);
+  hias(90, H - 90, 0.8, -0.8);
+  // medali dengan pita
+  var mx = W / 2,
+    my = 215;
+  [[-1, "#1e4fa8"], [1, "#c8283c"]].forEach(function (_ref22) {
+    var _ref23 = _slicedToArray(_ref22, 2),
+      arah = _ref23[0],
+      warna = _ref23[1];
+    c.save();
+    c.beginPath();
+    c.moveTo(mx + arah * 8, my - 18);
+    c.lineTo(mx + arah * 72, my - 120);
+    c.lineTo(mx + arah * 30, my - 120);
+    c.lineTo(mx - arah * 26, my - 18);
+    c.closePath();
+    c.fillStyle = warna;
+    c.fill();
+    c.clip();
+    c.strokeStyle = "#fff";
+    c.lineWidth = 9;
+    c.beginPath();
+    c.moveTo(mx + arah * 2, my - 10);
+    c.lineTo(mx + arah * 52, my - 125);
+    c.stroke();
+    c.restore();
+  });
+  var gm = c.createRadialGradient(mx - 14, my + 10, 6, mx, my + 26, 62);
+  gm.addColorStop(0, "#ffe9a3");
+  gm.addColorStop(0.6, "#e0ad3a");
+  gm.addColorStop(1, "#a8761a");
+  c.beginPath();
+  c.arc(mx, my + 26, 56, 0, Math.PI * 2);
+  c.fillStyle = gm;
+  c.fill();
+  c.lineWidth = 5;
+  c.strokeStyle = "#9a6b14";
+  c.stroke();
+  c.beginPath();
+  c.arc(mx, my + 26, 40, 0, Math.PI * 2);
+  c.lineWidth = 3;
+  c.strokeStyle = "rgba(154,107,20,.7)";
+  c.stroke();
+  c.beginPath();
+  for (var i = 0; i < 10; i++) {
+    var r = i % 2 ? 13 : 30,
+      a = -Math.PI / 2 + i * Math.PI / 5;
+    c[i ? "lineTo" : "moveTo"](mx + r * Math.cos(a), my + 26 + r * Math.sin(a));
   }
-  c.fillText(nama, W / 2, 650);
-  c.fillStyle = emas;
-  c.fillRect(W / 2 - 260, 690, 520, 6);
-  c.fillStyle = "#2d2a32";
-  c.font = "600 46px " + F;
-  var baris = bungkusTeks(c, alasan, W / 2, 790, W - 240, 62);
-  c.fillStyle = "#6b6475";
-  c.font = "600 38px " + F;
-  c.fillText(tglHariIni(), W / 2, 790 + baris * 62 + 50);
-  c.fillStyle = hijau;
-  c.font = "800 44px " + F;
-  c.fillText("Terus belajar, kamu hebat! 🌟", W / 2, 1110);
-  kakiLogo(c, W, 1225, "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 36px " + F, "#072B6B");
+  c.closePath();
+  c.fillStyle = "#9a6b14";
+  c.fill();
+  // judul
+  c.textAlign = "center";
+  c.fillStyle = hijauTua;
+  var uj = 92;
+  c.font = "800 ".concat(uj, "px ").concat(SERIF);
+  while (c.measureText("PIAGAM PRESTASI").width > W - 230 && uj > 60) {
+    uj -= 4;
+    c.font = "800 ".concat(uj, "px ").concat(SERIF);
+  }
+  c.fillText("PIAGAM PRESTASI", W / 2, 430);
+  var garisPendek = function garisPendek(y, teks, font, warna) {
+    c.font = font;
+    var lw = c.measureText(teks).width;
+    c.fillStyle = warna;
+    c.fillText(teks, W / 2, y);
+    c.strokeStyle = "#c9a04a";
+    c.lineWidth = 3;
+    c.beginPath();
+    c.moveTo(W / 2 - lw / 2 - 30, y - 12);
+    c.lineTo(W / 2 - lw / 2 - 130, y - 12);
+    c.moveTo(W / 2 + lw / 2 + 30, y - 12);
+    c.lineTo(W / 2 + lw / 2 + 130, y - 12);
+    c.stroke();
+  };
+  garisPendek(505, "diberikan kepada", "600 36px " + F, emasTua);
+  // ranting daun (laurel) kiri & kanan nama
+  var laurel = function laurel(sx) {
+    c.save();
+    c.translate(W / 2 + sx * 360, 640);
+    c.scale(sx, 1);
+    c.strokeStyle = "rgba(201,160,74,.75)";
+    c.fillStyle = "rgba(214,178,96,.55)";
+    c.lineWidth = 4;
+    c.beginPath();
+    c.arc(60, -10, 120, Math.PI * 0.62, Math.PI * 1.32);
+    c.stroke();
+    for (var _i = 0; _i < 7; _i++) {
+      var _a = Math.PI * (0.66 + _i * 0.1),
+        x = 60 + 120 * Math.cos(_a),
+        y = -10 + 120 * Math.sin(_a);
+      c.save();
+      c.translate(x, y);
+      c.rotate(_a + Math.PI * 0.85);
+      c.beginPath();
+      c.ellipse(0, -16, 9, 22, 0.3, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+    }
+    c.restore();
+  };
+  laurel(-1);
+  laurel(1);
+  // nama
+  c.fillStyle = "#1f2330";
+  var un = 112;
+  c.font = "italic 700 ".concat(un, "px ").concat(SERIF);
+  while (c.measureText(nama).width > 640 && un > 54) {
+    un -= 4;
+    c.font = "italic 700 ".concat(un, "px ").concat(SERIF);
+  }
+  c.fillText(nama, W / 2, 655);
+  c.strokeStyle = emasGrad(W / 2 - 300, 0, W / 2 + 300, 0);
+  c.lineWidth = 4;
+  c.beginPath();
+  c.moveTo(W / 2 - 290, 705);
+  c.lineTo(W / 2 + 290, 705);
+  c.stroke();
+  c.fillStyle = "#c9962e";
+  c.beginPath();
+  c.moveTo(W / 2, 693);
+  c.lineTo(W / 2 + 12, 705);
+  c.lineTo(W / 2, 717);
+  c.lineTo(W / 2 - 12, 705);
+  c.closePath();
+  c.fill();
+  // alasan & tanggal
+  c.fillStyle = "#2b2b33";
+  c.font = "600 40px " + F;
+  var baris = bungkusTeks(c, alasan, W / 2, 790, W - 300, 56);
+  var yTgl = 790 + baris * 56 + 50;
+  garisPendek(yTgl, tglHariIni(), "600 34px " + F, "#5d5866");
+  // pita hijau
+  var yPita = Math.max(yTgl + 110, 1085),
+    teksPita = "Terus belajar, kamu hebat! ✨";
+  c.font = "800 40px " + F;
+  var pw = c.measureText(teksPita).width + 110,
+    px = W / 2 - pw / 2;
+  kotakBulat(c, px - 6, yPita - 58, pw + 12, 92, 46);
+  c.fillStyle = emasGrad(px, 0, px + pw, 0);
+  c.fill();
+  var gp = c.createLinearGradient(0, yPita - 52, 0, yPita + 28);
+  gp.addColorStop(0, hijau);
+  gp.addColorStop(1, hijauTua);
+  kotakBulat(c, px, yPita - 52, pw, 80, 40);
+  c.fillStyle = gp;
+  c.fill();
+  c.fillStyle = "#fff";
+  c.fillText(teksPita, W / 2, yPita + 2);
+  kakiLogo(c, W, Math.min(H - 150, yPita + 115), "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 29px " + F, "#072B6B");
   return cv.toDataURL("image/png");
+}
+// Huruf piagam dimuat dulu; piagam digambar ulang begitu hurufnya siap
+function muatHurufPiagam(lalu) {
+  try {
+    if (!document.fonts || !document.fonts.load) return;
+    Promise.all(['800 40px "Playfair Display"', 'italic 700 40px "Playfair Display"', "800 40px Nunito", "600 40px Nunito"].map(function (f) {
+      return document.fonts.load(f);
+    })).then(lalu, function () {});
+  } catch (e) {}
 }
 
 /* ---------- SOAL DIBACAKAN (suara bawaan perangkat) ---------- */
@@ -6396,10 +6613,10 @@ var normalSel = function normalSel(sel) {
     my = Math.min.apply(Math, _toConsumableArray(sel.map(function (c) {
       return c[1];
     })));
-  return sel.map(function (_ref22) {
-    var _ref23 = _slicedToArray(_ref22, 2),
-      x = _ref23[0],
-      y = _ref23[1];
+  return sel.map(function (_ref24) {
+    var _ref25 = _slicedToArray(_ref24, 2),
+      x = _ref25[0],
+      y = _ref25[1];
     return [x - mx, y - my];
   }).sort(function (a, b) {
     return a[1] - b[1] || a[0] - b[0];
@@ -6411,26 +6628,26 @@ var kunciSel = function kunciSel(sel) {
   }).join(";");
 };
 var putarSel = function putarSel(sel) {
-  return normalSel(sel.map(function (_ref24) {
-    var _ref25 = _slicedToArray(_ref24, 2),
-      x = _ref25[0],
-      y = _ref25[1];
-    return [-y, x];
-  }));
-}; // 90° searah jarum jam (sumbu y ke bawah)
-var cerminSel = function cerminSel(sel) {
   return normalSel(sel.map(function (_ref26) {
     var _ref27 = _slicedToArray(_ref26, 2),
       x = _ref27[0],
       y = _ref27[1];
-    return [-x, y];
+    return [-y, x];
   }));
-}; // cermin kiri-kanan
-var balikSel = function balikSel(sel) {
+}; // 90° searah jarum jam (sumbu y ke bawah)
+var cerminSel = function cerminSel(sel) {
   return normalSel(sel.map(function (_ref28) {
     var _ref29 = _slicedToArray(_ref28, 2),
       x = _ref29[0],
       y = _ref29[1];
+    return [-x, y];
+  }));
+}; // cermin kiri-kanan
+var balikSel = function balikSel(sel) {
+  return normalSel(sel.map(function (_ref30) {
+    var _ref31 = _slicedToArray(_ref30, 2),
+      x = _ref31[0],
+      y = _ref31[1];
     return [x, -y];
   }));
 }; // cermin atas-bawah
@@ -6483,10 +6700,10 @@ function svgSel(sel) {
     dx = o.kotak ? 0 : 0;
   var g = "";
   if (o.kotak) for (var y = 0; y < o.kotak; y++) for (var x = 0; x < o.kotak; x++) g += "<rect x=\"".concat(x * s + 1, "\" y=\"").concat(y * s + 1, "\" width=\"").concat(s - 2, "\" height=\"").concat(s - 2, "\" rx=\"3\" fill=\"#eef2f8\"/>");
-  sel.forEach(function (_ref30, i) {
-    var _ref31 = _slicedToArray(_ref30, 2),
-      x = _ref31[0],
-      y = _ref31[1];
+  sel.forEach(function (_ref32, i) {
+    var _ref33 = _slicedToArray(_ref32, 2),
+      x = _ref33[0],
+      y = _ref33[1];
     g += "<rect x=\"".concat(x * s + dx + 1, "\" y=\"").concat(y * s + 1, "\" width=\"").concat(s - 2, "\" height=\"").concat(s - 2, "\" rx=\"3\" fill=\"").concat(o.warna ? o.warna[i] : "#02a581", "\" stroke=\"#072B6B\" stroke-width=\"1.5\"/>");
   });
   return "<svg viewBox=\"-2 -2 ".concat(W + 4, " ").concat(H + 4, "\" width=\"").concat((W + 4) * (o.skala || 1.6), "\" height=\"").concat((H + 4) * (o.skala || 1.6), "\" aria-hidden=\"true\">").concat(g).concat(o.tambahan || "", "</svg>");
@@ -6496,10 +6713,10 @@ function bisaJadiKubus(sel) {
   var ada = new Set(sel.map(function (c) {
     return c.join(",");
   }));
-  if (sel.some(function (_ref32) {
-    var _ref33 = _slicedToArray(_ref32, 2),
-      x = _ref33[0],
-      y = _ref33[1];
+  if (sel.some(function (_ref34) {
+    var _ref35 = _slicedToArray(_ref34, 2),
+      x = _ref35[0],
+      y = _ref35[1];
     return ada.has(x + 1 + "," + y) && ada.has(x + "," + (y + 1)) && ada.has(x + 1 + "," + (y + 1));
   })) return false;
   var guling = {
@@ -6659,10 +6876,10 @@ var GEN_RUANG = {
     var uk = levelOtak <= 2 ? 3 : 4,
       isi = [3, 4, 5, 6][levelOtak - 1];
     var ke = function ke(sel) {
-      return sel.map(function (_ref34) {
-        var _ref35 = _slicedToArray(_ref34, 2),
-          x = _ref35[0],
-          y = _ref35[1];
+      return sel.map(function (_ref36) {
+        var _ref37 = _slicedToArray(_ref36, 2),
+          x = _ref37[0],
+          y = _ref37[1];
         return [x, y];
       });
     };
@@ -6672,20 +6889,20 @@ var GEN_RUANG = {
       for (var y = 0; y < uk; y++) for (var x = 0; x < uk; x++) semua.push([x, y]);
       p = acak(semua).slice(0, isi);
       var rot = function rot(sel) {
-        return sel.map(function (_ref36) {
-          var _ref37 = _slicedToArray(_ref36, 2),
-            x = _ref37[0],
-            y = _ref37[1];
+        return sel.map(function (_ref38) {
+          var _ref39 = _slicedToArray(_ref38, 2),
+            x = _ref39[0],
+            y = _ref39[1];
           return [uk - 1 - y, x];
         });
       };
       var r1 = rot(p),
         r2 = rot(r1),
         r3 = rot(r2),
-        m = p.map(function (_ref38) {
-          var _ref39 = _slicedToArray(_ref38, 2),
-            x = _ref39[0],
-            y = _ref39[1];
+        m = p.map(function (_ref40) {
+          var _ref41 = _slicedToArray(_ref40, 2),
+            x = _ref41[0],
+            y = _ref41[1];
           return [uk - 1 - x, y];
         });
       varian = {
@@ -6860,19 +7077,19 @@ var VAK = {
 var SOAL_VAK = [["Kalau belajar hal baru, aku paling mudah paham jika ...", "melihat gambar atau contohnya", "mendengar penjelasannya", "langsung mencobanya sendiri"], ["Saat menghafal, aku biasanya ...", "membaca berulang dan membayangkan tulisannya", "mengucapkannya keras-keras", "menghafal sambil berjalan atau bergerak"], ["Saat waktu luang, aku paling suka ...", "menonton video atau melihat buku bergambar", "mendengarkan lagu, cerita, atau mengobrol", "bermain di luar atau membuat sesuatu"], ["Aku paling mudah mengingat teman baru dari ...", "wajahnya", "nama dan suaranya", "kegiatan yang kami lakukan bersama"], ["Kalau guru menjelaskan, aku ...", "memperhatikan papan tulis dan gambar", "mendengarkan baik-baik", "ingin cepat-cepat praktik"], ["Saat bosan di kelas, aku biasanya ...", "mencoret-coret atau menggambar", "mengobrol atau bersenandung pelan", "menggoyangkan kaki atau memainkan pensil"], ["Kalau diberi petunjuk jalan, aku lebih suka ...", "melihat peta atau denahnya", "diberi tahu arahnya dengan kata-kata", "diantar sekali, lalu aku ingat jalannya"], ["Saat merakit mainan baru, aku ...", "melihat gambar petunjuknya dulu", "minta orang menjelaskan caranya", "langsung mencoba memasangnya sendiri"], ["Aku paling mudah terganggu oleh ...", "ruangan yang berantakan", "suara yang berisik", "harus duduk diam terlalu lama"], ["Kalau bercerita tentang liburan, aku ...", "menggambarkan apa saja yang kulihat", "menceritakan obrolan dan suara-suara di sana", "memperagakan apa saja yang kulakukan"], ["Hadiah yang paling aku sukai ...", "buku bergambar atau poster", "buku cerita audio atau alat musik", "mainan rakitan atau alat olahraga"], ["Saat mengeja kata yang sulit, aku ...", "membayangkan bentuk tulisannya", "mengucapkannya huruf demi huruf", "menuliskannya dulu untuk mengecek"], ["Di museum atau kebun binatang, aku paling senang ...", "melihat-lihat dan memperhatikan", "mendengarkan penjelasan pemandu", "bagian yang boleh dipegang atau dicoba"], ["Saat kesal, aku biasanya ...", "diam dan cemberut", "mengomel atau bercerita kepada seseorang", "menghentakkan kaki atau pergi bermain"], ["Aku paling menikmati pelajaran yang ...", "banyak gambar, warna, dan video", "banyak cerita, diskusi, dan tanya-jawab", "banyak praktik, percobaan, dan gerak"], ["Kalau mengulang pelajaran di rumah, aku ...", "membaca catatan yang rapi dan berwarna", "membacanya keras-keras atau minta ditanya", "membuat contoh atau model sendiri"], ["Saat ujian, aku teringat jawabannya karena ...", "ingat letaknya di halaman buku", "ingat suara guru saat menjelaskan", "ingat saat mempraktikkannya"], ["Kalau menonton film, aku paling ingat ...", "pemandangan dan pakaian tokohnya", "percakapan dan lagunya", "adegan aksinya"], ["Teman-teman bilang aku ...", "suka memperhatikan hal kecil", "suka berbicara dan bercerita", "tidak bisa diam"], ["Saat belajar, aku suka suasana yang ...", "rapi, terang, dan banyak warna", "tenang atau diiringi suara lembut", "boleh sambil bergerak atau pindah tempat"]];
 var SOAL_VAK_ORTU = [["Saat mendengar cerita, anak saya lebih tertarik jika ...", "ada gambar di bukunya", "saya menirukan suara tokohnya", "boleh ikut memperagakan ceritanya"], ["Anak saya paling cepat hafal ...", "gambar, warna, dan logo", "lagu, doa, dan nasyid", "gerakan, seperti gerakan salat atau tarian"], ["Saat bermain sendiri, anak saya suka ...", "menggambar, mewarnai, atau melihat buku", "bernyanyi atau berbicara sendiri", "berlari, memanjat, atau menyusun balok"], ["Saat diberi tahu sesuatu, anak saya ...", "lebih paham jika saya tunjukkan contohnya", "cukup mendengar penjelasan saya", "perlu mencobanya langsung"], ["Anak saya mudah terganggu oleh ...", "banyak benda yang terlihat di sekitarnya", "suara TV atau obrolan orang", "harus duduk diam lama"], ["Saat senang, anak saya biasanya ...", "tersenyum lebar dan matanya berbinar", "bersorak atau bercerita panjang", "melompat-lompat atau memeluk"], ["Mainan favorit anak saya ...", "puzzle bergambar atau buku warna", "mainan berbunyi atau alat musik", "bola, sepeda, atau balok susun"], ["Saat bertemu orang baru, anak saya ...", "memperhatikan wajah dan penampilannya", "mendengarkan suaranya atau langsung mengajak bicara", "ingin langsung mengajak bermain"], ["Saat belajar huruf atau angka, anak saya lebih cepat dengan ...", "kartu bergambar berwarna", "lagu atau tepuk berirama", "menelusuri huruf dengan jari atau menyusunnya"], ["Saat bepergian, anak saya ...", "sibuk melihat pemandangan", "banyak bertanya dan mengobrol", "sulit duduk diam di kendaraan"], ["Anak saya paling ingat kejadian dari ...", "apa yang dilihatnya", "apa yang didengarnya", "apa yang dilakukannya"], ["Saat menonton video, anak saya ...", "memperhatikan gambarnya dengan serius", "ikut menyanyi atau menirukan kata-katanya", "ikut bergerak atau berjoget"], ["Saat kesal, anak saya biasanya ...", "cemberut dan diam", "menangis keras atau mengomel", "menghentakkan kaki atau melempar barang"], ["Anak saya paling senang diberi ...", "stiker atau gambar sebagai hadiah", "pujian dengan kata-kata", "pelukan atau tos"], ["Saat membantu di rumah, anak saya paling suka ...", "menata barang agar terlihat rapi", "menemani sambil mengobrol", "pekerjaan yang banyak bergerak, seperti menyiram tanaman"]];
 var soalTiga = function soalTiga(daftar, bagian) {
-  return acak(daftar).map(function (_ref40) {
-    var _ref41 = _slicedToArray(_ref40, 4),
-      t = _ref41[0],
-      v = _ref41[1],
-      a = _ref41[2],
-      k = _ref41[3];
+  return acak(daftar).map(function (_ref42) {
+    var _ref43 = _slicedToArray(_ref42, 4),
+      t = _ref43[0],
+      v = _ref43[1],
+      a = _ref43[2],
+      k = _ref43[3];
     return {
       t: t,
       bagian: bagian,
-      o: acak([[v, "V"], [a, "A"], [k, "K"]].map(function (_ref42) {
-        var _ref43 = _slicedToArray(_ref42, 2),
-          teks = _ref43[0],
-          nilai = _ref43[1];
+      o: acak([[v, "V"], [a, "A"], [k, "K"]].map(function (_ref44) {
+        var _ref45 = _slicedToArray(_ref44, 2),
+          teks = _ref45[0],
+          nilai = _ref45[1];
         return {
           teks: kapital(teks),
           nilai: nilai
@@ -7213,10 +7430,10 @@ function bukaProfil(asal) {
     return "<li>".concat(x, "</li>");
   }).join(""), "</ul>") : "", "\n    ").concat(resep.length ? "<h3>\uD83D\uDCDA Resep belajar untuk ".concat(esc(nama), "</h3><ol>").concat(resep.map(function (x) {
     return "<li>".concat(besarAwal(x), "</li>");
-  }).join(""), "</ol>") : "", "\n    ").concat(kegiatan.length ? "<h3>\uD83C\uDFAF Kegiatan yang mendukung</h3><p>".concat(besarAwal(kegiatan.join("; ")), ".</p>") : "", "\n    ").concat(profesi.length ? "<h3>\uD83D\uDCBC Contoh arah cita-cita</h3><p>".concat(besarAwal(profesi.join("; ")), ".</p><p class=\"sub-kecil\" style=\"text-align:left\">Sekadar inspirasi. Minat anak masih bisa berubah, dan semua cita-cita yang baik layak didukung.</p>") : "", "\n    ").concat(GRUP_TES.map(function (_ref44) {
-    var _ref45 = _slicedToArray(_ref44, 3),
-      judul = _ref45[1],
-      ids = _ref45[2];
+  }).join(""), "</ol>") : "", "\n    ").concat(kegiatan.length ? "<h3>\uD83C\uDFAF Kegiatan yang mendukung</h3><p>".concat(besarAwal(kegiatan.join("; ")), ".</p>") : "", "\n    ").concat(profesi.length ? "<h3>\uD83D\uDCBC Contoh arah cita-cita</h3><p>".concat(besarAwal(profesi.join("; ")), ".</p><p class=\"sub-kecil\" style=\"text-align:left\">Sekadar inspirasi. Minat anak masih bisa berubah, dan semua cita-cita yang baik layak didukung.</p>") : "", "\n    ").concat(GRUP_TES.map(function (_ref46) {
+    var _ref47 = _slicedToArray(_ref46, 3),
+      judul = _ref47[1],
+      ids = _ref47[2];
     return "<h3>".concat(judul, "</h3><table class=\"tabel\"><tbody>").concat(ids.filter(function (id) {
       return id !== "darah";
     }).map(function (id) {
@@ -7281,9 +7498,9 @@ function catatHarian(nilai) {
   return {
     pertama: pertama,
     s: s,
-    lencanaBaru: pertama ? LENCANA_HARIAN.find(function (_ref46) {
-      var _ref47 = _slicedToArray(_ref46, 1),
-        h = _ref47[0];
+    lencanaBaru: pertama ? LENCANA_HARIAN.find(function (_ref48) {
+      var _ref49 = _slicedToArray(_ref48, 1),
+        h = _ref49[0];
       return h === s.beruntun;
     }) : null
   };
@@ -7310,11 +7527,11 @@ function renderHarian() {
   });
   el.innerHTML = "<div class=\"kartu-harian\">\n    <div class=\"atas-harian\"><div><b>\uD83D\uDD25 Tantangan Harian</b><small>".concat(SOAL_HARIAN, " soal campuran ").concat(esc(KELAS_INFO[kelasAktif].nama), " \u2022 setiap hari soal baru</small></div>\n      <div class=\"api-harian").concat(s.beruntun ? "" : " redup", "\">\uD83D\uDD25<b>").concat(s.beruntun, "</b><small>hari</small></div></div>\n    <div class=\"minggu-harian\">").concat(tujuh.map(function (d) {
     return "<span class=\"".concat(s.hari[d.k] != null ? "isi" : "").concat(d.ini ? " ini" : "", "\" title=\"").concat(d.k, "\">").concat(s.hari[d.k] != null ? "✓" : d.h, "</span>");
-  }).join(""), "</div>\n    <div class=\"bawah-harian\"><span class=\"lencana-harian\">").concat(LENCANA_HARIAN.map(function (_ref48) {
-    var _ref49 = _slicedToArray(_ref48, 3),
-      h = _ref49[0],
-      ik = _ref49[1],
-      lab = _ref49[2];
+  }).join(""), "</div>\n    <div class=\"bawah-harian\"><span class=\"lencana-harian\">").concat(LENCANA_HARIAN.map(function (_ref50) {
+    var _ref51 = _slicedToArray(_ref50, 3),
+      h = _ref51[0],
+      ik = _ref51[1],
+      lab = _ref51[2];
     return "<i class=\"".concat(s.terbaik >= h ? "dapat" : "", "\" title=\"Lencana ").concat(lab, " beruntun\">").concat(ik, "</i>");
   }).join(""), "</span>\n      ").concat(s.sudah ? "<span class=\"selesai-harian\">\u2705 Hari ini selesai (nilai ".concat(s.nilai, ")</span><button type=\"button\" class=\"link-reset\" id=\"btnHarian\">Latihan lagi \u203A</button>") : "<button type=\"button\" class=\"tombol kecil\" id=\"btnHarian\">Mulai \u25B6</button>", "</div></div>");
   $("btnHarian").addEventListener("click", mulaiHarian);
@@ -7415,21 +7632,21 @@ function rekapTesKelas(d) {
     if (id && PETA_REKAP[id]) {
       var peta = PETA_REKAP[id](),
         hit = {};
-      peta.forEach(function (_ref50) {
-        var _ref51 = _slicedToArray(_ref50, 2),
-          n = _ref51[0],
-          k = _ref51[1];
+      peta.forEach(function (_ref52) {
+        var _ref53 = _slicedToArray(_ref52, 2),
+          n = _ref53[0],
+          k = _ref53[1];
         return hit[k] = 0;
       });
       baris.forEach(function (x) {
-        var cocok = /multimodal/i.test(x.hasil) ? peta : peta.filter(function (_ref52) {
-          var _ref53 = _slicedToArray(_ref52, 1),
-            n = _ref53[0];
+        var cocok = /multimodal/i.test(x.hasil) ? peta : peta.filter(function (_ref54) {
+          var _ref55 = _slicedToArray(_ref54, 1),
+            n = _ref55[0];
           return new RegExp("(^|[^a-z])" + n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([^a-z]|$)").test(x.hasil.toLowerCase());
         });
-        cocok.forEach(function (_ref54) {
-          var _ref55 = _slicedToArray(_ref54, 2),
-            k = _ref55[1];
+        cocok.forEach(function (_ref56) {
+          var _ref57 = _slicedToArray(_ref56, 2),
+            k = _ref57[1];
           return hit[k]++;
         });
       });
@@ -7437,11 +7654,11 @@ function rekapTesKelas(d) {
           return hit[b[1]] - hit[a[1]];
         }),
         atas = urut[0];
-      sebaran = urut.map(function (_ref56) {
-        var _ref57 = _slicedToArray(_ref56, 3),
-          n = _ref57[0],
-          k = _ref57[1],
-          ik = _ref57[2];
+      sebaran = urut.map(function (_ref58) {
+        var _ref59 = _slicedToArray(_ref58, 3),
+          n = _ref59[0],
+          k = _ref59[1],
+          ik = _ref59[2];
         return "<div class=\"batang\"><span>".concat(ik, " ").concat(esc(n), "</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(Math.round(hit[k] / baris.length * 100), "%\"></div></div><b>").concat(hit[k], "</b></div>");
       }).join("");
       if (hit[atas[1]]) saran = "<div class=\"kotak\"><b>\uD83D\uDCA1 Saran mengajar untuk kelas ini</b><br>Paling banyak murid <b>".concat(atas[2], " ").concat(esc(atas[0]), "</b> (").concat(hit[atas[1]], " dari ").concat(baris.length, "). Coba:<ul style=\"margin:6px 0 0\">").concat(atas[3].map(function (x) {
@@ -7492,10 +7709,10 @@ var jenisGuru = "kuis";
 function renderJenisGuru() {
   var w = $("guruJenis");
   w.innerHTML = "";
-  [["kuis", "📚 Kuis pelajaran"], ["tes", "🌟 Tes kenali diri (gaya belajar, kecerdasan, kepribadian)"]].forEach(function (_ref58) {
-    var _ref59 = _slicedToArray(_ref58, 2),
-      v = _ref59[0],
-      lab = _ref59[1];
+  [["kuis", "📚 Kuis pelajaran"], ["tes", "🌟 Tes kenali diri (gaya belajar, kecerdasan, kepribadian)"]].forEach(function (_ref60) {
+    var _ref61 = _slicedToArray(_ref60, 2),
+      v = _ref61[0],
+      lab = _ref61[1];
     return w.appendChild(tombolChip(lab, jenisGuru === v, function () {
       jenisGuru = v;
       renderJenisGuru();
@@ -7541,11 +7758,11 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  GRUP_TES.forEach(function (_ref60) {
-    var _ref61 = _slicedToArray(_ref60, 3),
-      gid = _ref61[0],
-      judul = _ref61[1],
-      daftar = _ref61[2];
+  GRUP_TES.forEach(function (_ref62) {
+    var _ref63 = _slicedToArray(_ref62, 3),
+      gid = _ref63[0],
+      judul = _ref63[1],
+      daftar = _ref63[2];
     var h = document.createElement("div");
     h.className = "judul-grup";
     h.id = "grup-" + gid;
@@ -7595,10 +7812,10 @@ function bukaTes(id) {
     var _gambarLevel = function gambarLevel() {
       var w = $("daftarLevel");
       w.innerHTML = "";
-      LEVEL_OTAK.forEach(function (_ref62) {
-        var _ref63 = _slicedToArray(_ref62, 2),
-          n = _ref63[0],
-          v = _ref63[1];
+      LEVEL_OTAK.forEach(function (_ref64) {
+        var _ref65 = _slicedToArray(_ref64, 2),
+          n = _ref65[0],
+          v = _ref65[1];
         return w.appendChild(tombolChip(n, v === levelOtak, function () {
           levelOtak = v;
           tulis(kunci("level-otak", nama), v);
