@@ -163,6 +163,10 @@
   .hasil-tes h2, #judulHasil { font-family: "Playfair Display", Georgia, serif; font-weight: 800; color: #10233f; font-size: clamp(23px, 5.6vw, 32px); line-height: 1.2; }
   .hasil-tes .kotak-hormat { background: #fbf6e9; border-color: #ead9ad; }
   @media (max-width: 480px) { .panel-skor { padding: 16px 48px 14px; } .panel-skor::before, .panel-skor::after { width: 32px; height: 60px; margin-top: -36px; } .panel-skor::before { left: 8px; } .panel-skor::after { right: 8px; } .panel-skor .angka { font-size: 56px; } }
+  .atur-suara { margin-top: 12px; border: 2px dashed var(--line); border-radius: 14px; padding: 8px 12px; }
+  .atur-suara summary { font-weight: 800; cursor: pointer; }
+  .baris-suara { display: flex; gap: 8px; margin-top: 8px; }
+  .baris-suara select { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 8px; border: 2px solid var(--line); border-radius: 12px; background: #fff; }
   .sekolah-banner { font-family: "Playfair Display", Georgia, serif; font-weight: 800; font-size: 19px; color: #0b5a43; margin-bottom: 4px; }
   .kotak-promo.kotak-bagikan { background: linear-gradient(180deg, #eef4ff, #e9f7f3); border-color: #c9dafc; }
   .kotak-bagikan > b { font-size: 21px; }
@@ -500,6 +504,9 @@
           <button class="tombol" id="btnMulai">Mulai Kuis 🚀</button>
           <button class="tombol putih" id="btnRapor" type="button">📈 Rapor Perkembangan</button>
         </div>
+        <details class="atur-suara" id="aturSuara"><summary>🔊 Suara pembaca soal</summary>
+          <div class="baris-suara"><select id="pilihSuara" aria-label="Pilih suara"></select><button type="button" class="tombol putih kecil" id="btnCobaSuara">▶ Coba</button></div>
+          <p class="sub-kecil" id="infoSuara" style="text-align:left;margin:6px 0 0"></p></details>
         <div class="tengah" style="margin-top:12px">
           <button type="button" class="link-reset" id="btnReset" style="display:none">🗑️ Hapus riwayat soal untuk nama ini</button>
         </div>
@@ -5711,24 +5718,77 @@ function muatHurufPiagam(lalu) {
 /* ---------- SOAL DIBACAKAN (suara bawaan perangkat) ---------- */
 var BISA_BICARA = typeof window.speechSynthesis !== "undefined" && typeof window.SpeechSynthesisUtterance !== "undefined";
 function teksUcapan(t) {
-  return String(t).replace(/<[^>]+>/g, " ").replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, " ").replace(/[\u2190-\u21FF\u2600-\u27BF\uFE0F\u200D]/g, " ").replace(/_{2,}|\.\.\./g, " titik-titik ").replace(/×/g, " kali ").replace(/(\d)\s*:\s*(\d)/g, "$1 dibagi $2").replace(/(\d)\s*[−-]\s*(\d)/g, "$1 kurang $2").replace(/−/g, " minus ").replace(/=/g, " sama dengan ").replace(/²/g, " kuadrat").replace(/³/g, " pangkat tiga").replace(/√/g, " akar ").replace(/(\d)\/(\d)/g, "$1 per $2").replace(/%/g, " persen").replace(/\s+/g, " ").trim();
+  return String(t).replace(/<[^>]+>/g, " ").replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, " ").replace(/[\u2190-\u21FF\u2300-\u23FF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D\u20E3]/g, " ").replace(/\s*(\.\.\.|…)\s*$/, function (m0, m1, i, str) {
+    return /\d/.test(str) ? " berapa?" : " apa?";
+  }) // "Huruf setelah O adalah ..." → "... adalah apa?"
+  .replace(/_{2,}|\.\.\./g, " titik-titik ").replace(/×/g, " kali ").replace(/(\d)\s*:\s*(\d)/g, "$1 dibagi $2").replace(/(\d)\s*[−-]\s*(\d)/g, "$1 kurang $2").replace(/−/g, " minus ").replace(/=/g, " sama dengan ").replace(/²/g, " kuadrat").replace(/³/g, " pangkat tiga").replace(/√/g, " akar ").replace(/(\d)\/(\d)/g, "$1 per $2").replace(/%/g, " persen").replace(/\s+/g, " ").trim();
+}
+// Pilih suara Bahasa Indonesia paling alami yang ada di perangkat (suara "Natural/Online/Enhanced" jauh lebih manusiawi)
+var KUNCI_SUARA = "kuisMI3:suara";
+function daftarSuaraId() {
+  try {
+    return speechSynthesis.getVoices().filter(function (v) {
+      return /^(id|in)([-_]|$)/i.test(v.lang);
+    });
+  } catch (e) {
+    return [];
+  }
+}
+function skorSuara(v) {
+  var n = v.name || "";
+  var s = 0;
+  if (/natural|neural|online|premium|enhanced|siri/i.test(n)) s += 10;
+  if (/google/i.test(n)) s += 6;
+  if (/gadis|damayanti|ardi|andika/i.test(n)) s += 3;
+  if (v.localService === false) s += 2;
+  if (/compact|espeak/i.test(n)) s -= 8;
+  return s;
+}
+function suaraTerbaik() {
+  var d = daftarSuaraId(),
+    pilih = baca(KUNCI_SUARA, "");
+  return d.filter(function (v) {
+    return v.name === pilih;
+  })[0] || d.slice().sort(function (a, b) {
+    return skorSuara(b) - skorSuara(a);
+  })[0] || null;
+}
+function ucapkan(bagian, anak) {
+  speechSynthesis.cancel();
+  var v = suaraTerbaik();
+  bagian.filter(Boolean).forEach(function (teks) {
+    var u = new SpeechSynthesisUtterance(teks);
+    u.lang = v ? v.lang : "id-ID";
+    if (v) u.voice = v;
+    u.rate = anak ? 0.85 : 0.95;
+    u.pitch = anak ? 1.15 : 1.05; // sedikit lebih pelan dan ramah untuk anak kecil
+    speechSynthesis.speak(u);
+  });
 }
 function bacakanSoal(t, opsi) {
   if (!BISA_BICARA) return;
   try {
-    speechSynthesis.cancel();
-    var teks = teksUcapan(t) + ". " + (opsi || []).map(function (o, i) {
-      return "Pilihan " + "ABCDE"[i] + ": " + teksUcapan(o);
-    }).join(". ");
-    var u = new SpeechSynthesisUtterance(teks);
-    u.lang = "id-ID";
-    u.rate = 0.9;
-    var suara = speechSynthesis.getVoices().filter(function (v) {
-      return /^id/i.test(v.lang);
-    })[0];
-    if (suara) u.voice = suara;
-    speechSynthesis.speak(u);
+    // dibacakan per bagian (soal, lalu tiap pilihan) supaya ada jeda alami, tidak satu kalimat panjang
+    var anak = KELAS_INFO[kelasAktif] && KELAS_INFO[kelasAktif].g <= 2;
+    ucapkan([teksUcapan(t)].concat((opsi || []).map(function (o, i) {
+      return "ABCDE"[i] + ". " + teksUcapan(o);
+    })), anak);
   } catch (e) {}
+}
+function isiPilihanSuara() {
+  var sel = $("pilihSuara"),
+    info = $("infoSuara");
+  if (!sel) return;
+  var d = daftarSuaraId().sort(function (a, b) {
+      return skorSuara(b) - skorSuara(a);
+    }),
+    pilih = suaraTerbaik();
+  sel.innerHTML = d.map(function (v) {
+    return "<option value=\"".concat(esc(v.name), "\"").concat(pilih && pilih.name === v.name ? " selected" : "", ">").concat(esc(v.name)).concat(skorSuara(v) >= 6 ? " ⭐" : "", "</option>");
+  }).join("");
+  sel.style.display = d.length ? "" : "none";
+  $("btnCobaSuara").style.display = d.length ? "" : "none";
+  info.innerHTML = d.length ? (d.length > 1 ? "Pilih yang paling enak didengar. Tanda ⭐ biasanya paling alami." : "Hanya ada satu suara Bahasa Indonesia di perangkat ini.") + " Ingin lebih alami? <b>Android:</b> Setelan → Aksesibilitas → Keluaran teks-ke-ucapan → pilih <i>Google</i> dan unduh suara Bahasa Indonesia. <b>iPhone/iPad:</b> Setelan → Aksesibilitas → Konten Lisan → Suara → Bahasa Indonesia → unduh <i>Damayanti (Ditingkatkan)</i>." : "Perangkat ini belum punya suara Bahasa Indonesia. Android: Setelan → Aksesibilitas → Keluaran teks-ke-ucapan → Google → unduh Bahasa Indonesia. iPhone/iPad: Setelan → Aksesibilitas → Konten Lisan → Suara → Bahasa Indonesia.";
 }
 // TK dan SD kelas 1–2: soal dibacakan otomatis
 var bacaOtomatis = function bacaOtomatis() {
@@ -8629,10 +8689,20 @@ if (BISA_BICARA) {
   });
   try {
     speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = isiPilihanSuara;
   } catch (e) {}
+  $("aturSuara").addEventListener("toggle", isiPilihanSuara);
+  $("pilihSuara").addEventListener("change", function () {
+    tulis(KUNCI_SUARA, $("pilihSuara").value);
+    ucapkan(["Halo! Ayo belajar bersama."], true);
+  });
+  $("btnCobaSuara").addEventListener("click", function () {
+    return ucapkan(["Halo! Ayo belajar bersama.", "Berapa jumlah apel ini?", "A. Tiga.", "B. Lima."], true);
+  });
 } else {
   $("btnSuara").style.display = "none";
   $("btnSuaraTes").style.display = "none";
+  $("aturSuara").style.display = "none";
 }
 $("btnSalinLink").addEventListener("click", salinLinkGuru);
 (function () {
