@@ -400,7 +400,7 @@
       <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA yang soalnya selalu baru.</p>
       <div class="lencana">
         <button type="button" data-buka="kecerdasan"><span class="ik">🧠</span><span class="isi"><strong>Tes Kecerdasan</strong><small>IQ • Majemuk • Ingatan • Fokus • Ruang</small></span><em>Gratis</em></button>
-        <button type="button" data-buka="mesin"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>ala STIFIn • 15 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="gayabelajar"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>VAK • STIFIn • 4 Gaya • Versi TK</small></span><em>Gratis</em></button>
         <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>MBTI • DISC • Temperamen</small></span><em>Gratis</em></button>
         <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
         <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis untuk Guru</strong><small>Nilai murid langsung masuk ke WhatsApp guru</small></span><em>Gratis</em></button>
@@ -1863,7 +1863,22 @@ const SOAL_MESIN = [
   ["Kalau kalah lomba, aku ...", ["berlatih lebih keras", "mencari tahu kenapa aku kalah", "mencoba cara baru lain kali", "sedih, tapi senang kalau dihibur", "biasa saja, yang penting sudah ikut"]],
   ["Aku lebih suka ...", ["melakukan", "memikirkan", "membayangkan", "merasakan", "mengikuti suasana"]],
   ["Waktu luang, aku ...", ["bermain di luar rumah", "membaca atau bermain teka-teki", "menggambar atau membuat prakarya", "bermain dengan saudara atau teman", "mendengarkan nasyid atau bernyanyi"]],
-  ["Kalau guru menjelaskan, aku paling paham jika ...", ["diberi contoh yang bisa dipegang", "dijelaskan langkah demi langkah", "dibantu gambar atau cerita", "guru ramah dan sabar", "suasana kelas menyenangkan"]]
+  ["Kalau guru menjelaskan, aku paling paham jika ...", ["diberi contoh yang bisa dipegang", "dijelaskan langkah demi langkah", "dibantu gambar atau cerita", "guru ramah dan sabar", "suasana kelas menyenangkan"]],
+  ["Saat menonton film, aku paling suka ...", ["film aksi dan petualangan", "film detektif atau sains", "film fantasi dan khayalan", "film keluarga yang mengharukan", "film apa saja yang sedang ramai"]],
+  ["Kalau diberi uang jajan, aku ...", ["langsung membeli yang kuinginkan", "menghitung dan menabung sebagian", "membeli sesuatu yang unik", "membelikan sesuatu untuk orang lain", "kadang ditabung, kadang dibelanjakan"]],
+  ["Saat guru memberi tugas proyek, aku ...", ["semangat mengerjakan bagian praktiknya", "membuat rencana langkah-langkahnya", "mencari ide yang berbeda dari yang lain", "mengajak teman bekerja sama", "membantu apa saja yang dibutuhkan kelompok"]],
+  ["Aku merasa paling hebat ketika ...", ["menang lomba atau pertandingan", "bisa menjawab soal yang sulit", "karyaku dipuji karena unik", "temanku senang karena kubantu", "semua orang rukun dan gembira"]],
+  ["Kalau ada pelajaran yang sulit, aku ...", ["mengulang-ulang sampai hafal", "mencari tahu bagian mana yang belum kupahami", "mencari cara sendiri yang lebih mudah", "bertanya kepada guru atau teman", "santai dulu, nanti dicoba lagi"]],
+  ["Aku lebih suka buku tentang ...", ["olahraga, hewan, atau benda nyata", "sains dan pengetahuan", "dongeng dan cerita fantasi", "kisah persahabatan dan tokoh teladan", "macam-macam, tergantung suasana hati"]],
+  ["Saat ada teman baru di kelas, aku ...", ["mengajaknya bermain", "memperhatikannya dulu", "penasaran dengan hal unik tentangnya", "langsung menyapa dan menemaninya", "biasa saja, nanti juga akrab"]],
+  ["Saat bangun pagi, aku ...", ["langsung bersiap dan bergerak", "mengikuti urutan kegiatan yang biasa", "sering punya ide baru untuk hari itu", "senang kalau disambut orang rumah", "tergantung suasana hari itu"]],
+  ["Kalau mendapat mainan baru, aku ...", ["langsung memainkannya", "membaca petunjuknya dulu", "memainkannya dengan cara yang berbeda", "mengajak orang lain bermain bersama", "senang dengan mainan apa pun"]],
+  ["Yang paling membuatku kesal ...", ["harus menunggu lama", "aturan yang tidak masuk akal", "harus melakukan hal yang sama terus", "dimarahi atau diabaikan", "suasana yang tegang dan bertengkar"]],
+  ["Aku paling bangga dengan ...", ["kekuatan dan kerja kerasku", "kepintaran dan ketelitianku", "ide-ide dan imajinasiku", "teman-teman dan keluargaku", "kemampuanku menyesuaikan diri"]],
+  ["Kalau diminta bercerita di depan kelas, aku ...", ["menceritakan pengalaman nyata", "bercerita runtut dari awal sampai akhir", "mengarang cerita yang seru", "bercerita sampai teman tertawa atau terharu", "bercerita apa adanya dengan tenang"]],
+  ["Liburan yang paling aku suka ...", ["ke tempat bermain atau berolahraga", "ke museum atau tempat belajar", "ke tempat baru yang belum pernah dikunjungi", "berkumpul dengan keluarga besar", "ke mana saja asal bersama-sama"]],
+  ["Saat merapikan barang, aku ...", ["cepat dan langsung selesai", "mengelompokkan sesuai jenisnya", "menatanya dengan cara yang menarik", "lebih semangat kalau dibantu", "kadang rapi, kadang lupa"]],
+  ["Aku ingin dikenal sebagai anak yang ...", ["rajin dan tangguh", "pintar dan bijak", "kreatif dan penuh ide", "baik hati dan penyayang", "ramah dan disukai semua orang"]]
 ];
 const KODE_MESIN = ["S", "T", "I", "F", "In"];
 
@@ -2042,24 +2057,33 @@ const PILIH_DARAH = opsi([["🅰️ A", "A"], ["🅱️ B", "B"], ["🆎 AB", "A
 const TES = {
   mesin: {
     nama: "Tes Gaya Belajar (ala STIFIn)", ikon: "🧬", warna: "#e2c2ff", tglLahir: true,
-    intro: `<p>Jawab 15 pertanyaan dengan jujur. Pilih jawaban yang <b>paling mirip</b> dengan dirimu. Tidak ada jawaban benar atau salah.</p>
+    kartu: true,
+    intro: `<p>Jawab 30 pertanyaan dengan jujur (sekitar 5 menit). Pilih jawaban yang <b>paling mirip</b> dengan dirimu. Tidak ada jawaban benar atau salah.</p>
       <p class="catatan-ortu">ℹ️ Tes ini terinspirasi 5 jenis kecerdasan dalam konsep STIFIn (Sensing, Thinking, Intuiting, Feeling, Insting). <b>Tes STIFIn resmi memakai pemindaian sidik jari</b> oleh lembaga resminya. Tanggal lahir tidak bisa menentukan tipe kecerdasan, jadi di sini tanggal lahir hanya dipakai untuk menghitung usia. Tipe ditentukan dari jawaban.</p>`,
-    soal: () => SOAL_MESIN.map(([t, pil]) => ({ t, o: acak(pil.map((teks, i) => ({ teks: kapital(teks), nilai: KODE_MESIN[i] }))) })),
+    soal: () => acak(SOAL_MESIN).map(([t, pil]) => ({ t, bagian: "Gaya Belajar ala STIFIn", o: acak(pil.map((teks, i) => ({ teks: kapital(teks), nilai: KODE_MESIN[i] }))) })),
     hasil(j, extra) {
       const skor = { S: 0, T: 0, I: 0, F: 0, In: 0 };
       j.forEach((x) => skor[x]++);
       const urut = KODE_MESIN.slice().sort((a, b) => skor[b] - skor[a]), m = MESIN[urut[0]], kedua = MESIN[urut[1]];
+      const total = j.filter((x) => skor[x] !== undefined).length || 1, persen = (k) => Math.round((skor[k] / total) * 100);
+      const nmM = {}, wrM = {}, pM = {}; KODE_MESIN.forEach((k) => { nmM[k] = MESIN[k].ikon + " " + MESIN[k].nama; wrM[k] = k === urut[0] ? "var(--hf-hijau)" : "var(--hf-teal)"; pM[k] = persen(k); });
+      const seri = skor[urut[1]] === skor[urut[0]], dekat = skor[urut[1]] >= skor[urut[0]] - 2;
+      const teksWA = `${m.ikon} Hasil Tes Gaya Belajar ala STIFIn ${nama}: ${m.nama} (${m.asli})${seri ? " & " + kedua.nama : ""}\n${KODE_MESIN.map((k) => `${MESIN[k].asli} ${pM[k]}%`).join(" • ")}`;
       const usia = extra.usia ? `${extra.usia.th} tahun ${extra.usia.bl} bulan` : "";
-      return { ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`, html: `
+      return { ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`,
+        setelah: () => gambarKartuHasil({ latar: m.warna, emoji: m.ikon, judulAtas: "Gaya Belajarku (ala STIFIn)", besar: m.asli, warnaBesar: "#072B6B", judul: m.nama, deskripsi: m.sifat[0] + ".",
+          judulBatang: "Skor kelima mesin:", batang: urut.map((k) => [MESIN[k].asli, pM[k] / 100, k === urut[0] ? "#02a581" : "#02c2c1"]), penutup: "" }),
+        html: `
         <div class="besar">${m.ikon}</div>
         <h2>${esc(nama)} adalah ${m.nama}</h2>
         <p class="sub-kecil">Kecenderungan: <b>${m.asli}</b>${usia ? " • Usia " + usia : ""} • ${tglHariIni()}</p>
         <h3>📊 Skor kelima mesin</h3>
-        ${urut.map((k) => batang(MESIN[k].ikon + " " + MESIN[k].nama, skor[k], SOAL_MESIN.length)).join("")}
+        ${meteran(pM, urut, nmM, wrM, 100)}
         <h3>✨ Ciri-cirimu</h3><ul>${m.sifat.map((x) => `<li>${x}</li>`).join("")}</ul>
         <h3>📚 Cara belajar yang cocok</h3><ul>${m.belajar.map((x) => `<li>${x}</li>`).join("")}</ul>
         <h3>🌱 Yang perlu dilatih</h3><p>${m.latih}</p>
-        ${skor[urut[1]] >= skor[urut[0]] - 1 ? `<div class="kotak">Kamu juga cukup kuat sebagai <b>${kedua.ikon} ${kedua.nama}</b>. Coba gabungkan cara belajar keduanya.</div>` : ""}
+        ${seri ? `<div class="kotak peringatan">⚖️ Skormu <b>sama kuat</b> antara ${m.ikon} ${m.nama} dan ${kedua.ikon} ${kedua.nama}. Pakai cara belajar keduanya, dan coba ulangi tes di lain hari untuk melihat mana yang lebih menonjol.</div>` : dekat ? `<div class="kotak">Kamu juga cukup kuat sebagai <b>${kedua.ikon} ${kedua.nama}</b>. Coba gabungkan cara belajar keduanya.</div>` : ""}
+        ${blokKartuWA(teksWA, "hasil-gaya-belajar-stifin.png")}
         <p class="catatan-ortu">Hasil ini adalah gambaran kecenderungan dari jawaban anak hari ini, bisa berubah seiring waktu. Untuk tes STIFIn resmi, hubungi lembaga STIFIn terdekat.</p>` };
     }
   },
@@ -2709,7 +2733,7 @@ function terapkanTautan() {
     renderPilihan();
     if (pilihanMapel) $("infoPilihan").textContent = "✅ Kamu memilih: " + MAPEL_INFO[pilihanMapel].ikon + " " + MAPEL_INFO[pilihanMapel].nama + " • " + KELAS_INFO[kelasAktif].nama;
   }
-  if (TES[PARAM.tes] || PARAM.tes === "kepribadian" || PARAM.tes === "kecerdasan") gantiTab("tabDiri");
+  if (TES[PARAM.tes] || PARAM.tes === "kepribadian" || PARAM.tes === "kecerdasan" || PARAM.tes === "gayabelajar") gantiTab("tabDiri");
   if (PARAM.tab === "guru") gantiTab("tabGuru");
 }
 function terapkanKuisGuru() {
@@ -3147,6 +3171,196 @@ TES.ruang = {
   }
 };
 
+/* ---------- 8. TES GAYA BELAJAR: VAK (anak & versi orang tua), 4 Gaya (remaja & dewasa) ---------- */
+const KODE_VAK = ["V", "A", "K"], KATA_VAK = { V: "melihat", A: "mendengar", K: "bergerak" };
+const VAK = {
+  V: { nama: "Visual", julukan: "Si Pengamat", ikon: "👁️", warna: "#bde0fe",
+    arti: "paling mudah belajar dengan melihat: gambar, warna, tulisan, dan video",
+    ciri: ["Mudah mengingat wajah, gambar, dan letak benda", "Suka buku bergambar, video, dan catatan yang rapi", "Lebih paham jika ada contoh yang bisa dilihat", "Terganggu oleh ruangan yang berantakan"],
+    rumah: ["Buat catatan berwarna dengan stabilo dan gambar kecil", "Pakai peta pikiran (mind map), bagan, dan kartu bergambar", "Tempel poster rumus atau kosakata di dinding kamar", "Tonton video pelajaran, lalu minta anak menggambarkan isinya"],
+    kelas: ["Duduk di depan agar papan tulis terlihat jelas", "Tuliskan poin penting dan langkah-langkah di papan", "Gunakan gambar, diagram, dan warna saat menjelaskan"] },
+  A: { nama: "Auditori", julukan: "Si Pendengar", ikon: "👂", warna: "#ffd6a5",
+    arti: "paling mudah belajar dengan mendengar: penjelasan, diskusi, cerita, dan irama",
+    ciri: ["Mudah mengingat apa yang didengar dan lirik lagu", "Senang bercerita, bertanya, dan berdiskusi", "Suka membaca dengan suara keras", "Terganggu oleh suara berisik"],
+    rumah: ["Baca pelajaran dengan suara keras atau rekam lalu dengarkan ulang", "Hafalkan dengan lagu, tepuk, atau irama", "Ajak anak menjelaskan kembali pelajaran kepada Ayah/Bunda", "Belajar sambil tanya-jawab lisan"],
+    kelas: ["Beri kesempatan bertanya dan berdiskusi", "Ulangi poin penting dengan kata-kata yang jelas", "Pakai cerita, lagu, dan belajar berpasangan"] },
+  K: { nama: "Kinestetik", julukan: "Si Penggerak", ikon: "✋", warna: "#caffbf",
+    arti: "paling mudah belajar dengan bergerak, menyentuh, dan praktik langsung",
+    ciri: ["Sulit duduk diam terlalu lama", "Cepat paham jika langsung mencoba", "Suka olahraga, merakit, dan percobaan", "Mengingat apa yang pernah dilakukan"],
+    rumah: ["Belajar dengan alat peraga: kancing untuk berhitung, kartu huruf, model", "Beri jeda gerak 5 menit setiap 15–20 menit belajar", "Boleh menghafal sambil berjalan atau melempar bola", "Ajak percobaan sederhana dan permainan peran"],
+    kelas: ["Beri tugas praktik, percobaan, dan permainan", "Izinkan berdiri atau bergerak sebentar di sela pelajaran", "Libatkan anak sebagai pembantu guru (membagikan buku, menulis di papan)"] }
+};
+const SOAL_VAK = [
+  ["Kalau belajar hal baru, aku paling mudah paham jika ...", "melihat gambar atau contohnya", "mendengar penjelasannya", "langsung mencobanya sendiri"],
+  ["Saat menghafal, aku biasanya ...", "membaca berulang dan membayangkan tulisannya", "mengucapkannya keras-keras", "menghafal sambil berjalan atau bergerak"],
+  ["Saat waktu luang, aku paling suka ...", "menonton video atau melihat buku bergambar", "mendengarkan lagu, cerita, atau mengobrol", "bermain di luar atau membuat sesuatu"],
+  ["Aku paling mudah mengingat teman baru dari ...", "wajahnya", "nama dan suaranya", "kegiatan yang kami lakukan bersama"],
+  ["Kalau guru menjelaskan, aku ...", "memperhatikan papan tulis dan gambar", "mendengarkan baik-baik", "ingin cepat-cepat praktik"],
+  ["Saat bosan di kelas, aku biasanya ...", "mencoret-coret atau menggambar", "mengobrol atau bersenandung pelan", "menggoyangkan kaki atau memainkan pensil"],
+  ["Kalau diberi petunjuk jalan, aku lebih suka ...", "melihat peta atau denahnya", "diberi tahu arahnya dengan kata-kata", "diantar sekali, lalu aku ingat jalannya"],
+  ["Saat merakit mainan baru, aku ...", "melihat gambar petunjuknya dulu", "minta orang menjelaskan caranya", "langsung mencoba memasangnya sendiri"],
+  ["Aku paling mudah terganggu oleh ...", "ruangan yang berantakan", "suara yang berisik", "harus duduk diam terlalu lama"],
+  ["Kalau bercerita tentang liburan, aku ...", "menggambarkan apa saja yang kulihat", "menceritakan obrolan dan suara-suara di sana", "memperagakan apa saja yang kulakukan"],
+  ["Hadiah yang paling aku sukai ...", "buku bergambar atau poster", "buku cerita audio atau alat musik", "mainan rakitan atau alat olahraga"],
+  ["Saat mengeja kata yang sulit, aku ...", "membayangkan bentuk tulisannya", "mengucapkannya huruf demi huruf", "menuliskannya dulu untuk mengecek"],
+  ["Di museum atau kebun binatang, aku paling senang ...", "melihat-lihat dan memperhatikan", "mendengarkan penjelasan pemandu", "bagian yang boleh dipegang atau dicoba"],
+  ["Saat kesal, aku biasanya ...", "diam dan cemberut", "mengomel atau bercerita kepada seseorang", "menghentakkan kaki atau pergi bermain"],
+  ["Aku paling menikmati pelajaran yang ...", "banyak gambar, warna, dan video", "banyak cerita, diskusi, dan tanya-jawab", "banyak praktik, percobaan, dan gerak"],
+  ["Kalau mengulang pelajaran di rumah, aku ...", "membaca catatan yang rapi dan berwarna", "membacanya keras-keras atau minta ditanya", "membuat contoh atau model sendiri"],
+  ["Saat ujian, aku teringat jawabannya karena ...", "ingat letaknya di halaman buku", "ingat suara guru saat menjelaskan", "ingat saat mempraktikkannya"],
+  ["Kalau menonton film, aku paling ingat ...", "pemandangan dan pakaian tokohnya", "percakapan dan lagunya", "adegan aksinya"],
+  ["Teman-teman bilang aku ...", "suka memperhatikan hal kecil", "suka berbicara dan bercerita", "tidak bisa diam"],
+  ["Saat belajar, aku suka suasana yang ...", "rapi, terang, dan banyak warna", "tenang atau diiringi suara lembut", "boleh sambil bergerak atau pindah tempat"]
+];
+const SOAL_VAK_ORTU = [
+  ["Saat mendengar cerita, anak saya lebih tertarik jika ...", "ada gambar di bukunya", "saya menirukan suara tokohnya", "boleh ikut memperagakan ceritanya"],
+  ["Anak saya paling cepat hafal ...", "gambar, warna, dan logo", "lagu, doa, dan nasyid", "gerakan, seperti gerakan salat atau tarian"],
+  ["Saat bermain sendiri, anak saya suka ...", "menggambar, mewarnai, atau melihat buku", "bernyanyi atau berbicara sendiri", "berlari, memanjat, atau menyusun balok"],
+  ["Saat diberi tahu sesuatu, anak saya ...", "lebih paham jika saya tunjukkan contohnya", "cukup mendengar penjelasan saya", "perlu mencobanya langsung"],
+  ["Anak saya mudah terganggu oleh ...", "banyak benda yang terlihat di sekitarnya", "suara TV atau obrolan orang", "harus duduk diam lama"],
+  ["Saat senang, anak saya biasanya ...", "tersenyum lebar dan matanya berbinar", "bersorak atau bercerita panjang", "melompat-lompat atau memeluk"],
+  ["Mainan favorit anak saya ...", "puzzle bergambar atau buku warna", "mainan berbunyi atau alat musik", "bola, sepeda, atau balok susun"],
+  ["Saat bertemu orang baru, anak saya ...", "memperhatikan wajah dan penampilannya", "mendengarkan suaranya atau langsung mengajak bicara", "ingin langsung mengajak bermain"],
+  ["Saat belajar huruf atau angka, anak saya lebih cepat dengan ...", "kartu bergambar berwarna", "lagu atau tepuk berirama", "menelusuri huruf dengan jari atau menyusunnya"],
+  ["Saat bepergian, anak saya ...", "sibuk melihat pemandangan", "banyak bertanya dan mengobrol", "sulit duduk diam di kendaraan"],
+  ["Anak saya paling ingat kejadian dari ...", "apa yang dilihatnya", "apa yang didengarnya", "apa yang dilakukannya"],
+  ["Saat menonton video, anak saya ...", "memperhatikan gambarnya dengan serius", "ikut menyanyi atau menirukan kata-katanya", "ikut bergerak atau berjoget"],
+  ["Saat kesal, anak saya biasanya ...", "cemberut dan diam", "menangis keras atau mengomel", "menghentakkan kaki atau melempar barang"],
+  ["Anak saya paling senang diberi ...", "stiker atau gambar sebagai hadiah", "pujian dengan kata-kata", "pelukan atau tos"],
+  ["Saat membantu di rumah, anak saya paling suka ...", "menata barang agar terlihat rapi", "menemani sambil mengobrol", "pekerjaan yang banyak bergerak, seperti menyiram tanaman"]
+];
+const soalTiga = (daftar, bagian) => acak(daftar).map(([t, v, a, k]) => ({ t, bagian, o: acak([[v, "V"], [a, "A"], [k, "K"]].map(([teks, nilai]) => ({ teks: kapital(teks), nilai }))) }));
+function hasilVAK(j, ortu) {
+  const R = hitungPilihan(j, KODE_VAK), p = {}; KODE_VAK.forEach((k) => (p[k] = Math.round((R.n[k] / R.total) * 100)));
+  const [a, b, c] = R.urut, V0 = VAK[a];
+  const tiga = p[a] - p[c] <= 12, dua = !tiga && p[a] - p[b] <= 10;
+  const label = tiga ? "Multimodal" : dua ? `${VAK[a].nama}–${VAK[b].nama}` : V0.nama;
+  const siapa = ortu ? "anak Ayah/Bunda" : "kamu", Siapa = ortu ? "Anak Ayah/Bunda" : "Kamu";
+  const nm = {}, wr = {}; KODE_VAK.forEach((k) => { nm[k] = VAK[k].ikon + " " + VAK[k].nama; wr[k] = k === a ? "var(--hf-hijau)" : "var(--hf-teal)"; });
+  const teks = `${V0.ikon} Hasil Tes Gaya Belajar ${nama}: ${label}\n${KODE_VAK.map((k) => `${VAK[k].nama} ${p[k]}%`).join(" • ")}`;
+  return {
+    ringkas: label,
+    piagam: `sebagai pembelajar ${label} pada Tes Gaya Belajar VAK`,
+    html: `<div class="kotak tengah" style="background:${V0.warna};border-color:transparent;color:#1d1a2f"><div class="besar">${tiga ? "🌈" : V0.ikon}</div>
+        <p style="margin:4px 0 0;font-weight:800">${ortu ? "Gaya belajar " + esc(nama) : "Halo, " + esc(nama) + "! Gaya belajarmu"}</p>
+        <div style="font-size:44px;font-weight:900;line-height:1.1">${label}</div>
+        <p style="margin:6px 0 0">${tiga ? `${Siapa} bisa belajar dengan melihat, mendengar, dan bergerak sama baiknya. Variasikan cara belajarnya.` : dua ? `${Siapa} paling mudah belajar dengan memadukan cara <b>${VAK[a].nama.toLowerCase()}</b> dan <b>${VAK[b].nama.toLowerCase()}</b>.` : `${V0.julukan}: ${V0.arti}.`}</p></div>
+      <h3>📊 Skor gaya belajar</h3>${meteran(p, R.urut, nm, wr, 100)}
+      ${(tiga ? R.urut : dua ? [a, b] : [a]).map((k) => { const v = VAK[k]; return `<div class="kotak"><b style="font-size:20px">${v.ikon} ${v.nama}: ${v.julukan}</b>
+        <p style="margin:6px 0"><b>Ciri-ciri:</b></p><ul style="margin:0 0 6px">${v.ciri.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <b>🏠 Tips belajar di rumah:</b><ul style="margin:4px 0 6px">${v.rumah.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <b>🏫 Tips untuk guru di kelas:</b><ul style="margin:4px 0 0">${v.kelas.map((x) => `<li>${x}</li>`).join("")}</ul></div>`; }).join("")}
+      <div class="kotak">💛 <b>Untuk Ayah/Bunda:</b> gaya belajar adalah cara yang paling <i>nyaman</i>, bukan satu-satunya cara. Tetap latih ${siapa} dengan cara lain, karena pelajaran yang memakai banyak indra biasanya paling melekat.</div>
+      ${blokKartuWA(teks, "hasil-gaya-belajar-vak.png")}
+      <p class="catatan-ortu">Soal disusun sendiri oleh HadirFlow berdasarkan model gaya belajar VAK (Visual, Auditori, Kinestetik). Ini untuk mengenal kebiasaan belajar, bukan tes psikologi resmi.</p>`,
+    setelah: () => gambarKartuHasil({ latar: V0.warna, emoji: tiga ? "🌈" : V0.ikon, judulAtas: "Gaya Belajarku", besar: label, warnaBesar: "#072B6B", judul: tiga ? "Pembelajar Serba Bisa" : dua ? V0.julukan + " & " + VAK[b].julukan : V0.julukan,
+      deskripsi: tiga ? "Belajar dengan melihat, mendengar, dan bergerak sama baiknya." : dua ? `Paling mudah belajar dengan ${KATA_VAK[a]} dan ${KATA_VAK[b]}.` : besarAwal(V0.arti) + ".", judulBatang: "Skor gaya belajar:", batang: R.urut.map((k) => [VAK[k].nama, p[k] / 100, k === a ? "#02a581" : "#02c2c1"]), penutup: "" })
+  };
+}
+TES.vak = {
+  nama: "Gaya Belajar VAK (Visual, Auditori, Kinestetik)", ikon: "👁️", warna: "#dceeff", kartu: true,
+  intro: `<p><b>20 pertanyaan, sekitar 4 menit.</b> Di setiap pertanyaan ada 3 pilihan. Pilih yang <b>paling mirip</b> dengan kebiasaanmu sehari-hari.</p>
+    <p>Hasilnya menunjukkan apakah kamu paling mudah belajar dengan <b>melihat</b> (Visual), <b>mendengar</b> (Auditori), atau <b>bergerak</b> (Kinestetik), lengkap dengan tips belajar di rumah dan di kelas.</p>
+    <p class="catatan-ortu">ℹ️ Cocok untuk SD kelas 3 ke atas sampai dewasa. Untuk anak TK atau SD kelas 1–2, pakai <b>Gaya Belajar Si Kecil</b> yang diisi orang tua.</p>`,
+  soal: () => soalTiga(SOAL_VAK, "Gaya Belajar VAK"),
+  hasil: (j) => hasilVAK(j, false)
+};
+TES.vakOrtu = {
+  nama: "Gaya Belajar Si Kecil (diisi Orang Tua)", ikon: "👨‍👩‍👧", warna: "#fff0d6", kartu: true,
+  intro: `<p><b>Untuk anak TK sampai SD kelas 2.</b> Ada 15 pertanyaan tentang kebiasaan anak sehari-hari. <b>Ayah/Bunda yang menjawab</b>, berdasarkan pengamatan selama ini.</p>
+    <p>Tulis nama anak di kolom nama. Pilih yang paling sering terlihat; kalau ragu, ingat kebiasaan anak dalam sebulan terakhir.</p>
+    <p class="catatan-ortu">ℹ️ Anak usia dini belum bisa menilai dirinya sendiri, jadi pengamatan orang tua lebih tepat. Hasilnya gaya belajar VAK (Visual, Auditori, Kinestetik) dengan tips kegiatan di rumah.</p>`,
+  soal: () => soalTiga(SOAL_VAK_ORTU, "Gaya Belajar Si Kecil • diisi orang tua"),
+  hasil: (j) => hasilVAK(j, true)
+};
+
+/* 8b. Empat gaya belajar remaja & dewasa (terinspirasi Honey & Mumford / siklus Kolb) */
+const KODE_GAYA4 = ["A", "R", "T", "P"];
+const GAYA4 = {
+  A: { nama: "Aktivis", julukan: "Belajar dengan mencoba", ikon: "🚀", warna: "#ffd6a5",
+    arti: "belajar paling baik dengan terjun langsung, mencoba, dan mengalami sendiri",
+    kuat: ["Berani mencoba hal baru", "Antusias dan cepat bergerak", "Hidup dalam kerja kelompok dan suasana ramai"],
+    tantangan: ["Cepat bosan dengan rutinitas", "Kadang bertindak sebelum berpikir", "Kurang sabar membaca penjelasan panjang"],
+    cocok: ["Simulasi, permainan peran, dan lomba", "Diskusi kelompok dan brainstorming", "Proyek singkat yang menantang", "Belajar sambil praktik langsung"],
+    kurang: "duduk lama mendengarkan ceramah, mengerjakan hal berulang, dan tugas tanpa keterlibatan",
+    saran: "Sebelum bertindak, sisihkan 2 menit untuk berpikir: apa tujuannya dan apa risikonya." },
+  R: { nama: "Reflektor", julukan: "Belajar dengan mengamati", ikon: "🔍", warna: "#bde0fe",
+    arti: "belajar paling baik dengan mengamati, mendengarkan, dan merenungkan sebelum bertindak",
+    kuat: ["Cermat dan teliti", "Pendengar yang baik", "Mempertimbangkan banyak sudut pandang"],
+    tantangan: ["Lambat mengambil keputusan", "Kurang nyaman tampil mendadak", "Kadang terlalu lama menimbang"],
+    cocok: ["Mengamati contoh atau demonstrasi dulu", "Menulis jurnal dan catatan refleksi", "Diskusi yang memberi waktu berpikir", "Membaca dan meninjau ulang materi"],
+    kurang: "diburu-buru, ditunjuk tanpa persiapan, dan tugas tanpa informasi cukup",
+    saran: "Beri batas waktu untuk menimbang, lalu berani memutuskan walau belum sempurna." },
+  T: { nama: "Teoris", julukan: "Belajar dengan memahami", ikon: "📐", warna: "#e2c2ff",
+    arti: "belajar paling baik dengan memahami konsep, teori, dan alasan di balik sesuatu",
+    kuat: ["Berpikir logis dan runtut", "Kritis dan suka bertanya \"mengapa\"", "Mampu menyusun gagasan menjadi sistem"],
+    tantangan: ["Kurang nyaman dengan hal yang tidak jelas", "Kadang terlalu perfeksionis", "Sulit menerima perasaan sebagai alasan"],
+    cocok: ["Membaca buku dan penjelasan yang mendalam", "Bagan, model, rumus, dan data", "Pertanyaan analisis dan pemecahan masalah", "Materi yang tersusun rapi dari dasar"],
+    kurang: "kegiatan tanpa tujuan jelas, coba-coba tanpa dasar, dan suasana yang serba spontan",
+    saran: "Sesekali coba dulu sebelum semua teorinya jelas, karena pengalaman juga sumber ilmu." },
+  P: { nama: "Pragmatis", julukan: "Belajar dengan menerapkan", ikon: "🛠️", warna: "#caffbf",
+    arti: "belajar paling baik ketika ilmunya bisa langsung dipraktikkan dan terlihat manfaatnya",
+    kuat: ["Praktis dan berorientasi hasil", "Cepat menerapkan ilmu baru", "Pemecah masalah yang realistis"],
+    tantangan: ["Tidak sabar dengan teori panjang", "Kadang memilih cara cepat daripada cara terbaik", "Kurang tertarik pada hal yang tidak langsung berguna"],
+    cocok: ["Studi kasus dan contoh nyata", "Praktik dengan bimbingan ahli", "Tips, trik, dan langkah kerja yang jelas", "Proyek yang hasilnya bisa dipakai"],
+    kurang: "materi yang terlalu teoritis, tidak ada contoh penerapan, dan tujuan yang jauh dari kenyataan",
+    saran: "Luangkan waktu memahami dasar teorinya, supaya bisa menerapkan ilmu di situasi baru." }
+};
+const SOAL_GAYA4 = [
+  ["Saya senang mencoba hal baru, walau belum tahu hasilnya.", "Saya suka mengamati dulu sebelum ikut terlibat.", "Saya ingin tahu teori atau alasan di balik sesuatu.", "Saya tertarik jika sesuatu bisa langsung dipakai."],
+  ["Saya cepat bosan dengan rutinitas.", "Saya suka mempertimbangkan banyak sudut pandang.", "Saya suka hal yang logis dan runtut.", "Saya suka mencari cara yang paling praktis."],
+  ["Dalam diskusi, saya biasanya yang pertama berbicara.", "Dalam diskusi, saya lebih banyak mendengarkan.", "Dalam diskusi, saya mempertanyakan alasan dan bukti.", "Dalam diskusi, saya mengarahkan ke solusi yang nyata."],
+  ["Saya belajar paling baik dengan langsung terjun.", "Saya belajar paling baik dengan mencatat dan merenungkan.", "Saya belajar paling baik dengan memahami konsepnya dulu.", "Saya belajar paling baik dari contoh penerapan nyata."],
+  ["Saya suka tantangan dan suasana yang ramai.", "Saya tidak suka diburu-buru saat memutuskan sesuatu.", "Saya tidak nyaman dengan hal yang tidak masuk akal.", "Saya tidak sabar dengan pembahasan yang terlalu teoritis."],
+  ["Saya sering bertindak dulu, berpikir kemudian.", "Saya mengumpulkan informasi sebanyak mungkin sebelum memutuskan.", "Saya suka menyusun gagasan menjadi kerangka yang utuh.", "Saya suka langsung menguji apakah sebuah ide berhasil."],
+  ["Saya senang bekerja kelompok dan bertukar ide spontan.", "Saya senang punya waktu sendiri untuk berpikir.", "Saya senang membaca penjelasan yang mendalam.", "Saya senang mendapat tips dan trik yang bisa langsung dicoba."],
+  ["Saya mudah antusias pada hal baru.", "Saya berhati-hati dan tidak terburu-buru.", "Saya teliti dan suka kesempurnaan.", "Saya realistis dan mementingkan hasil."],
+  ["Saya suka bermain peran, simulasi, dan permainan.", "Saya suka melihat orang lain melakukannya dulu.", "Saya suka menganalisis data, pola, dan sebab-akibat.", "Saya suka praktik dengan bimbingan dari ahlinya."],
+  ["Saya lebih suka bertindak daripada merencanakan.", "Saya lebih suka mendengar pendapat orang lain dulu.", "Saya lebih suka memahami prinsip dasarnya.", "Saya lebih suka melihat manfaat langsungnya."],
+  ["Saya mudah bosan jika harus mengulang hal yang sama.", "Saya kurang nyaman jika diminta tampil mendadak.", "Saya kurang nyaman jika tugas tidak jelas tujuannya.", "Saya kurang nyaman jika pelajaran tidak ada kaitannya dengan kenyataan."],
+  ["Saya sering punya banyak ide sekaligus.", "Saya sering menimbang untung-rugi dengan cermat.", "Saya sering bertanya, \"Apa dasarnya?\"", "Saya sering bertanya, \"Bagaimana cara memakainya?\""],
+  ["Saya suka tugas singkat yang menantang.", "Saya suka tugas yang memberi waktu untuk bersiap.", "Saya suka tugas yang terstruktur dengan tujuan jelas.", "Saya suka tugas yang hasilnya langsung terlihat."],
+  ["Setelah gagal, saya langsung mencoba lagi dengan cara lain.", "Setelah gagal, saya merenungkan apa yang terjadi.", "Setelah gagal, saya mencari penyebabnya secara logis.", "Setelah gagal, saya mencari cara yang sudah terbukti berhasil."],
+  ["Saya senang menjadi pusat perhatian.", "Saya senang menjadi pengamat yang cermat.", "Saya senang menjadi pemikir yang kritis.", "Saya senang menjadi pemecah masalah yang praktis."],
+  ["Saya lebih memilih pengalaman daripada penjelasan.", "Saya lebih memilih memahami secara menyeluruh daripada cepat.", "Saya lebih memilih teori yang kuat daripada coba-coba.", "Saya lebih memilih yang berguna daripada yang sekadar menarik."],
+  ["Saya suka curah gagasan dan berpikir di luar kebiasaan.", "Saya suka meninjau ulang catatan dan pengalaman.", "Saya suka model, rumus, dan sistem.", "Saya suka rencana kerja yang langsung bisa dijalankan."],
+  ["Saya senang ketika suasana berubah dan penuh kejutan.", "Saya senang ketika semua pendapat didengarkan.", "Saya senang ketika semuanya rapi dan masuk akal.", "Saya senang ketika pekerjaan selesai dengan efisien."],
+  ["Orang mengenal saya sebagai pribadi yang spontan.", "Orang mengenal saya sebagai pribadi yang tenang dan bijak.", "Orang mengenal saya sebagai pribadi yang analitis.", "Orang mengenal saya sebagai pribadi yang praktis."],
+  ["Saya belajar banyak dari mencoba dan berbuat salah.", "Saya belajar banyak dari mengamati dan mendengarkan.", "Saya belajar banyak dari membaca dan berpikir mendalam.", "Saya belajar banyak dari meniru cara yang terbukti berhasil."]
+];
+TES.gaya4 = {
+  nama: "4 Gaya Belajar Remaja & Dewasa", ikon: "🔄", warna: "#e6f7e9", kartu: true,
+  intro: `<p><b>20 kelompok pernyataan, sekitar 4 menit.</b> Di setiap kelompok ada 4 pernyataan. Pilih satu yang <b>paling</b> menggambarkan dirimu saat belajar atau bekerja.</p>
+    <p>Hasilnya satu dari 4 gaya: <b>Aktivis</b> (mencoba), <b>Reflektor</b> (mengamati), <b>Teoris</b> (memahami), atau <b>Pragmatis</b> (menerapkan).</p>
+    <p class="catatan-ortu">ℹ️ Untuk SMP, SMA, mahasiswa, guru, dan karyawan. Soal disusun sendiri oleh HadirFlow, terinspirasi model gaya belajar Honey & Mumford. Bukan tes resmi.</p>`,
+  soal: () => SOAL_GAYA4.map((pil) => ({ t: "Mana yang paling menggambarkan dirimu?", bagian: "4 Gaya Belajar", o: acak(pil.map((teks, i) => ({ teks, nilai: KODE_GAYA4[i] }))) })),
+  hasil(j) {
+    const R = hitungPilihan(j, KODE_GAYA4), p = {}; KODE_GAYA4.forEach((k) => (p[k] = Math.round((R.n[k] / R.total) * 100)));
+    const a = R.urut[0], b = R.urut[1], G = GAYA4[a], G2 = GAYA4[b], dukung = p[b] >= 25 && p[a] - p[b] <= 15;
+    const nm = {}, wr = {}; KODE_GAYA4.forEach((k) => { nm[k] = GAYA4[k].ikon + " " + GAYA4[k].nama; wr[k] = k === a ? "var(--hf-hijau)" : "var(--hf-teal)"; });
+    const teks = `${G.ikon} Hasil Tes Gaya Belajar ${nama}: ${G.nama}${dukung ? "–" + G2.nama : ""}\n${KODE_GAYA4.map((k) => `${GAYA4[k].nama} ${p[k]}%`).join(" • ")}`;
+    return {
+      ringkas: G.nama + (dukung ? "–" + G2.nama : ""),
+      html: `<div class="kotak tengah" style="background:${G.warna};border-color:transparent;color:#1d1a2f"><div class="besar">${G.ikon}</div>
+          <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Gaya belajarmu</p>
+          <div style="font-size:46px;font-weight:900;line-height:1.1">${G.nama}${dukung ? `<br><span style="font-size:26px">dan ${G2.nama}</span>` : ""}</div>
+          <p style="margin:6px 0 0">${G.julukan}: ${G.arti}.</p></div>
+        <h3>📊 Skor 4 gaya belajar</h3>${meteran(p, R.urut, nm, wr, 100)}
+        <h3>💪 Kekuatanmu</h3><ul>${G.kuat.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <h3>⚠️ Tantanganmu</h3><ul>${G.tantangan.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <h3>📚 Cara belajar yang paling cocok</h3><ul>${G.cocok.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <h3>🚫 Yang kurang cocok untukmu</h3><p>${besarAwal(G.kurang)}.</p>
+        ${dukung ? `<div class="kotak">Kamu juga cukup kuat sebagai <b>${G2.ikon} ${G2.nama}</b> (${G2.julukan.toLowerCase()}). Coba juga: ${G2.cocok[0].toLowerCase()}.</div>` : ""}
+        <h3>🌱 Saran pengembangan</h3><p>${G.saran}</p>
+        <div class="kotak">🔄 <b>Siklus belajar lengkap:</b> mencoba (Aktivis) → merenungkan (Reflektor) → menyimpulkan (Teoris) → menerapkan (Pragmatis). Pembelajar terbaik melatih keempatnya, bukan hanya gaya terkuat.</div>
+        ${blokKartuWA(teks, "hasil-4-gaya-belajar.png")}
+        <p class="catatan-ortu">Soal disusun sendiri oleh HadirFlow, terinspirasi model gaya belajar Honey & Mumford dan siklus belajar Kolb. Bukan tes psikologi resmi.</p>`,
+      setelah: () => gambarKartuHasil({ latar: G.warna, emoji: G.ikon, judulAtas: "Gaya Belajarku", besar: G.nama, warnaBesar: "#072B6B", judul: G.julukan, deskripsi: besarAwal(G.arti) + ".",
+        judulBatang: "Skor 4 gaya belajar:", batang: R.urut.map((k) => [GAYA4[k].nama, p[k] / 100, k === a ? "#02a581" : "#02c2c1"]), penutup: "" })
+    };
+  }
+};
+
 let tesTerkini = null;
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
 /* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
@@ -3176,7 +3390,8 @@ function buatDaftarTes() {
 }
 const GRUP_TES = [
   ["kecerdasan", "🧠 Tes Kecerdasan", ["otak", "majemuk", "ingat", "fokus", "ruang"]],
-  ["kepribadian", "🎭 Kepribadian & Gaya Belajar", ["mesin", "mbti", "disc", "temperamen"]],
+  ["gayabelajar", "📚 Tes Gaya Belajar", ["vak", "vakOrtu", "mesin", "gaya4"]],
+  ["kepribadian", "🎭 Tes Kepribadian", ["mbti", "disc", "temperamen"]],
   ["lainnya", "💛 Kenali Diri Lainnya", ["kekuatan", "mood", "darah"]]
 ];
 function tambahKartuTes(id, n, wadah) {
@@ -3283,7 +3498,7 @@ document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("clic
   const id = b.getAttribute("data-buka");
   if (id === "pelajaran") { gantiTab("tabPelajaran"); $("daftarJenjang").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
   if (id === "guru") { gantiTab("tabGuru"); $("guruNama").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-  if (id === "kepribadian" || id === "kecerdasan") { gantiTab("tabDiri"); ($("grup-" + id) || $("daftarTes")).scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (id === "kepribadian" || id === "kecerdasan" || id === "gayabelajar") { gantiTab("tabDiri"); ($("grup-" + id) || $("daftarTes")).scrollIntoView({ behavior: "smooth", block: "start" }); return; }
   gantiTab("tabDiri");
   if (!$("namaSiswa").value.trim()) { $("namaSiswa").focus(); $("pesanError").textContent = "Tulis nama anak dulu, lalu pilih tesnya. 😊"; return; }
   bukaTes(id);

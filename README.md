@@ -5,7 +5,7 @@ Kuis interaktif untuk siswa kelas 3 Madrasah Ibtidaiyah, siap ditempel di **Goog
 Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 
 ## Isi
-- 🧠 Tes Kecerdasan: ala IQ, 🌈 Kecerdasan Majemuk, 💭 Daya Ingat, 🎯 Konsentrasi, 🧊 Ruang (Spasial); 🧬 Tes Gaya Belajar (ala STIFIn), 🎭 Tes Kepribadian (ala MBTI, DISC, Temperamen), plus Kelebihanku, Mood, dan Golongan Darah.
+- 🧠 Tes Kecerdasan: ala IQ, 🌈 Kecerdasan Majemuk, 💭 Daya Ingat, 🎯 Konsentrasi, 🧊 Ruang (Spasial); 📚 Tes Gaya Belajar (VAK, Si Kecil diisi orang tua, ala STIFIn, 4 Gaya remaja & dewasa), 🎭 Tes Kepribadian (ala MBTI, DISC, Temperamen), plus Kelebihanku, Mood, dan Golongan Darah.
 - 📚 **Kuis Pelajaran TK–SMA**: pilih jenjang → kelas → pelajaran. Soal dibuat otomatis per kelas (`generatorKelas` di `src/`).
   - TK A/B: Mengenal Huruf, Mengenal Angka, Warna & Bentuk
   - SD/MI 1–6: Matematika, Bahasa Indonesia, Bahasa Inggris, IPAS, PAI, Fiqih, Bahasa Arab
@@ -78,6 +78,16 @@ Skrip `deploy/pasang-di-vps.sh` akan:
 Setelah dijalankan, **semua file** di `kuistes/` mengikuti GitHub secara otomatis setiap 10 menit (`/usr/local/bin/kuistes-perbarui`). Setiap file dicek sidik jari SHA-256 terhadap `kuistes/daftar-file.txt`; hanya file statis yang disalin.
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
+
+## Tes gaya belajar
+| Tes | Untuk | Isi | Hasil |
+|---|---|---|---|
+| 👁️ VAK | SD kelas 3 – dewasa | 20 situasi, 3 pilihan (diacak) | Visual / Auditori / Kinestetik, gabungan bila selisih ≤ 10%, Multimodal bila ketiganya dekat; tips di rumah & kelas |
+| 👨‍👩‍👧 Si Kecil | TK – SD kelas 2, diisi orang tua | 15 pengamatan kebiasaan anak | Sama seperti VAK, dengan sapaan untuk orang tua |
+| 🧬 ala STIFIn | Anak | 30 pertanyaan, 5 pilihan (diacak) | 5 mesin + persentase, penanda bila seri |
+| 🔄 4 Gaya | SMP – dewasa | 20 kelompok, 4 pernyataan | Aktivis / Reflektor / Teoris / Pragmatis (ala Honey & Mumford), siklus Kolb |
+
+Semua punya kartu Status WA. Simulasi 3.000 penjawab tiruan: ketepatan VAK 100%, Si Kecil 99%, 4 Gaya 99%, STIFIn 97% → 100% setelah soal digandakan.
 
 ## Tes kecerdasan
 | Tes | Isi | Hasil |
