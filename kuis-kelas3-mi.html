@@ -190,6 +190,44 @@
   .opsi.salah { background: #ffe1e8; border-color: var(--salah); animation: geleng .35s; }
   .opsi.salah .huruf { background: var(--salah); color: #fff; }
   .opsi:disabled { cursor: default; }
+  .judul-grup { grid-column: 1 / -1; font-weight: 800; font-size: 18px; color: var(--ink); margin: 10px 0 -2px; scroll-margin-top: 80px; }
+  .judul-grup:first-child { margin-top: 0; }
+  .tes-gambar { display: none; justify-content: center; margin: -4px 0 14px; }
+  .tes-gambar svg { max-width: 100%; height: auto; }
+  .opsi-list.opsi-gambar { grid-template-columns: 1fr 1fr; }
+  .opsi-gambar .opsi { flex-direction: column; justify-content: center; gap: 6px; padding: 10px 8px; min-height: 120px; }
+  .opsi-gambar .opsi .huruf { width: 30px; height: 30px; font-size: 15px; }
+  .opsi-gambar .opsi:hover:not(:disabled) { transform: translateY(-2px); }
+  .opsi-gambar .isi-opsi { display: flex; align-items: center; justify-content: center; flex: 1; }
+  .opsi-gambar .isi-opsi svg { max-width: 100%; max-height: 130px; height: auto; width: auto; }
+  .area-main { gap: 12px; }
+  .status-main { text-align: center; font-weight: 700; margin: 0; }
+  .layar-ingat { height: 150px; display: grid; place-items: center; font-size: 96px; font-weight: 900; color: var(--navy); background: #f3f6fb; border-radius: 22px; }
+  .layar-ingat.muncul { animation: muncul .2s; }
+  .papan-ingat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 330px; width: 100%; margin: 0 auto; }
+  .sel-ingat { font: inherit; font-size: 34px; font-weight: 800; aspect-ratio: 1; min-height: 64px; border: 3px solid var(--line); border-radius: 18px; background: #fff; color: var(--navy); cursor: pointer; touch-action: manipulation; }
+  .sel-ingat:disabled { cursor: default; opacity: 1; }
+  .sel-ingat.tekan { background: #dcf7e8; transform: scale(.94); }
+  .papan-ingat.posisi .sel-ingat { background: #eef2f8; }
+  .papan-ingat.posisi .sel-ingat.nyala { background: #ffd23f; border-color: #f0b400; }
+  .papan-ingat.posisi .sel-ingat.tekan { background: var(--hf-teal); }
+  .slot-ingat { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .slot-ingat span { width: 40px; height: 44px; border: 3px dashed var(--line); border-radius: 12px; display: grid; place-items: center; font-size: 24px; font-weight: 800; }
+  .slot-ingat span.terisi { border-style: solid; border-color: var(--hf-hijau); background: #e9f9f3; }
+  .target-fokus { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px; background: #f3f6fb; border-radius: 20px; }
+  .target-fokus span { font-size: 72px; line-height: 1.1; font-weight: 900; color: var(--navy); }
+  .target-fokus.svg span svg { width: 72px; height: 72px; }
+  .bar-fokus { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 18px; position: sticky; top: 0; background: #fff; padding: 6px 0; z-index: 2; }
+  .bar-fokus .mini { font-size: 30px; font-weight: 900; color: var(--navy); line-height: 1; }
+  .bar-fokus .merah { color: #d62f4f; }
+  .papan-fokus { display: grid; gap: 6px; }
+  .sel-fokus { font: inherit; aspect-ratio: 1; min-height: 40px; padding: 0; border: 2px solid var(--line); border-radius: 12px; background: #fff; display: grid; place-items: center; cursor: pointer; touch-action: manipulation; font-size: clamp(22px, 6vw, 34px); line-height: 1; color: var(--navy); }
+  .papan-fokus.huruf .sel-fokus { font-weight: 800; font-family: Nunito, Arial, sans-serif; }
+  .papan-fokus.svg .sel-fokus svg { width: 62%; height: 62%; }
+  .sel-fokus.kena { background: #dcf7e8; border-color: var(--hf-hijau); opacity: .55; }
+  .sel-fokus.keliru { background: #ffe1e8; border-color: #d62f4f; animation: geleng .3s; }
+  .sel-fokus.terlewat { background: #fff4cc; border-color: #f0b400; }
+  .sel-fokus:disabled { cursor: default; color: var(--navy); }
   @keyframes geleng { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
   .umpan { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 18px; font-weight: 700; }
@@ -361,7 +399,7 @@
       <h1>Tes Gratis HadirFlow</h1>
       <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA yang soalnya selalu baru.</p>
       <div class="lencana">
-        <button type="button" data-buka="otak"><span class="ik">🧠</span><span class="isi"><strong>Tes Kecerdasan</strong><small>ala IQ • 20 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="kecerdasan"><span class="ik">🧠</span><span class="isi"><strong>Tes Kecerdasan</strong><small>IQ • Majemuk • Ingatan • Fokus • Ruang</small></span><em>Gratis</em></button>
         <button type="button" data-buka="mesin"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>ala STIFIn • 15 soal</small></span><em>Gratis</em></button>
         <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>MBTI • DISC • Temperamen</small></span><em>Gratis</em></button>
         <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
@@ -450,7 +488,7 @@
     </div>
     <div class="kartu tautan-seo">
       <p class="judul">📚 Latihan soal per kelas</p>
-      <p class="judul">TK</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-huruf-tk-a/">Mengenal Huruf TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-angka-tk-a/">Mengenal Angka TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-warna-dan-bentuk-tk-a/">Warna & Bentuk TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-huruf-tk-b/">Mengenal Huruf TK B</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-angka-tk-b/">Mengenal Angka TK B</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-warna-dan-bentuk-tk-b/">Warna & Bentuk TK B</a></p><p class="judul">SD/MI</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-1-sd/">Matematika Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-1-sd/">Bahasa Indonesia Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-1-sd/">Bahasa Inggris Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-1-sd/">IPAS Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-1-sd/">Pendidikan Agama Islam Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-1-sd/">Fiqih Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-1-sd/">Bahasa Arab Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-2-sd/">Matematika Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-2-sd/">Bahasa Indonesia Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-2-sd/">Bahasa Inggris Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-2-sd/">IPAS Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-2-sd/">Pendidikan Agama Islam Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-2-sd/">Fiqih Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-2-sd/">Bahasa Arab Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-3-sd/">Matematika Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-3-sd/">Bahasa Indonesia Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-3-sd/">Bahasa Inggris Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-3-sd/">IPAS Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-3-sd/">Pendidikan Agama Islam Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-3-sd/">Fiqih Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-3-sd/">Bahasa Arab Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-4-sd/">Matematika Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-4-sd/">Bahasa Indonesia Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-4-sd/">Bahasa Inggris Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-4-sd/">IPAS Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-4-sd/">Pendidikan Agama Islam Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-4-sd/">Fiqih Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-4-sd/">Bahasa Arab Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-5-sd/">Matematika Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-5-sd/">Bahasa Indonesia Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-5-sd/">Bahasa Inggris Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-5-sd/">IPAS Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-5-sd/">Pendidikan Agama Islam Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-5-sd/">Fiqih Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-5-sd/">Bahasa Arab Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-6-sd/">Matematika Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-6-sd/">Bahasa Indonesia Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-6-sd/">Bahasa Inggris Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-6-sd/">IPAS Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-6-sd/">Pendidikan Agama Islam Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-6-sd/">Fiqih Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-6-sd/">Bahasa Arab Kelas 6</a></p><p class="judul">SMP/MTs</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-7-smp/">Matematika Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-7-smp/">Bahasa Indonesia Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-7-smp/">Bahasa Inggris Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-7-smp/">IPA Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-8-smp/">Matematika Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-8-smp/">Bahasa Indonesia Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-8-smp/">Bahasa Inggris Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-8-smp/">IPA Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-9-smp/">Matematika Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-9-smp/">Bahasa Indonesia Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-9-smp/">Bahasa Inggris Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-9-smp/">IPA Kelas 9</a></p><p class="judul">SMA/MA</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-10-sma/">Matematika Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-10-sma/">Bahasa Indonesia Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-10-sma/">Bahasa Inggris Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-10-sma/">Fisika Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-10-sma/">Kimia Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-10-sma/">Biologi Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-11-sma/">Matematika Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-11-sma/">Bahasa Indonesia Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-11-sma/">Bahasa Inggris Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-11-sma/">Fisika Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-11-sma/">Kimia Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-11-sma/">Biologi Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-12-sma/">Matematika Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-12-sma/">Bahasa Indonesia Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-12-sma/">Bahasa Inggris Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-12-sma/">Fisika Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-12-sma/">Kimia Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-12-sma/">Biologi Kelas 12</a></p><p class="judul">Tes</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-iq-anak/">Tes Kecerdasan Anak (ala IQ)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-gaya-belajar/">Tes Gaya Belajar Anak (ala STIFIn)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-kepribadian/">Tes Kepribadian: MBTI, DISC, dan Temperamen</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-mbti/">Tes MBTI (16 Tipe Kepribadian)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-disc/">Tes DISC (Gaya Perilaku)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-temperamen/">Tes Temperamen (Koleris, Sanguinis, Melankolis, Plegmatis)</a></p>
+      <p class="judul">TK</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-huruf-tk-a/">Mengenal Huruf TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-angka-tk-a/">Mengenal Angka TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-warna-dan-bentuk-tk-a/">Warna & Bentuk TK A</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-huruf-tk-b/">Mengenal Huruf TK B</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-mengenal-angka-tk-b/">Mengenal Angka TK B</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-warna-dan-bentuk-tk-b/">Warna & Bentuk TK B</a></p><p class="judul">SD/MI</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-1-sd/">Matematika Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-1-sd/">Bahasa Indonesia Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-1-sd/">Bahasa Inggris Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-1-sd/">IPAS Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-1-sd/">Pendidikan Agama Islam Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-1-sd/">Fiqih Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-1-sd/">Bahasa Arab Kelas 1</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-2-sd/">Matematika Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-2-sd/">Bahasa Indonesia Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-2-sd/">Bahasa Inggris Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-2-sd/">IPAS Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-2-sd/">Pendidikan Agama Islam Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-2-sd/">Fiqih Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-2-sd/">Bahasa Arab Kelas 2</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-3-sd/">Matematika Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-3-sd/">Bahasa Indonesia Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-3-sd/">Bahasa Inggris Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-3-sd/">IPAS Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-3-sd/">Pendidikan Agama Islam Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-3-sd/">Fiqih Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-3-sd/">Bahasa Arab Kelas 3</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-4-sd/">Matematika Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-4-sd/">Bahasa Indonesia Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-4-sd/">Bahasa Inggris Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-4-sd/">IPAS Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-4-sd/">Pendidikan Agama Islam Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-4-sd/">Fiqih Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-4-sd/">Bahasa Arab Kelas 4</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-5-sd/">Matematika Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-5-sd/">Bahasa Indonesia Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-5-sd/">Bahasa Inggris Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-5-sd/">IPAS Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-5-sd/">Pendidikan Agama Islam Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-5-sd/">Fiqih Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-5-sd/">Bahasa Arab Kelas 5</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-6-sd/">Matematika Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-6-sd/">Bahasa Indonesia Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-6-sd/">Bahasa Inggris Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipas-kelas-6-sd/">IPAS Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-pai-kelas-6-sd/">Pendidikan Agama Islam Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fiqih-kelas-6-sd/">Fiqih Kelas 6</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-arab-kelas-6-sd/">Bahasa Arab Kelas 6</a></p><p class="judul">SMP/MTs</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-7-smp/">Matematika Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-7-smp/">Bahasa Indonesia Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-7-smp/">Bahasa Inggris Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-7-smp/">IPA Kelas 7</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-8-smp/">Matematika Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-8-smp/">Bahasa Indonesia Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-8-smp/">Bahasa Inggris Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-8-smp/">IPA Kelas 8</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-9-smp/">Matematika Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-9-smp/">Bahasa Indonesia Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-9-smp/">Bahasa Inggris Kelas 9</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-ipa-kelas-9-smp/">IPA Kelas 9</a></p><p class="judul">SMA/MA</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-10-sma/">Matematika Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-10-sma/">Bahasa Indonesia Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-10-sma/">Bahasa Inggris Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-10-sma/">Fisika Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-10-sma/">Kimia Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-10-sma/">Biologi Kelas 10</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-11-sma/">Matematika Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-11-sma/">Bahasa Indonesia Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-11-sma/">Bahasa Inggris Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-11-sma/">Fisika Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-11-sma/">Kimia Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-11-sma/">Biologi Kelas 11</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-matematika-kelas-12-sma/">Matematika Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-indonesia-kelas-12-sma/">Bahasa Indonesia Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-bahasa-inggris-kelas-12-sma/">Bahasa Inggris Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-fisika-kelas-12-sma/">Fisika Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-kimia-kelas-12-sma/">Kimia Kelas 12</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/kuis-biologi-kelas-12-sma/">Biologi Kelas 12</a></p><p class="judul">Tes</p><p><a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-iq-anak/">Tes Kecerdasan Anak (ala IQ)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-kecerdasan-majemuk/">Tes Kecerdasan Majemuk Anak (8 Kecerdasan)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-daya-ingat/">Tes Daya Ingat Anak</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-konsentrasi/">Tes Konsentrasi Anak</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-spasial/">Tes Kemampuan Ruang (Spasial)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-gaya-belajar/">Tes Gaya Belajar Anak (ala STIFIn)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-kepribadian/">Tes Kepribadian: MBTI, DISC, dan Temperamen</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-mbti/">Tes MBTI (16 Tipe Kepribadian)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-disc/">Tes DISC (Gaya Perilaku)</a> <a class="chip-seo" href="https://hadirflow.my.id/kuistes/tes-temperamen/">Tes Temperamen (Koleris, Sanguinis, Melankolis, Plegmatis)</a></p>
     </div>
     <footer class="kaki"><img data-logo alt="" width="19" height="22">Dipersembahkan oleh <a href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=footer" target="_blank" rel="noopener">HadirFlow</a>: absensi wajah &amp; penggajian otomatis untuk sekolah dan usaha.<br>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
   </section>
@@ -487,6 +525,7 @@
     <div class="kartu">
       <button type="button" class="btn-suara" id="btnSuaraTes" aria-label="Bacakan soal" title="Bacakan soal">🔊</button>
       <p class="soal" id="tesSoal"></p>
+      <div class="tes-gambar" id="tesGambar"></div>
       <div class="opsi-list" id="tesOpsi"></div>
       <div class="tengah"><button type="button" class="link-reset" id="btnTesMundur">⬅️ Soal sebelumnya</button></div>
     </div>
@@ -589,6 +628,10 @@ window.onerror = function (msg, src, baris) {
 };
 </script>
 <script>
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, e) { if ("object" != _typeof(t) || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -5530,7 +5573,7 @@ function terapkanTautan() {
     renderPilihan();
     if (pilihanMapel) $("infoPilihan").textContent = "✅ Kamu memilih: " + MAPEL_INFO[pilihanMapel].ikon + " " + MAPEL_INFO[pilihanMapel].nama + " • " + KELAS_INFO[kelasAktif].nama;
   }
-  if (TES[PARAM.tes] || PARAM.tes === "kepribadian") gantiTab("tabDiri");
+  if (TES[PARAM.tes] || PARAM.tes === "kepribadian" || PARAM.tes === "kecerdasan") gantiTab("tabDiri");
   if (PARAM.tab === "guru") gantiTab("tabGuru");
 }
 function terapkanKuisGuru() {
@@ -5621,6 +5664,1033 @@ function salinLinkGuru() {
 }
 
 /* ---------- MESIN TES ---------- */
+/* ---------- 7. TES KECERDASAN TAMBAHAN: Majemuk, Daya Ingat, Konsentrasi, Ruang ---------- */
+var catatanKecerdasan = "<p class=\"catatan-ortu\">Ini latihan dan pengenalan diri, bukan tes psikologi resmi. Kemampuan anak terus berkembang dan bisa dilatih. Soal selalu berganti, jadi tes bisa diulang.</p>";
+var namaLevel = function namaLevel() {
+  return LEVEL_OTAK[levelOtak - 1][0];
+};
+
+/* 7a. Kecerdasan Majemuk (berdasarkan teori 8 kecerdasan Howard Gardner) */
+var KODE_MAJEMUK = ["L", "M", "V", "U", "K", "I", "N", "A"];
+var MAJEMUK = {
+  L: {
+    nama: "Cerdas Bahasa",
+    pendek: "Bahasa",
+    julukan: "Si Pintar Kata",
+    ikon: "🗣️",
+    warna: "#ffd6a5",
+    arti: "pandai mengolah kata: senang membaca, bercerita, dan menulis",
+    belajar: ["Membaca materi dengan suara keras", "Merangkum pelajaran dengan kata-kata sendiri", "Menjelaskan kembali pelajaran kepada orang lain"],
+    kegiatan: "klub membaca, lomba pidato atau bercerita, menulis cerpen, majalah dinding",
+    profesi: "penulis, wartawan, guru, penyiar, pengacara, diplomat"
+  },
+  M: {
+    nama: "Cerdas Logika-Matematika",
+    pendek: "Logika",
+    julukan: "Si Pemikir Logis",
+    ikon: "🔢",
+    warna: "#bde0fe",
+    arti: "pandai berhitung, menalar, dan mencari sebab-akibat",
+    belajar: ["Membuat langkah-langkah yang runtut dan tabel", "Mencari pola dan alasan di balik setiap materi", "Banyak latihan soal dan percobaan sederhana"],
+    kegiatan: "olimpiade matematika atau sains, catur, coding dan robotik, karya ilmiah remaja",
+    profesi: "ilmuwan, insinyur, programmer, akuntan, dokter, peneliti"
+  },
+  V: {
+    nama: "Cerdas Gambar (Visual)",
+    pendek: "Visual",
+    julukan: "Si Ahli Gambar",
+    ikon: "🎨",
+    warna: "#e2c2ff",
+    arti: "kuat membayangkan bentuk, warna, dan ruang",
+    belajar: ["Membuat peta pikiran (mind map) yang berwarna", "Mengubah materi menjadi gambar, bagan, atau diagram", "Belajar dari video, foto, dan peta"],
+    kegiatan: "menggambar, melukis, fotografi, desain grafis, origami",
+    profesi: "arsitek, desainer, pelukis, animator, fotografer, pilot"
+  },
+  U: {
+    nama: "Cerdas Musik",
+    pendek: "Musik",
+    julukan: "Si Peka Nada",
+    ikon: "🎵",
+    warna: "#ffc8dd",
+    arti: "peka terhadap nada, irama, dan bunyi",
+    belajar: ["Menghafal dengan lagu atau irama", "Membuat singkatan yang dinyanyikan", "Belajar diiringi musik yang lembut"],
+    kegiatan: "paduan suara, hadroh atau marawis, belajar alat musik, tilawah",
+    profesi: "musisi, penyanyi, komposer, guru musik, penata suara, qari"
+  },
+  K: {
+    nama: "Cerdas Gerak (Kinestetik)",
+    pendek: "Gerak",
+    julukan: "Si Lincah",
+    ikon: "⚽",
+    warna: "#caffbf",
+    arti: "paling mudah belajar dengan bergerak dan praktik langsung",
+    belajar: ["Praktik langsung dan memakai alat peraga", "Belajar sambil bergerak, misalnya berjalan saat menghafal", "Beri jeda gerak setiap 20 menit belajar"],
+    kegiatan: "olahraga, pencak silat, tari, pramuka, kerajinan tangan",
+    profesi: "atlet, pelatih, penari, dokter bedah, montir, koki"
+  },
+  I: {
+    nama: "Cerdas Bergaul (Interpersonal)",
+    pendek: "Bergaul",
+    julukan: "Si Ramah",
+    ikon: "🤝",
+    warna: "#fdffb6",
+    arti: "mudah memahami perasaan orang lain dan bekerja sama",
+    belajar: ["Belajar kelompok dan berdiskusi", "Mengajari teman materi yang sudah dipahami", "Bermain peran dan tanya-jawab"],
+    kegiatan: "OSIS, pramuka, kegiatan sosial, drama, organisasi kelas",
+    profesi: "guru, psikolog, pemimpin, pengusaha, perawat, diplomat"
+  },
+  N: {
+    nama: "Cerdas Mengenal Diri (Intrapersonal)",
+    pendek: "Diri",
+    julukan: "Si Bijak",
+    ikon: "🪞",
+    warna: "#a0e7e5",
+    arti: "mengenal perasaan, kekuatan, dan tujuan dirinya sendiri",
+    belajar: ["Membuat target belajar pribadi", "Belajar mandiri di tempat yang tenang", "Menulis jurnal tentang apa yang sudah dipelajari"],
+    kegiatan: "menulis jurnal, membaca, tahfiz, kegiatan mandiri yang bertarget",
+    profesi: "penulis, peneliti, psikolog, pengusaha, konselor, ulama"
+  },
+  A: {
+    nama: "Cerdas Alam (Naturalis)",
+    pendek: "Alam",
+    julukan: "Si Pecinta Alam",
+    ikon: "🌿",
+    warna: "#b9fbc0",
+    arti: "peka dan peduli pada hewan, tumbuhan, dan lingkungan",
+    belajar: ["Belajar di luar ruangan dan mengamati langsung", "Mengelompokkan dan membandingkan benda", "Mengaitkan pelajaran dengan alam sekitar"],
+    kegiatan: "berkebun, memelihara hewan, pecinta alam, pramuka, klub lingkungan",
+    profesi: "dokter hewan, ahli pertanian, ahli biologi, geolog, peternak, aktivis lingkungan"
+  }
+};
+var SOAL_MAJEMUK = {
+  L: ["Saya senang membaca buku cerita atau komik.", "Saya suka bercerita atau menjelaskan sesuatu kepada orang lain.", "Saya mudah mengingat kata-kata baru, pantun, atau lirik.", "Saya suka menulis cerita, puisi, atau catatan harian.", "Saya senang bermain tebak kata atau sambung kata."],
+  M: ["Saya senang berhitung dan mengerjakan soal matematika.", "Saya sering bertanya “mengapa” dan “bagaimana” sesuatu bisa terjadi.", "Saya suka teka-teki, catur, atau permainan strategi.", "Saya suka mengurutkan atau mengelompokkan barang dengan rapi.", "Saya senang mencoba percobaan sains sederhana."],
+  V: ["Saya senang menggambar, mewarnai, atau mencoret-coret.", "Saya mudah mengingat jalan atau tempat yang pernah saya datangi.", "Saya suka menyusun lego, balok, atau puzzle.", "Saya lebih mudah paham jika ada gambar, peta, atau video.", "Saya memperhatikan warna dan bentuk benda di sekitar saya."],
+  U: ["Saya senang bernyanyi atau bersenandung.", "Saya cepat hafal lagu atau nada yang baru didengar.", "Saya suka mengetuk-ngetuk meja mengikuti irama.", "Saya cepat sadar jika ada nada yang sumbang.", "Saya ingin atau sudah belajar memainkan alat musik."],
+  K: ["Saya senang berolahraga, berlari, atau bermain di luar.", "Saya sulit duduk diam terlalu lama.", "Saya lebih cepat paham jika langsung mempraktikkannya.", "Saya suka menari, senam, atau menirukan gerakan.", "Saya terampil membuat kerajinan atau membongkar-pasang barang."],
+  I: ["Saya mudah berteman dengan anak baru.", "Saya senang belajar atau bermain bersama teman-teman.", "Teman-teman sering bercerita atau meminta bantuan kepada saya.", "Saya bisa merasakan jika teman sedang sedih.", "Saya suka menjadi ketua atau mengatur kegiatan kelompok."],
+  N: ["Saya tahu apa yang saya sukai dan tidak saya sukai.", "Saya senang punya waktu sendiri untuk berpikir atau berkhayal.", "Saya suka membuat target atau cita-cita untuk diri sendiri.", "Setelah berbuat salah, saya memikirkan cara agar lebih baik.", "Saya bisa mengerjakan tugas sendiri tanpa terus diingatkan."],
+  A: ["Saya senang memelihara hewan atau merawat tanaman.", "Saya suka berada di alam terbuka seperti kebun, pantai, atau gunung.", "Saya suka mengamati serangga, burung, atau tumbuhan.", "Saya senang mengoleksi daun, batu, kerang, atau benda alam lainnya.", "Saya peduli pada kebersihan lingkungan dan makhluk hidup."]
+};
+var SKALA_SESUAI = [["😄 Sangat sesuai dengan saya", 3], ["🙂 Sesuai", 2], ["😐 Kadang-kadang", 1], ["🙅 Tidak sesuai", 0]];
+function hitungMajemuk(j, soal) {
+  var n = {};
+  KODE_MAJEMUK.forEach(function (k) {
+    return n[k] = 0;
+  });
+  soal.forEach(function (s, i) {
+    if (typeof j[i] === "number") n[s.k] += j[i];
+  });
+  var maks = SOAL_MAJEMUK.L.length * 3,
+    p = {};
+  KODE_MAJEMUK.forEach(function (k) {
+    return p[k] = Math.round(n[k] / maks * 100);
+  });
+  var urut = KODE_MAJEMUK.slice().sort(function (a, b) {
+    return p[b] - p[a] || KODE_MAJEMUK.indexOf(a) - KODE_MAJEMUK.indexOf(b);
+  });
+  return {
+    p: p,
+    urut: urut
+  };
+}
+TES.majemuk = {
+  nama: "Kecerdasan Majemuk (8 Kecerdasan)",
+  ikon: "🌈",
+  warna: "#ffe5f1",
+  kartu: true,
+  intro: "<p><b>40 pernyataan, sekitar 5 menit.</b> Pilih seberapa sesuai setiap pernyataan dengan dirimu sehari-hari.</p>\n    <p>Setiap anak cerdas dengan caranya sendiri. Tes ini mencari kecerdasan yang paling menonjol dari 8 jenis: <b>bahasa, logika-matematika, gambar, musik, gerak, bergaul, mengenal diri,</b> dan <b>alam</b>.</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Disusun HadirFlow berdasarkan teori Kecerdasan Majemuk (Howard Gardner). Untuk anak yang belum lancar membaca, Ayah/Bunda boleh membacakan pernyataannya. Ini bukan tes psikologi resmi.</p>",
+  soal: function soal() {
+    return acak(KODE_MAJEMUK.reduce(function (a, k) {
+      return a.concat(SOAL_MAJEMUK[k].map(function (t) {
+        return {
+          t: t,
+          k: k,
+          bagian: "Kecerdasan Majemuk",
+          o: opsi(SKALA_SESUAI)
+        };
+      }));
+    }, []));
+  },
+  hasil: function hasil(j, extra) {
+    var R = hitungMajemuk(j, extra.soal),
+      top = R.urut.slice(0, 3),
+      M0 = MAJEMUK[top[0]];
+    var teks = "\uD83C\uDF08 Hasil Tes Kecerdasan Majemuk ".concat(nama, ": paling menonjol ").concat(top.map(function (k) {
+      return MAJEMUK[k].pendek;
+    }).join(", "), "\n").concat(R.urut.map(function (k) {
+      return "".concat(MAJEMUK[k].pendek, " ").concat(R.p[k], "%");
+    }).join(" • "));
+    var nm = {},
+      wr = {};
+    KODE_MAJEMUK.forEach(function (k) {
+      nm[k] = MAJEMUK[k].ikon + " " + MAJEMUK[k].pendek;
+      wr[k] = "var(--hf-hijau)";
+    });
+    return {
+      ringkas: top.map(function (k) {
+        return MAJEMUK[k].pendek;
+      }).join(" • "),
+      html: "<div class=\"kotak tengah\" style=\"background:".concat(M0.warna, ";border-color:transparent;color:#1d1a2f\"><div class=\"besar\">").concat(M0.ikon, "</div>\n          <p style=\"margin:4px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Kecerdasanmu yang paling menonjol</p>\n          <h2 style=\"margin:6px 0;font-size:30px\">").concat(M0.nama, "</h2><p style=\"margin:0\">").concat(M0.julukan, ": ").concat(M0.arti, ".</p></div>\n        <h3>\uD83D\uDCCA Peta 8 kecerdasanmu</h3>").concat(R.urut.map(function (k) {
+        return meteran(R.p, [k], nm, _defineProperty({}, k, top.indexOf(k) >= 0 ? "var(--hf-hijau)" : "var(--hf-teal)"), 100);
+      }).join(""), "\n        <h3>\uD83C\uDFC6 3 kecerdasan terkuatmu</h3>\n        ").concat(top.map(function (k, i) {
+        var m = MAJEMUK[k];
+        return "<div class=\"kotak\"><b style=\"font-size:20px\">".concat(i + 1, ". ").concat(m.ikon, " ").concat(m.nama, "</b> <span class=\"sub-kecil\">\u2022 ").concat(R.p[k], "%</span>\n          <p style=\"margin:6px 0\">").concat(besarAwal(m.julukan), ": ").concat(m.arti, ".</p>\n          <b>\uD83D\uDCDA Cara belajar yang cocok:</b><ul style=\"margin:4px 0 8px\">").concat(m.belajar.map(function (x) {
+          return "<li>".concat(x, "</li>");
+        }).join(""), "</ul>\n          <b>\uD83C\uDFAF Kegiatan yang mendukung:</b> ").concat(m.kegiatan, ".<br><b>\uD83D\uDCBC Contoh cita-cita:</b> ").concat(m.profesi, ".</div>");
+      }).join(""), "\n        <h3>\uD83C\uDF31 Bisa terus dikembangkan</h3><p>Kecerdasan <b>").concat(R.urut.slice(-2).map(function (k) {
+        return MAJEMUK[k].pendek.toLowerCase();
+      }).join("</b> dan <b>"), "</b> mungkin belum banyak dilatih. Coba kegiatan seperti ").concat(R.urut.slice(-2).map(function (k) {
+        return MAJEMUK[k].kegiatan.split(", ")[0];
+      }).join(" atau "), " sesekali, tanpa paksaan.</p>\n        <div class=\"kotak\">\uD83D\uDC9B <b>Untuk Ayah/Bunda:</b> setiap anak punya kecerdasan yang berbeda, dan semuanya berharga. Dukung kecerdasan yang menonjol, dan beri kesempatan mencoba hal lain. Hasil bisa berubah seiring bertambahnya pengalaman anak.</div>\n        ").concat(blokKartuWA(teks, "hasil-kecerdasan-majemuk.png"), "\n        <p class=\"catatan-ortu\">Berdasarkan teori Kecerdasan Majemuk (Howard Gardner). Ini untuk mengenal minat dan kekuatan anak, bukan tes psikologi resmi.</p>"),
+      setelah: function setelah() {
+        return gambarKartuHasil({
+          latar: M0.warna,
+          emoji: M0.ikon,
+          judulAtas: "Kecerdasan Majemukku",
+          besar: M0.pendek,
+          warnaBesar: "#072B6B",
+          judul: M0.julukan,
+          deskripsi: besarAwal(M0.arti) + ".",
+          judulBatang: "Peta kecerdasanku:",
+          batang: R.urut.map(function (k) {
+            return [MAJEMUK[k].pendek, R.p[k] / 100, top.indexOf(k) >= 0 ? "#02a581" : "#02c2c1"];
+          }),
+          penutup: ""
+        });
+      }
+    };
+  }
+};
+
+/* Alat bantu permainan: dijalankan hanya selama layar tes masih aktif dan soal belum berganti */
+var tesToken = 0;
+var tunda = function tunda(ms, aktif, fn) {
+  return setTimeout(function () {
+    if (aktif()) fn();
+  }, ms);
+};
+function el(tag, kelas, html) {
+  var e = document.createElement(tag);
+  if (kelas) e.className = kelas;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+
+/* 7b. Tes Daya Ingat: urutan angka, gambar, dan posisi yang makin panjang */
+var GAMBAR_INGAT = ["🍎", "🐱", "🚗", "⭐", "🌙", "🐟", "🎈", "🌸", "⚽"];
+var BAGIAN_INGAT = {
+  angka: {
+    nama: "Ingat Angka",
+    ikon: "🔢",
+    perintah: "Perhatikan angka yang muncul satu per satu. Setelah itu, tekan angka-angkanya sesuai urutan."
+  },
+  gambar: {
+    nama: "Ingat Gambar",
+    ikon: "🖼️",
+    perintah: "Perhatikan gambar yang muncul satu per satu. Setelah itu, tekan gambar-gambarnya sesuai urutan."
+  },
+  posisi: {
+    nama: "Ingat Posisi",
+    ikon: "🟦",
+    perintah: "Perhatikan kotak yang menyala satu per satu. Setelah itu, tekan kotak-kotaknya sesuai urutan."
+  }
+};
+// Rentang yang umum dicapai per tingkat (perkiraan kasar dari tes rentang ingatan maju)
+var UMUM_INGAT = {
+  angka: [[4, 5], [5, 6], [5, 7], [6, 8]],
+  gambar: [[3, 5], [4, 6], [5, 6], [5, 7]],
+  posisi: [[3, 4], [4, 5], [5, 6], [5, 7]]
+};
+function urutanAcak(n, jumlah) {
+  var r = [];
+  while (r.length < n) {
+    var x = Math.floor(Math.random() * jumlah);
+    if (x !== r[r.length - 1]) r.push(x);
+  }
+  return r;
+}
+function mainIngat(jenis) {
+  return function (wadah, jawab, aktif) {
+    var B = BAGIAN_INGAT[jenis],
+      awal = levelOtak >= 3 ? 4 : 3,
+      akhir = awal + 6,
+      jeda = levelOtak === 1 ? 1100 : 900;
+    var panjang = awal,
+      coba = 0,
+      lulus = awal - 1,
+      benarTotal = 0,
+      gagalDiPanjang = 0;
+    var label = function label(i) {
+      return jenis === "angka" ? String(i + 1) : jenis === "gambar" ? GAMBAR_INGAT[i] : "";
+    };
+    var siap = function siap() {
+      wadah.innerHTML = "";
+      wadah.appendChild(el("p", "sub-kecil", "".concat(B.ikon, " ").concat(B.perintah, "<br>Urutan dimulai dari <b>").concat(awal, "</b> dan bertambah panjang. Ada 2 kesempatan di setiap panjang.")));
+      var b = el("button", "tombol", "Siap, mulai! ▶");
+      b.type = "button";
+      b.addEventListener("click", ronde);
+      wadah.appendChild(el("div", "tengah")).appendChild(b);
+    };
+    var status = function status() {
+      return el("p", "status-main", "Panjang <b>".concat(panjang, "</b> \u2022 Kesempatan ").concat(coba + 1, "/2"));
+    };
+    var papan = function papan(onKlik) {
+      var g = el("div", "papan-ingat" + (jenis === "posisi" ? " posisi" : ""));
+      var _loop3 = function _loop3(i) {
+        var b = el("button", "sel-ingat", label(i));
+        b.type = "button";
+        b.dataset.i = i;
+        if (onKlik) b.addEventListener("click", function () {
+          return onKlik(i, b);
+        });else b.disabled = true;
+        g.appendChild(b);
+      };
+      for (var i = 0; i < 9; i++) {
+        _loop3(i);
+      }
+      return g;
+    };
+    function ronde() {
+      var urut = urutanAcak(panjang, 9);
+      wadah.innerHTML = "";
+      wadah.appendChild(status());
+      var layar;
+      if (jenis === "posisi") {
+        layar = papan(null);
+        wadah.appendChild(layar);
+      } else {
+        layar = el("div", "layar-ingat");
+        wadah.appendChild(layar);
+      }
+      var k = 0;
+      var _tampil = function tampil() {
+        if (k >= urut.length) return tunda(400, aktif, masukan);
+        if (jenis === "posisi") {
+          var s = layar.children[urut[k]];
+          s.classList.add("nyala");
+          tunda(jeda - 250, aktif, function () {
+            s.classList.remove("nyala");
+            k++;
+            tunda(250, aktif, _tampil);
+          });
+        } else {
+          layar.textContent = label(urut[k]);
+          layar.classList.add("muncul");
+          tunda(jeda - 250, aktif, function () {
+            layar.textContent = "";
+            layar.classList.remove("muncul");
+            k++;
+            tunda(250, aktif, _tampil);
+          });
+        }
+      };
+      tunda(600, aktif, _tampil);
+      function masukan() {
+        var isi = [];
+        wadah.innerHTML = "";
+        wadah.appendChild(status());
+        var slot = el("div", "slot-ingat");
+        for (var i = 0; i < panjang; i++) slot.appendChild(el("span", "", ""));
+        wadah.appendChild(el("p", "sub-kecil", "Sekarang tekan sesuai urutan:"));
+        wadah.appendChild(slot);
+        var g = papan(function (i, b) {
+          if (isi.length >= panjang) return;
+          isi.push(i);
+          slot.children[isi.length - 1].textContent = jenis === "posisi" ? "✓" : label(i);
+          slot.children[isi.length - 1].className = "terisi";
+          b.classList.add("tekan");
+          setTimeout(function () {
+            return b.classList.remove("tekan");
+          }, 180);
+          if (isi.length === panjang) tunda(250, aktif, function () {
+            return periksa(isi.join() === urut.join());
+          });
+        });
+        wadah.appendChild(g);
+        var hapus = el("button", "link-reset", "⌫ Hapus satu");
+        hapus.type = "button";
+        hapus.addEventListener("click", function () {
+          if (!isi.length || isi.length >= panjang) return;
+          isi.pop();
+          slot.children[isi.length].textContent = "";
+          slot.children[isi.length].className = "";
+        });
+        wadah.appendChild(el("div", "tengah")).appendChild(hapus);
+      }
+      function periksa(ok) {
+        wadah.innerHTML = "";
+        wadah.appendChild(el("div", "umpan tampil " + (ok ? "ok" : "no"), ok ? "\u2705 Benar! Urutan ".concat(panjang, " berhasil diingat.") : "❌ Belum tepat." + (jenis === "posisi" ? "" : " Urutannya: ".concat(urut.map(label).join(" ")))));
+        bunyi(ok ? "benar" : "salah");
+        if (ok) {
+          benarTotal++;
+          lulus = panjang;
+          panjang++;
+          coba = 0;
+          gagalDiPanjang = 0;
+        } else {
+          gagalDiPanjang++;
+          coba++;
+        }
+        var selesai = gagalDiPanjang >= 2 || panjang > akhir;
+        tunda(ok ? 1100 : 2000, aktif, function () {
+          return selesai ? jawab({
+            jenis: jenis,
+            rentang: lulus,
+            benar: benarTotal
+          }, "".concat(B.nama, ": ").concat(lulus)) : ronde();
+        });
+      }
+    }
+    siap();
+  };
+}
+TES.ingat = {
+  nama: "Tes Daya Ingat",
+  ikon: "💭",
+  warna: "#ffe8cc",
+  pilihLevel: true,
+  tanpaMundur: true,
+  intro: "<p>Ada <b>3 permainan ingatan</b>: angka, gambar, dan posisi kotak. Urutannya makin panjang sampai kamu dua kali belum tepat. Sekitar 5 menit.</p>\n    <p>Cari tempat yang tenang, perhatikan baik-baik, dan <b>jangan menulis</b> urutannya, ya!</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Mengukur rentang ingatan jangka pendek (berapa banyak hal yang bisa diingat sekaligus). Ini latihan, bukan tes psikologi resmi.</p>",
+  soal: function soal() {
+    return ["angka", "gambar", "posisi"].map(function (j) {
+      return {
+        t: BAGIAN_INGAT[j].ikon + " " + BAGIAN_INGAT[j].nama,
+        bagian: "Daya Ingat • " + BAGIAN_INGAT[j].nama,
+        main: mainIngat(j)
+      };
+    });
+  },
+  hasil: function hasil(j) {
+    var L = levelOtak - 1,
+      r = {};
+    j.forEach(function (x) {
+      return r[x.jenis] = x.rentang;
+    });
+    var nilai = function nilai(jn) {
+      var _UMUM_INGAT$jn$L = _slicedToArray(UMUM_INGAT[jn][L], 2),
+        a = _UMUM_INGAT$jn$L[0],
+        b = _UMUM_INGAT$jn$L[1];
+      return r[jn] > b ? 2 : r[jn] >= a ? 1 : 0;
+    };
+    var skor = ["angka", "gambar", "posisi"].reduce(function (s, jn) {
+      return s + nilai(jn);
+    }, 0);
+    var kat = skor >= 5 ? ["🏆", "Ingatan Istimewa"] : skor >= 3 ? ["🌟", "Ingatan Sangat Baik"] : skor >= 2 ? ["👍", "Ingatan Baik"] : ["💪", "Terus Berlatih"];
+    var ket = ["di bawah rata-rata", "sesuai rata-rata", "di atas rata-rata"];
+    var ringkas = "Angka ".concat(r.angka, " \u2022 Gambar ").concat(r.gambar, " \u2022 Posisi ").concat(r.posisi);
+    return {
+      ringkas: ringkas,
+      piagam: skor >= 3 ? "atas ".concat(kat[1].toLowerCase(), " (").concat(ringkas, ") pada Tes Daya Ingat tingkat ").concat(namaLevel()) : null,
+      bagikan: "\uD83E\uDDE0 ".concat(nama, " bisa mengingat ").concat(r.angka, " angka, ").concat(r.gambar, " gambar, dan ").concat(r.posisi, " posisi berurutan di Tes Daya Ingat! Kamu bisa berapa?"),
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Daya Ingat ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><b style=\"font-size:24px\">").concat(kat[1], "</b><br>Rentang ingatan = jumlah hal terpanjang yang bisa diingat berurutan.</div>\n        ").concat(["angka", "gambar", "posisi"].map(function (jn) {
+        var B = BAGIAN_INGAT[jn],
+          _UMUM_INGAT$jn$L2 = _slicedToArray(UMUM_INGAT[jn][L], 2),
+          a = _UMUM_INGAT$jn$L2[0],
+          b = _UMUM_INGAT$jn$L2[1],
+          n = nilai(jn);
+        return "<div class=\"kotak\"><b>".concat(B.ikon, " ").concat(B.nama, ": ").concat(r[jn], " berurutan</b><div class=\"batang\" style=\"margin:6px 0\"><span>Rentangmu</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(Math.min(100, r[jn] / 10 * 100), "%;background:").concat(n ? "var(--hf-hijau)" : "#ffb347", "\"></div></div><b>").concat(r[jn], "</b></div>\n            <span class=\"sub-kecil\" style=\"text-align:left;display:block\">Umumnya ").concat(a, "\u2013").concat(b, " untuk tingkat ini \u2192 <b>").concat(ket[n], "</b>.</span></div>");
+      }).join(""), "\n        <h3>\uD83D\uDCA1 Cara melatih daya ingat</h3><ul>\n          <li><b>Kelompokkan</b>: ingat 081234 sebagai 08-12-34.</li>\n          <li><b>Buat cerita</b>: hubungkan gambar menjadi cerita lucu (apel dimakan kucing yang naik mobil...).</li>\n          <li><b>Ulangi dalam hati</b> dan bayangkan bendanya dengan jelas.</li>\n          <li>Main game mencocokkan kartu, tahfiz, dan <b>cukup tidur</b>. Ingatan diperkuat saat tidur.</li></ul>\n        ").concat(catatanKecerdasan)
+    };
+  }
+};
+
+/* 7c. Tes Konsentrasi: cari simbol target secepatnya dalam batas waktu */
+var panah = function panah(deg) {
+  return "<svg viewBox=\"0 0 40 40\" width=\"34\" height=\"34\" aria-hidden=\"true\"><g transform=\"rotate(".concat(deg, " 20 20)\"><path d=\"M20 4 L32 18 H24 V36 H16 V18 H8 Z\" fill=\"#072B6B\"/></g></svg>");
+};
+var BABAK_FOKUS = [{
+  nama: "Cari kucing",
+  target: "🐱",
+  lain: ["🐶", "🐭", "🐰", "🦊", "🐯"],
+  kelas: "emoji"
+}, {
+  nama: "Cari huruf b",
+  target: "b",
+  lain: ["d", "p", "q"],
+  kelas: "huruf"
+}, {
+  nama: "Cari panah ke atas",
+  target: panah(0),
+  lain: [panah(90), panah(180), panah(270), panah(45)],
+  kelas: "svg"
+}];
+function mainFokus(b) {
+  return function (wadah, jawab, aktif) {
+    var kolom = levelOtak === 1 ? 5 : 6,
+      baris = levelOtak === 1 ? 6 : levelOtak === 2 ? 7 : 8,
+      waktu = [40, 35, 30, 30][levelOtak - 1];
+    var jumlah = kolom * baris,
+      nTarget = Math.round(jumlah * 0.25);
+    var isi = acak(Array.from({
+      length: jumlah
+    }, function (_, i) {
+      return i < nTarget ? -1 : i % b.lain.length;
+    }));
+    var siap = function siap() {
+      wadah.innerHTML = "";
+      wadah.appendChild(el("div", "target-fokus " + b.kelas, "<small>Cari dan tekan semua:</small><span>".concat(b.target, "</span>")));
+      wadah.appendChild(el("p", "sub-kecil", "Ada <b>".concat(nTarget, "</b> yang harus ditemukan dalam <b>").concat(waktu, " detik</b>. Jangan sampai salah tekan, ya!")));
+      var t = el("button", "tombol", "Mulai ▶");
+      t.type = "button";
+      t.addEventListener("click", mulai);
+      wadah.appendChild(el("div", "tengah")).appendChild(t);
+    };
+    function mulai() {
+      var benar = 0,
+        salah = 0,
+        sisa = waktu,
+        selesai = false;
+      var t0 = Date.now();
+      wadah.innerHTML = "";
+      var atas = el("div", "bar-fokus " + b.kelas, "");
+      wadah.appendChild(atas);
+      var g = el("div", "papan-fokus " + b.kelas);
+      g.style.gridTemplateColumns = "repeat(".concat(kolom, ", 1fr)");
+      wadah.appendChild(g);
+      var tulisAtas = function tulisAtas() {
+        atas.innerHTML = "<span class=\"mini\">".concat(b.target, "</span><b>\u2705 ").concat(benar, "/").concat(nTarget, "</b><b>\u274C ").concat(salah, "</b><b class=\"").concat(sisa <= 5 ? "merah" : "", "\">\u23F1\uFE0F ").concat(sisa, "</b>");
+      };
+      tulisAtas();
+      isi.forEach(function (v) {
+        var s = el("button", "sel-fokus", v < 0 ? b.target : b.lain[v]);
+        s.type = "button";
+        s.addEventListener("click", function () {
+          if (selesai || s.disabled) return;
+          if (v < 0) {
+            s.disabled = true;
+            s.classList.add("kena");
+            benar++;
+            if (benar === nTarget) akhiri();
+          } else {
+            salah++;
+            s.classList.remove("keliru");
+            void s.offsetWidth;
+            s.classList.add("keliru");
+          }
+          tulisAtas();
+        });
+        g.appendChild(s);
+      });
+      var jam = setInterval(function () {
+        if (!aktif()) return clearInterval(jam);
+        sisa--;
+        tulisAtas();
+        if (sisa <= 0) akhiri();
+      }, 1000);
+      function akhiri() {
+        if (selesai) return;
+        selesai = true;
+        clearInterval(jam);
+        var detik = Math.min(waktu, Math.round((Date.now() - t0) / 1000));
+        g.querySelectorAll(".sel-fokus").forEach(function (s, i) {
+          s.disabled = true;
+          if (isi[i] < 0 && !s.classList.contains("kena")) s.classList.add("terlewat");
+        });
+        var ok = benar === nTarget && salah === 0;
+        wadah.insertBefore(el("div", "umpan tampil " + (benar >= nTarget * 0.7 ? "ok" : "no"), "".concat(ok ? "🎯 Sempurna!" : benar === nTarget ? "✅ Semua ketemu!" : "⏱️ Waktu habis!", " Ketemu ").concat(benar, " dari ").concat(nTarget, ", salah tekan ").concat(salah, ", waktu ").concat(detik, " detik.")), g);
+        bunyi(benar >= nTarget * 0.7 ? "benar" : "salah");
+        var lanjut = el("button", "tombol", "Lanjut ▶");
+        lanjut.type = "button";
+        lanjut.addEventListener("click", function () {
+          return jawab({
+            benar: benar,
+            salah: salah,
+            target: nTarget,
+            detik: detik,
+            waktu: waktu
+          }, "".concat(b.nama, ": ").concat(benar, "/").concat(nTarget));
+        });
+        wadah.appendChild(el("div", "tengah")).appendChild(lanjut);
+      }
+    }
+    siap();
+  };
+}
+TES.fokus = {
+  nama: "Tes Konsentrasi",
+  ikon: "🎯",
+  warna: "#d7f3ff",
+  pilihLevel: true,
+  tanpaMundur: true,
+  intro: "<p>Ada <b>3 babak</b>. Di setiap babak, cari dan tekan semua gambar yang sama dengan target secepat mungkin sebelum waktu habis. Hati-hati, ada yang <b>mirip sekali</b>!</p>\n    <p>Salah tekan akan mengurangi nilai, jadi cepat tapi teliti, ya.</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Mengukur perhatian, ketelitian, dan kecepatan memindai. Hasil dipengaruhi rasa lelah dan suasana, jadi kerjakan saat segar. Ini latihan, bukan tes psikologi resmi.</p>",
+  soal: function soal() {
+    return BABAK_FOKUS.map(function (b, i) {
+      return {
+        t: "Babak ".concat(i + 1, ": ").concat(b.nama),
+        bagian: "Konsentrasi \u2022 Babak ".concat(i + 1),
+        main: mainFokus(b)
+      };
+    });
+  },
+  hasil: function hasil(j) {
+    var T = j.reduce(function (a, x) {
+      return {
+        benar: a.benar + x.benar,
+        salah: a.salah + x.salah,
+        target: a.target + x.target,
+        detik: a.detik + x.detik,
+        waktu: a.waktu + x.waktu
+      };
+    }, {
+      benar: 0,
+      salah: 0,
+      target: 0,
+      detik: 0,
+      waktu: 0
+    });
+    var tuntas = T.benar / T.target,
+      teliti = T.benar / Math.max(1, T.benar + T.salah),
+      cepat = 1 - T.detik / T.waktu;
+    var skor = Math.max(0, Math.min(100, Math.round(tuntas * 70 + teliti * 20 + (tuntas === 1 ? cepat * 10 : 0) - T.salah * 2)));
+    var kat = skor >= 90 ? ["🎯", "Fokus Tajam"] : skor >= 75 ? ["🌟", "Sangat Baik"] : skor >= 60 ? ["👍", "Baik"] : skor >= 40 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
+    var perTarget = T.benar ? (T.detik / T.benar).toFixed(1).replace(".", ",") : "-";
+    return {
+      ringkas: "".concat(skor, "/100 (").concat(kat[1], ")"),
+      piagam: skor >= 60 ? "atas skor konsentrasi ".concat(skor, "/100 (").concat(kat[1], ") tingkat ").concat(namaLevel()) : null,
+      bagikan: "\uD83C\uDFAF ".concat(nama, " mendapat skor ").concat(skor, "/100 (").concat(kat[1], ") di Tes Konsentrasi! Berani adu fokus?"),
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Konsentrasi ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(skor, "<span style=\"font-size:26px\">/100</span></div><b>Kategori: ").concat(kat[1], "</b></div>\n        <h3>\uD83D\uDCCA Rincian</h3>\n        ").concat(batang("🔍 Ketuntasan", Math.round(tuntas * 100), 100, tuntas < 0.7)).concat(batang("🎯 Ketelitian", Math.round(teliti * 100), 100, teliti < 0.85), "\n        <p class=\"sub-kecil\" style=\"text-align:left\">Ketemu ").concat(T.benar, " dari ").concat(T.target, " \u2022 salah tekan ").concat(T.salah, " \u2022 rata-rata ").concat(perTarget, " detik per target.</p>\n        ").concat(j.map(function (x, i) {
+        return "<div class=\"kotak\"><b>Babak ".concat(i + 1, ": ").concat(BABAK_FOKUS[i].nama, "</b><br>\u2705 ").concat(x.benar, "/").concat(x.target, " \u2022 \u274C ").concat(x.salah, " \u2022 \u23F1\uFE0F ").concat(x.detik, " detik</div>");
+      }).join(""), "\n        <h3>\uD83D\uDCA1 ").concat(teliti < 0.85 ? "Kamu cepat, tinggal lebih teliti" : tuntas < 0.7 ? "Kamu teliti, tinggal lebih cepat" : "Pertahankan fokusmu", "</h3><ul>\n          <li>Pindai baris demi baris dari kiri ke kanan, seperti membaca.</li>\n          <li>Latihan: puzzle cari perbedaan, mencari kata, menyusun puzzle, dan permainan bola.</li>\n          <li>Kurangi gangguan saat belajar: jauhkan HP dan TV, belajar 20\u201325 menit lalu istirahat 5 menit.</li>\n          <li>Cukup tidur, sarapan, dan minum air putih sangat membantu konsentrasi.</li></ul>\n        ").concat(catatanKecerdasan)
+    };
+  }
+};
+
+/* 7d. Tes Ruang (Spasial): memutar bentuk, cermin, memutar pola, jaring-jaring kubus */
+var AREA_RUANG = {
+  putar: "🔄 Putar Bentuk",
+  cermin: "🪞 Bayangan Cermin",
+  pola: "🔲 Putar Pola",
+  kubus: "🎲 Jaring Kubus"
+};
+var normalSel = function normalSel(sel) {
+  var mx = Math.min.apply(Math, _toConsumableArray(sel.map(function (c) {
+      return c[0];
+    }))),
+    my = Math.min.apply(Math, _toConsumableArray(sel.map(function (c) {
+      return c[1];
+    })));
+  return sel.map(function (_ref22) {
+    var _ref23 = _slicedToArray(_ref22, 2),
+      x = _ref23[0],
+      y = _ref23[1];
+    return [x - mx, y - my];
+  }).sort(function (a, b) {
+    return a[1] - b[1] || a[0] - b[0];
+  });
+};
+var kunciSel = function kunciSel(sel) {
+  return normalSel(sel).map(function (c) {
+    return c.join(",");
+  }).join(";");
+};
+var putarSel = function putarSel(sel) {
+  return normalSel(sel.map(function (_ref24) {
+    var _ref25 = _slicedToArray(_ref24, 2),
+      x = _ref25[0],
+      y = _ref25[1];
+    return [-y, x];
+  }));
+}; // 90° searah jarum jam (sumbu y ke bawah)
+var cerminSel = function cerminSel(sel) {
+  return normalSel(sel.map(function (_ref26) {
+    var _ref27 = _slicedToArray(_ref26, 2),
+      x = _ref27[0],
+      y = _ref27[1];
+    return [-x, y];
+  }));
+}; // cermin kiri-kanan
+var balikSel = function balikSel(sel) {
+  return normalSel(sel.map(function (_ref28) {
+    var _ref29 = _slicedToArray(_ref28, 2),
+      x = _ref29[0],
+      y = _ref29[1];
+    return [x, -y];
+  }));
+}; // cermin atas-bawah
+var putarN = function putarN(sel, n) {
+  var s = normalSel(sel);
+  for (var i = 0; i < n % 4; i++) s = putarSel(s);
+  return s;
+};
+var semuaSimetri = function semuaSimetri(sel) {
+  return [0, 1, 2, 3].map(function (n) {
+    return putarN(sel, n);
+  }).concat([0, 1, 2, 3].map(function (n) {
+    return putarN(cerminSel(sel), n);
+  }));
+};
+var bentukKanon = function bentukKanon(sel) {
+  return semuaSimetri(sel).map(kunciSel).sort()[0];
+};
+function bentukAcak(n) {
+  var sel = [[0, 0]],
+    ada = new Set(["0,0"]);
+  while (sel.length < n) {
+    var _ambil131 = ambil(sel),
+      _ambil132 = _slicedToArray(_ambil131, 2),
+      x = _ambil132[0],
+      y = _ambil132[1],
+      _ambil133 = ambil([[1, 0], [-1, 0], [0, 1], [0, -1]]),
+      _ambil134 = _slicedToArray(_ambil133, 2),
+      dx = _ambil134[0],
+      dy = _ambil134[1],
+      _k5 = x + dx + "," + (y + dy);
+    if (!ada.has(_k5)) {
+      ada.add(_k5);
+      sel.push([x + dx, y + dy]);
+    }
+  }
+  return normalSel(sel);
+}
+function svgSel(sel) {
+  var o = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var s = o.sisi || 26,
+    lebar = Math.max.apply(Math, _toConsumableArray(sel.map(function (c) {
+      return c[0];
+    }))) + 1,
+    tinggi = Math.max.apply(Math, _toConsumableArray(sel.map(function (c) {
+      return c[1];
+    }))) + 1;
+  var W = o.kotak ? o.kotak * s : lebar * s,
+    H = o.kotak ? o.kotak * s : tinggi * s,
+    dx = o.kotak ? 0 : 0;
+  var g = "";
+  if (o.kotak) for (var y = 0; y < o.kotak; y++) for (var x = 0; x < o.kotak; x++) g += "<rect x=\"".concat(x * s + 1, "\" y=\"").concat(y * s + 1, "\" width=\"").concat(s - 2, "\" height=\"").concat(s - 2, "\" rx=\"3\" fill=\"#eef2f8\"/>");
+  sel.forEach(function (_ref30, i) {
+    var _ref31 = _slicedToArray(_ref30, 2),
+      x = _ref31[0],
+      y = _ref31[1];
+    g += "<rect x=\"".concat(x * s + dx + 1, "\" y=\"").concat(y * s + 1, "\" width=\"").concat(s - 2, "\" height=\"").concat(s - 2, "\" rx=\"3\" fill=\"").concat(o.warna ? o.warna[i] : "#02a581", "\" stroke=\"#072B6B\" stroke-width=\"1.5\"/>");
+  });
+  return "<svg viewBox=\"-2 -2 ".concat(W + 4, " ").concat(H + 4, "\" width=\"").concat((W + 4) * (o.skala || 1.6), "\" height=\"").concat((H + 4) * (o.skala || 1.6), "\" aria-hidden=\"true\">").concat(g).concat(o.tambahan || "", "</svg>");
+}
+// Jaring-jaring kubus: gulingkan kubus di atas setiap persegi; sah jika keenam sisi kubus terpakai tepat sekali
+function bisaJadiKubus(sel) {
+  var ada = new Set(sel.map(function (c) {
+    return c.join(",");
+  }));
+  if (sel.some(function (_ref32) {
+    var _ref33 = _slicedToArray(_ref32, 2),
+      x = _ref33[0],
+      y = _ref33[1];
+    return ada.has(x + 1 + "," + y) && ada.has(x + "," + (y + 1)) && ada.has(x + 1 + "," + (y + 1));
+  })) return false;
+  var guling = {
+    "1,0": function _(d) {
+      return {
+        b: d.e,
+        t: d.w,
+        e: d.t,
+        w: d.b,
+        n: d.n,
+        s: d.s
+      };
+    },
+    "-1,0": function _(d) {
+      return {
+        b: d.w,
+        t: d.e,
+        w: d.t,
+        e: d.b,
+        n: d.n,
+        s: d.s
+      };
+    },
+    "0,1": function _(d) {
+      return {
+        b: d.s,
+        t: d.n,
+        s: d.t,
+        n: d.b,
+        e: d.e,
+        w: d.w
+      };
+    },
+    "0,-1": function _(d) {
+      return {
+        b: d.n,
+        t: d.s,
+        n: d.t,
+        s: d.b,
+        e: d.e,
+        w: d.w
+      };
+    }
+  };
+  var sisi = new Map([[sel[0].join(","), {
+      b: 1,
+      t: 2,
+      e: 3,
+      w: 4,
+      n: 5,
+      s: 6
+    }]]),
+    antre = [sel[0]];
+  var _loop4 = function _loop4() {
+    var _antre$shift = antre.shift(),
+      _antre$shift2 = _slicedToArray(_antre$shift, 2),
+      x = _antre$shift2[0],
+      y = _antre$shift2[1],
+      d = sisi.get(x + "," + y);
+    Object.keys(guling).forEach(function (k) {
+      var _k$split$map = k.split(",").map(Number),
+        _k$split$map2 = _slicedToArray(_k$split$map, 2),
+        dx = _k$split$map2[0],
+        dy = _k$split$map2[1],
+        kk = x + dx + "," + (y + dy);
+      if (ada.has(kk) && !sisi.has(kk)) {
+        sisi.set(kk, guling[k](d));
+        antre.push([x + dx, y + dy]);
+      }
+    });
+  };
+  while (antre.length) {
+    _loop4();
+  }
+  return new Set(_toConsumableArray(sisi.values()).map(function (d) {
+    return d.b;
+  })).size === 6;
+}
+function opsiGambar(benar, salah, ket) {
+  var semua = acak([{
+    svg: benar,
+    nilai: 1
+  }].concat(salah.map(function (svg) {
+    return {
+      svg: svg,
+      nilai: 0
+    };
+  })));
+  return semua.map(function (x, i) {
+    return {
+      teks: "Pilihan " + "ABCD"[i],
+      html: x.svg,
+      nilai: x.nilai,
+      ket: ket
+    };
+  });
+}
+var GEN_RUANG = {
+  putar: function putar() {
+    var n = [4, 5, 5, 6][levelOtak - 1];
+    var b;
+    do b = bentukAcak(n); while (new Set(semuaSimetri(b).map(kunciSel)).size < 8);
+    var benar = putarN(b, 1 + Math.floor(Math.random() * 3)),
+      cer = cerminSel(b);
+    var salah = acak([0, 1, 2, 3]).slice(0, 3).map(function (k) {
+      return putarN(cer, k);
+    });
+    return {
+      t: "Bentuk mana yang SAMA dengan bentuk ini jika diputar (tanpa dibalik)?",
+      gambar: svgSel(b),
+      o: opsiGambar(svgSel(benar, {
+        skala: 1.3
+      }), salah.map(function (s) {
+        return svgSel(s, {
+          skala: 1.3
+        });
+      }))
+    };
+  },
+  cermin: function cermin() {
+    var n = [4, 5, 5, 6][levelOtak - 1],
+      atasBawah = levelOtak >= 3 && Math.random() < 0.5;
+    var b;
+    do b = bentukAcak(n); while (new Set(semuaSimetri(b).map(kunciSel)).size < 8);
+    var benar = atasBawah ? balikSel(b) : cerminSel(b);
+    var lebar = Math.max.apply(Math, _toConsumableArray(b.map(function (c) {
+        return c[0];
+      }))) + 1,
+      tinggi = Math.max.apply(Math, _toConsumableArray(b.map(function (c) {
+        return c[1];
+      }))) + 1,
+      s = 26;
+    var garis = atasBawah ? "<line x1=\"-2\" y1=\"".concat(tinggi * s + 10, "\" x2=\"").concat(lebar * s + 2, "\" y2=\"").concat(tinggi * s + 10, "\" stroke=\"#02c2c1\" stroke-width=\"4\" stroke-dasharray=\"6 4\"/>") : "<line x1=\"".concat(lebar * s + 10, "\" y1=\"-2\" x2=\"").concat(lebar * s + 10, "\" y2=\"").concat(tinggi * s + 2, "\" stroke=\"#02c2c1\" stroke-width=\"4\" stroke-dasharray=\"6 4\"/>");
+    var gambar = svgSel(b, {
+      tambahan: garis
+    }).replace(/viewBox="-2 -2 (\S+) (\S+)"/, function (m, w, h) {
+      return atasBawah ? "viewBox=\"-2 -2 ".concat(w, " ").concat(+h + 16, "\"") : "viewBox=\"-2 -2 ".concat(+w + 16, " ").concat(h, "\"");
+    }).replace(/width="(\S+)" height="(\S+)"/, function (m, w, h) {
+      return atasBawah ? "width=\"".concat(w, "\" height=\"").concat(+h + 16 * 1.6, "\"") : "width=\"".concat(+w + 16 * 1.6, "\" height=\"").concat(h, "\"");
+    });
+    var salah = acak([b, putarN(b, 1), putarN(b, 2), putarN(b, 3), putarN(benar, 1)]).filter(function (x) {
+      return kunciSel(x) !== kunciSel(benar);
+    }).slice(0, 3);
+    return {
+      t: atasBawah ? "Garis putus-putus di bawah adalah permukaan air. Seperti apa bayangan bentuk ini di air?" : "Garis putus-putus di kanan adalah cermin. Seperti apa bayangan bentuk ini di cermin?",
+      gambar: gambar,
+      o: opsiGambar(svgSel(benar, {
+        skala: 1.3
+      }), salah.map(function (x) {
+        return svgSel(x, {
+          skala: 1.3
+        });
+      }))
+    };
+  },
+  pola: function pola() {
+    var uk = levelOtak <= 2 ? 3 : 4,
+      isi = [3, 4, 5, 6][levelOtak - 1];
+    var ke = function ke(sel) {
+      return sel.map(function (_ref34) {
+        var _ref35 = _slicedToArray(_ref34, 2),
+          x = _ref35[0],
+          y = _ref35[1];
+        return [x, y];
+      });
+    };
+    var p, varian;
+    do {
+      var semua = [];
+      for (var y = 0; y < uk; y++) for (var x = 0; x < uk; x++) semua.push([x, y]);
+      p = acak(semua).slice(0, isi);
+      var rot = function rot(sel) {
+        return sel.map(function (_ref36) {
+          var _ref37 = _slicedToArray(_ref36, 2),
+            x = _ref37[0],
+            y = _ref37[1];
+          return [uk - 1 - y, x];
+        });
+      };
+      var r1 = rot(p),
+        r2 = rot(r1),
+        r3 = rot(r2),
+        m = p.map(function (_ref38) {
+          var _ref39 = _slicedToArray(_ref38, 2),
+            x = _ref39[0],
+            y = _ref39[1];
+          return [uk - 1 - x, y];
+        });
+      varian = {
+        r1: r1,
+        r2: r2,
+        r3: r3,
+        m: m,
+        asli: ke(p)
+      };
+    } while (new Set(Object.values(varian).map(function (s) {
+      return s.map(function (c) {
+        return c.join(",");
+      }).sort().join(";");
+    })).size < 5);
+    var arah = levelOtak <= 2 ? ambil(["r1", "r2"]) : ambil(["r1", "r3"]);
+    var tanya = {
+      r1: "seperempat putaran searah jarum jam ↻",
+      r2: "setengah putaran",
+      r3: "seperempat putaran berlawanan arah jarum jam ↺"
+    }[arah];
+    var pakai = function pakai(sel) {
+      return svgSel(sel, {
+        kotak: uk,
+        sisi: 22,
+        skala: 1.3
+      });
+    };
+    var salah = acak(["r1", "r2", "r3", "m", "asli"].filter(function (k) {
+      return k !== arah;
+    })).slice(0, 3);
+    return {
+      t: "Papan ini diputar ".concat(tanya, ". Seperti apa hasilnya?"),
+      gambar: svgSel(p, {
+        kotak: uk,
+        sisi: 22,
+        skala: 1.7
+      }),
+      o: opsiGambar(pakai(varian[arah]), salah.map(function (k) {
+        return pakai(varian[k]);
+      }))
+    };
+  },
+  kubus: function kubus() {
+    var cari = function cari(sah) {
+      var maks = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
+      for (var i = 0; i < maks; i++) {
+        var b = bentukAcak(6);
+        if (bisaJadiKubus(b) === sah && (sah || levelOtak <= 2 || bentukKanon(b) !== bentukKanon([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]))) return b;
+      }
+      return null;
+    };
+    var tidak = Math.random() < 0.35,
+      pilih = [],
+      kanon = new Set();
+    var tambah = function tambah(sah) {
+      var b;
+      do b = cari(sah); while (kanon.has(bentukKanon(b)));
+      kanon.add(bentukKanon(b));
+      pilih.push(putarN(b, Math.floor(Math.random() * 4)));
+    };
+    tambah(!tidak);
+    for (var i = 0; i < 3; i++) tambah(tidak);
+    var gb = function gb(sel) {
+      return svgSel(sel, {
+        sisi: 20,
+        skala: 1.2
+      });
+    };
+    return {
+      t: tidak ? "Mana jaring-jaring yang TIDAK BISA dilipat menjadi kubus?" : "Mana jaring-jaring yang BISA dilipat menjadi kubus?",
+      gambar: "<div style=\"font-size:54px;line-height:1\">\uD83C\uDFB2</div>",
+      o: opsiGambar(gb(pilih[0]), pilih.slice(1).map(gb))
+    };
+  }
+};
+TES.ruang = {
+  nama: "Tes Ruang (Spasial)",
+  ikon: "🧊",
+  warna: "#e6e0ff",
+  pilihLevel: true,
+  intro: "<p>Ada <b>16 soal bergambar</b>: memutar bentuk, bayangan cermin, memutar pola, dan jaring-jaring kubus. Bayangkan gerakannya di kepalamu, lalu pilih jawabannya. Sekitar 6 menit.</p>\n    <p class=\"catatan-ortu\">\u2139\uFE0F Kemampuan ruang (spasial) penting untuk matematika, gambar teknik, arsitektur, dan olahraga. Bisa dilatih dengan lego, puzzle, origami, dan membaca peta. Ini latihan, bukan tes psikologi resmi.</p>",
+  soal: function soal() {
+    var hasil = [];
+    Object.keys(AREA_RUANG).forEach(function (area) {
+      var kunci = new Set();
+      var coba = 0;
+      while (hasil.filter(function (s) {
+        return s.area === area;
+      }).length < 4 && coba++ < 60) {
+        var s = GEN_RUANG[area]();
+        var _k6 = s.t + s.gambar + s.o.map(function (o) {
+          return o.html;
+        }).sort().join();
+        if (kunci.has(_k6)) continue;
+        kunci.add(_k6);
+        hasil.push(Object.assign(s, {
+          area: area,
+          bagian: "Ruang • " + AREA_RUANG[area].slice(3),
+          opsiGambar: true
+        }));
+      }
+    });
+    return hasil;
+  },
+  hasil: function hasil(j, extra) {
+    var per = {};
+    Object.keys(AREA_RUANG).forEach(function (a) {
+      return per[a] = 0;
+    });
+    extra.soal.forEach(function (s, i) {
+      return per[s.area] += j[i] === 1 ? 1 : 0;
+    });
+    var total = j.filter(function (x) {
+        return x === 1;
+      }).length,
+      urut = Object.keys(AREA_RUANG).sort(function (a, b) {
+        return per[b] - per[a];
+      });
+    var kat = total >= 15 ? ["🏆", "Istimewa"] : total >= 12 ? ["🌟", "Sangat Baik"] : total >= 9 ? ["👍", "Baik"] : total >= 6 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
+    var menit = Math.floor(extra.detik / 60),
+      detik = extra.detik % 60;
+    return {
+      ringkas: "".concat(total, "/16 (").concat(kat[1], ")"),
+      piagam: total >= 9 ? "atas skor ".concat(total, "/16 (").concat(kat[1], ") pada Tes Ruang (Spasial) tingkat ").concat(namaLevel()) : null,
+      bagikan: "\uD83E\uDDCA ".concat(nama, " mendapat skor ").concat(total, "/16 (").concat(kat[1], ") di Tes Ruang (Spasial)! Bisa memutar bentuk di kepala? Coba juga!"),
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Ruang ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(total, "<span style=\"font-size:26px\">/16</span></div>\n          <b>Kategori: ").concat(kat[1], "</b><br>Waktu: ").concat(menit, " menit ").concat(detik, " detik</div>\n        <h3>\uD83D\uDCCA Kemampuan per bagian</h3>").concat(urut.map(function (a) {
+        return batang(AREA_RUANG[a], per[a], 4, per[a] <= 1);
+      }).join(""), "\n        <h3>\u2728 Kekuatanmu</h3><p>Kamu paling kuat di <b>").concat(AREA_RUANG[urut[0]], "</b>. ").concat(per[urut[3]] < 4 ? "Ayo latih <b>".concat(AREA_RUANG[urut[3]], "</b>.") : "Semua bagian sempurna. Hebat!", "</p>\n        <h3>\uD83D\uDCA1 Cara melatih kemampuan ruang</h3><ul>\n          <li>Bermain lego, balok, tangram, dan puzzle.</li><li>Membuat origami dan menggunting kardus menjadi kubus atau balok.</li>\n          <li>Membaca peta dan menjadi \u201Cpenunjuk jalan\u201D saat bepergian.</li><li>Menggambar benda dari depan, samping, dan atas.</li></ul>\n        ").concat(catatanKecerdasan)
+    };
+  }
+};
 var tesTerkini = null;
 var tesAktif = null,
   tesSoal = [],
@@ -5656,7 +6726,24 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  ["otak", "mesin", "mbti", "disc", "temperamen", "kekuatan", "mood", "darah"].forEach(function (id) {
+  GRUP_TES.forEach(function (_ref40) {
+    var _ref41 = _slicedToArray(_ref40, 3),
+      gid = _ref41[0],
+      judul = _ref41[1],
+      daftar = _ref41[2];
+    var h = document.createElement("div");
+    h.className = "judul-grup";
+    h.id = "grup-" + gid;
+    h.textContent = judul;
+    wadah.appendChild(h);
+    daftar.forEach(function (id) {
+      return tambahKartuTes(id, n, wadah);
+    });
+  });
+}
+var GRUP_TES = [["kecerdasan", "🧠 Tes Kecerdasan", ["otak", "majemuk", "ingat", "fokus", "ruang"]], ["kepribadian", "🎭 Kepribadian & Gaya Belajar", ["mesin", "mbti", "disc", "temperamen"]], ["lainnya", "💛 Kenali Diri Lainnya", ["kekuatan", "mood", "darah"]]];
+function tambahKartuTes(id, n, wadah) {
+  {
     var t = TES[id],
       b = document.createElement("button"),
       akhir = n ? baca(kunci("tes-" + id, n), null) : null;
@@ -5668,7 +6755,7 @@ function buatDaftarTes() {
       return bukaTes(id);
     });
     wadah.appendChild(b);
-  });
+  }
 }
 function bukaTes(id) {
   nama = $("namaSiswa").value.trim();
@@ -5690,10 +6777,10 @@ function bukaTes(id) {
     var _gambarLevel = function gambarLevel() {
       var w = $("daftarLevel");
       w.innerHTML = "";
-      LEVEL_OTAK.forEach(function (_ref22) {
-        var _ref23 = _slicedToArray(_ref22, 2),
-          n = _ref23[0],
-          v = _ref23[1];
+      LEVEL_OTAK.forEach(function (_ref42) {
+        var _ref43 = _slicedToArray(_ref42, 2),
+          n = _ref43[0],
+          v = _ref43[1];
         return w.appendChild(tombolChip(n, v === levelOtak, function () {
           levelOtak = v;
           tulis(kunci("level-otak", nama), v);
@@ -5746,16 +6833,34 @@ function tampilSoalTes() {
   $("tesNomor").textContent = "".concat(tesRiwayatNo.length + 1, "/").concat(total);
   $("tesProgress").style.width = tesRiwayatNo.length / total * 100 + "%";
   $("tesSoal").textContent = s.t;
+  $("tesGambar").innerHTML = s.gambar || "";
+  $("tesGambar").style.display = s.gambar ? "flex" : "none";
   tesTerkini = s;
+  var token = ++tesToken;
   $("tesNama").textContent = s.bagian ? TES[tesAktif].ikon + " " + s.bagian : TES[tesAktif].ikon + " " + TES[tesAktif].nama;
-  $("btnTesMundur").style.visibility = tesRiwayatNo.length ? "visible" : "hidden";
+  $("btnTesMundur").style.visibility = tesRiwayatNo.length && !TES[tesAktif].tanpaMundur ? "visible" : "hidden";
   var wadah = $("tesOpsi");
   wadah.innerHTML = "";
+  wadah.className = "opsi-list" + (s.opsiGambar ? " opsi-gambar" : s.main ? " area-main" : "");
+  if (s.main) {
+    var aktif = function aktif() {
+      return token === tesToken && $("layarTes").classList.contains("aktif");
+    };
+    s.main(wadah, function (nilai, teks) {
+      if (!aktif()) return;
+      tesJawab[tesNo] = nilai;
+      tesTeks[tesNo] = teks || "";
+      tesRiwayatNo.push(tesNo);
+      tesNo++;
+      tampilSoalTes();
+    }, aktif);
+    return;
+  }
   s.o.forEach(function (op, i) {
     var b = document.createElement("button");
     b.type = "button";
     b.className = "opsi";
-    b.innerHTML = "<span class=\"huruf\">".concat("ABCDE"[i], "</span><span>").concat(esc(op.teks), "</span>");
+    b.innerHTML = "<span class=\"huruf\">".concat("ABCDE"[i], "</span><span class=\"isi-opsi\">").concat(op.html || esc(op.teks), "</span>");
     b.addEventListener("click", function () {
       tesJawab[tesNo] = op.nilai;
       tesTeks[tesNo] = op.teks;
@@ -5843,9 +6948,9 @@ document.querySelectorAll("[data-buka]").forEach(function (b) {
       });
       return;
     }
-    if (id === "kepribadian") {
+    if (id === "kepribadian" || id === "kecerdasan") {
       gantiTab("tabDiri");
-      $("daftarTes").scrollIntoView({
+      ($("grup-" + id) || $("daftarTes")).scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
@@ -5911,7 +7016,7 @@ if (BISA_BICARA) {
     }));
   });
   $("btnSuaraTes").addEventListener("click", function () {
-    if (tesTerkini) bacakanSoal(tesTerkini.t, tesTerkini.o.map(function (o) {
+    if (tesTerkini) bacakanSoal(tesTerkini.t, (tesTerkini.o || []).map(function (o) {
       return o.teks;
     }));
   });

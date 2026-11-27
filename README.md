@@ -5,7 +5,7 @@ Kuis interaktif untuk siswa kelas 3 Madrasah Ibtidaiyah, siap ditempel di **Goog
 Semua isinya ada dalam satu file: `kuis-kelas3-mi.html`.
 
 ## Isi
-- 🧠 Tes Kecerdasan (ala IQ), 🧬 Tes Gaya Belajar (ala STIFIn), 🎭 Tes Kepribadian (ala MBTI, DISC, Temperamen), plus Kelebihanku, Mood, dan Golongan Darah.
+- 🧠 Tes Kecerdasan: ala IQ, 🌈 Kecerdasan Majemuk, 💭 Daya Ingat, 🎯 Konsentrasi, 🧊 Ruang (Spasial); 🧬 Tes Gaya Belajar (ala STIFIn), 🎭 Tes Kepribadian (ala MBTI, DISC, Temperamen), plus Kelebihanku, Mood, dan Golongan Darah.
 - 📚 **Kuis Pelajaran TK–SMA**: pilih jenjang → kelas → pelajaran. Soal dibuat otomatis per kelas (`generatorKelas` di `src/`).
   - TK A/B: Mengenal Huruf, Mengenal Angka, Warna & Bentuk
   - SD/MI 1–6: Matematika, Bahasa Indonesia, Bahasa Inggris, IPAS, PAI, Fiqih, Bahasa Arab
@@ -78,6 +78,17 @@ Skrip `deploy/pasang-di-vps.sh` akan:
 Setelah dijalankan, **semua file** di `kuistes/` mengikuti GitHub secara otomatis setiap 10 menit (`/usr/local/bin/kuistes-perbarui`). Setiap file dicek sidik jari SHA-256 terhadap `kuistes/daftar-file.txt`; hanya file statis yang disalin.
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
+
+## Tes kecerdasan
+| Tes | Isi | Hasil |
+|---|---|---|
+| 🧠 Kecerdasan (ala IQ) | 20 soal angka, pola, kata, logika; 4 tingkat | Skor /20, kategori, kekuatan per bidang, pembahasan |
+| 🌈 Kecerdasan Majemuk | 40 pernyataan (5 per kecerdasan, skala sesuai) | Peta 8 kecerdasan Gardner, 3 terkuat + cara belajar, kegiatan, cita-cita, kartu Status WA |
+| 💭 Daya Ingat | 3 permainan adaptif: urutan angka, gambar, posisi kotak (2 kesempatan per panjang) | Rentang ingatan dibanding rentang umum per tingkat |
+| 🎯 Konsentrasi | 3 babak cari simbol target (kucing, huruf b di antara d/p/q, panah) dengan batas waktu | Skor 0–100 dari ketuntasan, ketelitian, kecepatan |
+| 🧊 Ruang (Spasial) | 16 soal bergambar SVG: putar bentuk, cermin, putar pola, jaring-jaring kubus | Skor /16 per bagian |
+
+Jaring-jaring kubus diperiksa dengan "menggulingkan" kubus di atas setiap persegi; pengujian 20.000 heksomino acak menemukan tepat 35 bentuk dengan 11 jaring kubus yang sah.
 
 ## Tes kepribadian (soal disusun sendiri)
 | Tes | Jumlah | Cara menjawab | Hasil |
