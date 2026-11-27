@@ -228,6 +228,35 @@
   .sel-fokus.keliru { background: #ffe1e8; border-color: #d62f4f; animation: geleng .3s; }
   .sel-fokus.terlewat { background: #fff4cc; border-color: #f0b400; }
   .sel-fokus:disabled { cursor: default; color: var(--navy); }
+  .kartu-harian { background: linear-gradient(135deg, #fff4e0, #ffe8ef); border: 3px solid #ffd7a8; border-radius: 22px; padding: 14px; margin-bottom: 16px; }
+  .atas-harian { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .atas-harian b { font-size: 19px; display: block; }
+  .atas-harian small { color: #6b6680; font-size: 14px; }
+  .api-harian { flex: none; text-align: center; background: #fff; border-radius: 16px; padding: 4px 12px; font-size: 22px; line-height: 1.1; border: 2px solid #ffd7a8; }
+  .api-harian b { display: block; font-size: 24px; color: #e2562b; }
+  .api-harian small { font-size: 12px; color: #6b6680; }
+  .api-harian.redup { filter: grayscale(1); opacity: .6; }
+  .minggu-harian { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0 10px; }
+  .minggu-harian span { text-align: center; font-weight: 800; font-size: 14px; padding: 6px 0; border-radius: 10px; background: rgba(255,255,255,.7); color: #8a8599; }
+  .minggu-harian span.isi { background: #ff8a3d; color: #fff; }
+  .minggu-harian span.ini { outline: 2px dashed #e2562b; outline-offset: 1px; }
+  .bawah-harian { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lencana-harian i { font-style: normal; font-size: 22px; filter: grayscale(1); opacity: .35; margin-right: 2px; }
+  .lencana-harian i.dapat { filter: none; opacity: 1; }
+  .selesai-harian { font-weight: 800; color: #17603a; font-size: 15px; }
+  .tombol.kecil { padding: 8px 18px; font-size: 17px; }
+  .kartu-profil { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e8f7f2, #e6f0ff); border: 3px solid #bfe6da; border-radius: 20px; padding: 12px 14px; margin-bottom: 14px; color: var(--ink); }
+  .kartu-profil .ik { font-size: 34px; }
+  .kartu-profil .isi { flex: 1; min-width: 0; }
+  .kartu-profil b { display: block; font-size: 18px; }
+  .kartu-profil small { display: block; color: #5b5770; font-size: 14px; }
+  .kartu-profil em { font-style: normal; font-weight: 800; color: var(--primary-dark); white-space: nowrap; }
+  .jalur-profil { display: block; height: 8px; background: rgba(255,255,255,.9); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .jalur-profil span { display: block; height: 100%; background: linear-gradient(90deg, var(--hf-teal), var(--hf-hijau)); border-radius: 99px; }
+  .jalur-profil.besar { height: 12px; background: #eef2f8; margin: 4px 0 12px; }
+  .daftar-profil li { margin: 4px 0; }
+  .hanya-cetak { display: none; }
+  @media print { .hanya-cetak { display: inline; } }
   @keyframes geleng { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
   .umpan { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 18px; font-weight: 700; }
@@ -403,7 +432,7 @@
         <button type="button" data-buka="gayabelajar"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>VAK • STIFIn • 4 Gaya • Versi TK</small></span><em>Gratis</em></button>
         <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>MBTI • DISC • Temperamen</small></span><em>Gratis</em></button>
         <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
-        <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis untuk Guru</strong><small>Nilai murid langsung masuk ke WhatsApp guru</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis & Tes untuk Guru</strong><small>Hasil murid masuk ke WhatsApp guru, plus rekap kelas</small></span><em>Gratis</em></button>
       </div>
     </div>
     <div class="kartu">
@@ -418,6 +447,7 @@
       </div>
 
       <div id="tabPelajaran" class="isi-tab aktif">
+        <div id="kartuHarian"></div>
         <p class="judul">🎒 Pilih jenjang:</p>
         <div class="pilih-chip" id="daftarJenjang"></div>
         <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
@@ -439,13 +469,14 @@
       </div>
 
       <div id="tabDiri" class="isi-tab">
+        <div id="kartuProfil"></div>
         <p class="judul">🌟 Pilih tes untuk mengenal dirimu:</p>
         <div class="mapel-grid" id="daftarTes"></div>
         <p class="catatan-ortu">👨‍👩‍👧 <b>Untuk Ayah/Bunda:</b> tes-tes ini adalah permainan untuk mengenal minat dan perasaan anak. Ini <b>bukan</b> tes psikologi resmi, jadi jangan dipakai untuk memberi label pada anak.</p>
       </div>
 
       <div id="tabGuru" class="isi-tab">
-        <p class="judul">👩‍🏫 Buat link kuis untuk murid Anda</p>
+        <p class="judul">👩‍🏫 Buat link kuis atau tes untuk murid Anda</p>
         <p class="sub" style="margin-top:0">Murid membuka link, mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>. Nilainya langsung masuk ke WhatsApp Anda. Gratis, tanpa daftar.</p>
         <label class="judul" for="guruNama" style="margin-top:12px">Nama Bapak/Ibu guru</label>
         <input id="guruNama" type="text" maxlength="40" placeholder="Contoh: Bu Rina" autocomplete="name">
@@ -453,9 +484,13 @@
         <input id="guruWA" type="tel" inputmode="tel" maxlength="18" placeholder="08xxxxxxxxxx" autocomplete="tel">
         <label class="judul" for="guruRombel" style="margin-top:12px">Nama kelas <span class="sub-kecil">(opsional, mis. 5A)</span></label>
         <input id="guruRombel" type="text" maxlength="20" placeholder="Contoh: 5A">
+        <p class="judul" style="margin-top:12px">Jenis</p>
+        <div class="pilih-chip" id="guruJenis"></div>
+        <p class="sub-kecil" id="infoJenisGuru" style="text-align:left;margin:6px 0 0"></p>
         <div class="dua-kolom">
           <label class="judul">Tingkat kelas<select id="guruKelas"></select></label>
           <label class="judul">Pelajaran<select id="guruMapel"></select></label>
+          <label class="judul" id="labelGuruTes" style="display:none">Tes<select id="guruTes"></select></label>
         </div>
         <div class="pesan-error" id="guruError" role="alert"></div>
         <div class="tengah"><button class="tombol" id="btnBuatLink" type="button">🔗 Buat Link Kuis</button></div>
@@ -469,9 +504,9 @@
           <p class="sub-kecil" id="infoSalin" style="text-align:left"></p>
         </div>
         <div class="kotak-promo" style="margin-top:18px">
-          <b>📊 Rekap nilai murid dari WhatsApp</b>
-          <p>Di WhatsApp, tekan lama pesan nilai dari murid, pilih semua pesan nilai, lalu <b>Salin</b>. Tempelkan di kotak ini, maka tabel rekap langsung jadi.</p>
-          <textarea id="rekapTeks" rows="5" placeholder="Tempel pesan-pesan nilai dari WhatsApp di sini..."></textarea>
+          <b>📊 Rekap nilai & hasil tes murid dari WhatsApp</b>
+          <p>Di WhatsApp, tekan lama pesan nilai dari murid, pilih semua pesan nilai, lalu <b>Salin</b>. Tempelkan di kotak ini, maka tabel rekap langsung jadi. Untuk tes gaya belajar, rekap juga menampilkan sebaran kelas dan saran mengajarnya.</p>
+          <textarea id="rekapTeks" rows="5" placeholder="Tempel pesan-pesan nilai atau hasil tes dari WhatsApp di sini..."></textarea>
           <div class="baris-tombol" style="justify-content:flex-start"><button class="tombol" id="btnRekap" type="button">📊 Buat Rekap</button></div>
           <div id="hasilRekap"></div>
         </div>
@@ -537,6 +572,7 @@
     <div class="promo-ortu tanpa-cetak" id="promoHasilTes"></div>
     <div class="baris-tombol tanpa-cetak">
       <button class="tombol kuning" id="btnCetak">🖨️ Cetak / Simpan PDF</button>
+      <button class="tombol putih" id="btnProfilTes" type="button">📋 Profil Lengkap</button>
       <button class="tombol putih" id="btnKembaliTes">🌟 Tes Lainnya</button>
     </div>
   </section>
@@ -1630,6 +1666,7 @@ function renderMode() {
 /* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
 function perbaruiInfoMapel() {
   const n = $("namaSiswa").value.trim();
+  renderHarian();
   document.querySelectorAll("#daftarMapel .mapel").forEach((b) => {
     const kode = b.dataset.kode;
     let teks = "♾️ Soal selalu baru";
@@ -1648,8 +1685,8 @@ function mulai() {
   if (!pilihanMapel) { $("pesanError").textContent = "Pilih salah satu pelajaran dulu, ya! 📚"; return; }
 
   levelAktif = kelasAktif === "3" ? bacaLevel(nama, "mtk") : 1;
-  if (!TRYOUT[jenjangAktif]) modeAktif = "latihan";
-  jumlahSoalAktif = modeAktif === "tryout" ? TRYOUT[jenjangAktif][0] : JUMLAH_SOAL;
+  if (!TRYOUT[jenjangAktif] && modeAktif !== "harian") modeAktif = "latihan";
+  jumlahSoalAktif = modeAktif === "tryout" ? TRYOUT[jenjangAktif][0] : modeAktif === "harian" ? SOAL_HARIAN : JUMLAH_SOAL;
   hentikanTimer();
   const { terpilih, info } = pilihSoalBaru(pilihanMapel);
   $("infoPutaran").textContent = info;
@@ -1661,7 +1698,7 @@ function mulai() {
   });
   nomor = 0; skor = 0; catatan = [];
   const m = namaMapel(pilihanMapel);
-  $("infoMapel").textContent = (modeAktif === "tryout" ? "⏱️ Tryout " : m.ikon + " ") + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan" ? " • Level " + levelAktif : "");
+  $("infoMapel").textContent = modeAktif === "harian" ? "🔥 Tantangan Harian • " + KELAS_INFO[kelasAktif].nama : (modeAktif === "tryout" ? "⏱️ Tryout " : m.ikon + " ") + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan" ? " • Level " + levelAktif : "");
   tampilkan("layarKuis");
   if (modeAktif === "tryout") mulaiTimer(TRYOUT[jenjangAktif][1] * 60);
   tampilSoal();
@@ -1792,6 +1829,14 @@ function selesai() {
   const m = namaMapel(pilihanMapel), jenis = modeAktif === "tryout" ? "Tryout" : "Kuis";
   if (modeAktif === "tryout") $("judulHasil").textContent = "Hasil Tryout " + nama;
   catatRapor(nilai);
+  if (modeAktif === "harian") {
+    const c = catatHarian(nilai), b = c.s.beruntun;
+    $("judulHasil").textContent = c.pertama ? "🔥 Tantangan Harian Selesai!" : "Latihan Tambahan Selesai!";
+    $("pesanHasil").textContent = (c.pertama ? `Kamu sudah ${b} hari berturut-turut. ` : "Tantangan hari ini sudah tercatat sebelumnya. ") + (c.lencanaBaru ? `🎖️ Selamat, kamu dapat lencana ${c.lencanaBaru[1]} ${c.lencanaBaru[2]} beruntun!` : `Datang lagi besok untuk soal baru, ya!`);
+    return bukaHasil(() => { tampilkan("layarHasil"); bunyi("selesai"); if (nilai >= 60 || c.lencanaBaru) konfeti(); }, "promoHasil", {
+      bagikan: `🔥 ${nama} sudah ${b} hari berturut-turut menyelesaikan Tantangan Harian (nilai hari ini ${nilai})! Ikut tantangannya, yuk!`,
+      piagam: c.lencanaBaru ? `atas ${c.lencanaBaru[0]} hari berturut-turut menyelesaikan Tantangan Harian` : null });
+  }
   bukaHasil(() => {
     tampilkan("layarHasil");
     bunyi("selesai");
@@ -2070,7 +2115,7 @@ const TES = {
       const seri = skor[urut[1]] === skor[urut[0]], dekat = skor[urut[1]] >= skor[urut[0]] - 2;
       const teksWA = `${m.ikon} Hasil Tes Gaya Belajar ala STIFIn ${nama}: ${m.nama} (${m.asli})${seri ? " & " + kedua.nama : ""}\n${KODE_MESIN.map((k) => `${MESIN[k].asli} ${pM[k]}%`).join(" • ")}`;
       const usia = extra.usia ? `${extra.usia.th} tahun ${extra.usia.bl} bulan` : "";
-      return { ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`,
+      return { kode: urut[0], ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`,
         setelah: () => gambarKartuHasil({ latar: m.warna, emoji: m.ikon, judulAtas: "Gaya Belajarku (ala STIFIn)", besar: m.asli, warnaBesar: "#072B6B", judul: m.nama, deskripsi: m.sifat[0] + ".",
           judulBatang: "Skor kelima mesin:", batang: urut.map((k) => [MESIN[k].asli, pM[k] / 100, k === urut[0] ? "#02a581" : "#02c2c1"]), penutup: "" }),
         html: `
@@ -2458,7 +2503,7 @@ TES.mbti = {
     const R = hitungMBTI(j, extra.soal), mb = MB[R.type], kel = KELOMPOK_MBTI[R.kel];
     const teks = `🧩 Hasil Tes MBTI ${nama}: ${R.type} (${mb[0]})\n${R.dim.map((d) => `${d.nama} ${d.persen}%`).join(" • ")}`;
     return {
-      ringkas: `${R.type} • ${mb[0]}`,
+      kode: R.type, ringkas: `${R.type} • ${mb[0]}`,
       html: `<div class="kotak tengah" style="background:${kel[2]};border-color:transparent;color:#1d1a2f"><div class="besar">${kel[1]}</div>
           <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Tipe kepribadianmu</p>
           <div style="font-size:72px;font-weight:800;line-height:1;letter-spacing:2px">${R.type}</div>
@@ -2490,7 +2535,7 @@ TES.disc = {
     const nmDisc = { D: "Dominance (D)", I: "Influence (I)", S: "Steadiness (S)", C: "Conscientiousness (C)" };
     const teks = `🎯 Hasil Tes DISC ${nama}: gaya ${D0[0]} (${p})${dukung ? `, pendukung ${D1[0]} (${q})` : ""}\n${KODE_DISC.map((k) => `${k} ${Math.round((R.n[k] / R.total) * 100)}%`).join(" • ")}`;
     return {
-      ringkas: `${dukung ? p + "/" + q : p} • ${D0[0]}`,
+      kode: p, ringkas: `${dukung ? p + "/" + q : p} • ${D0[0]}`,
       html: `<div class="kotak tengah" style="background:${WARNA_DISC[p]};border-color:transparent;color:#1d1a2f"><div class="besar">${E.ikon}</div>
           <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Gaya perilakumu</p>
           <div style="font-size:64px;font-weight:800;line-height:1">${p}${dukung ? `<span style="font-size:36px">/${q}</span>` : ""}</div>
@@ -2520,7 +2565,7 @@ TES.temperamen = {
     const campur = R.n[q] >= R.total * 0.25;
     const teks = `🌡️ Hasil Tes Temperamen ${nama}: ${TN[p]}${campur ? "–" + TN[q] : ""}\n${KODE_TEMP.map((k) => `${TN[k]} ${Math.round((R.n[k] / R.total) * 100)}%`).join(" • ")}`;
     return {
-      ringkas: TN[p] + (campur ? "–" + TN[q] : ""),
+      kode: p, ringkas: TN[p] + (campur ? "–" + TN[q] : ""),
       html: `<div class="kotak tengah" style="background:${TC[p]};border-color:transparent;color:#1d1a2f">${maskot(p)}
           <p style="margin:8px 0 0;font-weight:800">Halo, ${esc(nama)}! Temperamenmu</p>
           <div style="font-size:52px;font-weight:800;line-height:1.05">${TN[p]}${campur ? `<span style="font-size:30px"> – ${TN[q]}</span>` : ""}</div>
@@ -2552,9 +2597,9 @@ function normalWA(s) {
 function isiPromo(el, opsi) {
   opsi = opsi || {};
   let html = "";
-  if (opsi.guru && opsi.guru.wa) html += `<div class="kotak-promo guru"><b>📤 Kirim nilaimu ke ${esc(opsi.guru.nama)}</b>
+  if (opsi.guru && opsi.guru.wa) html += `<div class="kotak-promo guru"><b>📤 Kirim ${opsi.guru.label || "nilai"}mu ke ${esc(opsi.guru.nama)}</b>
       <p>Tekan tombol di bawah, lalu tekan <b>Kirim</b> di WhatsApp.</p>
-      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/${opsi.guru.wa}?text=${encodeURIComponent(opsi.guru.pesan)}">📤 Kirim nilai ke ${esc(opsi.guru.nama)}</a></div>`;
+      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/${opsi.guru.wa}?text=${encodeURIComponent(opsi.guru.pesan)}">📤 Kirim ${opsi.guru.label || "nilai"} ke ${esc(opsi.guru.nama)}</a></div>`;
   if (opsi.bagikan) {
     const teks = opsi.bagikan + "\n\nCoba gratis juga di sini 👉 " + URL_KUIS;
     html += `<div class="kotak-promo bagikan"><b>📲 Bagikan hasilnya</b>
@@ -2673,7 +2718,7 @@ function bukaRapor(asal) {
         <div class="nilai-akhir">${z}</div>${garisNilai(d)}</div>`; }).join("")}
     <h3>🗓️ Riwayat terakhir</h3>
     <table class="tabel"><thead><tr><th>Tanggal</th><th>Pelajaran</th><th>Mode</th><th class="angka">Nilai</th></tr></thead><tbody>
-    ${r.slice(-15).reverse().map((e) => `<tr><td>${tglPendek(e.t)}</td><td>${MAPEL_INFO[e.m].nama} • ${KELAS_INFO[e.k].nama}</td><td>${e.mode === "tryout" ? "Tryout" : "Latihan"}</td><td class="angka"><b>${e.n}</b></td></tr>`).join("")}</tbody></table>
+    ${r.slice(-15).reverse().map((e) => `<tr><td>${tglPendek(e.t)}</td><td>${MAPEL_INFO[e.m].nama} • ${KELAS_INFO[e.k].nama}</td><td>${e.mode === "tryout" ? "Tryout" : e.mode === "harian" ? "Harian" : "Latihan"}</td><td class="angka"><b>${e.n}</b></td></tr>`).join("")}</tbody></table>
     <p class="catatan-ortu">Rapor ini tersimpan di perangkat ini saja, untuk nama "${esc(nama)}".</p>`;
   tampilkan("layarRapor");
 }
@@ -2692,8 +2737,9 @@ function bacaRekap(teks) {
   return Object.keys(data).map((k) => data[k]).sort((a, b) => a.nama.localeCompare(b.nama));
 }
 function buatRekap() {
-  const d = bacaRekap($("rekapTeks").value), el = $("hasilRekap");
-  if (!d.length) { el.innerHTML = `<p class="pesan-error">Belum ada pesan nilai yang terbaca. Pastikan yang ditempel adalah pesan "Kirim nilai" dari murid.</p>`; return; }
+  const d = bacaRekap($("rekapTeks").value), dt = bacaRekapTes($("rekapTeks").value), el = $("hasilRekap");
+  if (!d.length && !dt.length) { el.innerHTML = `<p class="pesan-error">Belum ada pesan yang terbaca. Pastikan yang ditempel adalah pesan "Kirim nilai" atau "Kirim hasil" dari murid.</p>`; return; }
+  if (!d.length) { el.innerHTML = rekapTesKelas(dt) + `<div class="baris-tombol" style="justify-content:flex-start"><button class="tombol putih" type="button" onclick="window.print()">🖨️ Cetak</button></div>`; return; }
   const ns = d.map((x) => x.nilai), rata = Math.round(ns.reduce((a, b) => a + b, 0) / ns.length);
   el.innerHTML = `<div class="ringkas-rapor"><div><b>${d.length}</b>murid</div><div><b>${rata}</b>rata-rata</div><div><b>${Math.max(...ns)} / ${Math.min(...ns)}</b>tertinggi / terendah</div></div>
     <table class="tabel"><thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Pelajaran</th><th class="angka">Nilai</th></tr></thead><tbody>
@@ -2701,6 +2747,7 @@ function buatRekap() {
     <div class="baris-tombol" style="justify-content:flex-start"><a class="tombol putih" id="unduhRekap" download="rekap-nilai.csv">⬇️ Unduh untuk Excel</a><button class="tombol putih" type="button" onclick="window.print()">🖨️ Cetak</button></div>`;
   const csv = "No;Nama;Kelas;Pelajaran;Nilai;Benar;Jumlah Soal\n" + d.map((x, i) => [i + 1, x.nama, x.kelas, x.pelajaran, x.nilai, x.benar, x.dari].map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(";")).join("\n");
   $("unduhRekap").href = "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + csv);
+  if (dt.length) el.insertAdjacentHTML("beforeend", rekapTesKelas(dt));
 }
 
 /* ---------- MODE GURU ---------- */
@@ -2725,6 +2772,7 @@ function pesanNilaiGuru(nilai, skor, total) {
 }
 function terapkanTautan() {
   // Tautan dari halaman lain: ?k=5&m=mtk (kelas & pelajaran) atau ?tes=otak
+  if (TES_GURU) return terapkanTesGuru();
   if (KUIS_GURU) return terapkanKuisGuru();
   if (KELAS_INFO[PARAM.k]) {
     kelasAktif = PARAM.k; jenjangAktif = KELAS_INFO[PARAM.k].jenjang;
@@ -2752,6 +2800,8 @@ function isiPilihanGuru() {
   sk.value = kelasAktif;
   const isiMapel = () => { sm.innerHTML = mapelKelas(sk.value).concat(["campur"]).map((k) => `<option value="${k}">${MAPEL_INFO[k].ikon} ${MAPEL_INFO[k].nama}</option>`).join(""); };
   sk.onchange = isiMapel; isiMapel();
+  $("guruTes").innerHTML = TES_UNTUK_GURU.map((id) => `<option value="${id}">${TES[id].ikon} ${TES[id].nama}</option>`).join("");
+  renderJenisGuru();
   $("promoGuru").innerHTML = kartuHadirFlow("guru");
 }
 function buatLinkGuru() {
@@ -2759,6 +2809,15 @@ function buatLinkGuru() {
   if (n.length < 2) { $("guruError").textContent = "Tulis nama Bapak/Ibu guru dulu."; $("guruNama").focus(); return; }
   if (!wa) { $("guruError").textContent = "Nomor WhatsApp belum benar. Contoh: 081234567890"; $("guruWA").focus(); return; }
   $("guruError").textContent = "";
+  if (jenisGuru === "tes") {
+    const id = $("guruTes").value, t = TES[id], g = KELAS_INFO[$("guruKelas").value].g;
+    const qt = { guru: n, wa, tes: id }; if (r) qt.r = r; if (t.pilihLevel) qt.lv = g >= 10 ? 4 : g >= 7 ? 3 : g >= 4 ? 2 : 1;
+    const linkT = URL_KUIS + "?" + Object.keys(qt).map((k) => k + "=" + encodeURIComponent(qt[k])).join("&");
+    $("linkGuru").value = linkT;
+    $("btnLinkWA").href = "https://wa.me/?text=" + encodeURIComponent(`Assalamu'alaikum anak-anak${r ? " kelas " + r : ""} 👋\nAyo kerjakan ${t.nama} dari ${n}. ${id === "vakOrtu" ? "(Untuk Ayah/Bunda: mohon diisi berdasarkan kebiasaan anak.) " : ""}Setelah selesai, jangan lupa tekan "Kirim hasil ke ${n}", ya.\n\n👉 ${linkT}`);
+    $("hasilLink").style.display = "block"; $("infoSalin").textContent = "";
+    return tulis("kuisMI3:guru", { n, wa: $("guruWA").value, r });
+  }
   const q = { guru: n, wa, k: $("guruKelas").value, m: $("guruMapel").value };
   if (r) q.r = r;
   const link = URL_KUIS + "?" + Object.keys(q).map((k) => k + "=" + encodeURIComponent(q[k])).join("&");
@@ -2846,7 +2905,7 @@ TES.majemuk = {
     const teks = `🌈 Hasil Tes Kecerdasan Majemuk ${nama}: paling menonjol ${top.map((k) => MAJEMUK[k].pendek).join(", ")}\n${R.urut.map((k) => `${MAJEMUK[k].pendek} ${R.p[k]}%`).join(" • ")}`;
     const nm = {}, wr = {}; KODE_MAJEMUK.forEach((k) => { nm[k] = MAJEMUK[k].ikon + " " + MAJEMUK[k].pendek; wr[k] = "var(--hf-hijau)"; });
     return {
-      ringkas: top.map((k) => MAJEMUK[k].pendek).join(" • "),
+      kode: top, ringkas: top.map((k) => MAJEMUK[k].pendek).join(" • "),
       html: `<div class="kotak tengah" style="background:${M0.warna};border-color:transparent;color:#1d1a2f"><div class="besar">${M0.ikon}</div>
           <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Kecerdasanmu yang paling menonjol</p>
           <h2 style="margin:6px 0;font-size:30px">${M0.nama}</h2><p style="margin:0">${M0.julukan}: ${M0.arti}.</p></div>
@@ -3239,7 +3298,7 @@ function hasilVAK(j, ortu) {
   const nm = {}, wr = {}; KODE_VAK.forEach((k) => { nm[k] = VAK[k].ikon + " " + VAK[k].nama; wr[k] = k === a ? "var(--hf-hijau)" : "var(--hf-teal)"; });
   const teks = `${V0.ikon} Hasil Tes Gaya Belajar ${nama}: ${label}\n${KODE_VAK.map((k) => `${VAK[k].nama} ${p[k]}%`).join(" • ")}`;
   return {
-    ringkas: label,
+    kode: tiga ? KODE_VAK : dua ? [a, b] : [a], ringkas: label,
     piagam: `sebagai pembelajar ${label} pada Tes Gaya Belajar VAK`,
     html: `<div class="kotak tengah" style="background:${V0.warna};border-color:transparent;color:#1d1a2f"><div class="besar">${tiga ? "🌈" : V0.ikon}</div>
         <p style="margin:4px 0 0;font-weight:800">${ortu ? "Gaya belajar " + esc(nama) : "Halo, " + esc(nama) + "! Gaya belajarmu"}</p>
@@ -3340,7 +3399,7 @@ TES.gaya4 = {
     const nm = {}, wr = {}; KODE_GAYA4.forEach((k) => { nm[k] = GAYA4[k].ikon + " " + GAYA4[k].nama; wr[k] = k === a ? "var(--hf-hijau)" : "var(--hf-teal)"; });
     const teks = `${G.ikon} Hasil Tes Gaya Belajar ${nama}: ${G.nama}${dukung ? "–" + G2.nama : ""}\n${KODE_GAYA4.map((k) => `${GAYA4[k].nama} ${p[k]}%`).join(" • ")}`;
     return {
-      ringkas: G.nama + (dukung ? "–" + G2.nama : ""),
+      kode: dukung ? [a, b] : [a], ringkas: G.nama + (dukung ? "–" + G2.nama : ""),
       html: `<div class="kotak tengah" style="background:${G.warna};border-color:transparent;color:#1d1a2f"><div class="besar">${G.ikon}</div>
           <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Gaya belajarmu</p>
           <div style="font-size:46px;font-weight:900;line-height:1.1">${G.nama}${dukung ? `<br><span style="font-size:26px">dan ${G2.nama}</span>` : ""}</div>
@@ -3360,6 +3419,191 @@ TES.gaya4 = {
     };
   }
 };
+
+/* ---------- 9. PROFIL LENGKAP ANAK: gabungan semua hasil tes + rapor kuis ---------- */
+const bacaHasilTes = (n, id) => baca(kunci("tes-" + id, n), null);
+const TES_PROFIL = () => GRUP_TES.reduce((a, g) => a.concat(g[2]), []).filter((id) => id !== "mood" && id !== "darah");
+function kodeArr(x) { return x == null ? [] : Array.isArray(x) ? x : [x]; }
+function unik(arr) {
+  // buang yang sama persis atau membahas hal yang sama (mis. dua saran "peta pikiran")
+  const s = new Set(), topik = ["peta pikiran", "kelompok", "alat peraga", "lagu", "praktik", "gambar"], dipakai = new Set();
+  return arr.filter((x) => { if (!x || s.has(x)) return false; const t = topik.find((k) => x.toLowerCase().indexOf(k) >= 0); if (t && dipakai.has(t)) return false; if (t) dipakai.add(t); s.add(x); return true; });
+}
+function isiKartuProfil() {
+  const el = $("kartuProfil"); if (!el) return;
+  const n = $("namaSiswa").value.trim(), daftar = TES_PROFIL(), selesai = n ? daftar.filter((id) => bacaHasilTes(n, id)).length : 0, p = Math.round((selesai / daftar.length) * 100);
+  el.innerHTML = `<button type="button" class="kartu-profil" id="btnProfil"><span class="ik">📋</span><span class="isi"><b>Profil Lengkap ${n ? esc(n) : "Anak"}</b>
+    <small>${selesai ? `${selesai} dari ${daftar.length} tes selesai • lihat ringkasan & resep belajar` : "Gabungan semua hasil tes dalam satu halaman yang bisa dicetak"}</small>
+    <span class="jalur-profil"><span style="width:${p}%"></span></span></span><em>Buka ›</em></button>`;
+  $("btnProfil").addEventListener("click", () => bukaProfil("layarMulai"));
+}
+function bukaProfil(asal) {
+  nama = $("namaSiswa").value.trim() || nama;
+  if (!nama) { gantiTab("tabDiri"); $("pesanError").textContent = "Tulis nama anak dulu untuk melihat profilnya. 😊"; $("namaSiswa").focus(); return; }
+  layarAsalRapor = asal || "layarMulai";
+  const H = {}; TES_PROFIL().concat(["mood"]).forEach((id) => (H[id] = bacaHasilTes(nama, id)));
+  const daftar = TES_PROFIL(), selesai = daftar.filter((id) => H[id]), rapor = baca(kunci("rapor", nama), []);
+  const kode = (id) => (H[id] ? kodeArr(H[id].kode) : []);
+  // Kekuatan utama
+  const kuat = [];
+  if (kode("majemuk").length) kuat.push(`🌈 Kecerdasan menonjol: <b>${kode("majemuk").map((k) => MAJEMUK[k] && MAJEMUK[k].pendek).filter(Boolean).join(", ")}</b>`);
+  ["vak", "vakOrtu"].forEach((id) => { if (kode(id).length && !kuat.some((x) => x.indexOf("Gaya belajar VAK") >= 0)) kuat.push(`👁️ Gaya belajar VAK: <b>${esc(H[id].ringkas)}</b>`); });
+  if (kode("mesin").length && MESIN[kode("mesin")[0]]) { const m = MESIN[kode("mesin")[0]]; kuat.push(`🧬 Mesin kecerdasan: <b>${m.nama} (${m.asli})</b>, ${m.sifat[0].toLowerCase()}`); }
+  if (kode("gaya4").length) kuat.push(`🔄 Gaya belajar: <b>${kode("gaya4").map((k) => GAYA4[k].nama).join(" dan ")}</b>, ${GAYA4[kode("gaya4")[0]].julukan.toLowerCase()}`);
+  if (kode("mbti").length && MB[kode("mbti")[0]]) kuat.push(`🧩 Kepribadian: <b>${kode("mbti")[0]} (${MB[kode("mbti")[0]][0]})</b>`);
+  if (kode("temperamen").length && TN[kode("temperamen")[0]]) kuat.push(`🌡️ Temperamen: <b>${TN[kode("temperamen")[0]]}</b>`);
+  if (kode("disc").length && DD[kode("disc")[0]]) kuat.push(`🎯 Gaya perilaku: <b>${DD[kode("disc")[0]][0]}</b>`);
+  ["otak", "ingat", "fokus", "ruang"].forEach((id) => { if (H[id]) kuat.push(`${TES[id].ikon} ${TES[id].nama.replace(" (ala IQ)", "")}: <b>${esc(H[id].ringkas)}</b>`); });
+  if (H.kekuatan) kuat.push(`💪 Kelebihan: <b>${esc(H.kekuatan.ringkas)}</b>`);
+  // Resep belajar: gabungan saran dari tes gaya belajar & kecerdasan
+  const vakK = kode("vak").length ? kode("vak") : kode("vakOrtu");
+  const resep = unik([].concat(
+    vakK.slice(0, 2).map((k) => VAK[k] && VAK[k].rumah[0]), vakK.slice(0, 1).map((k) => VAK[k] && VAK[k].rumah[1]),
+    kode("mesin").map((k) => MESIN[k] && MESIN[k].belajar[0]), kode("mesin").map((k) => MESIN[k] && MESIN[k].belajar[1]),
+    kode("majemuk").slice(0, 2).map((k) => MAJEMUK[k] && MAJEMUK[k].belajar[0]),
+    kode("gaya4").slice(0, 1).map((k) => GAYA4[k] && GAYA4[k].cocok[0]), kode("mbti").length ? [BELAJAR_MBTI[kode("mbti")[0][0]]] : []
+  )).slice(0, 7);
+  const kegiatan = unik(kode("majemuk").slice(0, 3).map((k) => MAJEMUK[k] && MAJEMUK[k].kegiatan.split(", ").slice(0, 2).join(", ")));
+  const profesi = unik([].concat(kode("majemuk").slice(0, 2).map((k) => MAJEMUK[k] && MAJEMUK[k].profesi.split(", ").slice(0, 3).join(", ")), kode("mbti").length && MB[kode("mbti")[0]] ? [MB[kode("mbti")[0]][2]] : []));
+  const belum = daftar.filter((id) => !H[id]);
+  const rata = rapor.length ? Math.round(rapor.reduce((a, e) => a + e.n, 0) / rapor.length) : null;
+  const harian = statusHarian(nama);
+  const p = Math.round((selesai.length / daftar.length) * 100);
+  const teksBagi = `📋 Profil ${nama} (Tes Gratis HadirFlow)\n` + kuat.slice(0, 5).map((x) => "• " + x.replace(/<[^>]+>/g, "")).join("\n");
+  $("isiRapor").innerHTML = `<div class="tengah"><img src="${LOGO}" alt="" style="width:54px;height:54px"><h2 style="margin:6px 0 0">Profil Lengkap ${esc(nama)}</h2>
+      <p class="sub-kecil">Tes Gratis HadirFlow • dicetak ${tglHariIni()}</p></div>
+    <div class="ringkas-rapor"><div><b>${selesai.length}/${daftar.length}</b>tes selesai</div><div><b>${rapor.length}</b>kuis pelajaran${rata != null ? ` • rata-rata ${rata}` : ""}</div><div><b>🔥 ${harian.beruntun}</b>hari tantangan beruntun</div></div>
+    <div class="jalur-profil besar tanpa-cetak"><span style="width:${p}%"></span></div>
+    ${selesai.length ? "" : `<div class="kotak peringatan">Belum ada tes yang dikerjakan atas nama <b>${esc(nama)}</b>. Kerjakan beberapa tes di tab <b>Kenali Diriku</b>, nanti profilnya terisi otomatis di sini.</div>`}
+    ${kuat.length ? `<h3>✨ Gambaran ${esc(nama)}</h3><ul class="daftar-profil">${kuat.map((x) => `<li>${x}</li>`).join("")}</ul>` : ""}
+    ${resep.length ? `<h3>📚 Resep belajar untuk ${esc(nama)}</h3><ol>${resep.map((x) => `<li>${besarAwal(x)}</li>`).join("")}</ol>` : ""}
+    ${kegiatan.length ? `<h3>🎯 Kegiatan yang mendukung</h3><p>${besarAwal(kegiatan.join("; "))}.</p>` : ""}
+    ${profesi.length ? `<h3>💼 Contoh arah cita-cita</h3><p>${besarAwal(profesi.join("; "))}.</p><p class="sub-kecil" style="text-align:left">Sekadar inspirasi. Minat anak masih bisa berubah, dan semua cita-cita yang baik layak didukung.</p>` : ""}
+    ${GRUP_TES.map(([, judul, ids]) => `<h3>${judul}</h3><table class="tabel"><tbody>${ids.filter((id) => id !== "darah").map((id) => `<tr><td>${TES[id].ikon} ${TES[id].nama}</td><td>${H[id] ? `<b>${esc(H[id].ringkas)}</b><br><span class="sub-kecil" style="text-align:left">${esc(H[id].tgl || "")}</span>` : `<button type="button" class="link-reset tanpa-cetak" data-coba-tes="${id}">Belum dicoba • Coba ›</button><span class="hanya-cetak">-</span>`}</td></tr>`).join("")}</tbody></table>`).join("")}
+    ${rapor.length ? `<h3>📈 Kuis pelajaran</h3><p>${rapor.length} kuis dikerjakan, rata-rata nilai <b>${rata}</b>. <button type="button" class="link-reset tanpa-cetak" id="btnProfilKeRapor">Lihat rapor lengkap ›</button></p>` : ""}
+    ${belum.length && selesai.length ? `<div class="kotak tanpa-cetak">🧩 Profil ${p}% lengkap. Kerjakan ${belum.length} tes lagi supaya gambarannya makin utuh.</div>` : ""}
+    <div class="baris-tombol tanpa-cetak" style="justify-content:flex-start"><a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(teksBagi + "\n\nBuat profil anakmu gratis 👉 " + URL_KUIS)}">💬 Bagikan ringkasan</a></div>
+    <p class="catatan-ortu">Profil ini merangkum hasil tes pengenalan diri dan latihan, bukan hasil pemeriksaan psikologi resmi. Data tersimpan di perangkat ini saja, untuk nama "${esc(nama)}".</p>
+    <div class="tanpa-cetak">${kartuHadirFlow("profil")}</div>`;
+  $("isiRapor").querySelectorAll("[data-coba-tes]").forEach((b) => b.addEventListener("click", () => { tampilkan("layarMulai"); gantiTab("tabDiri"); bukaTes(b.getAttribute("data-coba-tes")); }));
+  if ($("btnProfilKeRapor")) $("btnProfilKeRapor").addEventListener("click", () => bukaRapor("layarMulai"));
+  tampilkan("layarRapor");
+}
+
+/* ---------- 10. TANTANGAN HARIAN: 5 soal campuran per hari, hari beruntun, lencana ---------- */
+const SOAL_HARIAN = 5;
+const LENCANA_HARIAN = [[3, "🥉", "3 hari"], [7, "🥈", "7 hari"], [14, "🥇", "14 hari"], [30, "🏆", "30 hari"], [100, "👑", "100 hari"]];
+const tglKunci = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+function statusHarian(n) {
+  const d = n ? baca(kunci("harian", n), {}) : {}, hari = d.hari || {}, kini = new Date(), hariIni = tglKunci(kini);
+  let beruntun = 0; const t = new Date(kini.getFullYear(), kini.getMonth(), kini.getDate());
+  if (hari[hariIni] == null) t.setDate(t.getDate() - 1);
+  while (hari[tglKunci(t)] != null) { beruntun++; t.setDate(t.getDate() - 1); }
+  return { hari, hariIni, sudah: hari[hariIni] != null, nilai: hari[hariIni], beruntun, terbaik: Math.max(d.terbaik || 0, beruntun) };
+}
+function catatHarian(nilai) {
+  const k = kunci("harian", nama), d = baca(k, {}); d.hari = d.hari || {};
+  const hariIni = tglKunci(new Date()), pertama = d.hari[hariIni] == null;
+  if (pertama) d.hari[hariIni] = nilai;
+  const keys = Object.keys(d.hari).sort(); if (keys.length > 400) keys.slice(0, keys.length - 400).forEach((x) => delete d.hari[x]);
+  tulis(k, d);
+  const s = statusHarian(nama); d.terbaik = Math.max(d.terbaik || 0, s.beruntun); tulis(k, d);
+  return { pertama, s, lencanaBaru: pertama ? LENCANA_HARIAN.find(([h]) => h === s.beruntun) : null };
+}
+function renderHarian() {
+  const el = $("kartuHarian"); if (!el) return;
+  if (KUIS_GURU) { el.innerHTML = ""; return; }
+  const n = $("namaSiswa").value.trim(), s = statusHarian(n), kini = new Date();
+  const tujuh = Array.from({ length: 7 }, (_, i) => { const d = new Date(kini.getFullYear(), kini.getMonth(), kini.getDate() - 6 + i); return { k: tglKunci(d), h: ["Mg", "Sn", "Sl", "Rb", "Km", "Jm", "Sb"][d.getDay()], ini: i === 6 }; });
+  el.innerHTML = `<div class="kartu-harian">
+    <div class="atas-harian"><div><b>🔥 Tantangan Harian</b><small>${SOAL_HARIAN} soal campuran ${esc(KELAS_INFO[kelasAktif].nama)} • setiap hari soal baru</small></div>
+      <div class="api-harian${s.beruntun ? "" : " redup"}">🔥<b>${s.beruntun}</b><small>hari</small></div></div>
+    <div class="minggu-harian">${tujuh.map((d) => `<span class="${s.hari[d.k] != null ? "isi" : ""}${d.ini ? " ini" : ""}" title="${d.k}">${s.hari[d.k] != null ? "✓" : d.h}</span>`).join("")}</div>
+    <div class="bawah-harian"><span class="lencana-harian">${LENCANA_HARIAN.map(([h, ik, lab]) => `<i class="${s.terbaik >= h ? "dapat" : ""}" title="Lencana ${lab} beruntun">${ik}</i>`).join("")}</span>
+      ${s.sudah ? `<span class="selesai-harian">✅ Hari ini selesai (nilai ${s.nilai})</span><button type="button" class="link-reset" id="btnHarian">Latihan lagi ›</button>` : `<button type="button" class="tombol kecil" id="btnHarian">Mulai ▶</button>`}</div></div>`;
+  $("btnHarian").addEventListener("click", mulaiHarian);
+}
+let simpanHarian = null;
+function mulaiHarian() {
+  if (!$("namaSiswa").value.trim()) { $("pesanError").textContent = "Tulis namamu dulu, ya! 😊"; $("namaSiswa").focus(); return; }
+  if (modeAktif !== "harian") simpanHarian = { mapel: pilihanMapel, mode: modeAktif };
+  pilihanMapel = "campur"; modeAktif = "harian";
+  mulai();
+}
+function keluarHarian() {
+  if (modeAktif !== "harian") return;
+  pilihanMapel = simpanHarian ? simpanHarian.mapel : null; modeAktif = simpanHarian && simpanHarian.mode === "tryout" && TRYOUT[jenjangAktif] ? "tryout" : "latihan"; simpanHarian = null;
+  renderPilihan();
+}
+
+/* ---------- 11. TES UNTUK SATU KELAS: link tes dari guru, hasil dikirim ke WA guru, rekap kelas ---------- */
+const TES_UNTUK_GURU = ["vak", "vakOrtu", "mesin", "gaya4", "majemuk", "otak", "ingat", "fokus", "ruang", "mbti", "disc", "temperamen", "kekuatan"];
+const TES_GURU = (() => {
+  if (!PARAM.guru || !TES[PARAM.tes] || TES_UNTUK_GURU.indexOf(PARAM.tes) < 0) return null;
+  const lv = +PARAM.lv;
+  return { nama: PARAM.guru.slice(0, 40), wa: normalWA(PARAM.wa), tes: PARAM.tes, rombel: String(PARAM.r || "").slice(0, 20), lv: lv >= 1 && lv <= 4 ? lv : 0 };
+})();
+function pesanHasilGuru(ringkas) {
+  const g = TES_GURU, d = new Date(), jam = String(d.getHours()).padStart(2, "0") + "." + String(d.getMinutes()).padStart(2, "0");
+  return `Assalamu'alaikum ${g.nama}, saya ${nama}${g.rombel ? " (kelas " + g.rombel + ")" : ""}.\nHasil ${TES[g.tes].nama}: ${ringkas}\nDikerjakan ${tglHariIni()} pukul ${jam}.`;
+}
+function terapkanTesGuru() {
+  const g = TES_GURU, t = TES[g.tes];
+  gantiTab("tabDiri");
+  $("bannerGuru").innerHTML = `📋 Tes dari <b>${esc(g.nama)}</b>${g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : ""}: ${t.ikon} <b>${esc(t.nama)}</b>.<br>Tulis namamu, lalu tekan tombol di bawah.${g.wa ? " Setelah selesai, kirim hasilmu ke " + esc(g.nama) + "." : ""}
+    <div class="tengah" style="margin-top:8px"><button type="button" class="tombol" id="btnMulaiTesGuru">${t.ikon} Mulai Tes ▶</button></div>`;
+  $("bannerGuru").style.display = "block";
+  $("btnMulaiTesGuru").addEventListener("click", () => bukaTes(g.tes));
+}
+// Arti hasil per tes untuk sebaran kelas: [nama kategori → kode], dan saran mengajar per kode
+const PETA_REKAP = {
+  vak: () => KODE_VAK.map((k) => [VAK[k].nama, k, VAK[k].ikon, VAK[k].kelas]),
+  mesin: () => KODE_MESIN.map((k) => [MESIN[k].nama, k, MESIN[k].ikon, MESIN[k].belajar.slice(0, 3)]),
+  gaya4: () => KODE_GAYA4.map((k) => [GAYA4[k].nama, k, GAYA4[k].ikon, GAYA4[k].cocok.slice(0, 3)]),
+  majemuk: () => KODE_MAJEMUK.map((k) => [MAJEMUK[k].pendek, k, MAJEMUK[k].ikon, MAJEMUK[k].belajar])
+};
+PETA_REKAP.vakOrtu = PETA_REKAP.vak;
+function idTesDariNama(n) { const t = n.trim().toLowerCase(); return Object.keys(TES).find((id) => TES[id].nama.toLowerCase() === t) || null; }
+function rekapTesKelas(d) {
+  const perTes = {}; d.forEach((x) => (perTes[x.tes] = perTes[x.tes] || []).push(x));
+  return Object.keys(perTes).map((nmTes) => {
+    const baris = perTes[nmTes], id = idTesDariNama(nmTes), t = id ? TES[id] : null;
+    let sebaran = "", saran = "";
+    if (id && PETA_REKAP[id]) {
+      const peta = PETA_REKAP[id](), hit = {}; peta.forEach(([n, k]) => (hit[k] = 0));
+      baris.forEach((x) => { const cocok = /multimodal/i.test(x.hasil) ? peta : peta.filter(([n]) => new RegExp("(^|[^a-z])" + n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([^a-z]|$)").test(x.hasil.toLowerCase()));
+        cocok.forEach(([, k]) => hit[k]++); });
+      const urut = peta.slice().sort((a, b) => hit[b[1]] - hit[a[1]]), atas = urut[0];
+      sebaran = urut.map(([n, k, ik]) => `<div class="batang"><span>${ik} ${esc(n)}</span><div class="jalur"><div class="isi" style="width:${Math.round((hit[k] / baris.length) * 100)}%"></div></div><b>${hit[k]}</b></div>`).join("");
+      if (hit[atas[1]]) saran = `<div class="kotak"><b>💡 Saran mengajar untuk kelas ini</b><br>Paling banyak murid <b>${atas[2]} ${esc(atas[0])}</b> (${hit[atas[1]]} dari ${baris.length}). Coba:<ul style="margin:6px 0 0">${atas[3].map((x) => `<li>${x}</li>`).join("")}</ul>
+        <span class="sub-kecil" style="text-align:left;display:block;margin-top:6px">Tetap variasikan cara mengajar (lihat, dengar, praktik) supaya semua murid terlayani.</span></div>`;
+    } else {
+      const hit = {}; baris.forEach((x) => { const m = x.hasil.match(/\(([^)]+)\)\s*$/), kat = (m ? m[1] : x.hasil).trim(); hit[kat] = (hit[kat] || 0) + 1; });
+      sebaran = Object.keys(hit).sort((a, b) => hit[b] - hit[a]).map((k) => `<div class="batang"><span>${esc(k)}</span><div class="jalur"><div class="isi" style="width:${Math.round((hit[k] / baris.length) * 100)}%"></div></div><b>${hit[k]}</b></div>`).join("");
+    }
+    return `<h3>${t ? t.ikon : "🌟"} ${esc(nmTes)} • ${baris.length} murid</h3><h4 style="margin:6px 0">📊 Sebaran hasil</h4>${sebaran}${saran}
+      <table class="tabel"><thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Hasil</th></tr></thead><tbody>
+      ${baris.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.nama)}${x.kali > 1 ? ` <span class="sub-kecil">(${x.kali}×, terakhir)</span>` : ""}</td><td>${esc(x.kelas)}</td><td><b>${esc(x.hasil)}</b></td></tr>`).join("")}</tbody></table>`;
+  }).join("");
+}
+function bacaRekapTes(teks) {
+  const pola = /saya ([^\n(]+?)(?: \(kelas ([^)\n]+)\))?\.\s*(?:\[[^\]]*\][^:\n]*:\s*)?Hasil ([^:\n]+): ([^\n]+)/gi;
+  const data = {}; let m, urut = 0;
+  while ((m = pola.exec(teks))) {
+    const k = (m[1].trim() + "|" + m[3].trim()).toLowerCase(), lama = data[k];
+    data[k] = { nama: m[1].trim(), kelas: (m[2] || "").trim(), tes: m[3].trim(), hasil: m[4].trim(), kali: lama ? lama.kali + 1 : 1, urut: urut++ };
+  }
+  return Object.keys(data).map((k) => data[k]).sort((a, b) => a.nama.localeCompare(b.nama));
+}
+let jenisGuru = "kuis";
+function renderJenisGuru() {
+  const w = $("guruJenis"); w.innerHTML = "";
+  [["kuis", "📚 Kuis pelajaran"], ["tes", "🌟 Tes kenali diri (gaya belajar, kecerdasan, kepribadian)"]].forEach(([v, lab]) => w.appendChild(tombolChip(lab, jenisGuru === v, () => { jenisGuru = v; renderJenisGuru(); })));
+  $("guruMapel").parentNode.style.display = jenisGuru === "kuis" ? "" : "none";
+  $("labelGuruTes").style.display = jenisGuru === "tes" ? "" : "none";
+  $("btnBuatLink").textContent = jenisGuru === "tes" ? "🔗 Buat Link Tes" : "🔗 Buat Link Kuis";
+  $("infoJenisGuru").innerHTML = jenisGuru === "tes" ? "Murid mengerjakan tes, lalu menekan <b>Kirim hasil ke guru</b>. Tempel pesan-pesan hasil di <b>Rekap</b> di bawah untuk melihat sebaran gaya belajar kelas dan saran mengajarnya." : "Murid mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>.";
+}
 
 let tesTerkini = null;
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
@@ -3411,7 +3655,8 @@ function bukaTes(id) {
   $("introIkon").textContent = t.ikon; $("introJudul").textContent = t.nama; $("introIsi").innerHTML = t.intro;
   $("introTglLahir").style.display = t.tglLahir ? "block" : "none";
   $("introLevel").style.display = t.pilihLevel ? "block" : "none";
-  if (t.pilihLevel) {
+  if (t.pilihLevel && TES_GURU && TES_GURU.tes === id && TES_GURU.lv) { levelOtak = TES_GURU.lv; $("introLevel").style.display = "none"; }
+  else if (t.pilihLevel) {
     levelOtak = baca(kunci("level-otak", nama), KELAS_INFO[kelasAktif].g >= 10 ? 4 : KELAS_INFO[kelasAktif].g >= 7 ? 3 : KELAS_INFO[kelasAktif].g >= 4 ? 2 : 1);
     const gambarLevel = () => {
       const w = $("daftarLevel"); w.innerHTML = "";
@@ -3473,27 +3718,28 @@ function mundurTes() {
 function selesaiTes() {
   const t = TES[tesAktif];
   const h = t.hasil(tesJawab, { soal: tesSoal, teks: tesTeks, usia: tesUsia, detik: Math.round((Date.now() - tesMulai) / 1000) });
-  tulis(kunci("tes-" + tesAktif, nama), { ringkas: h.ringkas, tgl: tglHariIni() });
+  tulis(kunci("tes-" + tesAktif, nama), { ringkas: h.ringkas, tgl: tglHariIni(), kode: h.kode });
   $("isiHasilTes").innerHTML = `<div class="hasil-tes">${h.html}</div>`;
   if (h.setelah) h.setelah();
   const id = tesAktif;
   bukaHasil(() => {
     tampilkan("layarHasilTes"); bunyi("selesai");
     if (id !== "mood" && id !== "darah") konfeti(50);
-  }, "promoHasilTes", { bagikan: id === "mood" || t.kartu ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null });
+  }, "promoHasilTes", { bagikan: id === "mood" || t.kartu ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null,
+    guru: TES_GURU && TES_GURU.wa && TES_GURU.tes === id ? { nama: TES_GURU.nama, wa: TES_GURU.wa, pesan: pesanHasilGuru(h.ringkas), label: "hasil" } : null });
 }
 function gantiTab(id) {
   document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("aktif", b.dataset.tab === id));
   document.querySelectorAll(".isi-tab").forEach((d) => d.classList.toggle("aktif", d.id === id));
   $("pesanError").textContent = "";
-  if (id === "tabDiri") buatDaftarTes();
+  if (id === "tabDiri") { buatDaftarTes(); isiKartuProfil(); }
   if (id === "tabGuru") isiPilihanGuru();
 }
 document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => gantiTab(b.dataset.tab)));
 $("btnMulaiTes").addEventListener("click", mulaiTes);
 $("btnBatalTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
 $("btnTesMundur").addEventListener("click", mundurTes);
-$("btnKembaliTes").addEventListener("click", () => { gantiTab("tabDiri"); tampilkan("layarMulai"); });
+$("btnKembaliTes").addEventListener("click", () => { gantiTab("tabDiri"); isiKartuProfil(); tampilkan("layarMulai"); });
 document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("click", () => {
   const id = b.getAttribute("data-buka");
   if (id === "pelajaran") { gantiTab("tabPelajaran"); $("daftarJenjang").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
@@ -3506,11 +3752,13 @@ document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("clic
 $("btnCetak").addEventListener("click", () => { try { window.print(); } catch (e) {} });
 $("namaSiswa").addEventListener("input", () => { if ($("tabDiri").classList.contains("aktif")) buatDaftarTes(); });
 
-$("btnMulai").addEventListener("click", mulai);
+$("btnMulai").addEventListener("click", () => { keluarHarian(); mulai(); });
 $("namaSiswa").addEventListener("keydown", (e) => { if (e.key === "Enter") mulai(); });
 $("btnLanjut").addEventListener("click", lanjut);
 $("btnUlang").addEventListener("click", mulai);
-$("btnGanti").addEventListener("click", () => { hentikanTimer(); perbaruiInfoMapel(); tampilkan("layarMulai"); });
+$("btnGanti").addEventListener("click", () => { hentikanTimer(); keluarHarian(); perbaruiInfoMapel(); renderHarian(); tampilkan("layarMulai"); });
+$("btnProfilTes").addEventListener("click", () => bukaProfil("layarHasilTes"));
+$("namaSiswa").addEventListener("input", () => { renderHarian(); isiKartuProfil(); });
 $("namaSiswa").addEventListener("input", perbaruiInfoMapel);
 $("btnReset").addEventListener("click", () => {
   const n = $("namaSiswa").value.trim();
@@ -3546,6 +3794,7 @@ $("btnPasang").addEventListener("click", () => { if (promptPasang) { promptPasan
 })();
 buatDaftarMapel();
 terapkanTautan();
+renderHarian();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>

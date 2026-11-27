@@ -110,6 +110,9 @@ Jaring-jaring kubus diperiksa dengan "menggulingkan" kubus di atas setiap perseg
 Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asli MBTI naik dari 85% (versi 12 soal) menjadi 99%; DISC dan Temperamen dari 95% menjadi 100%. Menjawab "Sangat setuju" untuk semua pernyataan menghasilkan 50% "seimbang" di setiap dimensi. Ketiganya bukan tes psikologi resmi.
 
 ## Fitur belajar
+- **🔥 Tantangan Harian**: 5 soal campuran per hari sesuai kelas, kalender 7 hari, hitungan hari beruntun, lencana 3/7/14/30/100 hari (dengan piagam). Mengulang di hari yang sama tercatat sebagai latihan tambahan.
+- **📋 Profil Lengkap Anak**: gabungan semua hasil tes + rapor kuis + Tantangan Harian dalam satu halaman cetak/PDF: gambaran anak, resep belajar gabungan, kegiatan pendukung, arah cita-cita, dan tes yang belum dicoba.
+- **🏫 Link Tes untuk Kelas**: di tab Guru pilih jenis *Tes kenali diri* (VAK, STIFIn, 4 Gaya, Majemuk, kecerdasan, kepribadian). Murid mengirim hasil ke WA guru; Rekap membaca pesan itu dan menampilkan sebaran kelas serta saran mengajar. Tingkat tes kemampuan mengikuti kelas yang dipilih guru.
 - **Mode Tryout** (SD 20 soal/30 menit, SMP 30/60, SMA 40/90): tanpa pembahasan sampai selesai, ada hitung mundur, soal yang belum dijawab dihitung salah saat waktu habis.
 - **Soal dibacakan** (🔊) memakai suara bawaan perangkat; otomatis untuk TK dan SD kelas 1–2.
 - **Rapor Perkembangan**: grafik nilai per pelajaran dan riwayat, tersimpan di perangkat per nama anak.

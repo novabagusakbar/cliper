@@ -228,6 +228,35 @@
   .sel-fokus.keliru { background: #ffe1e8; border-color: #d62f4f; animation: geleng .3s; }
   .sel-fokus.terlewat { background: #fff4cc; border-color: #f0b400; }
   .sel-fokus:disabled { cursor: default; color: var(--navy); }
+  .kartu-harian { background: linear-gradient(135deg, #fff4e0, #ffe8ef); border: 3px solid #ffd7a8; border-radius: 22px; padding: 14px; margin-bottom: 16px; }
+  .atas-harian { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .atas-harian b { font-size: 19px; display: block; }
+  .atas-harian small { color: #6b6680; font-size: 14px; }
+  .api-harian { flex: none; text-align: center; background: #fff; border-radius: 16px; padding: 4px 12px; font-size: 22px; line-height: 1.1; border: 2px solid #ffd7a8; }
+  .api-harian b { display: block; font-size: 24px; color: #e2562b; }
+  .api-harian small { font-size: 12px; color: #6b6680; }
+  .api-harian.redup { filter: grayscale(1); opacity: .6; }
+  .minggu-harian { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0 10px; }
+  .minggu-harian span { text-align: center; font-weight: 800; font-size: 14px; padding: 6px 0; border-radius: 10px; background: rgba(255,255,255,.7); color: #8a8599; }
+  .minggu-harian span.isi { background: #ff8a3d; color: #fff; }
+  .minggu-harian span.ini { outline: 2px dashed #e2562b; outline-offset: 1px; }
+  .bawah-harian { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lencana-harian i { font-style: normal; font-size: 22px; filter: grayscale(1); opacity: .35; margin-right: 2px; }
+  .lencana-harian i.dapat { filter: none; opacity: 1; }
+  .selesai-harian { font-weight: 800; color: #17603a; font-size: 15px; }
+  .tombol.kecil { padding: 8px 18px; font-size: 17px; }
+  .kartu-profil { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e8f7f2, #e6f0ff); border: 3px solid #bfe6da; border-radius: 20px; padding: 12px 14px; margin-bottom: 14px; color: var(--ink); }
+  .kartu-profil .ik { font-size: 34px; }
+  .kartu-profil .isi { flex: 1; min-width: 0; }
+  .kartu-profil b { display: block; font-size: 18px; }
+  .kartu-profil small { display: block; color: #5b5770; font-size: 14px; }
+  .kartu-profil em { font-style: normal; font-weight: 800; color: var(--primary-dark); white-space: nowrap; }
+  .jalur-profil { display: block; height: 8px; background: rgba(255,255,255,.9); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .jalur-profil span { display: block; height: 100%; background: linear-gradient(90deg, var(--hf-teal), var(--hf-hijau)); border-radius: 99px; }
+  .jalur-profil.besar { height: 12px; background: #eef2f8; margin: 4px 0 12px; }
+  .daftar-profil li { margin: 4px 0; }
+  .hanya-cetak { display: none; }
+  @media print { .hanya-cetak { display: inline; } }
   @keyframes geleng { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
   .umpan { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 18px; font-weight: 700; }
@@ -403,7 +432,7 @@
         <button type="button" data-buka="gayabelajar"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>VAK • STIFIn • 4 Gaya • Versi TK</small></span><em>Gratis</em></button>
         <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>MBTI • DISC • Temperamen</small></span><em>Gratis</em></button>
         <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
-        <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis untuk Guru</strong><small>Nilai murid langsung masuk ke WhatsApp guru</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis & Tes untuk Guru</strong><small>Hasil murid masuk ke WhatsApp guru, plus rekap kelas</small></span><em>Gratis</em></button>
       </div>
     </div>
     <div class="kartu">
@@ -418,6 +447,7 @@
       </div>
 
       <div id="tabPelajaran" class="isi-tab aktif">
+        <div id="kartuHarian"></div>
         <p class="judul">🎒 Pilih jenjang:</p>
         <div class="pilih-chip" id="daftarJenjang"></div>
         <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
@@ -439,13 +469,14 @@
       </div>
 
       <div id="tabDiri" class="isi-tab">
+        <div id="kartuProfil"></div>
         <p class="judul">🌟 Pilih tes untuk mengenal dirimu:</p>
         <div class="mapel-grid" id="daftarTes"></div>
         <p class="catatan-ortu">👨‍👩‍👧 <b>Untuk Ayah/Bunda:</b> tes-tes ini adalah permainan untuk mengenal minat dan perasaan anak. Ini <b>bukan</b> tes psikologi resmi, jadi jangan dipakai untuk memberi label pada anak.</p>
       </div>
 
       <div id="tabGuru" class="isi-tab">
-        <p class="judul">👩‍🏫 Buat link kuis untuk murid Anda</p>
+        <p class="judul">👩‍🏫 Buat link kuis atau tes untuk murid Anda</p>
         <p class="sub" style="margin-top:0">Murid membuka link, mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>. Nilainya langsung masuk ke WhatsApp Anda. Gratis, tanpa daftar.</p>
         <label class="judul" for="guruNama" style="margin-top:12px">Nama Bapak/Ibu guru</label>
         <input id="guruNama" type="text" maxlength="40" placeholder="Contoh: Bu Rina" autocomplete="name">
@@ -453,9 +484,13 @@
         <input id="guruWA" type="tel" inputmode="tel" maxlength="18" placeholder="08xxxxxxxxxx" autocomplete="tel">
         <label class="judul" for="guruRombel" style="margin-top:12px">Nama kelas <span class="sub-kecil">(opsional, mis. 5A)</span></label>
         <input id="guruRombel" type="text" maxlength="20" placeholder="Contoh: 5A">
+        <p class="judul" style="margin-top:12px">Jenis</p>
+        <div class="pilih-chip" id="guruJenis"></div>
+        <p class="sub-kecil" id="infoJenisGuru" style="text-align:left;margin:6px 0 0"></p>
         <div class="dua-kolom">
           <label class="judul">Tingkat kelas<select id="guruKelas"></select></label>
           <label class="judul">Pelajaran<select id="guruMapel"></select></label>
+          <label class="judul" id="labelGuruTes" style="display:none">Tes<select id="guruTes"></select></label>
         </div>
         <div class="pesan-error" id="guruError" role="alert"></div>
         <div class="tengah"><button class="tombol" id="btnBuatLink" type="button">🔗 Buat Link Kuis</button></div>
@@ -469,9 +504,9 @@
           <p class="sub-kecil" id="infoSalin" style="text-align:left"></p>
         </div>
         <div class="kotak-promo" style="margin-top:18px">
-          <b>📊 Rekap nilai murid dari WhatsApp</b>
-          <p>Di WhatsApp, tekan lama pesan nilai dari murid, pilih semua pesan nilai, lalu <b>Salin</b>. Tempelkan di kotak ini, maka tabel rekap langsung jadi.</p>
-          <textarea id="rekapTeks" rows="5" placeholder="Tempel pesan-pesan nilai dari WhatsApp di sini..."></textarea>
+          <b>📊 Rekap nilai & hasil tes murid dari WhatsApp</b>
+          <p>Di WhatsApp, tekan lama pesan nilai dari murid, pilih semua pesan nilai, lalu <b>Salin</b>. Tempelkan di kotak ini, maka tabel rekap langsung jadi. Untuk tes gaya belajar, rekap juga menampilkan sebaran kelas dan saran mengajarnya.</p>
+          <textarea id="rekapTeks" rows="5" placeholder="Tempel pesan-pesan nilai atau hasil tes dari WhatsApp di sini..."></textarea>
           <div class="baris-tombol" style="justify-content:flex-start"><button class="tombol" id="btnRekap" type="button">📊 Buat Rekap</button></div>
           <div id="hasilRekap"></div>
         </div>
@@ -537,6 +572,7 @@
     <div class="promo-ortu tanpa-cetak" id="promoHasilTes"></div>
     <div class="baris-tombol tanpa-cetak">
       <button class="tombol kuning" id="btnCetak">🖨️ Cetak / Simpan PDF</button>
+      <button class="tombol putih" id="btnProfilTes" type="button">📋 Profil Lengkap</button>
       <button class="tombol putih" id="btnKembaliTes">🌟 Tes Lainnya</button>
     </div>
   </section>
@@ -3698,6 +3734,7 @@ function renderMode() {
 /* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
 function perbaruiInfoMapel() {
   var n = $("namaSiswa").value.trim();
+  renderHarian();
   document.querySelectorAll("#daftarMapel .mapel").forEach(function (b) {
     var kode = b.dataset.kode;
     var teks = "♾️ Soal selalu baru";
@@ -3721,8 +3758,8 @@ function mulai() {
     return;
   }
   levelAktif = kelasAktif === "3" ? bacaLevel(nama, "mtk") : 1;
-  if (!TRYOUT[jenjangAktif]) modeAktif = "latihan";
-  jumlahSoalAktif = modeAktif === "tryout" ? TRYOUT[jenjangAktif][0] : JUMLAH_SOAL;
+  if (!TRYOUT[jenjangAktif] && modeAktif !== "harian") modeAktif = "latihan";
+  jumlahSoalAktif = modeAktif === "tryout" ? TRYOUT[jenjangAktif][0] : modeAktif === "harian" ? SOAL_HARIAN : JUMLAH_SOAL;
   hentikanTimer();
   var _pilihSoalBaru = pilihSoalBaru(pilihanMapel),
     terpilih = _pilihSoalBaru.terpilih,
@@ -3745,7 +3782,7 @@ function mulai() {
   skor = 0;
   catatan = [];
   var m = namaMapel(pilihanMapel);
-  $("infoMapel").textContent = (modeAktif === "tryout" ? "⏱️ Tryout " : m.ikon + " ") + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan" ? " • Level " + levelAktif : "");
+  $("infoMapel").textContent = modeAktif === "harian" ? "🔥 Tantangan Harian • " + KELAS_INFO[kelasAktif].nama : (modeAktif === "tryout" ? "⏱️ Tryout " : m.ikon + " ") + m.nama + " • " + KELAS_INFO[kelasAktif].nama + (pilihanMapel === "mtk" && kelasAktif === "3" && modeAktif === "latihan" ? " • Level " + levelAktif : "");
   tampilkan("layarKuis");
   if (modeAktif === "tryout") mulaiTimer(TRYOUT[jenjangAktif][1] * 60);
   tampilSoal();
@@ -3932,6 +3969,20 @@ function selesai() {
     jenis = modeAktif === "tryout" ? "Tryout" : "Kuis";
   if (modeAktif === "tryout") $("judulHasil").textContent = "Hasil Tryout " + nama;
   catatRapor(nilai);
+  if (modeAktif === "harian") {
+    var c = catatHarian(nilai),
+      b = c.s.beruntun;
+    $("judulHasil").textContent = c.pertama ? "🔥 Tantangan Harian Selesai!" : "Latihan Tambahan Selesai!";
+    $("pesanHasil").textContent = (c.pertama ? "Kamu sudah ".concat(b, " hari berturut-turut. ") : "Tantangan hari ini sudah tercatat sebelumnya. ") + (c.lencanaBaru ? "\uD83C\uDF96\uFE0F Selamat, kamu dapat lencana ".concat(c.lencanaBaru[1], " ").concat(c.lencanaBaru[2], " beruntun!") : "Datang lagi besok untuk soal baru, ya!");
+    return bukaHasil(function () {
+      tampilkan("layarHasil");
+      bunyi("selesai");
+      if (nilai >= 60 || c.lencanaBaru) konfeti();
+    }, "promoHasil", {
+      bagikan: "\uD83D\uDD25 ".concat(nama, " sudah ").concat(b, " hari berturut-turut menyelesaikan Tantangan Harian (nilai hari ini ").concat(nilai, ")! Ikut tantangannya, yuk!"),
+      piagam: c.lencanaBaru ? "atas ".concat(c.lencanaBaru[0], " hari berturut-turut menyelesaikan Tantangan Harian") : null
+    });
+  }
   bukaHasil(function () {
     tampilkan("layarHasil");
     bunyi("selesai");
@@ -4533,6 +4584,7 @@ var TES = {
       }).join(" • "));
       var usia = extra.usia ? "".concat(extra.usia.th, " tahun ").concat(extra.usia.bl, " bulan") : "";
       return {
+        kode: urut[0],
         ringkas: "".concat(m.ikon, " ").concat(m.nama, " (").concat(m.asli, ")"),
         piagam: "sebagai ".concat(m.nama, " (").concat(m.asli, ") pada Tes Gaya Belajar"),
         setelah: function setelah() {
@@ -5140,6 +5192,7 @@ TES.mbti = {
       return "".concat(d.nama, " ").concat(d.persen, "%");
     }).join(" • "));
     return {
+      kode: R.type,
       ringkas: "".concat(R.type, " \u2022 ").concat(mb[0]),
       html: "<div class=\"kotak tengah\" style=\"background:".concat(kel[2], ";border-color:transparent;color:#1d1a2f\"><div class=\"besar\">").concat(kel[1], "</div>\n          <p style=\"margin:4px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Tipe kepribadianmu</p>\n          <div style=\"font-size:72px;font-weight:800;line-height:1;letter-spacing:2px\">").concat(R.type, "</div>\n          <h2 style=\"margin:6px 0\">").concat(mb[0], "</h2><p style=\"margin:0\">").concat(mb[1], "</p><p style=\"margin:6px 0 0\"><b>Kelompok:</b> ").concat(kel[0], " (").concat(R.kel, ")</p></div>\n        <h3>\uD83D\uDCCA Kekuatan setiap kecenderungan</h3>\n        ").concat(R.dim.map(function (d) {
         return "<div class=\"kotak\"><b>".concat(d.nama, " (").concat(d.huruf, ") ").concat(d.persen, "%</b> <span class=\"sub-kecil\">\u2022 ").concat(d.kejelasan, "</span>\n          <div class=\"batang\" style=\"margin:6px 0 2px\"><span>").concat(d.d[2], " (").concat(d.d[0], ")</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(d.pKiri, "%;background:var(--navy)\"></div></div><b>").concat(d.pKiri, "%</b></div>\n          <div class=\"batang\" style=\"margin:0\"><span>").concat(d.d[3], " (").concat(d.d[1], ")</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(100 - d.pKiri, "%;background:var(--hf-teal)\"></div></div><b>").concat(100 - d.pKiri, "%</b></div>\n          <span class=\"sub-kecil\" style=\"text-align:left;display:block\">Kamu ").concat(d.ket, ".</span></div>");
@@ -5212,6 +5265,7 @@ TES.disc = {
       return "".concat(k, " ").concat(Math.round(R.n[k] / R.total * 100), "%");
     }).join(" • "));
     return {
+      kode: p,
       ringkas: "".concat(dukung ? p + "/" + q : p, " \u2022 ").concat(D0[0]),
       html: "<div class=\"kotak tengah\" style=\"background:".concat(WARNA_DISC[p], ";border-color:transparent;color:#1d1a2f\"><div class=\"besar\">").concat(E.ikon, "</div>\n          <p style=\"margin:4px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Gaya perilakumu</p>\n          <div style=\"font-size:64px;font-weight:800;line-height:1\">").concat(p).concat(dukung ? "<span style=\"font-size:36px\">/".concat(q, "</span>") : "", "</div>\n          <h2 style=\"margin:6px 0\">").concat(D0[0], "</h2><p style=\"margin:0\">Gaya utama <b>").concat(D0[0], "</b>").concat(dukung ? ", didukung <b>".concat(D1[0], "</b>") : ", sangat menonjol", ".</p></div>\n        <h3>\uD83D\uDCCA Skor DISC</h3>").concat(meteran(R.n, KODE_DISC, nmDisc, WARNA_DISC, R.total), "\n        <h3>\uD83D\uDCAA Kekuatanmu</h3><ul><li>").concat(besarAwal(D0[1]), ".</li>").concat(dukung ? "<li>Dari sisi ".concat(D1[0], ": ").concat(D1[1], ".</li>") : "", "</ul>\n        <h3>\uD83D\uDD25 Yang membuatmu bersemangat</h3><p>").concat(besarAwal(E.motivasi), ".</p>\n        <h3>\uD83D\uDE1F Yang paling kamu hindari</h3><p>").concat(besarAwal(E.takut), ".</p>\n        <h3>\u26A0\uFE0F Saat tertekan, kamu cenderung</h3><p>").concat(besarAwal(E.tekanan), ".</p>\n        <h3>\uD83C\uDF31 Yang bisa dikembangkan</h3><p>").concat(besarAwal(D0[2]), ".</p>\n        <h3>\uD83D\uDCDA Cara belajar atau bekerja yang cocok</h3><p>").concat(besarAwal(E.belajar), ".</p>\n        <h3>\uD83D\uDCAC Cara terbaik berkomunikasi denganmu</h3><p>").concat(D0[3], "</p>\n        ").concat(blokKartuWA(teks, "hasil-disc.png")).concat(catatanKepribadian),
       setelah: function setelah() {
@@ -5266,6 +5320,7 @@ TES.temperamen = {
       return "".concat(TN[k], " ").concat(Math.round(R.n[k] / R.total * 100), "%");
     }).join(" • "));
     return {
+      kode: p,
       ringkas: TN[p] + (campur ? "–" + TN[q] : ""),
       html: "<div class=\"kotak tengah\" style=\"background:".concat(TC[p], ";border-color:transparent;color:#1d1a2f\">").concat(maskot(p), "\n          <p style=\"margin:8px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Temperamenmu</p>\n          <div style=\"font-size:52px;font-weight:800;line-height:1.05\">").concat(TN[p]).concat(campur ? "<span style=\"font-size:30px\"> \u2013 ".concat(TN[q], "</span>") : "", "</div>\n          <p style=\"margin:6px 0 0\">").concat(T0[0]).concat(campur ? " Campuranmu: <b>".concat(CAMPURAN_TEMP[p + q], "</b>.") : "", "</p></div>\n        <h3>\uD83D\uDCCA Skor temperamen</h3>").concat(meteran(R.n, KODE_TEMP, TN, TC, R.total), "\n        <h3>\uD83D\uDCAA Kelebihanmu</h3><ul>").concat(E.kelebihan.map(function (x) {
         return "<li>".concat(besarAwal(x), "</li>");
@@ -5305,7 +5360,7 @@ function normalWA(s) {
 function isiPromo(el, opsi) {
   opsi = opsi || {};
   var html = "";
-  if (opsi.guru && opsi.guru.wa) html += "<div class=\"kotak-promo guru\"><b>\uD83D\uDCE4 Kirim nilaimu ke ".concat(esc(opsi.guru.nama), "</b>\n      <p>Tekan tombol di bawah, lalu tekan <b>Kirim</b> di WhatsApp.</p>\n      <a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/").concat(opsi.guru.wa, "?text=").concat(encodeURIComponent(opsi.guru.pesan), "\">\uD83D\uDCE4 Kirim nilai ke ").concat(esc(opsi.guru.nama), "</a></div>");
+  if (opsi.guru && opsi.guru.wa) html += "<div class=\"kotak-promo guru\"><b>\uD83D\uDCE4 Kirim ".concat(opsi.guru.label || "nilai", "mu ke ").concat(esc(opsi.guru.nama), "</b>\n      <p>Tekan tombol di bawah, lalu tekan <b>Kirim</b> di WhatsApp.</p>\n      <a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/").concat(opsi.guru.wa, "?text=").concat(encodeURIComponent(opsi.guru.pesan), "\">\uD83D\uDCE4 Kirim ").concat(opsi.guru.label || "nilai", " ke ").concat(esc(opsi.guru.nama), "</a></div>");
   if (opsi.bagikan) {
     var teks = opsi.bagikan + "\n\nCoba gratis juga di sini 👉 " + URL_KUIS;
     html += "<div class=\"kotak-promo bagikan\"><b>\uD83D\uDCF2 Bagikan hasilnya</b>\n      <p>Ajak teman, saudara, dan grup sekolah mencoba tes gratis ini.</p>\n      <div class=\"baris-tombol\" style=\"justify-content:flex-start;margin-top:6px\">\n        <a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/?text=".concat(encodeURIComponent(teks), "\">\uD83D\uDCAC Bagikan ke WhatsApp</a>\n        ").concat(navigator.share ? "<button type=\"button\" class=\"tombol putih\" data-bagikan>\uD83D\uDCE4 Bagikan lainnya</button>" : "", "\n      </div></div>");
@@ -5506,7 +5561,7 @@ function bukaRapor(asal) {
       sel = z - a;
     return "<div class=\"kartu-mapel\"><div><b>".concat(namaGrup(g), "</b><br><span class=\"sub-kecil\" style=\"text-align:left\">").concat(grup[g].length, "\xD7 \u2022 rata-rata ").concat(rataGrup(grup[g])).concat(d.length > 1 ? " \u2022 <span class=\"".concat(sel >= 0 ? "tren-naik" : "tren-turun", "\">").concat(sel >= 0 ? "▲ naik" : "▼ turun", " ").concat(Math.abs(sel), "</span>") : "", "</span></div>\n        <div class=\"nilai-akhir\">").concat(z, "</div>").concat(garisNilai(d), "</div>");
   }).join(""), "\n    <h3>\uD83D\uDDD3\uFE0F Riwayat terakhir</h3>\n    <table class=\"tabel\"><thead><tr><th>Tanggal</th><th>Pelajaran</th><th>Mode</th><th class=\"angka\">Nilai</th></tr></thead><tbody>\n    ").concat(r.slice(-15).reverse().map(function (e) {
-    return "<tr><td>".concat(tglPendek(e.t), "</td><td>").concat(MAPEL_INFO[e.m].nama, " \u2022 ").concat(KELAS_INFO[e.k].nama, "</td><td>").concat(e.mode === "tryout" ? "Tryout" : "Latihan", "</td><td class=\"angka\"><b>").concat(e.n, "</b></td></tr>");
+    return "<tr><td>".concat(tglPendek(e.t), "</td><td>").concat(MAPEL_INFO[e.m].nama, " \u2022 ").concat(KELAS_INFO[e.k].nama, "</td><td>").concat(e.mode === "tryout" ? "Tryout" : e.mode === "harian" ? "Harian" : "Latihan", "</td><td class=\"angka\"><b>").concat(e.n, "</b></td></tr>");
   }).join(""), "</tbody></table>\n    <p class=\"catatan-ortu\">Rapor ini tersimpan di perangkat ini saja, untuk nama \"").concat(esc(nama), "\".</p>");
   tampilkan("layarRapor");
 }
@@ -5545,9 +5600,14 @@ function bacaRekap(teks) {
 }
 function buatRekap() {
   var d = bacaRekap($("rekapTeks").value),
+    dt = bacaRekapTes($("rekapTeks").value),
     el = $("hasilRekap");
+  if (!d.length && !dt.length) {
+    el.innerHTML = "<p class=\"pesan-error\">Belum ada pesan yang terbaca. Pastikan yang ditempel adalah pesan \"Kirim nilai\" atau \"Kirim hasil\" dari murid.</p>";
+    return;
+  }
   if (!d.length) {
-    el.innerHTML = "<p class=\"pesan-error\">Belum ada pesan nilai yang terbaca. Pastikan yang ditempel adalah pesan \"Kirim nilai\" dari murid.</p>";
+    el.innerHTML = rekapTesKelas(dt) + "<div class=\"baris-tombol\" style=\"justify-content:flex-start\"><button class=\"tombol putih\" type=\"button\" onclick=\"window.print()\">\uD83D\uDDA8\uFE0F Cetak</button></div>";
     return;
   }
   var ns = d.map(function (x) {
@@ -5565,6 +5625,7 @@ function buatRekap() {
     }).join(";");
   }).join("\n");
   $("unduhRekap").href = "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + csv);
+  if (dt.length) el.insertAdjacentHTML("beforeend", rekapTesKelas(dt));
 }
 
 /* ---------- MODE GURU ---------- */
@@ -5599,6 +5660,7 @@ function pesanNilaiGuru(nilai, skor, total) {
 }
 function terapkanTautan() {
   // Tautan dari halaman lain: ?k=5&m=mtk (kelas & pelajaran) atau ?tes=otak
+  if (TES_GURU) return terapkanTesGuru();
   if (KUIS_GURU) return terapkanKuisGuru();
   if (KELAS_INFO[PARAM.k]) {
     kelasAktif = PARAM.k;
@@ -5637,6 +5699,10 @@ function isiPilihanGuru() {
   };
   sk.onchange = isiMapel;
   isiMapel();
+  $("guruTes").innerHTML = TES_UNTUK_GURU.map(function (id) {
+    return "<option value=\"".concat(id, "\">").concat(TES[id].ikon, " ").concat(TES[id].nama, "</option>");
+  }).join("");
+  renderJenisGuru();
   $("promoGuru").innerHTML = kartuHadirFlow("guru");
 }
 function buatLinkGuru() {
@@ -5654,6 +5720,30 @@ function buatLinkGuru() {
     return;
   }
   $("guruError").textContent = "";
+  if (jenisGuru === "tes") {
+    var id = $("guruTes").value,
+      t = TES[id],
+      g = KELAS_INFO[$("guruKelas").value].g;
+    var qt = {
+      guru: n,
+      wa: wa,
+      tes: id
+    };
+    if (r) qt.r = r;
+    if (t.pilihLevel) qt.lv = g >= 10 ? 4 : g >= 7 ? 3 : g >= 4 ? 2 : 1;
+    var linkT = URL_KUIS + "?" + Object.keys(qt).map(function (k) {
+      return k + "=" + encodeURIComponent(qt[k]);
+    }).join("&");
+    $("linkGuru").value = linkT;
+    $("btnLinkWA").href = "https://wa.me/?text=" + encodeURIComponent("Assalamu'alaikum anak-anak".concat(r ? " kelas " + r : "", " \uD83D\uDC4B\nAyo kerjakan ").concat(t.nama, " dari ").concat(n, ". ").concat(id === "vakOrtu" ? "(Untuk Ayah/Bunda: mohon diisi berdasarkan kebiasaan anak.) " : "", "Setelah selesai, jangan lupa tekan \"Kirim hasil ke ").concat(n, "\", ya.\n\n\uD83D\uDC49 ").concat(linkT));
+    $("hasilLink").style.display = "block";
+    $("infoSalin").textContent = "";
+    return tulis("kuisMI3:guru", {
+      n: n,
+      wa: $("guruWA").value,
+      r: r
+    });
+  }
   var q = {
     guru: n,
     wa: wa,
@@ -5863,6 +5953,7 @@ TES.majemuk = {
       wr[k] = "var(--hf-hijau)";
     });
     return {
+      kode: top,
       ringkas: top.map(function (k) {
         return MAJEMUK[k].pendek;
       }).join(" • "),
@@ -6816,6 +6907,7 @@ function hasilVAK(j, ortu) {
     return "".concat(VAK[k].nama, " ").concat(p[k], "%");
   }).join(" • "));
   return {
+    kode: tiga ? KODE_VAK : dua ? [a, b] : [a],
     ringkas: label,
     piagam: "sebagai pembelajar ".concat(label, " pada Tes Gaya Belajar VAK"),
     html: "<div class=\"kotak tengah\" style=\"background:".concat(V0.warna, ";border-color:transparent;color:#1d1a2f\"><div class=\"besar\">").concat(tiga ? "🌈" : V0.ikon, "</div>\n        <p style=\"margin:4px 0 0;font-weight:800\">").concat(ortu ? "Gaya belajar " + esc(nama) : "Halo, " + esc(nama) + "! Gaya belajarmu", "</p>\n        <div style=\"font-size:44px;font-weight:900;line-height:1.1\">").concat(label, "</div>\n        <p style=\"margin:6px 0 0\">").concat(tiga ? "".concat(Siapa, " bisa belajar dengan melihat, mendengar, dan bergerak sama baiknya. Variasikan cara belajarnya.") : dua ? "".concat(Siapa, " paling mudah belajar dengan memadukan cara <b>").concat(VAK[a].nama.toLowerCase(), "</b> dan <b>").concat(VAK[b].nama.toLowerCase(), "</b>.") : "".concat(V0.julukan, ": ").concat(V0.arti, "."), "</p></div>\n      <h3>\uD83D\uDCCA Skor gaya belajar</h3>").concat(meteran(p, R.urut, nm, wr, 100), "\n      ").concat((tiga ? R.urut : dua ? [a, b] : [a]).map(function (k) {
@@ -6967,6 +7059,7 @@ TES.gaya4 = {
       return "".concat(GAYA4[k].nama, " ").concat(p[k], "%");
     }).join(" • "));
     return {
+      kode: dukung ? [a, b] : [a],
       ringkas: G.nama + (dukung ? "–" + G2.nama : ""),
       html: "<div class=\"kotak tengah\" style=\"background:".concat(G.warna, ";border-color:transparent;color:#1d1a2f\"><div class=\"besar\">").concat(G.ikon, "</div>\n          <p style=\"margin:4px 0 0;font-weight:800\">Halo, ").concat(esc(nama), "! Gaya belajarmu</p>\n          <div style=\"font-size:46px;font-weight:900;line-height:1.1\">").concat(G.nama).concat(dukung ? "<br><span style=\"font-size:26px\">dan ".concat(G2.nama, "</span>") : "", "</div>\n          <p style=\"margin:6px 0 0\">").concat(G.julukan, ": ").concat(G.arti, ".</p></div>\n        <h3>\uD83D\uDCCA Skor 4 gaya belajar</h3>").concat(meteran(p, R.urut, nm, wr, 100), "\n        <h3>\uD83D\uDCAA Kekuatanmu</h3><ul>").concat(G.kuat.map(function (x) {
         return "<li>".concat(x, "</li>");
@@ -6994,6 +7087,425 @@ TES.gaya4 = {
     };
   }
 };
+
+/* ---------- 9. PROFIL LENGKAP ANAK: gabungan semua hasil tes + rapor kuis ---------- */
+var bacaHasilTes = function bacaHasilTes(n, id) {
+  return baca(kunci("tes-" + id, n), null);
+};
+var TES_PROFIL = function TES_PROFIL() {
+  return GRUP_TES.reduce(function (a, g) {
+    return a.concat(g[2]);
+  }, []).filter(function (id) {
+    return id !== "mood" && id !== "darah";
+  });
+};
+function kodeArr(x) {
+  return x == null ? [] : Array.isArray(x) ? x : [x];
+}
+function unik(arr) {
+  // buang yang sama persis atau membahas hal yang sama (mis. dua saran "peta pikiran")
+  var s = new Set(),
+    topik = ["peta pikiran", "kelompok", "alat peraga", "lagu", "praktik", "gambar"],
+    dipakai = new Set();
+  return arr.filter(function (x) {
+    if (!x || s.has(x)) return false;
+    var t = topik.find(function (k) {
+      return x.toLowerCase().indexOf(k) >= 0;
+    });
+    if (t && dipakai.has(t)) return false;
+    if (t) dipakai.add(t);
+    s.add(x);
+    return true;
+  });
+}
+function isiKartuProfil() {
+  var el = $("kartuProfil");
+  if (!el) return;
+  var n = $("namaSiswa").value.trim(),
+    daftar = TES_PROFIL(),
+    selesai = n ? daftar.filter(function (id) {
+      return bacaHasilTes(n, id);
+    }).length : 0,
+    p = Math.round(selesai / daftar.length * 100);
+  el.innerHTML = "<button type=\"button\" class=\"kartu-profil\" id=\"btnProfil\"><span class=\"ik\">\uD83D\uDCCB</span><span class=\"isi\"><b>Profil Lengkap ".concat(n ? esc(n) : "Anak", "</b>\n    <small>").concat(selesai ? "".concat(selesai, " dari ").concat(daftar.length, " tes selesai \u2022 lihat ringkasan & resep belajar") : "Gabungan semua hasil tes dalam satu halaman yang bisa dicetak", "</small>\n    <span class=\"jalur-profil\"><span style=\"width:").concat(p, "%\"></span></span></span><em>Buka \u203A</em></button>");
+  $("btnProfil").addEventListener("click", function () {
+    return bukaProfil("layarMulai");
+  });
+}
+function bukaProfil(asal) {
+  nama = $("namaSiswa").value.trim() || nama;
+  if (!nama) {
+    gantiTab("tabDiri");
+    $("pesanError").textContent = "Tulis nama anak dulu untuk melihat profilnya. 😊";
+    $("namaSiswa").focus();
+    return;
+  }
+  layarAsalRapor = asal || "layarMulai";
+  var H = {};
+  TES_PROFIL().concat(["mood"]).forEach(function (id) {
+    return H[id] = bacaHasilTes(nama, id);
+  });
+  var daftar = TES_PROFIL(),
+    selesai = daftar.filter(function (id) {
+      return H[id];
+    }),
+    rapor = baca(kunci("rapor", nama), []);
+  var kode = function kode(id) {
+    return H[id] ? kodeArr(H[id].kode) : [];
+  };
+  // Kekuatan utama
+  var kuat = [];
+  if (kode("majemuk").length) kuat.push("\uD83C\uDF08 Kecerdasan menonjol: <b>".concat(kode("majemuk").map(function (k) {
+    return MAJEMUK[k] && MAJEMUK[k].pendek;
+  }).filter(Boolean).join(", "), "</b>"));
+  ["vak", "vakOrtu"].forEach(function (id) {
+    if (kode(id).length && !kuat.some(function (x) {
+      return x.indexOf("Gaya belajar VAK") >= 0;
+    })) kuat.push("\uD83D\uDC41\uFE0F Gaya belajar VAK: <b>".concat(esc(H[id].ringkas), "</b>"));
+  });
+  if (kode("mesin").length && MESIN[kode("mesin")[0]]) {
+    var m = MESIN[kode("mesin")[0]];
+    kuat.push("\uD83E\uDDEC Mesin kecerdasan: <b>".concat(m.nama, " (").concat(m.asli, ")</b>, ").concat(m.sifat[0].toLowerCase()));
+  }
+  if (kode("gaya4").length) kuat.push("\uD83D\uDD04 Gaya belajar: <b>".concat(kode("gaya4").map(function (k) {
+    return GAYA4[k].nama;
+  }).join(" dan "), "</b>, ").concat(GAYA4[kode("gaya4")[0]].julukan.toLowerCase()));
+  if (kode("mbti").length && MB[kode("mbti")[0]]) kuat.push("\uD83E\uDDE9 Kepribadian: <b>".concat(kode("mbti")[0], " (").concat(MB[kode("mbti")[0]][0], ")</b>"));
+  if (kode("temperamen").length && TN[kode("temperamen")[0]]) kuat.push("\uD83C\uDF21\uFE0F Temperamen: <b>".concat(TN[kode("temperamen")[0]], "</b>"));
+  if (kode("disc").length && DD[kode("disc")[0]]) kuat.push("\uD83C\uDFAF Gaya perilaku: <b>".concat(DD[kode("disc")[0]][0], "</b>"));
+  ["otak", "ingat", "fokus", "ruang"].forEach(function (id) {
+    if (H[id]) kuat.push("".concat(TES[id].ikon, " ").concat(TES[id].nama.replace(" (ala IQ)", ""), ": <b>").concat(esc(H[id].ringkas), "</b>"));
+  });
+  if (H.kekuatan) kuat.push("\uD83D\uDCAA Kelebihan: <b>".concat(esc(H.kekuatan.ringkas), "</b>"));
+  // Resep belajar: gabungan saran dari tes gaya belajar & kecerdasan
+  var vakK = kode("vak").length ? kode("vak") : kode("vakOrtu");
+  var resep = unik([].concat(vakK.slice(0, 2).map(function (k) {
+    return VAK[k] && VAK[k].rumah[0];
+  }), vakK.slice(0, 1).map(function (k) {
+    return VAK[k] && VAK[k].rumah[1];
+  }), kode("mesin").map(function (k) {
+    return MESIN[k] && MESIN[k].belajar[0];
+  }), kode("mesin").map(function (k) {
+    return MESIN[k] && MESIN[k].belajar[1];
+  }), kode("majemuk").slice(0, 2).map(function (k) {
+    return MAJEMUK[k] && MAJEMUK[k].belajar[0];
+  }), kode("gaya4").slice(0, 1).map(function (k) {
+    return GAYA4[k] && GAYA4[k].cocok[0];
+  }), kode("mbti").length ? [BELAJAR_MBTI[kode("mbti")[0][0]]] : [])).slice(0, 7);
+  var kegiatan = unik(kode("majemuk").slice(0, 3).map(function (k) {
+    return MAJEMUK[k] && MAJEMUK[k].kegiatan.split(", ").slice(0, 2).join(", ");
+  }));
+  var profesi = unik([].concat(kode("majemuk").slice(0, 2).map(function (k) {
+    return MAJEMUK[k] && MAJEMUK[k].profesi.split(", ").slice(0, 3).join(", ");
+  }), kode("mbti").length && MB[kode("mbti")[0]] ? [MB[kode("mbti")[0]][2]] : []));
+  var belum = daftar.filter(function (id) {
+    return !H[id];
+  });
+  var rata = rapor.length ? Math.round(rapor.reduce(function (a, e) {
+    return a + e.n;
+  }, 0) / rapor.length) : null;
+  var harian = statusHarian(nama);
+  var p = Math.round(selesai.length / daftar.length * 100);
+  var teksBagi = "\uD83D\uDCCB Profil ".concat(nama, " (Tes Gratis HadirFlow)\n") + kuat.slice(0, 5).map(function (x) {
+    return "• " + x.replace(/<[^>]+>/g, "");
+  }).join("\n");
+  $("isiRapor").innerHTML = "<div class=\"tengah\"><img src=\"".concat(LOGO, "\" alt=\"\" style=\"width:54px;height:54px\"><h2 style=\"margin:6px 0 0\">Profil Lengkap ").concat(esc(nama), "</h2>\n      <p class=\"sub-kecil\">Tes Gratis HadirFlow \u2022 dicetak ").concat(tglHariIni(), "</p></div>\n    <div class=\"ringkas-rapor\"><div><b>").concat(selesai.length, "/").concat(daftar.length, "</b>tes selesai</div><div><b>").concat(rapor.length, "</b>kuis pelajaran").concat(rata != null ? " \u2022 rata-rata ".concat(rata) : "", "</div><div><b>\uD83D\uDD25 ").concat(harian.beruntun, "</b>hari tantangan beruntun</div></div>\n    <div class=\"jalur-profil besar tanpa-cetak\"><span style=\"width:").concat(p, "%\"></span></div>\n    ").concat(selesai.length ? "" : "<div class=\"kotak peringatan\">Belum ada tes yang dikerjakan atas nama <b>".concat(esc(nama), "</b>. Kerjakan beberapa tes di tab <b>Kenali Diriku</b>, nanti profilnya terisi otomatis di sini.</div>"), "\n    ").concat(kuat.length ? "<h3>\u2728 Gambaran ".concat(esc(nama), "</h3><ul class=\"daftar-profil\">").concat(kuat.map(function (x) {
+    return "<li>".concat(x, "</li>");
+  }).join(""), "</ul>") : "", "\n    ").concat(resep.length ? "<h3>\uD83D\uDCDA Resep belajar untuk ".concat(esc(nama), "</h3><ol>").concat(resep.map(function (x) {
+    return "<li>".concat(besarAwal(x), "</li>");
+  }).join(""), "</ol>") : "", "\n    ").concat(kegiatan.length ? "<h3>\uD83C\uDFAF Kegiatan yang mendukung</h3><p>".concat(besarAwal(kegiatan.join("; ")), ".</p>") : "", "\n    ").concat(profesi.length ? "<h3>\uD83D\uDCBC Contoh arah cita-cita</h3><p>".concat(besarAwal(profesi.join("; ")), ".</p><p class=\"sub-kecil\" style=\"text-align:left\">Sekadar inspirasi. Minat anak masih bisa berubah, dan semua cita-cita yang baik layak didukung.</p>") : "", "\n    ").concat(GRUP_TES.map(function (_ref44) {
+    var _ref45 = _slicedToArray(_ref44, 3),
+      judul = _ref45[1],
+      ids = _ref45[2];
+    return "<h3>".concat(judul, "</h3><table class=\"tabel\"><tbody>").concat(ids.filter(function (id) {
+      return id !== "darah";
+    }).map(function (id) {
+      return "<tr><td>".concat(TES[id].ikon, " ").concat(TES[id].nama, "</td><td>").concat(H[id] ? "<b>".concat(esc(H[id].ringkas), "</b><br><span class=\"sub-kecil\" style=\"text-align:left\">").concat(esc(H[id].tgl || ""), "</span>") : "<button type=\"button\" class=\"link-reset tanpa-cetak\" data-coba-tes=\"".concat(id, "\">Belum dicoba \u2022 Coba \u203A</button><span class=\"hanya-cetak\">-</span>"), "</td></tr>");
+    }).join(""), "</tbody></table>");
+  }).join(""), "\n    ").concat(rapor.length ? "<h3>\uD83D\uDCC8 Kuis pelajaran</h3><p>".concat(rapor.length, " kuis dikerjakan, rata-rata nilai <b>").concat(rata, "</b>. <button type=\"button\" class=\"link-reset tanpa-cetak\" id=\"btnProfilKeRapor\">Lihat rapor lengkap \u203A</button></p>") : "", "\n    ").concat(belum.length && selesai.length ? "<div class=\"kotak tanpa-cetak\">\uD83E\uDDE9 Profil ".concat(p, "% lengkap. Kerjakan ").concat(belum.length, " tes lagi supaya gambarannya makin utuh.</div>") : "", "\n    <div class=\"baris-tombol tanpa-cetak\" style=\"justify-content:flex-start\"><a class=\"tombol wa\" target=\"_blank\" rel=\"noopener\" href=\"https://wa.me/?text=").concat(encodeURIComponent(teksBagi + "\n\nBuat profil anakmu gratis 👉 " + URL_KUIS), "\">\uD83D\uDCAC Bagikan ringkasan</a></div>\n    <p class=\"catatan-ortu\">Profil ini merangkum hasil tes pengenalan diri dan latihan, bukan hasil pemeriksaan psikologi resmi. Data tersimpan di perangkat ini saja, untuk nama \"").concat(esc(nama), "\".</p>\n    <div class=\"tanpa-cetak\">").concat(kartuHadirFlow("profil"), "</div>");
+  $("isiRapor").querySelectorAll("[data-coba-tes]").forEach(function (b) {
+    return b.addEventListener("click", function () {
+      tampilkan("layarMulai");
+      gantiTab("tabDiri");
+      bukaTes(b.getAttribute("data-coba-tes"));
+    });
+  });
+  if ($("btnProfilKeRapor")) $("btnProfilKeRapor").addEventListener("click", function () {
+    return bukaRapor("layarMulai");
+  });
+  tampilkan("layarRapor");
+}
+
+/* ---------- 10. TANTANGAN HARIAN: 5 soal campuran per hari, hari beruntun, lencana ---------- */
+var SOAL_HARIAN = 5;
+var LENCANA_HARIAN = [[3, "🥉", "3 hari"], [7, "🥈", "7 hari"], [14, "🥇", "14 hari"], [30, "🏆", "30 hari"], [100, "👑", "100 hari"]];
+var tglKunci = function tglKunci(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+};
+function statusHarian(n) {
+  var d = n ? baca(kunci("harian", n), {}) : {},
+    hari = d.hari || {},
+    kini = new Date(),
+    hariIni = tglKunci(kini);
+  var beruntun = 0;
+  var t = new Date(kini.getFullYear(), kini.getMonth(), kini.getDate());
+  if (hari[hariIni] == null) t.setDate(t.getDate() - 1);
+  while (hari[tglKunci(t)] != null) {
+    beruntun++;
+    t.setDate(t.getDate() - 1);
+  }
+  return {
+    hari: hari,
+    hariIni: hariIni,
+    sudah: hari[hariIni] != null,
+    nilai: hari[hariIni],
+    beruntun: beruntun,
+    terbaik: Math.max(d.terbaik || 0, beruntun)
+  };
+}
+function catatHarian(nilai) {
+  var k = kunci("harian", nama),
+    d = baca(k, {});
+  d.hari = d.hari || {};
+  var hariIni = tglKunci(new Date()),
+    pertama = d.hari[hariIni] == null;
+  if (pertama) d.hari[hariIni] = nilai;
+  var keys = Object.keys(d.hari).sort();
+  if (keys.length > 400) keys.slice(0, keys.length - 400).forEach(function (x) {
+    return delete d.hari[x];
+  });
+  tulis(k, d);
+  var s = statusHarian(nama);
+  d.terbaik = Math.max(d.terbaik || 0, s.beruntun);
+  tulis(k, d);
+  return {
+    pertama: pertama,
+    s: s,
+    lencanaBaru: pertama ? LENCANA_HARIAN.find(function (_ref46) {
+      var _ref47 = _slicedToArray(_ref46, 1),
+        h = _ref47[0];
+      return h === s.beruntun;
+    }) : null
+  };
+}
+function renderHarian() {
+  var el = $("kartuHarian");
+  if (!el) return;
+  if (KUIS_GURU) {
+    el.innerHTML = "";
+    return;
+  }
+  var n = $("namaSiswa").value.trim(),
+    s = statusHarian(n),
+    kini = new Date();
+  var tujuh = Array.from({
+    length: 7
+  }, function (_, i) {
+    var d = new Date(kini.getFullYear(), kini.getMonth(), kini.getDate() - 6 + i);
+    return {
+      k: tglKunci(d),
+      h: ["Mg", "Sn", "Sl", "Rb", "Km", "Jm", "Sb"][d.getDay()],
+      ini: i === 6
+    };
+  });
+  el.innerHTML = "<div class=\"kartu-harian\">\n    <div class=\"atas-harian\"><div><b>\uD83D\uDD25 Tantangan Harian</b><small>".concat(SOAL_HARIAN, " soal campuran ").concat(esc(KELAS_INFO[kelasAktif].nama), " \u2022 setiap hari soal baru</small></div>\n      <div class=\"api-harian").concat(s.beruntun ? "" : " redup", "\">\uD83D\uDD25<b>").concat(s.beruntun, "</b><small>hari</small></div></div>\n    <div class=\"minggu-harian\">").concat(tujuh.map(function (d) {
+    return "<span class=\"".concat(s.hari[d.k] != null ? "isi" : "").concat(d.ini ? " ini" : "", "\" title=\"").concat(d.k, "\">").concat(s.hari[d.k] != null ? "✓" : d.h, "</span>");
+  }).join(""), "</div>\n    <div class=\"bawah-harian\"><span class=\"lencana-harian\">").concat(LENCANA_HARIAN.map(function (_ref48) {
+    var _ref49 = _slicedToArray(_ref48, 3),
+      h = _ref49[0],
+      ik = _ref49[1],
+      lab = _ref49[2];
+    return "<i class=\"".concat(s.terbaik >= h ? "dapat" : "", "\" title=\"Lencana ").concat(lab, " beruntun\">").concat(ik, "</i>");
+  }).join(""), "</span>\n      ").concat(s.sudah ? "<span class=\"selesai-harian\">\u2705 Hari ini selesai (nilai ".concat(s.nilai, ")</span><button type=\"button\" class=\"link-reset\" id=\"btnHarian\">Latihan lagi \u203A</button>") : "<button type=\"button\" class=\"tombol kecil\" id=\"btnHarian\">Mulai \u25B6</button>", "</div></div>");
+  $("btnHarian").addEventListener("click", mulaiHarian);
+}
+var simpanHarian = null;
+function mulaiHarian() {
+  if (!$("namaSiswa").value.trim()) {
+    $("pesanError").textContent = "Tulis namamu dulu, ya! 😊";
+    $("namaSiswa").focus();
+    return;
+  }
+  if (modeAktif !== "harian") simpanHarian = {
+    mapel: pilihanMapel,
+    mode: modeAktif
+  };
+  pilihanMapel = "campur";
+  modeAktif = "harian";
+  mulai();
+}
+function keluarHarian() {
+  if (modeAktif !== "harian") return;
+  pilihanMapel = simpanHarian ? simpanHarian.mapel : null;
+  modeAktif = simpanHarian && simpanHarian.mode === "tryout" && TRYOUT[jenjangAktif] ? "tryout" : "latihan";
+  simpanHarian = null;
+  renderPilihan();
+}
+
+/* ---------- 11. TES UNTUK SATU KELAS: link tes dari guru, hasil dikirim ke WA guru, rekap kelas ---------- */
+var TES_UNTUK_GURU = ["vak", "vakOrtu", "mesin", "gaya4", "majemuk", "otak", "ingat", "fokus", "ruang", "mbti", "disc", "temperamen", "kekuatan"];
+var TES_GURU = function () {
+  if (!PARAM.guru || !TES[PARAM.tes] || TES_UNTUK_GURU.indexOf(PARAM.tes) < 0) return null;
+  var lv = +PARAM.lv;
+  return {
+    nama: PARAM.guru.slice(0, 40),
+    wa: normalWA(PARAM.wa),
+    tes: PARAM.tes,
+    rombel: String(PARAM.r || "").slice(0, 20),
+    lv: lv >= 1 && lv <= 4 ? lv : 0
+  };
+}();
+function pesanHasilGuru(ringkas) {
+  var g = TES_GURU,
+    d = new Date(),
+    jam = String(d.getHours()).padStart(2, "0") + "." + String(d.getMinutes()).padStart(2, "0");
+  return "Assalamu'alaikum ".concat(g.nama, ", saya ").concat(nama).concat(g.rombel ? " (kelas " + g.rombel + ")" : "", ".\nHasil ").concat(TES[g.tes].nama, ": ").concat(ringkas, "\nDikerjakan ").concat(tglHariIni(), " pukul ").concat(jam, ".");
+}
+function terapkanTesGuru() {
+  var g = TES_GURU,
+    t = TES[g.tes];
+  gantiTab("tabDiri");
+  $("bannerGuru").innerHTML = "\uD83D\uDCCB Tes dari <b>".concat(esc(g.nama), "</b>").concat(g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : "", ": ").concat(t.ikon, " <b>").concat(esc(t.nama), "</b>.<br>Tulis namamu, lalu tekan tombol di bawah.").concat(g.wa ? " Setelah selesai, kirim hasilmu ke " + esc(g.nama) + "." : "", "\n    <div class=\"tengah\" style=\"margin-top:8px\"><button type=\"button\" class=\"tombol\" id=\"btnMulaiTesGuru\">").concat(t.ikon, " Mulai Tes \u25B6</button></div>");
+  $("bannerGuru").style.display = "block";
+  $("btnMulaiTesGuru").addEventListener("click", function () {
+    return bukaTes(g.tes);
+  });
+}
+// Arti hasil per tes untuk sebaran kelas: [nama kategori → kode], dan saran mengajar per kode
+var PETA_REKAP = {
+  vak: function vak() {
+    return KODE_VAK.map(function (k) {
+      return [VAK[k].nama, k, VAK[k].ikon, VAK[k].kelas];
+    });
+  },
+  mesin: function mesin() {
+    return KODE_MESIN.map(function (k) {
+      return [MESIN[k].nama, k, MESIN[k].ikon, MESIN[k].belajar.slice(0, 3)];
+    });
+  },
+  gaya4: function gaya4() {
+    return KODE_GAYA4.map(function (k) {
+      return [GAYA4[k].nama, k, GAYA4[k].ikon, GAYA4[k].cocok.slice(0, 3)];
+    });
+  },
+  majemuk: function majemuk() {
+    return KODE_MAJEMUK.map(function (k) {
+      return [MAJEMUK[k].pendek, k, MAJEMUK[k].ikon, MAJEMUK[k].belajar];
+    });
+  }
+};
+PETA_REKAP.vakOrtu = PETA_REKAP.vak;
+function idTesDariNama(n) {
+  var t = n.trim().toLowerCase();
+  return Object.keys(TES).find(function (id) {
+    return TES[id].nama.toLowerCase() === t;
+  }) || null;
+}
+function rekapTesKelas(d) {
+  var perTes = {};
+  d.forEach(function (x) {
+    return (perTes[x.tes] = perTes[x.tes] || []).push(x);
+  });
+  return Object.keys(perTes).map(function (nmTes) {
+    var baris = perTes[nmTes],
+      id = idTesDariNama(nmTes),
+      t = id ? TES[id] : null;
+    var sebaran = "",
+      saran = "";
+    if (id && PETA_REKAP[id]) {
+      var peta = PETA_REKAP[id](),
+        hit = {};
+      peta.forEach(function (_ref50) {
+        var _ref51 = _slicedToArray(_ref50, 2),
+          n = _ref51[0],
+          k = _ref51[1];
+        return hit[k] = 0;
+      });
+      baris.forEach(function (x) {
+        var cocok = /multimodal/i.test(x.hasil) ? peta : peta.filter(function (_ref52) {
+          var _ref53 = _slicedToArray(_ref52, 1),
+            n = _ref53[0];
+          return new RegExp("(^|[^a-z])" + n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([^a-z]|$)").test(x.hasil.toLowerCase());
+        });
+        cocok.forEach(function (_ref54) {
+          var _ref55 = _slicedToArray(_ref54, 2),
+            k = _ref55[1];
+          return hit[k]++;
+        });
+      });
+      var urut = peta.slice().sort(function (a, b) {
+          return hit[b[1]] - hit[a[1]];
+        }),
+        atas = urut[0];
+      sebaran = urut.map(function (_ref56) {
+        var _ref57 = _slicedToArray(_ref56, 3),
+          n = _ref57[0],
+          k = _ref57[1],
+          ik = _ref57[2];
+        return "<div class=\"batang\"><span>".concat(ik, " ").concat(esc(n), "</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(Math.round(hit[k] / baris.length * 100), "%\"></div></div><b>").concat(hit[k], "</b></div>");
+      }).join("");
+      if (hit[atas[1]]) saran = "<div class=\"kotak\"><b>\uD83D\uDCA1 Saran mengajar untuk kelas ini</b><br>Paling banyak murid <b>".concat(atas[2], " ").concat(esc(atas[0]), "</b> (").concat(hit[atas[1]], " dari ").concat(baris.length, "). Coba:<ul style=\"margin:6px 0 0\">").concat(atas[3].map(function (x) {
+        return "<li>".concat(x, "</li>");
+      }).join(""), "</ul>\n        <span class=\"sub-kecil\" style=\"text-align:left;display:block;margin-top:6px\">Tetap variasikan cara mengajar (lihat, dengar, praktik) supaya semua murid terlayani.</span></div>");
+    } else {
+      var _hit = {};
+      baris.forEach(function (x) {
+        var m = x.hasil.match(/\(([^)]+)\)\s*$/),
+          kat = (m ? m[1] : x.hasil).trim();
+        _hit[kat] = (_hit[kat] || 0) + 1;
+      });
+      sebaran = Object.keys(_hit).sort(function (a, b) {
+        return _hit[b] - _hit[a];
+      }).map(function (k) {
+        return "<div class=\"batang\"><span>".concat(esc(k), "</span><div class=\"jalur\"><div class=\"isi\" style=\"width:").concat(Math.round(_hit[k] / baris.length * 100), "%\"></div></div><b>").concat(_hit[k], "</b></div>");
+      }).join("");
+    }
+    return "<h3>".concat(t ? t.ikon : "🌟", " ").concat(esc(nmTes), " \u2022 ").concat(baris.length, " murid</h3><h4 style=\"margin:6px 0\">\uD83D\uDCCA Sebaran hasil</h4>").concat(sebaran).concat(saran, "\n      <table class=\"tabel\"><thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Hasil</th></tr></thead><tbody>\n      ").concat(baris.map(function (x, i) {
+      return "<tr><td>".concat(i + 1, "</td><td>").concat(esc(x.nama)).concat(x.kali > 1 ? " <span class=\"sub-kecil\">(".concat(x.kali, "\xD7, terakhir)</span>") : "", "</td><td>").concat(esc(x.kelas), "</td><td><b>").concat(esc(x.hasil), "</b></td></tr>");
+    }).join(""), "</tbody></table>");
+  }).join("");
+}
+function bacaRekapTes(teks) {
+  var pola = /saya ([^\n(]+?)(?: \(kelas ([^)\n]+)\))?\.\s*(?:\[[^\]]*\][^:\n]*:\s*)?Hasil ([^:\n]+): ([^\n]+)/gi;
+  var data = {};
+  var m,
+    urut = 0;
+  while (m = pola.exec(teks)) {
+    var _k7 = (m[1].trim() + "|" + m[3].trim()).toLowerCase(),
+      lama = data[_k7];
+    data[_k7] = {
+      nama: m[1].trim(),
+      kelas: (m[2] || "").trim(),
+      tes: m[3].trim(),
+      hasil: m[4].trim(),
+      kali: lama ? lama.kali + 1 : 1,
+      urut: urut++
+    };
+  }
+  return Object.keys(data).map(function (k) {
+    return data[k];
+  }).sort(function (a, b) {
+    return a.nama.localeCompare(b.nama);
+  });
+}
+var jenisGuru = "kuis";
+function renderJenisGuru() {
+  var w = $("guruJenis");
+  w.innerHTML = "";
+  [["kuis", "📚 Kuis pelajaran"], ["tes", "🌟 Tes kenali diri (gaya belajar, kecerdasan, kepribadian)"]].forEach(function (_ref58) {
+    var _ref59 = _slicedToArray(_ref58, 2),
+      v = _ref59[0],
+      lab = _ref59[1];
+    return w.appendChild(tombolChip(lab, jenisGuru === v, function () {
+      jenisGuru = v;
+      renderJenisGuru();
+    }));
+  });
+  $("guruMapel").parentNode.style.display = jenisGuru === "kuis" ? "" : "none";
+  $("labelGuruTes").style.display = jenisGuru === "tes" ? "" : "none";
+  $("btnBuatLink").textContent = jenisGuru === "tes" ? "🔗 Buat Link Tes" : "🔗 Buat Link Kuis";
+  $("infoJenisGuru").innerHTML = jenisGuru === "tes" ? "Murid mengerjakan tes, lalu menekan <b>Kirim hasil ke guru</b>. Tempel pesan-pesan hasil di <b>Rekap</b> di bawah untuk melihat sebaran gaya belajar kelas dan saran mengajarnya." : "Murid mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>.";
+}
 var tesTerkini = null;
 var tesAktif = null,
   tesSoal = [],
@@ -7029,11 +7541,11 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  GRUP_TES.forEach(function (_ref44) {
-    var _ref45 = _slicedToArray(_ref44, 3),
-      gid = _ref45[0],
-      judul = _ref45[1],
-      daftar = _ref45[2];
+  GRUP_TES.forEach(function (_ref60) {
+    var _ref61 = _slicedToArray(_ref60, 3),
+      gid = _ref61[0],
+      judul = _ref61[1],
+      daftar = _ref61[2];
     var h = document.createElement("div");
     h.className = "judul-grup";
     h.id = "grup-" + gid;
@@ -7075,15 +7587,18 @@ function bukaTes(id) {
   $("introIsi").innerHTML = t.intro;
   $("introTglLahir").style.display = t.tglLahir ? "block" : "none";
   $("introLevel").style.display = t.pilihLevel ? "block" : "none";
-  if (t.pilihLevel) {
+  if (t.pilihLevel && TES_GURU && TES_GURU.tes === id && TES_GURU.lv) {
+    levelOtak = TES_GURU.lv;
+    $("introLevel").style.display = "none";
+  } else if (t.pilihLevel) {
     levelOtak = baca(kunci("level-otak", nama), KELAS_INFO[kelasAktif].g >= 10 ? 4 : KELAS_INFO[kelasAktif].g >= 7 ? 3 : KELAS_INFO[kelasAktif].g >= 4 ? 2 : 1);
     var _gambarLevel = function gambarLevel() {
       var w = $("daftarLevel");
       w.innerHTML = "";
-      LEVEL_OTAK.forEach(function (_ref46) {
-        var _ref47 = _slicedToArray(_ref46, 2),
-          n = _ref47[0],
-          v = _ref47[1];
+      LEVEL_OTAK.forEach(function (_ref62) {
+        var _ref63 = _slicedToArray(_ref62, 2),
+          n = _ref63[0],
+          v = _ref63[1];
         return w.appendChild(tombolChip(n, v === levelOtak, function () {
           levelOtak = v;
           tulis(kunci("level-otak", nama), v);
@@ -7192,7 +7707,8 @@ function selesaiTes() {
   });
   tulis(kunci("tes-" + tesAktif, nama), {
     ringkas: h.ringkas,
-    tgl: tglHariIni()
+    tgl: tglHariIni(),
+    kode: h.kode
   });
   $("isiHasilTes").innerHTML = "<div class=\"hasil-tes\">".concat(h.html, "</div>");
   if (h.setelah) h.setelah();
@@ -7203,7 +7719,13 @@ function selesaiTes() {
     if (id !== "mood" && id !== "darah") konfeti(50);
   }, "promoHasilTes", {
     bagikan: id === "mood" || t.kartu ? null : h.bagikan || "".concat(t.ikon, " Hasil ").concat(t.nama, " ").concat(nama, ": ").concat(h.ringkas),
-    piagam: h.piagam || null
+    piagam: h.piagam || null,
+    guru: TES_GURU && TES_GURU.wa && TES_GURU.tes === id ? {
+      nama: TES_GURU.nama,
+      wa: TES_GURU.wa,
+      pesan: pesanHasilGuru(h.ringkas),
+      label: "hasil"
+    } : null
   });
 }
 function gantiTab(id) {
@@ -7214,7 +7736,10 @@ function gantiTab(id) {
     return d.classList.toggle("aktif", d.id === id);
   });
   $("pesanError").textContent = "";
-  if (id === "tabDiri") buatDaftarTes();
+  if (id === "tabDiri") {
+    buatDaftarTes();
+    isiKartuProfil();
+  }
   if (id === "tabGuru") isiPilihanGuru();
 }
 document.querySelectorAll(".tab").forEach(function (b) {
@@ -7230,6 +7755,7 @@ $("btnBatalTes").addEventListener("click", function () {
 $("btnTesMundur").addEventListener("click", mundurTes);
 $("btnKembaliTes").addEventListener("click", function () {
   gantiTab("tabDiri");
+  isiKartuProfil();
   tampilkan("layarMulai");
 });
 document.querySelectorAll("[data-buka]").forEach(function (b) {
@@ -7276,7 +7802,10 @@ $("btnCetak").addEventListener("click", function () {
 $("namaSiswa").addEventListener("input", function () {
   if ($("tabDiri").classList.contains("aktif")) buatDaftarTes();
 });
-$("btnMulai").addEventListener("click", mulai);
+$("btnMulai").addEventListener("click", function () {
+  keluarHarian();
+  mulai();
+});
 $("namaSiswa").addEventListener("keydown", function (e) {
   if (e.key === "Enter") mulai();
 });
@@ -7284,8 +7813,17 @@ $("btnLanjut").addEventListener("click", lanjut);
 $("btnUlang").addEventListener("click", mulai);
 $("btnGanti").addEventListener("click", function () {
   hentikanTimer();
+  keluarHarian();
   perbaruiInfoMapel();
+  renderHarian();
   tampilkan("layarMulai");
+});
+$("btnProfilTes").addEventListener("click", function () {
+  return bukaProfil("layarHasilTes");
+});
+$("namaSiswa").addEventListener("input", function () {
+  renderHarian();
+  isiKartuProfil();
 });
 $("namaSiswa").addEventListener("input", perbaruiInfoMapel);
 $("btnReset").addEventListener("click", function () {
@@ -7368,6 +7906,7 @@ $("btnPasang").addEventListener("click", function () {
 })();
 buatDaftarMapel();
 terapkanTautan();
+renderHarian();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>
