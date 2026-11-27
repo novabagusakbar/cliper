@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-title" content="Tes HadirFlow">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #fff8e7;
@@ -42,7 +42,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    font-family: "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+    font-family: Nunito, "Segoe UI", system-ui, -apple-system, sans-serif;
     background: var(--bg);
     background-image:
       radial-gradient(circle at 10% 10%, #ffe8a3 0 60px, transparent 61px),
@@ -258,7 +258,7 @@
   .brand-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border-bottom: 1px solid var(--line); padding: 8px 16px; position: sticky; top: 0; z-index: 30; }
   .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
   .brand img { height: 34px; width: auto; display: block; }
-  .wordmark { font-family: Poppins, "Baloo 2", sans-serif; font-weight: 800; font-size: 22px; color: var(--navy); letter-spacing: -.4px; line-height: 1; }
+  .wordmark { font-family: Poppins, Nunito, sans-serif; font-weight: 800; font-size: 22px; color: var(--navy); letter-spacing: -.4px; line-height: 1; }
   .wordmark b { color: var(--hf-hijau); font-weight: 800; }
   .brand-cta { font-size: 14px; font-weight: 800; color: var(--navy); border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; text-decoration: none; white-space: nowrap; }
   @media (max-width: 400px) { .brand-cta { display: none; } }
@@ -696,6 +696,7 @@ const LINK_HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium="
 const URL_KUIS = "https://hadirflow.my.id/kuistes/";
 const LOGO = "__LOGO__";   // logo HadirFlow (data URI, diisi saat build) — aman dipakai di kanvas
 const GAMBAR_LOGO = new Image(); GAMBAR_LOGO.src = LOGO;
+try { if (document.fonts && document.fonts.load) ["600 20px Nunito", "800 20px Nunito", "900 20px Nunito"].forEach((f) => document.fonts.load(f)); } catch (e) {}
 document.querySelectorAll("img[data-logo]").forEach((i) => (i.src = LOGO));
 // Menggambar logo + teks di tengah bagian bawah kanvas
 function kakiLogo(c, W, y, teks, font, warna) {
@@ -2347,7 +2348,7 @@ function kotakBulat(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y);
 // Kartu Status WA 1080×1920. o: { latar, gambar (svg) atau emoji, judulAtas, besar, warnaBesar, judul, deskripsi, judulBatang, batang: [[label, 0–1, warna]], penutup }
 function gambarKartuHasil(o) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
-  const c = cv.getContext("2d"), ink = "#1d1a2f", F = '"Baloo 2", sans-serif';
+  const c = cv.getContext("2d"), ink = "#1d1a2f", F = 'Nunito, sans-serif';
   const selesai = () => {
     c.textAlign = "center"; c.fillStyle = "#5b5770"; c.font = "800 50px " + F; c.fillText(nama, W / 2, 590);
     c.fillStyle = o.warnaBesar || "#ff5a4e"; let uk = 200; c.font = `800 ${uk}px ${F}`;
@@ -2527,7 +2528,7 @@ function bukaHasil(tampil, wadahPromo, opsi) { tampil(); isiPromo($(wadahPromo),
 /* ---------- PIAGAM PRESTASI (gambar 1080 × 1350) ---------- */
 function gambarPiagam(alasan) {
   const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
-  const c = cv.getContext("2d"), F = '"Baloo 2", sans-serif', emas = "#c9961a", hijau = "#227a54";
+  const c = cv.getContext("2d"), F = 'Nunito, sans-serif', emas = "#c9961a", hijau = "#227a54";
   c.fillStyle = "#fff8e7"; c.fillRect(0, 0, W, H);
   c.strokeStyle = emas; c.lineWidth = 14; c.strokeRect(40, 40, W - 80, H - 80);
   c.lineWidth = 4; c.strokeRect(70, 70, W - 140, H - 140);
