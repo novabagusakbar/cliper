@@ -63,15 +63,20 @@ function topik(m, g) {
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const slugKelas = (k, j) => (j === "tk" ? (k === "tka" ? "tk-a" : "tk-b") : `kelas-${k}-${j}`);
-const CSS = `:root{--bg:#fff8e7;--ink:#2d2a32;--muted:#6b6475;--hijau:#2f9e6e;--hijau-tua:#227a54;--garis:#f0e6cf}
+const CSS = `:root{--bg:#f3f6fb;--ink:#14213d;--muted:#5b6478;--hijau:#018f70;--hijau-tua:#016a53;--garis:#e2e8f2;--navy:#072B6B}
+.brand-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-bottom:1px solid var(--garis);padding:8px 16px}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}.brand img{height:34px;width:auto}
+.wordmark{font-family:Poppins,"Baloo 2",sans-serif;font-weight:800;font-size:22px;color:var(--navy);letter-spacing:-.4px}.wordmark b{color:#02a581}
+.brand-cta{font-size:14px;font-weight:800;color:var(--navy);border:2px solid var(--garis);border-radius:999px;padding:4px 12px;text-decoration:none;white-space:nowrap}
+@media (max-width:400px){.brand-cta{display:none}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 "Baloo 2",system-ui,sans-serif}
 main{max-width:760px;margin:0 auto;padding:24px 16px 48px}a{color:#072B6B}
-.kartu{background:#fff;border:3px solid var(--garis);border-radius:22px;padding:20px;margin-top:16px;box-shadow:0 6px 0 rgba(0,0,0,.06)}
-h1{font-size:clamp(28px,6vw,40px);line-height:1.15;color:var(--hijau-tua);margin:8px 0}h2{font-size:22px;margin:0 0 8px}
+.kartu{background:#fff;border:2px solid var(--garis);border-radius:22px;padding:20px;margin-top:16px;box-shadow:0 6px 0 rgba(0,0,0,.06)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.15;color:var(--navy);margin:8px 0}h2{font-size:22px;margin:0 0 8px}
 .tombol{display:inline-block;background:var(--hijau);color:#fff;font-weight:800;font-size:20px;text-decoration:none;border-radius:18px;padding:12px 24px;box-shadow:0 5px 0 var(--hijau-tua);margin:6px 8px 6px 0}
 .tombol.kedua{background:#fff;color:var(--ink);border:3px solid var(--garis);box-shadow:0 5px 0 var(--garis)}
 .kecil{color:var(--muted);font-size:15px}.chip{display:inline-block;background:#fff;border:2px solid var(--garis);border-radius:999px;padding:2px 12px;margin:3px 4px 3px 0;font-size:15px;text-decoration:none;color:var(--ink)}
-.hf{background:#072B6B;color:#fff;border:0}.hf a{color:#ffd23f;font-weight:800}ul{padding-left:22px}`;
+.hf{background:linear-gradient(135deg,#072B6B,#0a4686);color:#fff;border:0}.hf a{color:#ffd23f;font-weight:800}ul{padding-left:22px}`;
 
 function halaman({ judul, deskripsi, url, h1, isi }) {
   return `<!DOCTYPE html>
@@ -84,16 +89,18 @@ function halaman({ judul, deskripsi, url, h1, isi }) {
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="HadirFlow">
 <meta property="og:url" content="${url}"><meta property="og:title" content="${esc(judul)}"><meta property="og:description" content="${esc(deskripsi)}">
-<meta property="og:image" content="${OG}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#2f9e6e">
+<meta property="og:image" content="${OG}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#072B6B">
 <link rel="manifest" href="${BASE}manifest.json"><link rel="icon" href="${BASE}ikon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@800&display=swap" rel="stylesheet">
 <style>${CSS}</style>
 </head>
-<body><main>
+<body>
+<header class="brand-bar"><a class="brand" href="${BASE}"><img src="${BASE}logo-hadirflow.png" alt="" width="29" height="34"><span class="wordmark">Hadir<b>Flow</b></span></a><a class="brand-cta" href="${HADIRFLOW}">Absensi &amp; Gaji Otomatis ↗</a></header>
+<main>
 <p class="kecil"><a href="${BASE}">🦉 Tes Gratis HadirFlow</a></p>
 <h1>${esc(h1)}</h1>
 ${isi}
-<div class="kartu hf"><h2>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</h2>
+<div class="kartu hf"><img src="${BASE}logo-hadirflow.png" alt="HadirFlow" width="41" height="48" style="float:right;height:48px;width:auto;background:#fff;border-radius:12px;padding:4px 6px;margin:0 0 8px 10px"><h2>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</h2>
 <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. <a href="${HADIRFLOW}">Coba HadirFlow →</a></p></div>
 </main></body></html>
 `;
@@ -168,7 +175,7 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
 function buatPWA(dirOut, versi) {
   fs.writeFileSync(path.join(dirOut, "manifest.json"), JSON.stringify({
     name: "Tes Gratis HadirFlow", short_name: "Tes HadirFlow", description: "Tes kecerdasan, gaya belajar, kepribadian, dan kuis pelajaran TK–SMA gratis.",
-    start_url: "/kuistes/?sumber=aplikasi", scope: "/kuistes/", display: "standalone", background_color: "#fff8e7", theme_color: "#2f9e6e", lang: "id",
+    start_url: "/kuistes/?sumber=aplikasi", scope: "/kuistes/", display: "standalone", background_color: "#f3f6fb", theme_color: "#072B6B", lang: "id",
     icons: [{ src: "/kuistes/ikon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" }, { src: "/kuistes/ikon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }]
   }, null, 2));
   fs.writeFileSync(path.join(dirOut, "sw.js"), `// Service worker Tes Gratis HadirFlow. Lingkup: /kuistes/ saja.

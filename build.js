@@ -11,7 +11,8 @@ const { buatSEO, buatPWA, buatDaftar } = require("./build-seo");
 fs.mkdirSync("kuistes", { recursive: true });
 const VIDEO = fs.existsSync("src/video.json") ? JSON.parse(fs.readFileSync("src/video.json", "utf8")) : {};
 const seo = buatSEO("kuistes", VIDEO);
-const src = fs.readFileSync("src/kuis-kelas3-mi.src.html", "utf8").replace("<!--TAUTAN_SEO-->", seo.tautanUtama)
+const LOGO = "data:image/png;base64," + fs.readFileSync("src/logo-hadirflow-128.png").toString("base64");
+const src = fs.readFileSync("src/kuis-kelas3-mi.src.html", "utf8").replace("<!--TAUTAN_SEO-->", seo.tautanUtama).split("__LOGO__").join(LOGO)
   .replace("/*VIDEO_DATA*/{}", JSON.stringify(VIDEO).replace(/</g, "\\u003c"));
 const out = src.replace(/<script>([\s\S]*?)<\/script>/g, (_, js) => {
   const hasil = babel.transformSync(js, {

@@ -5,8 +5,8 @@
   "start_url": "/kuistes/?sumber=aplikasi",
   "scope": "/kuistes/",
   "display": "standalone",
-  "background_color": "#fff8e7",
-  "theme_color": "#2f9e6e",
+  "background_color": "#f3f6fb",
+  "theme_color": "#072B6B",
   "lang": "id",
   "icons": [
     {

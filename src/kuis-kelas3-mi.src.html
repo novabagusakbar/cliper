@@ -14,7 +14,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#2f9e6e">
+<meta name="theme-color" content="#072B6B">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="ikon-192.png">
 <link rel="apple-touch-icon" href="ikon-192.png">
@@ -22,7 +22,7 @@
 <meta name="apple-mobile-web-app-title" content="Tes HadirFlow">
 <title>Tes Gratis HadirFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #fff8e7;
@@ -117,14 +117,9 @@
   a.tombol { display: inline-block; text-decoration: none; margin-top: 6px; }
   #hasilLink { margin-top: 16px; }
   .tombol.hf { background: #ffd23f; color: #072B6B; box-shadow: 0 5px 0 #d9ad00; }
-  .lencana { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; text-align: left; }
-  .lencana button { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fff; color: var(--ink); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow); touch-action: manipulation; }
-  .lencana button small { font-weight: 500; color: var(--muted); }
-  .lencana button b { float: right; background: var(--primary); color: #fff; border-radius: 999px; padding: 0 10px; font-size: 13px; line-height: 1.8; }
   .pilih-chip { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip-pilih { font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; border: 3px solid var(--line); background: #fffdf7; color: var(--ink); border-radius: 999px; padding: 6px 14px; touch-action: manipulation; }
   .chip-pilih.aktif { background: var(--primary); border-color: var(--primary); color: #fff; }
-  .lencana button.lebar { grid-column: 1 / -1; }
   .dari-hf { font-size: 14px; color: var(--muted); margin: 12px 0 0; }
   .dari-hf a { color: #072B6B; font-weight: 800; }
   .banner-guru { background: #eef4ff; border: 3px solid #c9dafc; border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; }
@@ -244,15 +239,76 @@
   .konfeti { position: fixed; top: -20px; width: 10px; height: 14px; z-index: 50; pointer-events: none; animation: jatuh linear forwards; }
   @keyframes jatuh { to { transform: translateY(110vh) rotate(720deg); } }
 
-  @media (max-width: 520px) { .lencana { grid-template-columns: 1fr; } }
   @media (max-width: 480px) {
     body { font-size: 17px; }
     .kartu { padding: 16px; border-radius: 20px; }
     .opsi { font-size: 18px; }
   }
+
+  /* ===== Tema merek HadirFlow ===== */
+  :root {
+    --bg: #f3f6fb; --ink: #14213d; --muted: #5b6478; --line: #e2e8f2;
+    --primary: #018f70; --primary-dark: #016a53; --hf-hijau: #02a581; --hf-teal: #02c2c1; --navy: #072B6B;
+    --shadow: 0 4px 0 rgba(7, 43, 107, .07);
+  }
+  body { background: var(--bg); background-image: none; }
+  .kartu { border-width: 2px; }
+  .brand-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border-bottom: 1px solid var(--line); padding: 8px 16px; position: sticky; top: 0; z-index: 30; }
+  .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand img { height: 34px; width: auto; display: block; }
+  .wordmark { font-family: Poppins, "Baloo 2", sans-serif; font-weight: 800; font-size: 22px; color: var(--navy); letter-spacing: -.4px; line-height: 1; }
+  .wordmark b { color: var(--hf-hijau); font-weight: 800; }
+  .brand-cta { font-size: 14px; font-weight: 800; color: var(--navy); border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; text-decoration: none; white-space: nowrap; }
+  @media (max-width: 400px) { .brand-cta { display: none; } }
+  .hero { background: linear-gradient(135deg, #072B6B 0%, #0a4686 55%, #038e98 100%); color: #fff; border-radius: 26px; padding: 22px 18px 18px; margin-bottom: 16px; box-shadow: 0 10px 24px rgba(7, 43, 107, .22); }
+  .hero h1 { color: #fff; font-size: clamp(30px, 7vw, 42px); }
+  .hero .sub { color: #d7e3ff; font-size: 17px; margin-top: 8px; }
+  .hero-kecil { display: inline-block; background: rgba(255, 255, 255, .14); border-radius: 999px; padding: 2px 12px; font-weight: 700; font-size: 15px; margin: 0 0 8px; }
+  .lencana { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+  .lencana button { font: inherit; display: flex; align-items: center; gap: 10px; text-align: left; background: #fff; color: var(--ink); border: 0; border-radius: 18px; padding: 10px 12px; box-shadow: 0 4px 0 rgba(0, 0, 0, .14); cursor: pointer; touch-action: manipulation; }
+  .lencana .ik { font-size: 28px; flex: none; line-height: 1; }
+  .lencana .isi { flex: 1; min-width: 0; line-height: 1.15; }
+  .lencana .isi strong { display: block; font-size: 16px; }
+  .lencana .isi small { display: block; color: var(--muted); font-size: 13px; font-weight: 500; }
+  .lencana em { font-style: normal; flex: none; background: #e3f7f0; color: var(--primary-dark); font-weight: 800; font-size: 12px; border-radius: 999px; padding: 2px 8px; }
+  .lencana button.lebar { grid-column: 1 / -1; background: rgba(255, 255, 255, .1); color: #fff; box-shadow: none; border: 2px dashed rgba(255, 255, 255, .45); }
+  .lencana button.lebar small { color: #d7e3ff; }
+  .lencana button.lebar em { background: #ffd23f; color: var(--navy); }
+  @media (max-width: 520px) { .lencana { grid-template-columns: 1fr; } }
+  .tab-bar { background: #eaf0f8; }
+  .tab.aktif { color: var(--navy); box-shadow: 0 2px 0 var(--line); }
+  .chip-pilih.aktif { background: var(--navy); border-color: var(--navy); }
+  .bar-atas { flex-wrap: nowrap; }
+  .bar-atas .chip { font-size: 15px; white-space: nowrap; }
+  #infoMapel, #tesNama { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .progress { height: 10px; border: 0; background: #e2e8f2; }
+  .progress > div { background: linear-gradient(90deg, var(--hf-teal), var(--hf-hijau)); }
+  #layarKuis .kartu, #layarTes .kartu { position: relative; }
+  #layarKuis .soal, #layarTes .soal { padding-right: 52px; }
+  .btn-suara { position: absolute; top: 14px; right: 14px; float: none; margin: 0; width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; background: #eef4ff; border: 2px solid #d5e2f7; }
+  .opsi { border-width: 2px; }
+  .kaki { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; line-height: 1.6; }
+  .kaki a { color: var(--navy); font-weight: 800; text-decoration: none; }
+  .kaki img { height: 22px; width: auto; vertical-align: -5px; margin-right: 4px; }
+  .kotak-promo.hf { background: linear-gradient(135deg, #072B6B, #0a4686); }
+  .logo-promo { float: right; height: 48px; width: auto; background: #fff; border-radius: 12px; padding: 4px 6px; margin: 0 0 8px 10px; }
+  .opsi, .ulasan details, input[type=text], input[type=tel], select, textarea, #linkGuru, .chip-pilih, .btn-suara, .kartu-mapel, .ringkas-rapor div, .kotak, .catatan-ortu, .input-tgl { background: #f8fafd; }
+  .opsi:hover:not(:disabled) { border-color: var(--hf-teal); }
+  .opsi .huruf { background: #ffd23f; color: var(--navy); }
+  .bintang { color: #f5b301; }
+  .chip { border-width: 2px; }
+  .hasil-tes .kotak { border-width: 2px; }
+  .tabel th { background: #eef3fa; }
+  @media print { .brand-bar { position: static; } }
 </style>
 </head>
 <body>
+<header class="brand-bar tanpa-cetak">
+  <a class="brand" href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=logo" target="_blank" rel="noopener" aria-label="HadirFlow">
+    <img data-logo alt="" width="29" height="34"><span class="wordmark">Hadir<b>Flow</b></span>
+  </a>
+  <a class="brand-cta" href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=topbar" target="_blank" rel="noopener">Absensi &amp; Gaji Otomatis ↗</a>
+</header>
 <div class="wrap">
   <div id="cekJS" style="background:#ffe1e8;color:#8a1934;border-radius:16px;padding:12px 16px;margin-bottom:12px;font-weight:700;text-align:center">
     ⏳ Memuat kuis... Jika tulisan ini tidak hilang, browser tidak bisa menjalankan kuis. Coba perbarui iPad/HP atau buka di Google Chrome.
@@ -260,18 +316,17 @@
 
   <!-- LAYAR 1: MULAI -->
   <section id="layarMulai" class="screen aktif">
-    <div class="header">
-      <span class="maskot" aria-hidden="true">🦉</span>
+    <div class="hero">
+      <p class="hero-kecil">🦉 100% gratis, tanpa daftar</p>
       <h1>Tes Gratis HadirFlow</h1>
-      <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA. Semua gratis!</p>
+      <p class="sub">Kenali kecerdasan, gaya belajar, dan kepribadian anak, plus kuis pelajaran TK–SMA yang soalnya selalu baru.</p>
       <div class="lencana">
-        <button type="button" data-buka="otak">🧠 Tes Kecerdasan <small>(ala IQ)</small> <b>Gratis</b></button>
-        <button type="button" data-buka="mesin">🧬 Tes Gaya Belajar <small>(ala STIFIn)</small> <b>Gratis</b></button>
-        <button type="button" data-buka="kepribadian">🎭 Tes Kepribadian <small>(ala MBTI)</small> <b>Gratis</b></button>
-        <button type="button" data-buka="pelajaran">📚 Kuis Pelajaran TK–SMA <b>Gratis</b></button>
-        <button type="button" data-buka="guru" class="lebar">👩‍🏫 Link Kuis untuk Guru <small>(nilai murid masuk ke WhatsApp guru)</small> <b>Gratis</b></button>
+        <button type="button" data-buka="otak"><span class="ik">🧠</span><span class="isi"><strong>Tes Kecerdasan</strong><small>ala IQ • 20 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="mesin"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>ala STIFIn • 15 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>ala MBTI • 28 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis untuk Guru</strong><small>Nilai murid langsung masuk ke WhatsApp guru</small></span><em>Gratis</em></button>
       </div>
-      <p class="dari-hf">Dipersembahkan oleh <a href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=header" target="_blank" rel="noopener">HadirFlow</a>: absensi wajah &amp; penggajian otomatis untuk sekolah dan usaha.</p>
     </div>
     <div class="kartu">
       <div class="banner-guru" id="bannerGuru" style="display:none"></div>
@@ -357,7 +412,7 @@
       <p class="judul">📚 Latihan soal per kelas</p>
       <!--TAUTAN_SEO-->
     </div>
-    <footer>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
+    <footer class="kaki"><img data-logo alt="" width="19" height="22">Dipersembahkan oleh <a href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=footer" target="_blank" rel="noopener">HadirFlow</a>: absensi wajah &amp; penggajian otomatis untuk sekolah dan usaha.<br>Bismillah, semoga Allah memudahkan belajarmu 🤲</footer>
   </section>
 
   <!-- LAYAR TES: PEMBUKA -->
@@ -390,7 +445,7 @@
     </div>
     <div class="progress" aria-hidden="true"><div id="tesProgress"></div></div>
     <div class="kartu">
-      <button type="button" class="btn-suara" id="btnSuaraTes" aria-label="Bacakan soal">🔊 Bacakan</button>
+      <button type="button" class="btn-suara" id="btnSuaraTes" aria-label="Bacakan soal" title="Bacakan soal">🔊</button>
       <p class="soal" id="tesSoal"></p>
       <div class="opsi-list" id="tesOpsi"></div>
       <div class="tengah"><button type="button" class="link-reset" id="btnTesMundur">⬅️ Soal sebelumnya</button></div>
@@ -426,7 +481,7 @@
     <div class="progress" aria-hidden="true"><div id="barProgress"></div></div>
     <div class="info-putaran" id="infoPutaran" role="status"></div>
     <div class="kartu">
-      <button type="button" class="btn-suara" id="btnSuara" aria-label="Bacakan soal">🔊 Bacakan</button>
+      <button type="button" class="btn-suara" id="btnSuara" aria-label="Bacakan soal" title="Bacakan soal">🔊</button>
       <p class="soal" id="teksSoal"></p>
       <div class="opsi-list" id="daftarOpsi"></div>
       <div class="umpan" id="umpan" role="status" aria-live="polite"></div>
@@ -599,6 +654,16 @@ const BANK = {
    ========================================================= */
 const LINK_HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium=";   // + hasil / guru
 const URL_KUIS = "https://hadirflow.my.id/kuistes/";
+const LOGO = "__LOGO__";   // logo HadirFlow (data URI, diisi saat build) — aman dipakai di kanvas
+const GAMBAR_LOGO = new Image(); GAMBAR_LOGO.src = LOGO;
+document.querySelectorAll("img[data-logo]").forEach((i) => (i.src = LOGO));
+// Menggambar logo + teks di tengah bagian bawah kanvas
+function kakiLogo(c, W, y, teks, font, warna) {
+  c.font = font; const lebarTeks = c.measureText(teks).width, h = 56, w = GAMBAR_LOGO.naturalWidth ? h * GAMBAR_LOGO.naturalWidth / GAMBAR_LOGO.naturalHeight : 0;
+  const x = (W - (w + (w ? 14 : 0) + lebarTeks)) / 2;
+  if (w) { try { c.drawImage(GAMBAR_LOGO, x, y - h + 12, w, h); } catch (e) {} }
+  c.fillStyle = warna; c.textAlign = "left"; c.fillText(teks, x + w + (w ? 14 : 0), y); c.textAlign = "center";
+}
 // Video belajar per "kelas|pelajaran", dipilih sekali lewat deploy/cari-video.js (diisi otomatis saat build)
 const VIDEO = /*VIDEO_DATA*/{};
 
@@ -2145,7 +2210,7 @@ function gambarKartu(R) {
     });
     y += 100; c.fillStyle = ink; c.font = "800 46px " + F; c.fillText("Temperamen: " + TN[R.tk[0]], 150, y);
     y += 56; c.fillStyle = "#5b5770"; c.font = "600 36px " + F; c.fillText("Kelebihan: " + TD[R.tk[0]][1], 150, y);
-    c.textAlign = "center"; c.fillStyle = ink; c.font = "800 44px " + F; c.fillText("Coba juga di hadirflow.my.id/kuistes", W / 2, 1830);
+    c.textAlign = "center"; kakiLogo(c, W, 1840, "Coba juga di hadirflow.my.id/kuistes", "800 44px " + F, ink);
     try {
       const url = cv.toDataURL("image/png");
       $("kartuGambar").src = url; $("kartuUnduh").href = url;
@@ -2203,7 +2268,7 @@ TES.kepribadian = {
 
 /* ---------- AJAKAN HADIRFLOW, TOMBOL BAGIKAN, KIRIM NILAI KE GURU ---------- */
 function kartuHadirFlow(sumber) {
-  return `<div class="kotak-promo hf"><b>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>
+  return `<div class="kotak-promo hf"><img class="logo-promo" src="${LOGO}" alt="HadirFlow"><b>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>
       <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. Cocok untuk sekolah, madrasah, pesantren, dan usaha.</p>
       <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW + sumber}">🚀 Coba HadirFlow</a></div>`;
 }
@@ -2270,7 +2335,7 @@ function gambarPiagam(alasan) {
   const baris = bungkusTeks(c, alasan, W / 2, 790, W - 240, 62);
   c.fillStyle = "#6b6475"; c.font = "600 38px " + F; c.fillText(tglHariIni(), W / 2, 790 + baris * 62 + 50);
   c.fillStyle = hijau; c.font = "800 44px " + F; c.fillText("Terus belajar, kamu hebat! 🌟", W / 2, 1110);
-  c.fillStyle = "#072B6B"; c.font = "800 36px " + F; c.fillText("Tes Gratis HadirFlow • hadirflow.my.id/kuistes", W / 2, 1220);
+  kakiLogo(c, W, 1225, "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 36px " + F, "#072B6B");
   return cv.toDataURL("image/png");
 }
 
