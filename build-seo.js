@@ -64,7 +64,7 @@ function topik(m, g) {
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const slugKelas = (k, j) => (j === "tk" ? (k === "tka" ? "tk-a" : "tk-b") : `kelas-${k}-${j}`);
 const CSS = `:root{--bg:#f3f6fb;--ink:#14213d;--muted:#5b6478;--hijau:#018f70;--hijau-tua:#016a53;--garis:#e2e8f2;--navy:#072B6B}
-.brand-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-bottom:1px solid var(--garis);padding:8px 16px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-bottom:1px solid var(--garis);padding:8px max(16px,calc((100% - 728px) / 2))}
 .brand{display:flex;align-items:center;gap:8px;text-decoration:none}.brand img{height:34px;width:auto}
 .wordmark{font-family:Poppins,"Baloo 2",sans-serif;font-weight:800;font-size:22px;color:var(--navy);letter-spacing:-.4px}.wordmark b{color:#02a581}
 .brand-cta{font-size:14px;font-weight:800;color:var(--navy);border:2px solid var(--garis);border-radius:999px;padding:4px 12px;text-decoration:none;white-space:nowrap}

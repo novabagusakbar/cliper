@@ -299,16 +299,54 @@
   .chip { border-width: 2px; }
   .hasil-tes .kotak { border-width: 2px; }
   .tabel th { background: #eef3fa; }
-  @media print { .brand-bar { position: static; } }
+  /* ===== Responsif: HP kecil, tablet, laptop ===== */
+  .brand-bar { display: block; }
+  .brand-isi { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .ringkas-rapor { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+  @media (max-width: 480px) {
+    .wrap { padding: 14px 12px 32px; }
+    .kartu { padding: 16px 14px; }
+    .hero { padding: 18px 14px 14px; border-radius: 22px; }
+    .mapel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .mapel { padding: 10px 6px; border-radius: 16px; }
+    .mapel .ikon { font-size: 28px; }
+    .mapel b { font-size: 15px; line-height: 1.2; }
+    .mapel small { font-size: 12px; }
+    .ringkas-rapor { gap: 6px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ringkas-rapor div { padding: 8px 4px; font-size: 12px; line-height: 1.25; overflow-wrap: anywhere; }
+    .ringkas-rapor b { font-size: 24px; }
+    .tab { font-size: 15px; padding: 8px 4px; }
+    .baris-tombol .tombol { flex: 1 1 auto; }
+  }
+  @media (min-width: 1024px) {
+    .wrap { max-width: 1180px; padding: 28px 24px 56px; }
+    /* Halaman awal: hero di kiri (ikut menempel saat digulir), formulir di kanan */
+    #layarMulai.aktif { display: grid; grid-template-columns: minmax(360px, 430px) minmax(0, 1fr); gap: 24px; align-items: start; }
+    #layarMulai > .hero { grid-row: 1 / span 4; position: sticky; top: 74px; margin: 0; }
+    #layarMulai > :not(.hero) { grid-column: 2; }
+    #layarMulai > .kartu + .kartu { margin-top: 0; }
+    #layarMulai .lencana { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 44px; }
+    .mapel-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    /* Layar mengerjakan soal: lebar nyaman dibaca */
+    #layarKuis, #layarTes, #layarIntroTes, #layarRapor { max-width: 840px; margin: 0 auto; }
+    .soal { font-size: 26px; }
+    /* Layar hasil: nilai di kiri, bagikan & HadirFlow di kanan */
+    #layarHasil.aktif, #layarHasilTes.aktif { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr); gap: 24px; align-items: start; }
+    #layarHasil .promo-ortu, #layarHasilTes .promo-ortu { position: sticky; top: 74px; margin-top: 0; }
+    #layarHasilTes > .baris-tombol { grid-column: 1; }
+    #layarHasil .promo-ortu > :first-child, #layarHasilTes .promo-ortu > :first-child { margin-top: 0; }
+  }
+  @media print { .brand-bar { position: static; } #layarHasil.aktif, #layarHasilTes.aktif { display: block; } }
 </style>
 </head>
 <body>
-<header class="brand-bar tanpa-cetak">
+<header class="brand-bar tanpa-cetak"><div class="brand-isi">
   <a class="brand" href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=logo" target="_blank" rel="noopener" aria-label="HadirFlow">
     <img data-logo alt="" width="29" height="34"><span class="wordmark">Hadir<b>Flow</b></span>
   </a>
   <a class="brand-cta" href="https://hadirflow.my.id/?utm_source=kuistes&amp;utm_medium=topbar" target="_blank" rel="noopener">Absensi &amp; Gaji Otomatis ↗</a>
-</header>
+</div></header>
 <div class="wrap">
   <div id="cekJS" style="background:#ffe1e8;color:#8a1934;border-radius:16px;padding:12px 16px;margin-bottom:12px;font-weight:700;text-align:center">
     ⏳ Memuat kuis... Jika tulisan ini tidak hilang, browser tidak bisa menjalankan kuis. Coba perbarui iPad/HP atau buka di Google Chrome.
@@ -501,13 +539,13 @@
       <p class="sub" id="rincianHasil"></p>
       <p id="pesanHasil" style="font-weight:700"></p>
       <div class="ulasan" id="ulasan"></div>
-      <div class="promo-ortu tanpa-cetak" id="promoHasil"></div>
       <div class="baris-tombol">
         <button class="tombol" id="btnUlang">Ulangi 🔄</button>
         <button class="tombol putih" id="btnGanti">Ganti Pelajaran 📚</button>
         <button class="tombol putih" id="btnRaporHasil" type="button">📈 Rapor</button>
       </div>
     </div>
+    <div class="promo-ortu tanpa-cetak" id="promoHasil"></div>
   </section>
 
 </div>
