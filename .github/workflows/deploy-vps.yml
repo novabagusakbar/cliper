@@ -41,15 +41,17 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         env:
           SKRIP: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/deploy/pasang-di-vps.sh
+          SUMBER_COMMIT: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/kuistes
           SUDO_PASSWORD: ${{ secrets.VPS_PASSWORD }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
-          envs: SKRIP,SUDO_PASSWORD
+          envs: SKRIP,SUMBER_COMMIT,SUDO_PASSWORD
           command_timeout: 10m
           script: |
             set -e
             curl -fsSL "$SKRIP" -o /tmp/pasang-kuistes.sh
-            echo "$SUDO_PASSWORD" | sudo -S -p '' bash /tmp/pasang-kuistes.sh
+            # Ambil file dari commit yang persis (bukan cabang) supaya tidak tertahan cache GitHub
+            echo "$SUDO_PASSWORD" | sudo -S -p '' SUMBER="$SUMBER_COMMIT" bash /tmp/pasang-kuistes.sh
             rm -f /tmp/pasang-kuistes.sh
