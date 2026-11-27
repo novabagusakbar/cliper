@@ -163,6 +163,24 @@
   .hasil-tes h2, #judulHasil { font-family: "Playfair Display", Georgia, serif; font-weight: 800; color: #10233f; font-size: clamp(23px, 5.6vw, 32px); line-height: 1.2; }
   .hasil-tes .kotak-hormat { background: #fbf6e9; border-color: #ead9ad; }
   @media (max-width: 480px) { .panel-skor { padding: 16px 48px 14px; } .panel-skor::before, .panel-skor::after { width: 32px; height: 60px; margin-top: -36px; } .panel-skor::before { left: 8px; } .panel-skor::after { right: 8px; } .panel-skor .angka { font-size: 56px; } }
+  .kotak-promo.kotak-bagikan { background: linear-gradient(180deg, #eef4ff, #e9f7f3); border-color: #c9dafc; }
+  .kotak-bagikan > b { font-size: 21px; }
+  .pilih-format { display: flex; gap: 8px; margin: 10px 0 4px; }
+  .pilih-format button { font: inherit; flex: 1; font-weight: 800; font-size: 15px; padding: 8px; border-radius: 12px; border: 2px solid #c9dafc; background: #fff; color: var(--navy); cursor: pointer; }
+  .pilih-format button.aktif { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .pratinjau-kartu { text-align: center; }
+  .pratinjau-kartu img { width: 100%; max-width: 260px; border-radius: 16px; box-shadow: 0 8px 22px rgba(7,43,107,.18); margin: 10px auto; display: block; }
+  .pratinjau-kartu img.kotak { max-width: 330px; }
+  .tombol-bagikan { justify-content: center; }
+  .teks-ajak { margin-top: 8px; }
+  .teks-ajak summary { font-weight: 800; cursor: pointer; }
+  .teks-ajak textarea { width: 100%; font: inherit; font-size: 15px; border: 2px solid var(--line); border-radius: 12px; padding: 8px; margin: 8px 0; }
+  .kotak-promo.banding { background: linear-gradient(135deg, #fff6e0, #ffe9ef); border-color: #ffd7a8; }
+  .vs-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-top: 10px; text-align: center; }
+  .vs-grid div { background: #fff; border-radius: 14px; padding: 10px 6px; border: 2px solid #ffd7a8; }
+  .vs-grid small { display: block; color: #6b6680; font-weight: 700; }
+  .vs-grid b { font-size: 18px; line-height: 1.2; display: block; word-break: break-word; }
+  .vs { font-weight: 900; color: #e2562b; font-size: 20px; }
   .kotak-promo.kotak-piagam { background: linear-gradient(180deg, #f3f8f5, #eaf3ee); border-color: #cfe5da; }
   .kotak-piagam > b { font-family: "Playfair Display", Georgia, serif; font-size: 22px; color: #0b5a43; }
   .kotak-piagam .tombol-piagam { display: block; text-align: center; max-width: 380px; margin: 4px auto 0; }
@@ -1781,7 +1799,7 @@ function jawab(tombol, op) {
     setTimeout(lanjut, 300);
     return;
   }
-  const semua = [...document.querySelectorAll(".opsi")];
+  const semua = [...document.querySelectorAll("#daftarOpsi .opsi")];
   semua.forEach((b, i) => { b.disabled = true; if (s.opsi[i].benar) b.classList.add("benar"); });
   const u = $("umpan");
   const kunci = s.opsi.find((x) => x.benar).teks;
@@ -1855,7 +1873,9 @@ function selesai() {
     $("judulHasil").textContent = c.pertama ? "🔥 Tantangan Harian Selesai!" : "Latihan Tambahan Selesai!";
     $("pesanHasil").textContent = (c.pertama ? `Kamu sudah ${b} hari berturut-turut. ` : "Tantangan hari ini sudah tercatat sebelumnya. ") + (c.lencanaBaru ? `🎖️ Selamat, kamu dapat lencana ${c.lencanaBaru[1]} ${c.lencanaBaru[2]} beruntun!` : `Datang lagi besok untuk soal baru, ya!`);
     return bukaHasil(() => { tampilkan("layarHasil"); bunyi("selesai"); if (nilai >= 60 || c.lencanaBaru) konfeti(); }, "promoHasil", {
-      bagikan: `🔥 ${nama} sudah ${b} hari berturut-turut menyelesaikan Tantangan Harian (nilai hari ini ${nilai})! Ikut tantangannya, yuk!`,
+      kartu: { namaFile: "tantangan-harian.png", kartu: { latar: "#ffe2c4", emoji: "🔥", judulAtas: "Tantangan Harianku", besar: b + " hari", warnaBesar: "#e2562b", judul: "berturut-turut belajar!",
+        deskripsi: `Nilai hari ini ${nilai}. ${c.lencanaBaru ? "Dapat lencana " + c.lencanaBaru[1] + " " + c.lencanaBaru[2] + "!" : "Setiap hari 5 soal baru."}`, ajakan: "Ikut tantangannya, gratis 👇", seruan: "Ayo belajar bareng tiap hari! 📚" },
+        teks: `🔥 ${nama} sudah ${b} hari berturut-turut menyelesaikan Tantangan Harian (nilai hari ini ${nilai})!\n\nIkut tantangannya, gratis tanpa daftar 👉 ${tautanTantang({ hari: b })}` },
       piagam: c.lencanaBaru ? `atas ${c.lencanaBaru[0]} hari berturut-turut menyelesaikan Tantangan Harian` : null });
   }
   bukaHasil(() => {
@@ -1863,7 +1883,10 @@ function selesai() {
     bunyi("selesai");
     if (nilai >= 70) konfeti();
   }, "promoHasil", {
-    bagikan: `📚 ${nama} mendapat nilai ${nilai} di ${jenis.toLowerCase()} ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}`,
+    kartu: { namaFile: "nilai-kuis.png", kartu: { latar: "#c9f2dd", emoji: emoji, judulAtas: `Nilai ${jenis}-ku`, besar: String(nilai), warnaBesar: "#016a53", judul: `${m.nama} • ${KELAS_INFO[kelasAktif].nama}`,
+        deskripsi: `Benar ${skor} dari ${total} soal ${"⭐".repeat(jmlBintang)}`, ajakan: "Bisa lebih tinggi? Coba gratis 👇", seruan: "Bisa kalahkan nilaiku? 😎" },
+      teks: `📚 ${nama} mendapat nilai ${nilai} di ${jenis.toLowerCase()} ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}\n\nBisa lebih tinggi? Coba soal yang sama tingkatnya, gratis 👉 ${tautanTantang({ k: kelasAktif, m: pilihanMapel, n: nilai })}` },
+    banding: kotakBanding("kuis", String(nilai)),
     piagam: nilai >= 70 ? `atas nilai ${nilai} pada ${jenis} ${m.nama} ${KELAS_INFO[kelasAktif].nama}` : null,
     guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null,
     video: pilihanMapel === "campur" ? null : kelasAktif + "|" + pilihanMapel
@@ -2137,7 +2160,7 @@ const TES = {
       const teksWA = `${m.ikon} Hasil Tes Gaya Belajar ala STIFIn ${nama}: ${m.nama} (${m.asli})${seri ? " & " + kedua.nama : ""}\n${KODE_MESIN.map((k) => `${MESIN[k].asli} ${pM[k]}%`).join(" • ")}`;
       const usia = extra.usia ? `${extra.usia.th} tahun ${extra.usia.bl} bulan` : "";
       return { kode: urut[0], ringkas: `${m.ikon} ${m.nama} (${m.asli})`, piagam: `sebagai ${m.nama} (${m.asli}) pada Tes Gaya Belajar`,
-        setelah: () => gambarKartuHasil({ latar: m.warna, emoji: m.ikon, judulAtas: "Gaya Belajarku (ala STIFIn)", besar: m.asli, warnaBesar: "#072B6B", judul: m.nama, deskripsi: m.sifat[0] + ".",
+        teksBagi: teksWA, namaFile: "hasil-gaya-belajar-stifin.png", kartu: ({ latar: m.warna, emoji: m.ikon, judulAtas: "Gaya Belajarku (ala STIFIn)", besar: m.asli, warnaBesar: "#072B6B", judul: m.nama, deskripsi: m.sifat[0] + ".",
           judulBatang: "Skor kelima mesin:", batang: urut.map((k) => [MESIN[k].asli, pM[k] / 100, k === urut[0] ? "#02a581" : "#02c2c1"]), penutup: "" }),
         html: `
         <div class="besar">${m.ikon}</div>
@@ -2149,7 +2172,7 @@ const TES = {
         <h3>📚 Cara belajar yang cocok</h3><ul>${m.belajar.map((x) => `<li>${x}</li>`).join("")}</ul>
         <h3>🌱 Yang perlu dilatih</h3><p>${m.latih}</p>
         ${seri ? `<div class="kotak peringatan">⚖️ Skormu <b>sama kuat</b> antara ${m.ikon} ${m.nama} dan ${kedua.ikon} ${kedua.nama}. Pakai cara belajar keduanya, dan coba ulangi tes di lain hari untuk melihat mana yang lebih menonjol.</div>` : dekat ? `<div class="kotak">Kamu juga cukup kuat sebagai <b>${kedua.ikon} ${kedua.nama}</b>. Coba gabungkan cara belajar keduanya.</div>` : ""}
-        ${blokKartuWA(teksWA, "hasil-gaya-belajar-stifin.png")}
+        
         <p class="catatan-ortu">Hasil ini adalah gambaran kecenderungan dari jawaban anak hari ini, bisa berubah seiring waktu. Untuk tes STIFIn resmi, hubungi lembaga STIFIn terdekat.</p>` };
     }
   },
@@ -2180,7 +2203,8 @@ const TES = {
         isi = `<div class="besar">❓</div><h2>Belum bisa diketahui</h2>
           <p>Untuk mengetahui golongan darahmu, minta ayah/ibu mengantarmu tes darah di <b>puskesmas, klinik, atau PMI</b>. Caranya hanya dengan sedikit tusukan kecil di ujung jari. Bismillah, berani!</p>`;
       }
-      return { ringkas: anak !== "?" ? "Golongan " + anak : "Belum diketahui", html: isi + `
+      return { kartu: { latar: "#ffd6dc", emoji: "🩸", judulAtas: "Golongan Darahku", besar: anak !== "?" ? anak : "?", warnaBesar: "#c8283c", judul: anak !== "?" ? "Golongan darah " + anak : "Belum diketahui", deskripsi: "Cek juga golongan darahmu dan kemungkinan dari orang tua.", seruan: "Golonganmu apa? 🤔" },
+        ringkas: anak !== "?" ? "Golongan " + anak : "Belum diketahui", html: isi + `
         <h3>🧠 Tahukah kamu?</h3><ul>
           <li>Ada 4 golongan darah utama: A, B, AB, dan O. Ada juga rhesus positif (+) dan negatif (−).</li>
           <li>Darah berwarna merah karena ada zat bernama <b>hemoglobin</b> yang membawa oksigen.</li>
@@ -2199,7 +2223,8 @@ const TES = {
       const skor = {}; BIDANG.forEach((b) => (skor[b.id] = 0));
       extra.soal.forEach((s, i) => (skor[s.bidang] += j[i] || 0));
       const urut = BIDANG.slice().sort((a, b) => skor[b.id] - skor[a.id]), top = urut.slice(0, 3), bawah = urut.slice(-2).reverse();
-      return { ringkas: top.map((b) => b.ikon + " " + b.nama).join(", "), piagam: `dengan kelebihan ${top.map((b) => b.nama).join(", ")}`, html: `
+      return { kartu: { latar: "#fff1b8", emoji: top[0].ikon, judulAtas: "Kelebihanku", besar: top[0].nama, warnaBesar: "#072B6B", judul: "Kelebihan utamaku", deskripsi: "Juga: " + top.slice(1).map((b) => b.nama).join(", "), seruan: "Apa kelebihanmu? ✨" },
+        ringkas: top.map((b) => b.ikon + " " + b.nama).join(", "), piagam: `dengan kelebihan ${top.map((b) => b.nama).join(", ")}`, html: `
         <div class="besar">🏅</div><h2>Kelebihan ${esc(nama)} saat ini</h2><p class="sub-kecil">${tglHariIni()}</p>
         ${top.map((b, i) => `<div class="kotak"><b>${["🥇", "🥈", "🥉"][i]} ${b.ikon} ${b.nama}</b> (skor ${skor[b.id]}/6)<br>Terus kembangkan: ${b.tip}</div>`).join("")}
         <h3>🌱 Yang bisa dilatih</h3>
@@ -2249,7 +2274,9 @@ const TES = {
       const kat = total >= 19 ? ["🏆", "Istimewa"] : total >= 16 ? ["🌟", "Sangat Baik"] : total >= 12 ? ["👍", "Baik"] : total >= 8 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
       const urut = Object.keys(AREA_OTAK).sort((a, b) => per[b] - per[a]);
       const salah = extra.soal.map((s, i) => ({ s, ok: j[i] === 1, pilih: extra.teks[i] })).filter((x) => !x.ok);
-      return { ringkas: `${total}/20 (${kat[1]})`, piagam: total >= 12 ? `atas skor ${total}/20 (${kat[1]}) pada Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}` : null, bagikan: `🧠 ${nama} mendapat skor ${total}/20 (${kat[1]}) di Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}! Berani coba?`, html: `
+      return { kartu: { latar: "#c9f2dd", emoji: kat[0], judulAtas: "Hasil Tes Kecerdasanku", besar: total + "/20", warnaBesar: "#016a53", judul: kat[1], deskripsi: "Tingkat " + LEVEL_OTAK[levelOtak - 1][0],
+          judulBatang: "Per bidang:", batang: urut.map((a) => [AREA_OTAK[a].replace(/^\S+\s/, ""), per[a] / 5, "#02a581", per[a] + "/5"]) },
+        ringkas: `${total}/20 (${kat[1]})`, piagam: total >= 12 ? `atas skor ${total}/20 (${kat[1]}) pada Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}` : null, bagikan: `🧠 ${nama} mendapat skor ${total}/20 (${kat[1]}) di Tes Kecerdasan tingkat ${LEVEL_OTAK[levelOtak - 1][0]}! Berani coba?`, html: `
         <div class="besar">${kat[0]}</div><h2>Hasil Tes Kecerdasan ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${LEVEL_OTAK[levelOtak - 1][0]} • ${tglHariIni()}</p>
         ${panelSkor(total, 20, "Kategori: " + kat[1], `🕒 Waktu: ${menit} menit ${detik} detik`)}
         <h3>📊 Kemampuan per bidang</h3>
@@ -2458,58 +2485,12 @@ function hitungPilihan(j, kode) {
 function meteran(c, keys, nm, warna, maks) {
   return keys.map((k) => { const p = Math.round((c[k] / maks) * 100); return `<div class="batang"><span>${nm[k]}</span><div class="jalur"><div class="isi" style="width:${p}%;background:${warna[k]}"></div></div><b>${p}%</b></div>`; }).join("");
 }
-function blokKartuWA(teks, namaFile) {
-  return `<div class="kotak tanpa-cetak"><h3 style="margin-top:0">📲 Bagikan ke Status WA</h3>
-    <p class="sub-kecil" style="text-align:left">Simpan kartu hasil di bawah, lalu buka WhatsApp, pilih Status, dan unggah gambarnya. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
-    <img id="kartuGambar" alt="Kartu hasil ${esc(nama)}" style="width:100%;max-width:280px;display:block;margin:10px auto;border-radius:16px;border:3px solid var(--line)">
-    <div class="baris-tombol">
-      <a class="tombol" id="kartuUnduh" download="${namaFile}" style="text-decoration:none">💾 Simpan gambar</a>
-      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(teks + "\n\nCoba juga gratis di https://hadirflow.my.id/kuistes")}">💬 Kirim ke WhatsApp</a>
-    </div><p class="sub-kecil" id="kartuPesan"></p></div>`;
-}
 function bungkusTeks(ctx, text, x, y, maxW, lh) {
   const kata = text.split(" "), baris = []; let line = "";
   kata.forEach((w) => { const tt = line ? line + " " + w : w; if (ctx.measureText(tt).width > maxW && line) { baris.push(line); line = w; } else line = tt; });
   baris.push(line); baris.forEach((l, i) => ctx.fillText(l, x, y + i * lh)); return baris.length;
 }
 function kotakBulat(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-// Kartu Status WA 1080×1920. o: { latar, gambar (svg) atau emoji, judulAtas, besar, warnaBesar, judul, deskripsi, judulBatang, batang: [[label, 0–1, warna]], penutup }
-function gambarKartuHasil(o) {
-  const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
-  const c = cv.getContext("2d"), ink = "#1d1a2f", F = 'Nunito, sans-serif';
-  const selesai = () => {
-    c.textAlign = "center"; c.fillStyle = "#5b5770"; c.font = "800 50px " + F; c.fillText(nama, W / 2, 590);
-    c.fillStyle = o.warnaBesar || "#ff5a4e"; let uk = 200; c.font = `800 ${uk}px ${F}`;
-    while (c.measureText(o.besar).width > W - 220 && uk > 90) { uk -= 10; c.font = `800 ${uk}px ${F}`; }
-    c.fillText(o.besar, W / 2, 780);
-    c.fillStyle = ink; c.font = "800 66px " + F; c.fillText(o.judul, W / 2, 870);
-    c.fillStyle = "#5b5770"; c.font = "600 38px " + F;
-    let y = 940 + bungkusTeks(c, o.deskripsi, W / 2, 940, 800, 52) * 52 + 30;
-    c.fillStyle = "#ece6d6"; c.fillRect(150, y, W - 300, 4); y += 70;
-    c.textAlign = "left"; c.fillStyle = ink; c.font = "800 44px " + F; c.fillText(o.judulBatang, 150, y); y += 26;
-    o.batang.forEach(([lab, p, warna]) => {
-      y += 62; c.fillStyle = "#5b5770"; c.font = "800 34px " + F; c.fillText(lab, 150, y + 12);
-      kotakBulat(c, 330, y - 14, W - 610, 32, 16); c.fillStyle = "#f1ece0"; c.fill();
-      if (p > 0) { kotakBulat(c, 330, y - 14, Math.max(32, (W - 610) * p), 32, 16); c.fillStyle = warna; c.fill(); }
-      c.fillStyle = "#5b5770"; c.textAlign = "right"; c.fillText(Math.round(p * 100) + "%", W - 150, y + 12); c.textAlign = "left";
-    });
-    if (o.penutup) { y += 90; c.fillStyle = "#5b5770"; c.font = "600 36px " + F; bungkusTeks(c, o.penutup, 150, y, W - 300, 48); }
-    c.textAlign = "center"; kakiLogo(c, W, 1840, "Coba juga di hadirflow.my.id/kuistes", "800 44px " + F, ink);
-    try { const url = cv.toDataURL("image/png"); $("kartuGambar").src = url; $("kartuUnduh").href = url; }
-    catch (e) { $("kartuPesan").textContent = "Kartu gambar tidak bisa dibuat di perangkat ini."; }
-  };
-  c.fillStyle = o.latar; c.fillRect(0, 0, W, H);
-  c.fillStyle = "rgba(255,255,255,.25)";
-  [[120, 140, 90], [960, 260, 130], [90, 1700, 120], [1000, 1820, 90]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
-  c.textAlign = "center"; c.fillStyle = ink; c.font = "800 60px " + F; c.fillText(o.judulAtas, W / 2, 110);
-  kotakBulat(c, 70, 240, W - 140, 1500, 64); c.fillStyle = "#fff"; c.fill();
-  if (o.gambar) {
-    const img = new Image();
-    img.onload = () => { try { c.drawImage(img, W / 2 - 170, 170, 340, 368); } catch (e) {} selesai(); };
-    img.onerror = selesai;
-    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(o.gambar);
-  } else { c.font = "260px " + F; c.fillText(o.emoji || "⭐", W / 2, 470); selesai(); }
-}
 const catatanKepribadian = `<p class="catatan-ortu">Tes ini untuk refleksi diri, bukan pengganti tes psikologi resmi. Hasil bisa sedikit berbeda jika diulang di suasana hati yang berbeda.</p>`;
 const introKepribadian = (jumlah, cara) => `<p><b>${jumlah}</b>. ${cara}</p>
   <p>Tidak ada jawaban benar atau salah. Jawablah sesuai <b>dirimu sehari-hari</b>, bukan seperti yang kamu inginkan. Jangan terlalu lama berpikir; jawaban pertama biasanya paling jujur.</p>
@@ -2538,8 +2519,8 @@ TES.mbti = {
         <h3>🌱 Yang bisa dikembangkan</h3><p>${besarAwal(kel[4])}.</p>
         <h3>📚 Cara belajar yang cocok</h3><ul>${R.type.split("").map((h) => `<li><b>${h}:</b> ${BELAJAR_MBTI[h]}</li>`).join("")}</ul>
         <h3>💼 Pekerjaan dan kegiatan yang cocok</h3><p>${besarAwal(mb[2])}.</p>
-        ${blokKartuWA(teks, "hasil-mbti.png")}${catatanKepribadian}`,
-      setelah: () => gambarKartuHasil({ latar: kel[2], emoji: kel[1], judulAtas: "Hasil Tes MBTI-ku", besar: R.type, warnaBesar: "#072B6B", judul: mb[0], deskripsi: mb[1],
+        ${catatanKepribadian}`,
+      teksBagi: teks, namaFile: "hasil-mbti.png", kartu: ({ latar: kel[2], emoji: kel[1], judulAtas: "Hasil Tes MBTI-ku", besar: R.type, warnaBesar: "#072B6B", judul: mb[0], deskripsi: mb[1],
         judulBatang: "Kecenderungan:", batang: R.dim.map((d) => [d.nama, d.persen / 100, "#02a581"]), penutup: "" })
     };
   }
@@ -2568,8 +2549,8 @@ TES.disc = {
         <h3>🌱 Yang bisa dikembangkan</h3><p>${besarAwal(D0[2])}.</p>
         <h3>📚 Cara belajar atau bekerja yang cocok</h3><p>${besarAwal(E.belajar)}.</p>
         <h3>💬 Cara terbaik berkomunikasi denganmu</h3><p>${D0[3]}</p>
-        ${blokKartuWA(teks, "hasil-disc.png")}${catatanKepribadian}`,
-      setelah: () => gambarKartuHasil({ latar: WARNA_DISC[p], emoji: E.ikon, judulAtas: "Hasil Tes DISC-ku", besar: dukung ? p + "/" + q : p, warnaBesar: "#072B6B", judul: D0[0], deskripsi: besarAwal(D0[1]) + ".",
+        ${catatanKepribadian}`,
+      teksBagi: teks, namaFile: "hasil-disc.png", kartu: ({ latar: WARNA_DISC[p], emoji: E.ikon, judulAtas: "Hasil Tes DISC-ku", besar: dukung ? p + "/" + q : p, warnaBesar: "#072B6B", judul: D0[0], deskripsi: besarAwal(D0[1]) + ".",
         judulBatang: "Skor DISC:", batang: KODE_DISC.map((k) => [k, R.n[k] / R.total, WARNA_DISC[k]]), penutup: "" })
     };
   }
@@ -2595,8 +2576,8 @@ TES.temperamen = {
         <h3>🌱 Yang perlu dijaga</h3><ul>${E.kelemahan.map((x) => `<li>${besarAwal(x)}</li>`).join("")}</ul>
         <h3>💡 Saran untukmu</h3><p>${T0[3]}</p>
         <h3>🎯 Kegiatan yang cocok</h3><p>${besarAwal(E.cocok)}.</p>
-        ${blokKartuWA(teks, "hasil-temperamen.png")}${catatanKepribadian}`,
-      setelah: () => gambarKartuHasil({ latar: TC[p], gambar: maskot(p), judulAtas: "Hasil Tes Temperamenku", besar: TN[p], warnaBesar: "#072B6B", judul: campur ? "campuran " + TN[q] : "Temperamen utama", deskripsi: T0[0],
+        ${catatanKepribadian}`,
+      teksBagi: teks, namaFile: "hasil-temperamen.png", kartu: ({ latar: TC[p], gambar: maskot(p), judulAtas: "Hasil Tes Temperamenku", besar: TN[p], warnaBesar: "#072B6B", judul: campur ? "campuran " + TN[q] : "Temperamen utama", deskripsi: T0[0],
         judulBatang: "Skor temperamen:", batang: KODE_TEMP.map((k) => [TN[k], R.n[k] / R.total, TC[k]]), penutup: "Kelebihan: " + E.kelebihan.slice(0, 3).join(", ") + "." })
     };
   }
@@ -2620,7 +2601,9 @@ function isiPromo(el, opsi) {
   if (opsi.guru && opsi.guru.wa) html += `<div class="kotak-promo guru"><b>📤 Kirim ${opsi.guru.label || "nilai"}mu ke ${esc(opsi.guru.nama)}</b>
       <p>Tekan tombol di bawah, lalu tekan <b>Kirim</b> di WhatsApp.</p>
       <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/${opsi.guru.wa}?text=${encodeURIComponent(opsi.guru.pesan)}">📤 Kirim ${opsi.guru.label || "nilai"} ke ${esc(opsi.guru.nama)}</a></div>`;
-  if (opsi.bagikan) {
+  if (opsi.banding) html += opsi.banding;
+  if (opsi.kartu) html += blokBagikan(opsi.kartu);
+  else if (opsi.bagikan) {
     const teks = opsi.bagikan + "\n\nCoba gratis juga di sini 👉 " + URL_KUIS;
     html += `<div class="kotak-promo bagikan"><b>📲 Bagikan hasilnya</b>
       <p>Ajak teman, saudara, dan grup sekolah mencoba tes gratis ini.</p>
@@ -2629,10 +2612,10 @@ function isiPromo(el, opsi) {
         ${navigator.share ? `<button type="button" class="tombol putih" data-bagikan>📤 Bagikan lainnya</button>` : ""}
       </div></div>`;
   }
-  if (opsi.piagam) html = `<div class="kotak-promo kotak-piagam"><b>🏅 Piagam untuk ${esc(nama)}</b>
+  if (opsi.piagam) html += `<div class="kotak-promo kotak-piagam"><b>🏅 Piagam untuk ${esc(nama)}</b>
       <p>Simpan piagamnya, lalu pasang di Status WA. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
       <img alt="Piagam ${esc(nama)}" data-piagam>
-      <a class="tombol tombol-piagam" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>` + html;
+      <a class="tombol tombol-piagam" data-unduh-piagam download="piagam-${esc(nama).replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}.png">💾 Simpan piagam</a></div>`;
   const vid = opsi.video ? VIDEO[opsi.video] || [] : [];
   if (vid.length) {
     const [k, m] = opsi.video.split("|");
@@ -2651,6 +2634,7 @@ function isiPromo(el, opsi) {
     const pasang = () => { try { const url = gambarPiagam(opsi.piagam), img = el.querySelector("[data-piagam]"), a = el.querySelector("[data-unduh-piagam]"); if (img) img.src = url; if (a) a.href = url; } catch (e) {} };
     pasang(); muatHurufPiagam(pasang);
   }
+  if (opsi.kartu) { const kb = el.querySelector(".kotak-bagikan"); if (kb) pasangBagikan(kb, opsi.kartu); }
   const b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });
 }
@@ -2862,6 +2846,7 @@ function terapkanTautan() {
   // Tautan dari halaman lain: ?k=5&m=mtk (kelas & pelajaran) atau ?tes=otak
   if (TES_GURU) return terapkanTesGuru();
   if (KUIS_GURU) return terapkanKuisGuru();
+  if (TANTANGAN) setTimeout(terapkanTantangan, 0);
   if (KELAS_INFO[PARAM.k]) {
     kelasAktif = PARAM.k; jenjangAktif = KELAS_INFO[PARAM.k].jenjang;
     pilihanMapel = mapelKelas(PARAM.k).concat(["campur"]).indexOf(PARAM.m) >= 0 ? PARAM.m : null;
@@ -3006,9 +2991,9 @@ TES.majemuk = {
           <b>🎯 Kegiatan yang mendukung:</b> ${m.kegiatan}.<br><b>💼 Contoh cita-cita:</b> ${m.profesi}.</div>`; }).join("")}
         <h3>🌱 Bisa terus dikembangkan</h3><p>Kecerdasan <b>${R.urut.slice(-2).map((k) => MAJEMUK[k].pendek.toLowerCase()).join("</b> dan <b>")}</b> mungkin belum banyak dilatih. Coba kegiatan seperti ${R.urut.slice(-2).map((k) => MAJEMUK[k].kegiatan.split(", ")[0]).join(" atau ")} sesekali, tanpa paksaan.</p>
         <div class="kotak">💛 <b>Untuk Ayah/Bunda:</b> setiap anak punya kecerdasan yang berbeda, dan semuanya berharga. Dukung kecerdasan yang menonjol, dan beri kesempatan mencoba hal lain. Hasil bisa berubah seiring bertambahnya pengalaman anak.</div>
-        ${blokKartuWA(teks, "hasil-kecerdasan-majemuk.png")}
+        
         <p class="catatan-ortu">Berdasarkan teori Kecerdasan Majemuk (Howard Gardner). Ini untuk mengenal minat dan kekuatan anak, bukan tes psikologi resmi.</p>`,
-      setelah: () => gambarKartuHasil({ latar: M0.warna, emoji: M0.ikon, judulAtas: "Kecerdasan Majemukku", besar: M0.pendek, warnaBesar: "#072B6B", judul: M0.julukan, deskripsi: besarAwal(M0.arti) + ".",
+      teksBagi: teks, namaFile: "hasil-kecerdasan-majemuk.png", kartu: ({ latar: M0.warna, emoji: M0.ikon, judulAtas: "Kecerdasan Majemukku", besar: M0.pendek, warnaBesar: "#072B6B", judul: M0.julukan, deskripsi: besarAwal(M0.arti) + ".",
         judulBatang: "Peta kecerdasanku:", batang: R.urut.map((k) => [MAJEMUK[k].pendek, R.p[k] / 100, top.indexOf(k) >= 0 ? "#02a581" : "#02c2c1"]), penutup: "" })
     };
   }
@@ -3100,7 +3085,9 @@ TES.ingat = {
     const kat = skor >= 5 ? ["🏆", "Ingatan Istimewa"] : skor >= 3 ? ["🌟", "Ingatan Sangat Baik"] : skor >= 2 ? ["👍", "Ingatan Baik"] : ["💪", "Terus Berlatih"];
     const ket = ["di bawah rata-rata", "sesuai rata-rata", "di atas rata-rata"];
     const ringkas = `Angka ${r.angka} • Gambar ${r.gambar} • Posisi ${r.posisi}`;
-    return { ringkas, piagam: skor >= 3 ? `atas ${kat[1].toLowerCase()} (${ringkas}) pada Tes Daya Ingat tingkat ${namaLevel()}` : null,
+    return { kartu: { latar: "#ffe8cc", emoji: "💭", judulAtas: "Hasil Tes Daya Ingatku", besar: kat[1].replace("Ingatan ", ""), warnaBesar: "#b4532a", judul: "Rentang ingatanku", deskripsi: "Tingkat " + namaLevel(),
+        judulBatang: "Bisa mengingat berurutan:", batang: ["angka", "gambar", "posisi"].map((jn) => [BAGIAN_INGAT[jn].nama.replace("Ingat ", ""), r[jn] / 10, "#ff8a3d", r[jn] + " hal"]) },
+      ringkas, piagam: skor >= 3 ? `atas ${kat[1].toLowerCase()} (${ringkas}) pada Tes Daya Ingat tingkat ${namaLevel()}` : null,
       bagikan: `🧠 ${nama} bisa mengingat ${r.angka} angka, ${r.gambar} gambar, dan ${r.posisi} posisi berurutan di Tes Daya Ingat! Kamu bisa berapa?`,
       html: `<div class="besar">${kat[0]}</div><h2>Hasil Tes Daya Ingat ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${namaLevel()} • ${tglHariIni()}</p>
         ${panelSkor(Math.max(r.angka, r.gambar, r.posisi), 0, kat[1], "Rentang ingatan terpanjang • jumlah hal yang bisa diingat berurutan")}
@@ -3179,7 +3166,9 @@ TES.fokus = {
     const skor = Math.max(0, Math.min(100, Math.round(tuntas * 70 + teliti * 20 + (tuntas === 1 ? cepat * 10 : 0) - T.salah * 2)));
     const kat = skor >= 90 ? ["🎯", "Fokus Tajam"] : skor >= 75 ? ["🌟", "Sangat Baik"] : skor >= 60 ? ["👍", "Baik"] : skor >= 40 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
     const perTarget = T.benar ? (T.detik / T.benar).toFixed(1).replace(".", ",") : "-";
-    return { ringkas: `${skor}/100 (${kat[1]})`, piagam: skor >= 60 ? `atas skor konsentrasi ${skor}/100 (${kat[1]}) tingkat ${namaLevel()}` : null,
+    return { kartu: { latar: "#d7f3ff", emoji: kat[0], judulAtas: "Hasil Tes Konsentrasiku", besar: skor + "/100", warnaBesar: "#0b5fa5", judul: kat[1], deskripsi: `Ketemu ${T.benar} dari ${T.target} target`,
+        batang: [["Ketuntasan", tuntas, "#02a581"], ["Ketelitian", teliti, "#02c2c1"]] },
+      ringkas: `${skor}/100 (${kat[1]})`, piagam: skor >= 60 ? `atas skor konsentrasi ${skor}/100 (${kat[1]}) tingkat ${namaLevel()}` : null,
       bagikan: `🎯 ${nama} mendapat skor ${skor}/100 (${kat[1]}) di Tes Konsentrasi! Berani adu fokus?`,
       html: `<div class="besar">${kat[0]}</div><h2>Hasil Tes Konsentrasi ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${namaLevel()} • ${tglHariIni()}</p>
         ${panelSkor(skor, 100, "Kategori: " + kat[1], "")}
@@ -3305,7 +3294,9 @@ TES.ruang = {
     const total = j.filter((x) => x === 1).length, urut = Object.keys(AREA_RUANG).sort((a, b) => per[b] - per[a]);
     const kat = total >= 15 ? ["🏆", "Istimewa"] : total >= 12 ? ["🌟", "Sangat Baik"] : total >= 9 ? ["👍", "Baik"] : total >= 6 ? ["🙂", "Cukup"] : ["💪", "Terus Berlatih"];
     const menit = Math.floor(extra.detik / 60), detik = extra.detik % 60;
-    return { ringkas: `${total}/16 (${kat[1]})`, piagam: total >= 9 ? `atas skor ${total}/16 (${kat[1]}) pada Tes Ruang (Spasial) tingkat ${namaLevel()}` : null,
+    return { kartu: { latar: "#e6e0ff", emoji: "🧊", judulAtas: "Hasil Tes Ruangku", besar: total + "/16", warnaBesar: "#4b3aa8", judul: kat[1], deskripsi: "Tingkat " + namaLevel(),
+        judulBatang: "Per bagian:", batang: urut.map((a) => [AREA_RUANG[a].replace(/^\S+\s/, ""), per[a] / 4, "#7c6cf0", per[a] + "/4"]) },
+      ringkas: `${total}/16 (${kat[1]})`, piagam: total >= 9 ? `atas skor ${total}/16 (${kat[1]}) pada Tes Ruang (Spasial) tingkat ${namaLevel()}` : null,
       bagikan: `🧊 ${nama} mendapat skor ${total}/16 (${kat[1]}) di Tes Ruang (Spasial)! Bisa memutar bentuk di kepala? Coba juga!`,
       html: `<div class="besar">${kat[0]}</div><h2>Hasil Tes Ruang ${esc(nama)}</h2><p class="sub-kecil">Tingkat ${namaLevel()} • ${tglHariIni()}</p>
         ${panelSkor(total, 16, "Kategori: " + kat[1], `🕒 Waktu: ${menit} menit ${detik} detik`)}
@@ -3398,9 +3389,9 @@ function hasilVAK(j, ortu) {
         <b>🏠 Tips belajar di rumah:</b><ul style="margin:4px 0 6px">${v.rumah.map((x) => `<li>${x}</li>`).join("")}</ul>
         <b>🏫 Tips untuk guru di kelas:</b><ul style="margin:4px 0 0">${v.kelas.map((x) => `<li>${x}</li>`).join("")}</ul></div>`; }).join("")}
       <div class="kotak">💛 <b>Untuk Ayah/Bunda:</b> gaya belajar adalah cara yang paling <i>nyaman</i>, bukan satu-satunya cara. Tetap latih ${siapa} dengan cara lain, karena pelajaran yang memakai banyak indra biasanya paling melekat.</div>
-      ${blokKartuWA(teks, "hasil-gaya-belajar-vak.png")}
+      
       <p class="catatan-ortu">Soal disusun sendiri oleh HadirFlow berdasarkan model gaya belajar VAK (Visual, Auditori, Kinestetik). Ini untuk mengenal kebiasaan belajar, bukan tes psikologi resmi.</p>`,
-    setelah: () => gambarKartuHasil({ latar: V0.warna, emoji: tiga ? "🌈" : V0.ikon, judulAtas: "Gaya Belajarku", besar: label, warnaBesar: "#072B6B", judul: tiga ? "Pembelajar Serba Bisa" : dua ? V0.julukan + " & " + VAK[b].julukan : V0.julukan,
+    teksBagi: teks, namaFile: "hasil-gaya-belajar-vak.png", kartu: ({ latar: V0.warna, emoji: tiga ? "🌈" : V0.ikon, judulAtas: "Gaya Belajarku", besar: label, warnaBesar: "#072B6B", judul: tiga ? "Pembelajar Serba Bisa" : dua ? V0.julukan + " & " + VAK[b].julukan : V0.julukan,
       deskripsi: tiga ? "Belajar dengan melihat, mendengar, dan bergerak sama baiknya." : dua ? `Paling mudah belajar dengan ${KATA_VAK[a]} dan ${KATA_VAK[b]}.` : besarAwal(V0.arti) + ".", judulBatang: "Skor gaya belajar:", batang: R.urut.map((k) => [VAK[k].nama, p[k] / 100, k === a ? "#02a581" : "#02c2c1"]), penutup: "" })
   };
 }
@@ -3500,9 +3491,9 @@ TES.gaya4 = {
         ${dukung ? `<div class="kotak">Kamu juga cukup kuat sebagai <b>${G2.ikon} ${G2.nama}</b> (${G2.julukan.toLowerCase()}). Coba juga: ${G2.cocok[0].toLowerCase()}.</div>` : ""}
         <h3>🌱 Saran pengembangan</h3><p>${G.saran}</p>
         <div class="kotak">🔄 <b>Siklus belajar lengkap:</b> mencoba (Aktivis) → merenungkan (Reflektor) → menyimpulkan (Teoris) → menerapkan (Pragmatis). Pembelajar terbaik melatih keempatnya, bukan hanya gaya terkuat.</div>
-        ${blokKartuWA(teks, "hasil-4-gaya-belajar.png")}
+        
         <p class="catatan-ortu">Soal disusun sendiri oleh HadirFlow, terinspirasi model gaya belajar Honey & Mumford dan siklus belajar Kolb. Bukan tes psikologi resmi.</p>`,
-      setelah: () => gambarKartuHasil({ latar: G.warna, emoji: G.ikon, judulAtas: "Gaya Belajarku", besar: G.nama, warnaBesar: "#072B6B", judul: G.julukan, deskripsi: besarAwal(G.arti) + ".",
+      teksBagi: teks, namaFile: "hasil-4-gaya-belajar.png", kartu: ({ latar: G.warna, emoji: G.ikon, judulAtas: "Gaya Belajarku", besar: G.nama, warnaBesar: "#072B6B", judul: G.julukan, deskripsi: besarAwal(G.arti) + ".",
         judulBatang: "Skor 4 gaya belajar:", batang: R.urut.map((k) => [GAYA4[k].nama, p[k] / 100, k === a ? "#02a581" : "#02c2c1"]), penutup: "" })
     };
   }
@@ -3693,6 +3684,182 @@ function renderJenisGuru() {
   $("infoJenisGuru").innerHTML = jenisGuru === "tes" ? "Murid mengerjakan tes, lalu menekan <b>Kirim hasil ke guru</b>. Tempel pesan-pesan hasil di <b>Rekap</b> di bawah untuk melihat sebaran gaya belajar kelas dan saran mengajarnya." : "Murid mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>.";
 }
 
+/* ---------- 12. BAGIKAN HASIL (bola salju): kartu Status/Postingan, link tantangan, perbandingan ---------- */
+// Tautan tantangan: teman yang membuka langsung diarahkan ke tes/kuis yang sama, lalu bisa membandingkan hasil
+const namaDepan = (n) => String(n || "").trim().split(/\s+/)[0].slice(0, 20);
+function tautanTantang(p) {
+  const q = Object.assign({}, p, { dari: namaDepan(nama), utm_source: "bagikan", utm_medium: "hasil" });
+  Object.keys(q).forEach((k) => { if (q[k] == null || q[k] === "") delete q[k]; });
+  return URL_KUIS + "?" + Object.keys(q).map((k) => k + "=" + encodeURIComponent(String(q[k]).slice(0, 60))).join("&");
+}
+const TANTANGAN = (() => {
+  if (PARAM.guru || !PARAM.dari) return null;
+  const dari = String(PARAM.dari).replace(/[<>"]/g, "").slice(0, 20).trim();
+  if (!dari) return null;
+  return { dari, tes: TES[PARAM.tes] ? PARAM.tes : null, h: String(PARAM.h || "").slice(0, 60), k: PARAM.k, m: PARAM.m, n: PARAM.n != null && PARAM.n !== "" ? +PARAM.n : null, hari: +PARAM.hari || 0 };
+})();
+function terapkanTantangan() {
+  const T = TANTANGAN, ban = $("bannerGuru");
+  if (T.tes) {
+    const t = TES[T.tes]; gantiTab("tabDiri");
+    ban.innerHTML = `🎯 <b>${esc(T.dari)}</b> menantangmu mencoba <b>${t.ikon} ${esc(t.nama)}</b>!${T.h ? `<br>Hasil ${esc(T.dari)}: <b>${esc(T.h)}</b>. Kamu dapat apa?` : ""}<br>Tulis namamu, lalu mulai. Gratis, tanpa daftar.
+      <div class="tengah" style="margin-top:8px"><button type="button" class="tombol" id="btnTerimaTantangan">${t.ikon} Terima Tantangan ▶</button></div>`;
+    ban.style.display = "block";
+    $("btnTerimaTantangan").addEventListener("click", () => bukaTes(T.tes));
+  } else if (T.n != null && KELAS_INFO[T.k]) {
+    const m = namaMapel(MAPEL_INFO[T.m] ? T.m : "campur");
+    ban.innerHTML = `🏆 <b>${esc(T.dari)}</b> mendapat nilai <b>${T.n}</b> di kuis ${m.ikon} ${esc(m.nama)} ${esc(KELAS_INFO[T.k].nama)}. Bisa lebih tinggi?<br>Tulis namamu, lalu tekan <b>Mulai Kuis</b>.`;
+    ban.style.display = "block";
+  } else if (T.hari) {
+    ban.innerHTML = `🔥 <b>${esc(T.dari)}</b> sudah <b>${T.hari} hari berturut-turut</b> menyelesaikan Tantangan Harian. Ikut juga! Tulis namamu, pilih kelas, lalu tekan <b>Mulai</b> di kartu Tantangan Harian.`;
+    ban.style.display = "block";
+  }
+}
+// Kotak perbandingan untuk teman yang datang dari tautan tantangan
+function kotakBanding(jenis, hasilku) {
+  const T = TANTANGAN; if (!T) return "";
+  let putusan = "";
+  if (jenis === "kuis" && T.n != null && T.k === kelasAktif && (T.m === pilihanMapel)) {
+    const a = +hasilku;
+    putusan = a > T.n ? `🏆 Kamu menang! Nilaimu lebih tinggi ${a - T.n} poin.` : a === T.n ? "🤝 Seri! Nilai kalian sama." : `💪 ${esc(T.dari)} unggul ${T.n - a} poin. Coba lagi?`;
+    return kotakVs(T.dari, String(T.n), String(a), putusan);
+  }
+  if (jenis !== "kuis" && T.tes === jenis && T.h) {
+    const angka = (s) => { const x = String(s).match(/^(\d+)\s*\/\s*(\d+)/); return x ? +x[1] / +x[2] : null; };
+    const a = angka(hasilku), b = angka(T.h);
+    if (a != null && b != null) putusan = a > b ? "🏆 Skormu lebih tinggi!" : a === b ? "🤝 Skor kalian sama!" : `💪 ${esc(T.dari)} sedikit lebih tinggi. Ulangi dan kalahkan!`;
+    else putusan = hasilku.trim().toLowerCase() === T.h.trim().toLowerCase() ? "🤝 Hasil kalian sama! Pantas cocok." : "🌈 Hasil kalian berbeda, jadi bisa saling melengkapi.";
+    return kotakVs(T.dari, T.h, hasilku, putusan);
+  }
+  return "";
+}
+const kotakVs = (dari, hDia, hKu, putusan) => `<div class="kotak-promo banding"><b>🤝 Kamu vs ${esc(dari)}</b>
+  <div class="vs-grid"><div><small>${esc(dari)}</small><b>${esc(hDia)}</b></div><span class="vs">VS</span><div><small>Kamu</small><b>${esc(hKu)}</b></div></div>
+  <p style="margin:8px 0 0;font-weight:800">${putusan}</p><p class="sub-kecil" style="text-align:left;margin:4px 0 0">Balas tantangannya: bagikan hasilmu di bawah, ajak teman lain ikut membandingkan.</p></div>`;
+
+// Kartu gambar. format "story" 1080×1920 (Status WA/IG/TikTok) atau "kotak" 1080×1080 (postingan feed)
+// o: { latar, gambar (svg) | emoji, judulAtas, besar, warnaBesar, judul, deskripsi, judulBatang, batang: [[label, 0–1, warna, teksKanan?]], ajakan }
+function lukisKartu(o, format, selesai) {
+  const kotak = format === "kotak", W = 1080, H = kotak ? 1080 : 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const c = cv.getContext("2d"), ink = "#1d1a2f", abu = "#5b5770", F = "Nunito, sans-serif";
+  const L = kotak ? { atas: 82, ka: 46, kartuY: 118, kartuH: 800, gY: 128, gH: 190, emoji: 150, emojiY: 285, namaY: 360, namaF: 38, besarY: 500, besarF: 150, judulY: 570, judulF: 50, deskY: 630, deskF: 34, deskMaks: 2, barisMaks: 4, barY: 640, barJ: 56, barF: 30, akhirKartu: 900, ajakY: 975, kakiY: 1042 }
+    : { atas: 112, ka: 60, kartuY: 175, kartuH: 1525, gY: 200, gH: 368, emoji: 240, emojiY: 470, namaY: 640, namaF: 50, besarY: 830, besarF: 200, judulY: 920, judulF: 64, deskY: 990, deskF: 38, deskMaks: 3, barisMaks: 8, barY: 0, barJ: 62, barF: 34, akhirKartu: 1680, ajakY: 1785, kakiY: 1872 };
+  c.fillStyle = o.latar || "#c9f2dd"; c.fillRect(0, 0, W, H);
+  c.fillStyle = "rgba(255,255,255,.25)";
+  [[120, 140, 90], [960, kotak ? 120 : 260, 130], [90, H - 220, 120], [1000, H - 100, 90]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
+  c.textAlign = "center"; c.fillStyle = ink; c.font = `800 ${L.ka}px ${F}`;
+  let ukA = L.ka; while (c.measureText(o.judulAtas).width > W - 120 && ukA > 30) { ukA -= 2; c.font = `800 ${ukA}px ${F}`; }
+  c.fillText(o.judulAtas, W / 2, L.atas);
+  kotakBulat(c, 60, L.kartuY, W - 120, L.kartuH, kotak ? 48 : 64); c.fillStyle = "#fff"; c.fill();
+  const isi = () => {
+    c.textAlign = "center"; c.fillStyle = abu; c.font = `800 ${L.namaF}px ${F}`; c.fillText(nama, W / 2, L.namaY);
+    c.fillStyle = o.warnaBesar || "#072B6B"; let uk = L.besarF; c.font = `900 ${uk}px ${F}`;
+    while (c.measureText(o.besar).width > W - 220 && uk > 56) { uk -= 6; c.font = `900 ${uk}px ${F}`; }
+    c.fillText(o.besar, W / 2, L.besarY);
+    c.fillStyle = ink; let uj = L.judulF; c.font = `800 ${uj}px ${F}`;
+    while (c.measureText(o.judul || "").width > W - 200 && uj > 30) { uj -= 2; c.font = `800 ${uj}px ${F}`; }
+    c.fillText(o.judul || "", W / 2, L.judulY);
+    const batang = (o.batang || []).slice(0, L.barisMaks);
+    let y = L.deskY;
+    if (o.deskripsi && (!kotak || !batang.length)) {
+      c.fillStyle = abu; c.font = `600 ${L.deskF}px ${F}`;
+      const kata = String(o.deskripsi).split(" "), baris = []; let line = "";
+      kata.forEach((w) => { const tt = line ? line + " " + w : w; if (c.measureText(tt).width > 820 && line) { baris.push(line); line = w; } else line = tt; });
+      baris.push(line);
+      const tampil = baris.slice(0, L.deskMaks); if (baris.length > L.deskMaks) tampil[L.deskMaks - 1] = tampil[L.deskMaks - 1].replace(/\s*\S*$/, "") + "…";
+      tampil.forEach((l, i) => c.fillText(l, W / 2, y + i * (L.deskF + 14)));
+      y += tampil.length * (L.deskF + 14) + 10;
+    }
+    if (batang.length) {
+      const x0 = kotak ? 120 : 150, xBar = kotak ? 330 : 360, xKanan = W - (kotak ? 120 : 150), lebarBar = xKanan - xBar - 110;
+      if (kotak) y = L.barY; else { c.fillStyle = "#ece6d6"; c.fillRect(150, y, W - 300, 4); y += 58; if (o.judulBatang) { c.textAlign = "left"; c.fillStyle = ink; c.font = `800 40px ${F}`; c.fillText(o.judulBatang, 150, y); y += 14; } }
+      const jarak = Math.min(L.barJ, (L.akhirKartu - 40 - y) / batang.length);
+      c.textAlign = "left";
+      batang.forEach(([lab, p, warna, kanan]) => {
+        y += jarak; c.fillStyle = abu; c.font = `800 ${L.barF}px ${F}`;
+        let ul = L.barF; while (c.measureText(lab).width > xBar - x0 - 16 && ul > 18) { ul -= 2; c.font = `800 ${ul}px ${F}`; }
+        c.fillText(lab, x0, y + 11); c.font = `800 ${L.barF}px ${F}`;
+        kotakBulat(c, xBar, y - 14, lebarBar, 28, 14); c.fillStyle = "#f1ece0"; c.fill();
+        if (p > 0) { kotakBulat(c, xBar, y - 14, Math.max(28, lebarBar * Math.min(1, p)), 28, 14); c.fillStyle = warna || "#02a581"; c.fill(); }
+        c.fillStyle = abu; c.textAlign = "right"; c.fillText(kanan || Math.round(p * 100) + "%", xKanan, y + 11); c.textAlign = "left";
+      });
+      c.textAlign = "center";
+    }
+    // Kartu Status tanpa grafik: isi ruang kosong dengan seruan tantangan
+    if (!kotak && !batang.length) {
+      const yS = Math.max(y + 140, 1330), seru = o.seruan || "Coba juga, gratis! 😉";
+      c.fillStyle = "#f4f1ea"; kotakBulat(c, 130, yS - 130, W - 260, 230, 40); c.fill();
+      c.fillStyle = o.warnaBesar || "#072B6B"; let us = 66; c.font = `900 ${us}px ${F}`;
+      while (c.measureText(seru).width > W - 320 && us > 40) { us -= 2; c.font = `900 ${us}px ${F}`; }
+      c.fillText(seru, W / 2, yS - 10);
+      c.fillStyle = abu; c.font = `700 36px ${F}`; c.fillText("Gratis • tanpa daftar • langsung ada hasilnya", W / 2, yS + 58);
+    }
+    // ajakan + merek HadirFlow di bawah kartu
+    const ajak = o.ajakan || "Kamu dapat apa? Coba gratis 👇";
+    c.font = `900 ${kotak ? 38 : 46}px ${F}`; const lw = Math.min(W - 100, c.measureText(ajak).width + 80);
+    kotakBulat(c, W / 2 - lw / 2, L.ajakY - (kotak ? 46 : 56), lw, kotak ? 66 : 80, kotak ? 33 : 40); c.fillStyle = "#072B6B"; c.fill();
+    c.fillStyle = "#fff"; c.fillText(ajak, W / 2, L.ajakY);
+    kakiLogo(c, W, L.kakiY, "hadirflow.my.id/kuistes • Tes Gratis HadirFlow", `800 ${kotak ? 32 : 38}px ${F}`, ink);
+    let url = "";
+    try { url = cv.toDataURL("image/png"); } catch (e) {}
+    selesai({ url, kanvas: cv });
+  };
+  if (o.gambar) {
+    const img = new Image();
+    img.onload = () => { try { const h = L.gH, w = h * 340 / 368; c.drawImage(img, W / 2 - w / 2, L.gY, w, h); } catch (e) {} isi(); };
+    img.onerror = isi;
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(o.gambar);
+  } else { c.font = `${L.emoji}px ${F}`; c.fillText(o.emoji || "⭐", W / 2, L.emojiY); isi(); }
+}
+// Kompatibel dengan pemanggilan lama
+function gambarKartuHasil(o) { lukisKartu(o, "story", () => {}); }
+
+function blokBagikan(o) {
+  return `<div class="kotak-promo kotak-bagikan"><b>📲 Pamerkan hasilmu!</b>
+    <p>Jadikan Status WA atau postingan media sosial. Teman yang membuka linkmu langsung bisa mencoba dan <b>membandingkan hasilnya denganmu</b>.</p>
+    <div class="pilih-format" role="tablist"><button type="button" data-format="story" class="aktif">📱 Status / Story</button><button type="button" data-format="kotak">⬜ Postingan</button></div>
+    <div class="pratinjau-kartu"><img data-kartu alt="Kartu hasil ${esc(nama)}"></div>
+    <div class="baris-tombol tombol-bagikan">
+      <button type="button" class="tombol" data-bagikan-gambar style="display:none">📤 Bagikan gambar + link</button>
+      <a class="tombol wa" target="_blank" rel="noopener" data-wa-teks>💬 Kirim link ke WhatsApp</a>
+      <a class="tombol putih" data-simpan-kartu download="${o.namaFile || "hasil-tes-hadirflow.png"}">💾 Simpan gambar</a>
+    </div>
+    <details class="teks-ajak"><summary>📋 Teks ajakan untuk caption</summary><textarea readonly rows="5" data-teks-ajak></textarea>
+      <button type="button" class="tombol putih kecil" data-salin-ajak>📋 Salin teks</button> <span class="sub-kecil" data-info-salin></span></details>
+    <p class="sub-kecil" style="text-align:left;margin:8px 0 0">💡 Status WA: simpan gambar → buka WhatsApp → <b>Status</b> → pilih gambarnya → tempel teks ajakan (ada linknya). Instagram/TikTok: pilih format sesuai, unggah, lalu taruh link di bio atau caption.</p></div>`;
+}
+function pasangBagikan(el, o) {
+  const teks = o.teks, cache = {};
+  const img = el.querySelector("[data-kartu]"), simpan = el.querySelector("[data-simpan-kartu]"), tBagi = el.querySelector("[data-bagikan-gambar]");
+  el.querySelector("[data-wa-teks]").href = "https://wa.me/?text=" + encodeURIComponent(teks);
+  el.querySelector("[data-teks-ajak]").value = teks;
+  let format = "story";
+  const tampil = (f) => {
+    format = f;
+    el.querySelectorAll("[data-format]").forEach((b) => b.classList.toggle("aktif", b.getAttribute("data-format") === f));
+    const pakai = (r) => { cache[f] = r; if (format !== f) return; img.src = r.url; img.className = f === "kotak" ? "kotak" : ""; simpan.href = r.url;
+      simpan.setAttribute("download", (o.namaFile || "hasil-tes-hadirflow.png").replace(/\.png$/, f === "kotak" ? "-postingan.png" : "-status.png"));
+      siapkanBerkas(r); };
+    if (cache[f]) pakai(cache[f]); else lukisKartu(o.kartu, f, pakai);
+  };
+  const siapkanBerkas = (r) => {
+    if (!navigator.share || !navigator.canShare || !r.kanvas || !r.kanvas.toBlob || typeof File === "undefined") return;
+    if (r.berkas) { tBagi.style.display = ""; return; }
+    try { r.kanvas.toBlob((blob) => { if (!blob) return; try { const fl = new File([blob], "hasil-tes-hadirflow.png", { type: "image/png" }); if (navigator.canShare({ files: [fl] })) { r.berkas = fl; tBagi.style.display = ""; } } catch (e) {} }, "image/png"); } catch (e) {}
+  };
+  tBagi.addEventListener("click", () => {
+    const r = cache[format]; if (!r || !r.berkas) return;
+    try { navigator.share({ files: [r.berkas], text: teks, title: "Tes Gratis HadirFlow" }).catch(() => {}); } catch (e) {}
+  });
+  el.querySelectorAll("[data-format]").forEach((b) => b.addEventListener("click", () => tampil(b.getAttribute("data-format"))));
+  el.querySelector("[data-salin-ajak]").addEventListener("click", () => {
+    const ta = el.querySelector("[data-teks-ajak]"), info = el.querySelector("[data-info-salin]"), ok = () => (info.textContent = "✅ Tersalin");
+    try { navigator.clipboard.writeText(teks).then(ok, () => { ta.select(); document.execCommand("copy"); ok(); }); } catch (e) { try { ta.select(); document.execCommand("copy"); ok(); } catch (e2) { info.textContent = "Tekan lama kotak teks, lalu Salin."; } }
+  });
+  tampil("story");
+  muatHurufPiagam(() => { Object.keys(cache).forEach((k) => delete cache[k]); tampil(format); });
+}
+
 let tesTerkini = null;
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
 /* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
@@ -3803,6 +3970,21 @@ function mundurTes() {
   tesNo = tesRiwayatNo.pop(); tesJawab.length = tesNo; tesTeks.length = tesNo;
   tampilSoalTes();
 }
+function ajakanTes(id) {
+  if (["mbti", "disc", "temperamen", "mesin"].indexOf(id) >= 0) return "Kamu tipe apa?";
+  if (["vak", "vakOrtu", "gaya4"].indexOf(id) >= 0) return "Gaya belajarmu apa?";
+  if (id === "majemuk") return "Kecerdasanmu apa?";
+  if (id === "kekuatan") return "Apa kelebihanmu?";
+  if (id === "darah") return "Golonganmu apa?";
+  return "Berani adu skor?";
+}
+function paketBagikanTes(id, t, h) {
+  const ajak = ajakanTes(id), link = tautanTantang({ tes: id, h: h.ringkas.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]\uFE0F?\s*/gu, "").trim() });
+  const k = h.kartu || { latar: t.warna, emoji: t.ikon, judulAtas: "Hasil " + t.nama, besar: h.ringkas, judul: t.nama, deskripsi: "" };
+  k.ajakan = k.ajakan || ajak + " Coba gratis 👇";
+  const dasar = h.teksBagi || h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`;
+  return { kartu: k, namaFile: h.namaFile || "hasil-" + id + ".png", teks: `${dasar}\n\n${ajak} Coba juga, gratis tanpa daftar, lalu bandingkan hasilmu 👉 ${link}` };
+}
 function selesaiTes() {
   const t = TES[tesAktif];
   const h = t.hasil(tesJawab, { soal: tesSoal, teks: tesTeks, usia: tesUsia, detik: Math.round((Date.now() - tesMulai) / 1000) });
@@ -3813,7 +3995,7 @@ function selesaiTes() {
   bukaHasil(() => {
     tampilkan("layarHasilTes"); bunyi("selesai");
     if (id !== "mood" && id !== "darah") konfeti(50);
-  }, "promoHasilTes", { bagikan: id === "mood" || t.kartu ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null,
+  }, "promoHasilTes", { kartu: id === "mood" ? null : paketBagikanTes(id, t, h), banding: kotakBanding(id, h.ringkas), piagam: h.piagam || null,
     guru: TES_GURU && TES_GURU.wa && TES_GURU.tes === id ? { nama: TES_GURU.nama, wa: TES_GURU.wa, pesan: pesanHasilGuru(h.ringkas), label: "hasil" } : null });
 }
 function gantiTab(id) {

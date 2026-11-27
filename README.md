@@ -109,6 +109,12 @@ Jaring-jaring kubus diperiksa dengan "menggulingkan" kubus di atas setiap perseg
 
 Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asli MBTI naik dari 85% (versi 12 soal) menjadi 99%; DISC dan Temperamen dari 95% menjadi 100%. Menjawab "Sangat setuju" untuk semua pernyataan menghasilkan 50% "seimbang" di setiap dimensi. Ketiganya bukan tes psikologi resmi.
 
+## Bola salju: bagikan hasil & link tantangan
+- Setiap hasil (semua tes kecuali Mood, kuis pelajaran, Tantangan Harian) punya **kartu gambar** dalam 2 format: **Status/Story 1080×1920** dan **Postingan 1080×1080**, lengkap dengan seruan ("Kamu tipe apa? Coba gratis 👇") dan merek HadirFlow.
+- **📤 Bagikan gambar + link**: satu tombol (Web Share) membuka WA/IG/FB/TikTok dengan gambar dan teks ajakan; ada juga Kirim link ke WhatsApp, Simpan gambar, dan Salin teks caption.
+- **Link tantangan**: `?tes=mbti&dari=Nama&h=hasil` / `?k=5&m=mtk&n=80&dari=Nama` / `?hari=7&dari=Nama` (+ `utm_source=bagikan`). Teman yang membuka melihat banner tantangan dan langsung masuk tes/kuis yang sama.
+- **Kamu vs teman**: setelah selesai, teman melihat perbandingan hasil (menang/seri/kalah untuk skor; sama/beda untuk tipe), lalu diajak membagikan lagi.
+
 ## Fitur belajar
 - **🔥 Tantangan Harian**: 5 soal campuran per hari sesuai kelas, kalender 7 hari, hitungan hari beruntun, lencana 3/7/14/30/100 hari (dengan piagam). Mengulang di hari yang sama tercatat sebagai latihan tambahan.
 - **📋 Profil Lengkap Anak**: gabungan semua hasil tes + rapor kuis + Tantangan Harian dalam satu halaman cetak/PDF: gambaran anak, resep belajar gabungan, kegiatan pendukung, arah cita-cita, dan tes yang belum dicoba.
