@@ -115,6 +115,10 @@ Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asl
 - **Link tantangan**: `?tes=mbti&dari=Nama&h=hasil` / `?k=5&m=mtk&n=80&dari=Nama` / `?hari=7&dari=Nama` (+ `utm_source=bagikan`). Teman yang membuka melihat banner tantangan dan langsung masuk tes/kuis yang sama.
 - **Kamu vs teman**: setelah selesai, teman melihat perbandingan hasil (menang/seri/kalah untuk skor; sama/beda untuk tipe), lalu diajak membagikan lagi.
 
+## Kit Promosi & Mode Sekolah
+- **Kit Promosi** (`/kuistes/promosi/`, tidak diindeks Google): 6 gambar promosi (3 Status 1080×1920, 3 Postingan 1080×1080), 5 template pesan WhatsApp, 3 caption media sosial, ide video pendek, dan jadwal sebar 14 hari. Gambar dibuat dari `src/promosi/promosi.html` dengan `node deploy/buat-gambar-promosi.js`.
+- **Mode Sekolah**: di tab Guru isi *Nama sekolah* (opsional, parameter `s=`). Nama sekolah tampil di banner murid, piagam ("Didukung HadirFlow"), kartu hasil, dan kepala rekap; di bawah rekap ada ajakan absensi HadirFlow untuk sekolah tersebut.
+
 ## Fitur belajar
 - **🔥 Tantangan Harian**: 5 soal campuran per hari sesuai kelas, kalender 7 hari, hitungan hari beruntun, lencana 3/7/14/30/100 hari (dengan piagam). Mengulang di hari yang sama tercatat sebagai latihan tambahan.
 - **📋 Profil Lengkap Anak**: gabungan semua hasil tes + rapor kuis + Tantangan Harian dalam satu halaman cetak/PDF: gambaran anak, resep belajar gabungan, kegiatan pendukung, arah cita-cita, dan tes yang belum dicoba.

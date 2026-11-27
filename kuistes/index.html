@@ -163,6 +163,7 @@
   .hasil-tes h2, #judulHasil { font-family: "Playfair Display", Georgia, serif; font-weight: 800; color: #10233f; font-size: clamp(23px, 5.6vw, 32px); line-height: 1.2; }
   .hasil-tes .kotak-hormat { background: #fbf6e9; border-color: #ead9ad; }
   @media (max-width: 480px) { .panel-skor { padding: 16px 48px 14px; } .panel-skor::before, .panel-skor::after { width: 32px; height: 60px; margin-top: -36px; } .panel-skor::before { left: 8px; } .panel-skor::after { right: 8px; } .panel-skor .angka { font-size: 56px; } }
+  .sekolah-banner { font-family: "Playfair Display", Georgia, serif; font-weight: 800; font-size: 19px; color: #0b5a43; margin-bottom: 4px; }
   .kotak-promo.kotak-bagikan { background: linear-gradient(180deg, #eef4ff, #e9f7f3); border-color: #c9dafc; }
   .kotak-bagikan > b { font-size: 21px; }
   .pilih-format { display: flex; gap: 8px; margin: 10px 0 4px; }
@@ -513,7 +514,7 @@
 
       <div id="tabGuru" class="isi-tab">
         <p class="judul">👩‍🏫 Buat link kuis atau tes untuk murid Anda</p>
-        <p class="sub-kecil" style="text-align:left;margin:0 0 8px">📄 Ingin mengenalkan ke sekolah? Kirim <a href="https://hadirflow.my.id/kuistes/sekolah/" target="_blank" rel="noopener"><b>halaman panduan untuk sekolah</b></a> ke kepala sekolah atau rekan guru.</p>
+        <p class="sub-kecil" style="text-align:left;margin:0 0 8px">📄 Ingin mengenalkan ke sekolah? Kirim <a href="https://hadirflow.my.id/kuistes/sekolah/" target="_blank" rel="noopener"><b>halaman panduan untuk sekolah</b></a> ke kepala sekolah atau rekan guru. Bahan promosi siap sebar ada di <a href="https://hadirflow.my.id/kuistes/promosi/" target="_blank" rel="noopener"><b>Kit Promosi</b></a>.</p>
         <p class="sub" style="margin-top:0">Murid membuka link, mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>. Nilainya langsung masuk ke WhatsApp Anda. Gratis, tanpa daftar.</p>
         <label class="judul" for="guruNama" style="margin-top:12px">Nama Bapak/Ibu guru</label>
         <input id="guruNama" type="text" maxlength="40" placeholder="Contoh: Bu Rina" autocomplete="name">
@@ -521,6 +522,8 @@
         <input id="guruWA" type="tel" inputmode="tel" maxlength="18" placeholder="08xxxxxxxxxx" autocomplete="tel">
         <label class="judul" for="guruRombel" style="margin-top:12px">Nama kelas <span class="sub-kecil">(opsional, mis. 5A)</span></label>
         <input id="guruRombel" type="text" maxlength="20" placeholder="Contoh: 5A">
+        <label class="judul" for="guruSekolah" style="margin-top:12px">Nama sekolah <span class="sub-kecil">(opsional, tampil di piagam & kartu murid)</span></label>
+        <input id="guruSekolah" type="text" maxlength="50" placeholder="Contoh: MI Al-Ikhlas Sidoarjo">
         <p class="judul" style="margin-top:12px">Jenis</p>
         <div class="pilih-chip" id="guruJenis"></div>
         <p class="sub-kecil" id="infoJenisGuru" style="text-align:left;margin:6px 0 0"></p>
@@ -5641,8 +5644,18 @@ function gambarPiagam(alasan) {
   var baris = bungkusTeks(c, alasan, W / 2, 790, W - 300, 56);
   var yTgl = 790 + baris * 56 + 50;
   garisPendek(yTgl, tglHariIni(), "600 34px " + F, "#5d5866");
+  if (SEKOLAH) {
+    c.fillStyle = hijauTua;
+    var us = 44;
+    c.font = "800 ".concat(us, "px ").concat(SERIF);
+    while (c.measureText(SEKOLAH).width > W - 260 && us > 26) {
+      us -= 2;
+      c.font = "800 ".concat(us, "px ").concat(SERIF);
+    }
+    c.fillText(SEKOLAH, W / 2, yTgl + 70);
+  }
   // pita hijau
-  var yPita = Math.max(yTgl + 110, 1085),
+  var yPita = Math.max(yTgl + (SEKOLAH ? 165 : 110), 1085),
     teksPita = "Terus belajar, kamu hebat! ✨";
   c.font = "800 40px " + F;
   var pw = c.measureText(teksPita).width + 110,
@@ -5658,7 +5671,7 @@ function gambarPiagam(alasan) {
   c.fill();
   c.fillStyle = "#fff";
   c.fillText(teksPita, W / 2, yPita + 2);
-  kakiLogo(c, W, Math.min(H - 150, yPita + 115), "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 29px " + F, "#072B6B");
+  kakiLogo(c, W, Math.min(H - 140, yPita + 112), SEKOLAH ? "Didukung HadirFlow • hadirflow.my.id/kuistes" : "Tes Gratis HadirFlow • hadirflow.my.id/kuistes", "800 29px " + F, "#072B6B");
   return cv.toDataURL("image/png");
 }
 // Huruf piagam dimuat dulu; piagam digambar ulang begitu hurufnya siap
@@ -5812,6 +5825,15 @@ function bacaRekap(teks) {
     return a.nama.localeCompare(b.nama);
   });
 }
+function kepalaRekap() {
+  var g = baca("kuisMI3:guru", {}) || {},
+    sk = ($("guruSekolah").value || g.sk || "").trim();
+  return sk ? "<h3 style=\"margin:0 0 6px\">\uD83C\uDFEB ".concat(esc(sk), "</h3>") : "";
+}
+function ajakanRekapHF() {
+  var sk = ($("guruSekolah").value || "").trim();
+  return "<div class=\"kotak-promo hf tanpa-cetak\"><img class=\"logo-promo\" src=\"".concat(LOGO, "\" alt=\"HadirFlow\"><b>\uD83D\uDCCA Rekap murid sudah rapi. Bagaimana dengan absensi guru").concat(sk ? " di " + esc(sk) : "", "?</b>\n    <p><b>HadirFlow</b>: absensi wajah dan GPS untuk guru dan karyawan, izin dan cuti dari HP, gaji dihitung otomatis, slip gaji bisa dikirim ke WhatsApp.</p>\n    <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"").concat(LINK_HADIRFLOW, "rekap\">\uD83D\uDE80 Lihat HadirFlow untuk Sekolah</a></div>");
+}
 function buatRekap() {
   var d = bacaRekap($("rekapTeks").value),
     dt = bacaRekapTes($("rekapTeks").value),
@@ -5821,7 +5843,7 @@ function buatRekap() {
     return;
   }
   if (!d.length) {
-    el.innerHTML = rekapTesKelas(dt) + "<div class=\"baris-tombol\" style=\"justify-content:flex-start\"><button class=\"tombol putih\" type=\"button\" onclick=\"window.print()\">\uD83D\uDDA8\uFE0F Cetak</button></div>";
+    el.innerHTML = kepalaRekap() + rekapTesKelas(dt) + "<div class=\"baris-tombol\" style=\"justify-content:flex-start\"><button class=\"tombol putih\" type=\"button\" onclick=\"window.print()\">\uD83D\uDDA8\uFE0F Cetak</button></div>" + ajakanRekapHF();
     return;
   }
   var ns = d.map(function (x) {
@@ -5840,6 +5862,8 @@ function buatRekap() {
   }).join("\n");
   $("unduhRekap").href = "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + csv);
   if (dt.length) el.insertAdjacentHTML("beforeend", rekapTesKelas(dt));
+  el.insertAdjacentHTML("afterbegin", kepalaRekap());
+  el.insertAdjacentHTML("beforeend", ajakanRekapHF());
 }
 
 /* ---------- MODE GURU ---------- */
@@ -5855,6 +5879,8 @@ var PARAM = function () {
   });
   return o;
 }();
+// Mode Sekolah: nama sekolah dari link guru tampil di piagam, kartu hasil, dan banner
+var SEKOLAH = PARAM.guru ? String(PARAM.s || "").replace(/[<>"]/g, "").replace(/\s+/g, " ").trim().slice(0, 50) : "";
 var KUIS_GURU = function () {
   if (!PARAM.guru || !KELAS_INFO[PARAM.k]) return null;
   var m = mapelKelas(PARAM.k).concat(["campur"]).indexOf(PARAM.m) >= 0 ? PARAM.m : "campur";
@@ -5897,7 +5923,7 @@ function terapkanKuisGuru() {
   renderPilihan();
   var m = namaMapel(g.mapel);
   $("infoPilihan").textContent = "✅ Kuis dari guru: " + m.ikon + " " + m.nama + " • " + KELAS_INFO[g.kelas].nama;
-  $("bannerGuru").innerHTML = "\uD83D\uDCCB Kuis dari <b>".concat(esc(g.nama), "</b>").concat(g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : "", ": ").concat(m.ikon, " ").concat(m.nama, " \u2022 ").concat(KELAS_INFO[g.kelas].nama, ".<br>Tulis namamu, lalu tekan <b>Mulai Kuis</b>.").concat(g.wa ? " Setelah selesai, kirim nilaimu ke " + esc(g.nama) + "." : "");
+  $("bannerGuru").innerHTML = (SEKOLAH ? "<div class=\"sekolah-banner\">\uD83C\uDFEB ".concat(esc(SEKOLAH), "</div>") : "") + "\uD83D\uDCCB Kuis dari <b>".concat(esc(g.nama), "</b>").concat(g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : "", ": ").concat(m.ikon, " ").concat(m.nama, " \u2022 ").concat(KELAS_INFO[g.kelas].nama, ".<br>Tulis namamu, lalu tekan <b>Mulai Kuis</b>.").concat(g.wa ? " Setelah selesai, kirim nilaimu ke " + esc(g.nama) + "." : "");
   $("bannerGuru").style.display = "block";
 }
 function isiPilihanGuru() {
@@ -5923,7 +5949,8 @@ function isiPilihanGuru() {
 function buatLinkGuru() {
   var n = $("guruNama").value.trim(),
     wa = normalWA($("guruWA").value),
-    r = $("guruRombel").value.trim();
+    r = $("guruRombel").value.trim(),
+    sk = $("guruSekolah").value.trim();
   if (n.length < 2) {
     $("guruError").textContent = "Tulis nama Bapak/Ibu guru dulu.";
     $("guruNama").focus();
@@ -5945,6 +5972,7 @@ function buatLinkGuru() {
       tes: id
     };
     if (r) qt.r = r;
+    if (sk) qt.s = sk;
     if (t.pilihLevel) qt.lv = g >= 10 ? 4 : g >= 7 ? 3 : g >= 4 ? 2 : 1;
     var linkT = URL_KUIS + "?" + Object.keys(qt).map(function (k) {
       return k + "=" + encodeURIComponent(qt[k]);
@@ -5956,7 +5984,8 @@ function buatLinkGuru() {
     return tulis("kuisMI3:guru", {
       n: n,
       wa: $("guruWA").value,
-      r: r
+      r: r,
+      sk: sk
     });
   }
   var q = {
@@ -5966,6 +5995,7 @@ function buatLinkGuru() {
     m: $("guruMapel").value
   };
   if (r) q.r = r;
+  if (sk) q.s = sk;
   var link = URL_KUIS + "?" + Object.keys(q).map(function (k) {
     return k + "=" + encodeURIComponent(q[k]);
   }).join("&");
@@ -5978,7 +6008,8 @@ function buatLinkGuru() {
   tulis("kuisMI3:guru", {
     n: n,
     wa: $("guruWA").value,
-    r: r
+    r: r,
+    sk: sk
   });
 }
 function salinLinkGuru() {
@@ -7619,7 +7650,7 @@ function terapkanTesGuru() {
   var g = TES_GURU,
     t = TES[g.tes];
   gantiTab("tabDiri");
-  $("bannerGuru").innerHTML = "\uD83D\uDCCB Tes dari <b>".concat(esc(g.nama), "</b>").concat(g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : "", ": ").concat(t.ikon, " <b>").concat(esc(t.nama), "</b>.<br>Tulis namamu, lalu tekan tombol di bawah.").concat(g.wa ? " Setelah selesai, kirim hasilmu ke " + esc(g.nama) + "." : "", "\n    <div class=\"tengah\" style=\"margin-top:8px\"><button type=\"button\" class=\"tombol\" id=\"btnMulaiTesGuru\">").concat(t.ikon, " Mulai Tes \u25B6</button></div>");
+  $("bannerGuru").innerHTML = (SEKOLAH ? "<div class=\"sekolah-banner\">\uD83C\uDFEB ".concat(esc(SEKOLAH), "</div>") : "") + "\uD83D\uDCCB Tes dari <b>".concat(esc(g.nama), "</b>").concat(g.rombel ? " untuk kelas <b>" + esc(g.rombel) + "</b>" : "", ": ").concat(t.ikon, " <b>").concat(esc(t.nama), "</b>.<br>Tulis namamu, lalu tekan tombol di bawah.").concat(g.wa ? " Setelah selesai, kirim hasilmu ke " + esc(g.nama) + "." : "", "\n    <div class=\"tengah\" style=\"margin-top:8px\"><button type=\"button\" class=\"tombol\" id=\"btnMulaiTesGuru\">").concat(t.ikon, " Mulai Tes \u25B6</button></div>");
   $("bannerGuru").style.display = "block";
   $("btnMulaiTesGuru").addEventListener("click", function () {
     return bukaTes(g.tes);
@@ -7930,8 +7961,14 @@ function lukisKartu(o, format, selesai) {
   var isi = function isi() {
     c.textAlign = "center";
     c.fillStyle = abu;
-    c.font = "800 ".concat(L.namaF, "px ").concat(F);
-    c.fillText(nama, W / 2, L.namaY);
+    var barisNama = SEKOLAH ? nama + " • " + SEKOLAH : nama;
+    var unm = L.namaF;
+    c.font = "800 ".concat(unm, "px ").concat(F);
+    while (c.measureText(barisNama).width > W - 200 && unm > 24) {
+      unm -= 2;
+      c.font = "800 ".concat(unm, "px ").concat(F);
+    }
+    c.fillText(barisNama, W / 2, L.namaY);
     c.fillStyle = o.warnaBesar || "#072B6B";
     var uk = L.besarF;
     c.font = "900 ".concat(uk, "px ").concat(F);
@@ -8578,6 +8615,7 @@ $("btnSalinLink").addEventListener("click", salinLinkGuru);
     $("guruNama").value = g.n || "";
     $("guruWA").value = g.wa || "";
     $("guruRombel").value = g.r || "";
+    $("guruSekolah").value = g.sk || "";
   }
 })();
 // Aplikasi (PWA): hanya aktif di https://hadirflow.my.id/kuistes/

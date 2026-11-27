@@ -82,7 +82,7 @@ h1{font-size:clamp(28px,6vw,40px);line-height:1.15;color:var(--navy);margin:8px 
 .grid-manfaat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.grid-manfaat div{background:#f6faf8;border:2px solid #d9efe6;border-radius:16px;padding:12px}.grid-manfaat b{display:block}
 details{border-top:1px solid var(--garis);padding:10px 0}summary{font-weight:800;cursor:pointer}`;
 
-function halaman({ judul, deskripsi, url, h1, isi }) {
+function halaman({ judul, deskripsi, url, h1, isi, noindex }) {
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -90,7 +90,7 @@ function halaman({ judul, deskripsi, url, h1, isi }) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(judul)}</title>
 <meta name="description" content="${esc(deskripsi)}">
-<link rel="canonical" href="${url}">
+<link rel="canonical" href="${url}">${noindex ? '<meta name="robots" content="noindex">' : ""}
 <meta property="og:type" content="website"><meta property="og:site_name" content="HadirFlow">
 <meta property="og:url" content="${url}"><meta property="og:title" content="${esc(judul)}"><meta property="og:description" content="${esc(deskripsi)}">
 <meta property="og:image" content="${OG}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#072B6B">
@@ -113,11 +113,11 @@ ${isi}
 function buatSEO(dirOut, VIDEO) {
   VIDEO = VIDEO || {};
   const halamanList = [];
-  const tulisHalaman = (slug, html) => {
+  const tulisHalaman = (slug, html, tanpaSitemap) => {
     const d = path.join(dirOut, slug);
     fs.mkdirSync(d, { recursive: true });
     fs.writeFileSync(path.join(d, "index.html"), html);
-    halamanList.push(BASE + slug + "/");
+    if (!tanpaSitemap) halamanList.push(BASE + slug + "/");
   };
   const semua = [];
   KELAS.forEach(([k, namaK, j, g]) => mapelKelas(g).forEach((m) => semua.push({ k, namaK, j, g, m })));
@@ -218,6 +218,47 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
 <details><summary>Di mana data murid disimpan?</summary><p>Hasil tersimpan di HP masing-masing murid. Hasil hanya terkirim ke guru ketika murid menekan tombol kirim di WhatsApp. Tidak ada data murid yang disimpan di server kami.</p></details>
 <details><summary>Apakah ini tes psikologi resmi?</summary><p>Bukan. Tes disusun untuk mengenal kecenderungan belajar dan minat murid, sebagai bahan pertimbangan guru. Untuk asesmen resmi, hubungi psikolog.</p></details>
 <details><summary>Bisa dipakai untuk TK?</summary><p>Bisa. Pakai <a href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Si Kecil</a> yang diisi orang tua, dan kuis pelajaran TK A/TK B yang soalnya bisa dibacakan otomatis.</p></details></div>` }));
+
+  // Kit Promosi: gambar & pesan siap sebar (tidak diindeks Google)
+  const GAMBAR_PROMO = [["semua-tes-status", "Semua tes (Status)"], ["gaya-belajar-status", "Gaya belajar (Status)"], ["guru-status", "Untuk guru (Status)"],
+    ["kecerdasan-postingan", "Kecerdasan (Postingan)"], ["kepribadian-postingan", "Kepribadian (Postingan)"], ["tantangan-harian-postingan", "Tantangan Harian (Postingan)"]];
+  const PESAN_PROMO = [
+    ["👨‍👩‍👧 Grup wali murid", "Assalamu'alaikum Ayah/Bunda 🙏\nAda tes gratis untuk mengenal anak kita: gaya belajar (Visual, Auditori, Kinestetik), kecerdasan, sampai kepribadian. Hasilnya langsung keluar, ada piagamnya, tanpa daftar.\nAnak TK juga bisa (versi yang diisi orang tua). Silakan dicoba 👇\n" + BASE],
+    ["👩‍🏫 Grup guru", "Assalamu'alaikum Bapak/Ibu Guru 🙏\nMau tahu gaya belajar murid satu kelas? Ada alat gratis: guru membuat 1 link, murid mengerjakan di HP, hasilnya langsung masuk ke WhatsApp guru, lalu keluar rekap kelas dan saran mengajarnya. Piagam murid bisa memakai nama sekolah.\nPanduannya di sini 👇\n" + BASE + "sekolah/"],
+    ["🏫 Kepala sekolah / yayasan", "Assalamu'alaikum Bapak/Ibu Kepala Sekolah 🙏\nKami dari HadirFlow menyediakan alat gratis untuk guru: tes gaya belajar, kecerdasan, dan kuis pelajaran untuk satu kelas, dengan rekap otomatis dan piagam bernama sekolah.\nSelain itu, HadirFlow juga membantu absensi guru dan karyawan (wajah + GPS) dan menghitung gaji secara otomatis.\nPanduan untuk sekolah 👇\n" + BASE + "sekolah/"],
+    ["😄 Keluarga & teman", "Iseng coba deh 😄 Tes MBTI, IQ, gaya belajar, sampai golongan darah, gratis dan langsung ada hasilnya. Aku dapat ___, kamu apa? 👇\n" + BASE],
+    ["📱 Teks Status WA (pendek)", "Anakmu Visual, Auditori, atau Kinestetik? 🤔 Cek gratis 5 menit 👉 hadirflow.my.id/kuistes"]
+  ];
+  const CAPTION_PROMO = [
+    ["Instagram / Facebook", "Setiap anak punya cara belajar yang berbeda 🌈\nAda yang cepat paham lewat gambar, ada yang lewat mendengar, ada juga yang harus bergerak dulu.\n\nCari tahu gaya belajar si kecil GRATIS (5 menit, langsung ada hasil + tips belajar di rumah) 👉 link di bio\n\n#gayabelajar #parenting #parentingislami #tesgratis #anakpintar #belajardirumah #HadirFlow"],
+    ["TikTok / Reels", "Ternyata anakku Kinestetik 😅 pantas nggak bisa diam! Kalau anakmu? Tes gratis, link di bio 👆 #gayabelajar #parenting #tesiq #fyp #ibuibu #HadirFlow"],
+    ["Untuk guru (IG/FB)", "Bapak/Ibu Guru, ini cara cepat mengenal gaya belajar satu kelas 👩‍🏫\n1️⃣ Buat link di tab Guru\n2️⃣ Kirim ke grup kelas\n3️⃣ Hasil murid masuk WhatsApp + rekap kelas & saran mengajar\nGratis, tanpa daftar 👉 hadirflow.my.id/kuistes/sekolah\n\n#guruindonesia #gurukreatif #merdekabelajar #gayabelajar #HadirFlow"]
+  ];
+  const kotakSalin = ([judul, teks], i) => `<div class="kartu"><h2>${judul}</h2><textarea id="t${i}" readonly rows="6" style="width:100%;font:inherit;font-size:16px;border:2px solid var(--garis);border-radius:12px;padding:10px">${esc(teks)}</textarea>
+<p><button class="tombol" type="button" data-salin="t${i}" style="border:0;cursor:pointer">📋 Salin</button><a class="tombol kedua" href="https://wa.me/?text=${encodeURIComponent(teks)}">💬 Kirim ke WhatsApp</a></p></div>`;
+  tulisHalaman("promosi", halaman({ judul: "Kit Promosi Tes Gratis HadirFlow", url: BASE + "promosi/", noindex: true,
+    deskripsi: "Gambar, pesan WhatsApp, dan caption siap sebar untuk mengenalkan Tes Gratis HadirFlow.",
+    h1: "📣 Kit Promosi Tes Gratis HadirFlow",
+    isi: `<p>Semua bahan di halaman ini siap dipakai: <b>unduh gambar</b>, <b>salin pesan</b>, lalu sebarkan. Bola saljunya berputar sendiri setelah itu, karena setiap orang yang selesai tes mendapat kartu hasil dan link tantangan untuk dibagikan lagi.</p>
+<div class="kartu"><h2>🚀 Cara paling cepat menyalakan bola salju</h2><ol class="langkah">
+<li><b>Kerjakan satu tes sendiri</b> (misalnya MBTI), lalu bagikan kartu hasilmu ke Status WA. Link di kartumu adalah link tantangan, jadi teman yang membuka langsung bisa membandingkan hasil.</li>
+<li><b>Kirim pesan</b> ke 5–10 grup wali murid dan grup guru yang Anda kenal (template di bawah).</li>
+<li><b>Pasang gambar promosi</b> di Status WA dan media sosial selama 14 hari (jadwal di bawah).</li></ol></div>
+<h2 style="margin-top:28px">🖼️ Gambar promosi</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">${GAMBAR_PROMO.map(([id, nm]) => `<div class="kartu" style="margin:0;padding:12px;text-align:center"><img src="${BASE}promosi/${id}.png" alt="${esc(nm)}" loading="lazy" style="width:100%;border-radius:12px"><p style="margin:8px 0 6px;font-weight:800">${esc(nm)}</p><a class="tombol" style="font-size:16px;padding:8px 16px" href="${BASE}promosi/${id}.png" download="${id}.png">💾 Unduh</a></div>`).join("")}</div>
+<p class="kecil">Status = ukuran tegak untuk Status WA, IG Story, TikTok. Postingan = ukuran kotak untuk feed Instagram dan Facebook.</p>
+<h2 style="margin-top:28px">💬 Pesan WhatsApp siap kirim</h2>
+${PESAN_PROMO.map(kotakSalin).join("")}
+<h2 style="margin-top:28px">✍️ Caption media sosial</h2>
+${CAPTION_PROMO.map((x, i) => kotakSalin(x, i + 20)).join("")}
+<div class="kartu"><h2>🎬 Ide video pendek (TikTok / Reels, 15–30 detik)</h2><ol>
+<li><b>"Ternyata anakku tipe…"</b>: rekam layar saat anak mengerjakan Tes Gaya Belajar, tampilkan hasilnya. Teks: <i>"Pantas nggak bisa diam, ternyata Kinestetik 😅"</i>.</li>
+<li><b>Duel skor keluarga</b>: ayah vs ibu vs kakak mengerjakan Tes Kecerdasan, tunjukkan kotak "Kamu vs …" di akhir.</li>
+<li><b>Guru: 1 link, 1 kelas</b>: rekam layar membuat link di tab Guru, lalu tampilkan rekap sebaran gaya belajar kelas.</li>
+<li><b>Tantangan Harian 🔥</b>: anak menunjukkan hitungan hari beruntun dan lencananya setiap pekan.</li></ol></div>
+<div class="kartu"><h2>🗓️ Jadwal 14 hari</h2><table style="width:100%;border-collapse:collapse;font-size:16px">
+${[["1", "Kerjakan tes MBTI, bagikan kartu hasil ke Status WA", "Status WA"], ["2", "Gambar \"Semua tes\" + pesan grup wali murid", "Status + 3 grup"], ["3", "Gambar \"Gaya belajar\" + caption IG/FB", "IG, FB"], ["4", "Pesan ke grup guru + gambar \"Untuk guru\"", "2–3 grup guru"], ["5", "Video \"Ternyata anakku tipe…\"", "TikTok, Reels"], ["6", "Gambar \"Kecerdasan\" (adu skor)", "Status, IG"], ["7", "Bagikan Profil Lengkap anak", "Status WA"], ["8", "Gambar \"Kepribadian\" + pesan keluarga", "Status + grup keluarga"], ["9", "Pesan ke 3 kepala sekolah / yayasan", "WA pribadi"], ["10", "Video duel skor keluarga", "TikTok, Reels"], ["11", "Gambar \"Tantangan Harian\"", "Status, IG"], ["12", "Bagikan lencana Tantangan Harian", "Status WA"], ["13", "Video \"Guru: 1 link, 1 kelas\"", "TikTok, FB"], ["14", "Ulangi gambar terbaik + ucapan terima kasih", "Status, IG"]].map(([h, apa, di]) => `<tr><td style="border-top:1px solid var(--garis);padding:6px 4px;font-weight:800">Hari ${h}</td><td style="border-top:1px solid var(--garis);padding:6px 4px">${apa}</td><td style="border-top:1px solid var(--garis);padding:6px 4px;color:var(--muted)">${di}</td></tr>`).join("")}</table></div>
+<script>document.querySelectorAll("[data-salin]").forEach(function (b) { b.addEventListener("click", function () { var t = document.getElementById(b.getAttribute("data-salin")); t.select(); var cadangan = function () { try { document.execCommand("copy"); } catch (e) {} }; try { navigator.clipboard.writeText(t.value).catch(cadangan); } catch (e) { cadangan(); } b.textContent = "✅ Tersalin"; setTimeout(function () { b.textContent = "📋 Salin"; }, 1800); }); });</script>` }), true);
 
   // Tautan untuk halaman utama (dibaca Google), dikelompokkan per jenjang
   const tautanUtama = Object.keys(JENJANG).map((j) => `<p class="judul">${JENJANG[j]}</p><p>` +
