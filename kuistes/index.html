@@ -10,7 +10,7 @@
 <meta property="og:url" content="https://hadirflow.my.id/kuistes/">
 <meta property="og:title" content="Tes Gratis HadirFlow: IQ, Gaya Belajar, Kepribadian & Kuis TK–SMA">
 <meta property="og:description" content="Kenali kecerdasan, gaya belajar, dan kepribadian anak. Plus kuis pelajaran TK–SMA yang soalnya selalu baru. 100% gratis!">
-<meta property="og:image" content="https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/kuistes/og.png">
+<meta property="og:image" content="https://hadirflow.my.id/kuistes/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -7806,7 +7806,9 @@ function tautanTantang(p) {
   Object.keys(q).forEach(function (k) {
     if (q[k] == null || q[k] === "") delete q[k];
   });
-  return URL_KUIS + "?" + Object.keys(q).map(function (k) {
+  // Halaman /t/<slug>/ memberi pratinjau WhatsApp sesuai tes, lalu meneruskan ke aplikasi dengan query yang sama
+  var slug = p.tes ? p.tes === "vakOrtu" ? "vak-ortu" : p.tes : p.hari ? "harian" : "kuis";
+  return URL_KUIS + "t/" + slug + "/?" + Object.keys(q).map(function (k) {
     return k + "=" + encodeURIComponent(String(q[k]).slice(0, 60));
   }).join("&");
 }

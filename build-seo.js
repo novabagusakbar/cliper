@@ -5,7 +5,8 @@ const path = require("path");
 const crypto = require("crypto");
 
 const BASE = "https://hadirflow.my.id/kuistes/";
-const OG = "https://raw.githubusercontent.com/novabagusakbar/cliper/claude/kuis-interaktif-google-sites-1311nm/kuistes/og.png";
+const OG = BASE + "og.png";
+const slugOG = (id) => (id === "kepribadian" ? "mbti" : id === "vakOrtu" ? "vak-ortu" : id);
 const HADIRFLOW = "https://hadirflow.my.id/?utm_source=kuistes&utm_medium=seo";
 
 const KELAS = [["tka", "TK A", "tk", -1], ["tkb", "TK B", "tk", 0]];
@@ -82,7 +83,7 @@ h1{font-size:clamp(28px,6vw,40px);line-height:1.15;color:var(--navy);margin:8px 
 .grid-manfaat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.grid-manfaat div{background:#f6faf8;border:2px solid #d9efe6;border-radius:16px;padding:12px}.grid-manfaat b{display:block}
 details{border-top:1px solid var(--garis);padding:10px 0}summary{font-weight:800;cursor:pointer}`;
 
-function halaman({ judul, deskripsi, url, h1, isi, noindex }) {
+function halaman({ judul, deskripsi, url, h1, isi, noindex, og }) {
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -93,7 +94,7 @@ function halaman({ judul, deskripsi, url, h1, isi, noindex }) {
 <link rel="canonical" href="${url}">${noindex ? '<meta name="robots" content="noindex">' : ""}
 <meta property="og:type" content="website"><meta property="og:site_name" content="HadirFlow">
 <meta property="og:url" content="${url}"><meta property="og:title" content="${esc(judul)}"><meta property="og:description" content="${esc(deskripsi)}">
-<meta property="og:image" content="${OG}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#072B6B">
+<meta property="og:image" content="${og || OG}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#072B6B">
 <link rel="manifest" href="${BASE}manifest.json"><link rel="icon" type="image/png" sizes="32x32" href="${BASE}favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="${BASE}ikon-192.png"><link rel="apple-touch-icon" href="${BASE}ikon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@800&display=swap" rel="stylesheet">
 <style>${CSS}</style>
@@ -179,7 +180,7 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
     ["tes-temperamen", "temperamen", "Tes Temperamen Online Gratis (Koleris, Sanguinis, Melankolis, Plegmatis)", "Tes temperamen gratis: 32 kelompok sifat (kelebihan dan kelemahan) untuk mengetahui temperamen Koleris, Sanguinis, Melankolis, atau Plegmatis beserta campurannya.",
       "<p>Pilih sifat yang paling menggambarkan dirimu di <b>32 kelompok</b>: 16 kelompok kelebihan dan 16 kelompok kelemahan. Hasilnya temperamen utama (<b>Koleris, Sanguinis, Melankolis, atau Plegmatis</b>), campurannya, kelebihan, hal yang perlu dijaga, dan kegiatan yang cocok.</p><p class=\"kecil\">Catatan: soal disusun sendiri untuk refleksi diri, bukan tes psikologi resmi.</p>"]
   ];
-  TES.forEach(([slug, id, judul, desk, isi]) => tulisHalaman(slug, halaman({ judul: judul + " | HadirFlow", deskripsi: desk, url: BASE + slug + "/", h1: judul,
+  TES.forEach(([slug, id, judul, desk, isi]) => tulisHalaman(slug, halaman({ judul: judul + " | HadirFlow", deskripsi: desk, url: BASE + slug + "/", h1: judul, og: BASE + "og/" + slugOG(id) + ".png",
     isi: isi + `<p><a class="tombol" href="${BASE}?tes=${id}">🚀 Mulai Tes Sekarang</a></p>
 <div class="kartu"><h2>📚 Kuis pelajaran gratis TK–SMA</h2>${["tka", "1", "3", "5", "7", "9", "10", "12"].map((k) => { const x = semua.find((y) => y.k === k && (y.m === "mtk" || y.m === "angka")); return `<a class="chip" href="${BASE}${slugKuis(x)}/">${MAPEL[x.m][0]} ${labelKelas(x)}</a>`; }).join("")}</div>` })));
 
@@ -218,6 +219,25 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
 <details><summary>Di mana data murid disimpan?</summary><p>Hasil tersimpan di HP masing-masing murid. Hasil hanya terkirim ke guru ketika murid menekan tombol kirim di WhatsApp. Tidak ada data murid yang disimpan di server kami.</p></details>
 <details><summary>Apakah ini tes psikologi resmi?</summary><p>Bukan. Tes disusun untuk mengenal kecenderungan belajar dan minat murid, sebagai bahan pertimbangan guru. Untuk asesmen resmi, hubungi psikolog.</p></details>
 <details><summary>Bisa dipakai untuk TK?</summary><p>Bisa. Pakai <a href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Si Kecil</a> yang diisi orang tua, dan kuis pelajaran TK A/TK B yang soalnya bisa dibacakan otomatis.</p></details></div>` }));
+
+  // Halaman tantangan /t/<slug>/: pratinjau WhatsApp khusus per tes, lalu langsung diteruskan ke aplikasi (query ikut)
+  const TANTANG = [["otak", "Tes Kecerdasan (ala IQ)", "Berani adu skor?"], ["majemuk", "Kecerdasan Majemuk", "Kecerdasanmu yang mana?"], ["ingat", "Tes Daya Ingat", "Bisa ingat berapa urutan?"],
+    ["fokus", "Tes Konsentrasi", "Seberapa tajam fokusmu?"], ["ruang", "Tes Ruang (Spasial)", "Bisa memutar bentuk di kepala?"], ["vak", "Tes Gaya Belajar VAK", "Visual, Auditori, atau Kinestetik?"],
+    ["vak-ortu", "Gaya Belajar Si Kecil", "Anakmu tipe belajar yang mana?"], ["mesin", "Tes Gaya Belajar ala STIFIn", "Mesin kecerdasanmu apa?"], ["gaya4", "4 Gaya Belajar", "Aktivis, Reflektor, Teoris, atau Pragmatis?"],
+    ["mbti", "Tes MBTI 16 Tipe", "Kamu tipe apa?"], ["disc", "Tes DISC", "D, I, S, atau C?"], ["temperamen", "Tes Temperamen", "Koleris, Sanguinis, Melankolis, atau Plegmatis?"],
+    ["kekuatan", "Tes Kelebihanku", "Apa kelebihan terbesarmu?"], ["darah", "Golongan Darahku", "Golonganmu apa?"], ["kuis", "Kuis Pelajaran", "Bisa kalahkan nilaiku?"], ["harian", "Tantangan Harian", "Berapa hari kamu kuat berturut-turut?"]];
+  TANTANG.forEach(([slug, nm, ajak]) => {
+    const d = path.join(dirOut, "t", slug); fs.mkdirSync(d, { recursive: true });
+    const judul = `🎯 Kamu ditantang: ${nm}! ${ajak}`, desk = "Gratis, tanpa daftar, langsung ada hasilnya. Kerjakan, lalu bandingkan hasilmu dengan temanmu. Dari HadirFlow.";
+    fs.writeFileSync(path.join(d, "index.html"), `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(judul)}</title><meta name="description" content="${esc(desk)}"><meta name="robots" content="noindex">
+<meta property="og:type" content="website"><meta property="og:site_name" content="HadirFlow"><meta property="og:url" content="${BASE}t/${slug}/">
+<meta property="og:title" content="${esc(judul)}"><meta property="og:description" content="${esc(desk)}">
+<meta property="og:image" content="${BASE}og/${slug}.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="refresh" content="1;url=${BASE}"><script>location.replace(${JSON.stringify(BASE)} + location.search + location.hash);</script>
+</head><body style="font-family:sans-serif;text-align:center;padding:40px"><p>Membuka tantangan… <a href="${BASE}">Klik di sini kalau tidak terbuka</a>.</p></body></html>
+`);
+  });
 
   // Kit Promosi: gambar & pesan siap sebar (tidak diindeks Google)
   const GAMBAR_PROMO = [["semua-tes-status", "Semua tes (Status)"], ["gaya-belajar-status", "Gaya belajar (Status)"], ["guru-status", "Untuk guru (Status)"],
