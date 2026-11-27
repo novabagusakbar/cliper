@@ -1,5 +1,5 @@
 // Service worker Tes Gratis HadirFlow. Lingkup: /kuistes/ saja.
-const CACHE = "kuistes-3c64204d02";
+const CACHE = "kuistes-0ccbdc6d4b";
 const INTI = ["/kuistes/", "/kuistes/ikon-192.png", "/kuistes/manifest.json"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(INTI)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.indexOf("kuistes-") === 0 && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

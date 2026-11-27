@@ -149,6 +149,20 @@
   .label-nilai { position: absolute; transform: translate(-110%, -130%); font-size: 13px; font-weight: 800; color: var(--ink); }
   .kartu-mapel .nilai-akhir { font-size: 32px; font-weight: 800; color: var(--primary-dark); text-align: right; line-height: 1; }
   .tren-naik { color: var(--primary-dark); } .tren-turun { color: #b4232c; }
+  .panel-skor { position: relative; text-align: center; color: #fff; border-radius: 22px; padding: 18px 70px 16px; margin: 12px 0 14px;
+    background: radial-gradient(120% 140% at 80% 100%, #14936c 0%, transparent 55%), linear-gradient(135deg, #0a4d3a, #0f7a5a 55%, #0b5a43);
+    border: 3px solid #d9b45a; box-shadow: 0 8px 22px rgba(11,90,67,.25), inset 0 0 0 2px rgba(255,255,255,.08); overflow: hidden; }
+  .panel-skor::before, .panel-skor::after { content: ""; position: absolute; top: 50%; width: 46px; height: 82px; margin-top: -48px; background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2070%20120%22%3E%3Cpath%20d%3D%22M43.9%20109.5%20A52%2052%200%200%201%2036.4%2013.7%22%20fill%3D%22none%22%20stroke%3D%22%23e9c66f%22%20stroke-width%3D%222.5%22/%3E%3Cg%20fill%3D%22%23e9c66f%22%3E%3Cellipse%20cx%3D%2240.9%22%20cy%3D%22108.3%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28262%2040.9%20108.3%29%22/%3E%3Cellipse%20cx%3D%2225.6%22%20cy%3D%2299.0%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28281%2025.6%2099.0%29%22/%3E%3Cellipse%20cx%3D%2214.4%22%20cy%3D%2285.1%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28301%2014.4%2085.1%29%22/%3E%3Cellipse%20cx%3D%228.6%22%20cy%3D%2268.1%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28321%208.6%2068.1%29%22/%3E%3Cellipse%20cx%3D%228.9%22%20cy%3D%2250.3%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28341%208.9%2050.3%29%22/%3E%3Cellipse%20cx%3D%2215.2%22%20cy%3D%2233.5%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28361%2015.2%2033.5%29%22/%3E%3Cellipse%20cx%3D%2226.9%22%20cy%3D%2219.9%22%20rx%3D%225%22%20ry%3D%2211%22%20transform%3D%22rotate%28380%2026.9%2019.9%29%22/%3E%3C/g%3E%3C/svg%3E") no-repeat center / contain; opacity: .95; }
+  .panel-skor::before { left: 14px; }
+  .panel-skor::after { right: 14px; transform: scaleX(-1); }
+  .panel-skor .angka { font-family: "Playfair Display", Georgia, serif; font-weight: 800; font-size: 68px; line-height: 1; color: #f6dc8f; text-shadow: 0 2px 0 rgba(0,0,0,.18); }
+  .panel-skor .angka small { font-size: 32px; color: #f3e6bd; }
+  .panel-skor .kategori { display: inline-block; margin: 10px 0 6px; padding: 6px 22px; border-radius: 10px; background: linear-gradient(180deg, #f7e3a1, #d9b45a); color: #0b3f30; font-weight: 800; font-size: 19px; box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+  .panel-skor .info { display: block; font-size: 16px; color: #e3f3ec; }
+  .panel-skor .bintang { font-size: 34px; letter-spacing: 4px; margin: 0 0 4px; color: #f6dc8f; }
+  .hasil-tes h2, #judulHasil { font-family: "Playfair Display", Georgia, serif; font-weight: 800; color: #10233f; font-size: clamp(23px, 5.6vw, 32px); line-height: 1.2; }
+  .hasil-tes .kotak-hormat { background: #fbf6e9; border-color: #ead9ad; }
+  @media (max-width: 480px) { .panel-skor { padding: 16px 48px 14px; } .panel-skor::before, .panel-skor::after { width: 32px; height: 60px; margin-top: -36px; } .panel-skor::before { left: 8px; } .panel-skor::after { right: 8px; } .panel-skor .angka { font-size: 56px; } }
   .kotak-promo.kotak-piagam { background: linear-gradient(180deg, #f3f8f5, #eaf3ee); border-color: #cfe5da; }
   .kotak-piagam > b { font-family: "Playfair Display", Georgia, serif; font-size: 22px; color: #0b5a43; }
   .kotak-piagam .tombol-piagam { display: block; text-align: center; max-width: 380px; margin: 4px auto 0; }
@@ -481,6 +495,7 @@
 
       <div id="tabGuru" class="isi-tab">
         <p class="judul">👩‍🏫 Buat link kuis atau tes untuk murid Anda</p>
+        <p class="sub-kecil" style="text-align:left;margin:0 0 8px">📄 Ingin mengenalkan ke sekolah? Kirim <a href="https://hadirflow.my.id/kuistes/sekolah/" target="_blank" rel="noopener"><b>halaman panduan untuk sekolah</b></a> ke kepala sekolah atau rekan guru.</p>
         <p class="sub" style="margin-top:0">Murid membuka link, mengerjakan 10 soal, lalu menekan <b>Kirim nilai ke guru</b>. Nilainya langsung masuk ke WhatsApp Anda. Gratis, tanpa daftar.</p>
         <label class="judul" for="guruNama" style="margin-top:12px">Nama Bapak/Ibu guru</label>
         <input id="guruNama" type="text" maxlength="40" placeholder="Contoh: Bu Rina" autocomplete="name">
@@ -615,9 +630,11 @@
     <div class="kartu tengah" style="margin-top:0">
       <div style="font-size:64px" id="emojiHasil">🏆</div>
       <h2 id="judulHasil">Hebat!</h2>
-      <div class="bintang" id="bintangHasil">⭐⭐⭐</div>
-      <div class="skor-besar" id="skorHasil">100</div>
-      <p class="sub" id="rincianHasil"></p>
+      <div class="panel-skor">
+        <div class="bintang" id="bintangHasil">⭐⭐⭐</div>
+        <div class="angka" id="skorHasil">100</div>
+        <span class="kategori" id="rincianHasil"></span>
+      </div>
       <p id="pesanHasil" style="font-weight:700"></p>
       <div class="ulasan" id="ulasan"></div>
       <div class="baris-tombol">
@@ -4800,7 +4817,7 @@ var TES = {
         ringkas: "".concat(total, "/20 (").concat(kat[1], ")"),
         piagam: total >= 12 ? "atas skor ".concat(total, "/20 (").concat(kat[1], ") pada Tes Kecerdasan tingkat ").concat(LEVEL_OTAK[levelOtak - 1][0]) : null,
         bagikan: "\uD83E\uDDE0 ".concat(nama, " mendapat skor ").concat(total, "/20 (").concat(kat[1], ") di Tes Kecerdasan tingkat ").concat(LEVEL_OTAK[levelOtak - 1][0], "! Berani coba?"),
-        html: "\n        <div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Kecerdasan ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(LEVEL_OTAK[levelOtak - 1][0], " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(total, "<span style=\"font-size:26px\">/20</span></div>\n          <b>Kategori: ").concat(kat[1], "</b><br>Waktu: ").concat(menit, " menit ").concat(detik, " detik</div>\n        <h3>\uD83D\uDCCA Kemampuan per bidang</h3>\n        ").concat(urut.map(function (a) {
+        html: "\n        <div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Kecerdasan ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(LEVEL_OTAK[levelOtak - 1][0], " \u2022 ").concat(tglHariIni(), "</p>\n        ").concat(panelSkor(total, 20, "Kategori: " + kat[1], "\uD83D\uDD52 Waktu: ".concat(menit, " menit ").concat(detik, " detik")), "\n        <h3>\uD83D\uDCCA Kemampuan per bidang</h3>\n        ").concat(urut.map(function (a) {
           return batang(AREA_OTAK[a], per[a], 5, per[a] <= 2);
         }).join(""), "\n        <h3>\u2728 Kekuatan berpikirmu</h3><p>Kamu paling kuat di bidang <b>").concat(AREA_OTAK[urut[0]], "</b>. ").concat(per[urut[3]] < 5 ? "Ayo latih bidang <b>".concat(AREA_OTAK[urut[3]], "</b> supaya makin hebat!") : "MasyaAllah, semua bidang sempurna!", "</p>\n        ").concat(salah.length ? "<details class=\"kotak\"><summary><b>\uD83D\uDCDD Pembahasan soal yang salah (".concat(salah.length, ")</b></summary><ol>").concat(salah.map(function (x) {
           return "<li>".concat(x.s.t, "<br><span class=\"jwb-salah\">\u2717 ").concat(x.pilih, "</span> <span class=\"jwb-benar\">\u2713 ").concat(x.s.o.find(function (o) {
@@ -6007,6 +6024,9 @@ function salinLinkGuru() {
 
 /* ---------- MESIN TES ---------- */
 /* ---------- 7. TES KECERDASAN TAMBAHAN: Majemuk, Daya Ingat, Konsentrasi, Ruang ---------- */
+var panelSkor = function panelSkor(angka, maks, kategori, info) {
+  return "<div class=\"panel-skor\"><div class=\"angka\">".concat(angka).concat(maks ? "<small>/".concat(maks, "</small>") : "", "</div><span class=\"kategori\">").concat(kategori, "</span>").concat(info ? "<span class=\"info\">".concat(info, "</span>") : "", "</div>");
+};
 var catatanKecerdasan = "<p class=\"catatan-ortu\">Ini latihan dan pengenalan diri, bukan tes psikologi resmi. Kemampuan anak terus berkembang dan bisa dilatih. Soal selalu berganti, jadi tes bisa diulang.</p>";
 var namaLevel = function namaLevel() {
   return LEVEL_OTAK[levelOtak - 1][0];
@@ -6426,7 +6446,7 @@ TES.ingat = {
       ringkas: ringkas,
       piagam: skor >= 3 ? "atas ".concat(kat[1].toLowerCase(), " (").concat(ringkas, ") pada Tes Daya Ingat tingkat ").concat(namaLevel()) : null,
       bagikan: "\uD83E\uDDE0 ".concat(nama, " bisa mengingat ").concat(r.angka, " angka, ").concat(r.gambar, " gambar, dan ").concat(r.posisi, " posisi berurutan di Tes Daya Ingat! Kamu bisa berapa?"),
-      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Daya Ingat ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><b style=\"font-size:24px\">").concat(kat[1], "</b><br>Rentang ingatan = jumlah hal terpanjang yang bisa diingat berurutan.</div>\n        ").concat(["angka", "gambar", "posisi"].map(function (jn) {
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Daya Ingat ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        ").concat(panelSkor(Math.max(r.angka, r.gambar, r.posisi), 0, kat[1], "Rentang ingatan terpanjang • jumlah hal yang bisa diingat berurutan"), "\n        ").concat(["angka", "gambar", "posisi"].map(function (jn) {
         var B = BAGIAN_INGAT[jn],
           _UMUM_INGAT$jn$L2 = _slicedToArray(UMUM_INGAT[jn][L], 2),
           a = _UMUM_INGAT$jn$L2[0],
@@ -6592,7 +6612,7 @@ TES.fokus = {
       ringkas: "".concat(skor, "/100 (").concat(kat[1], ")"),
       piagam: skor >= 60 ? "atas skor konsentrasi ".concat(skor, "/100 (").concat(kat[1], ") tingkat ").concat(namaLevel()) : null,
       bagikan: "\uD83C\uDFAF ".concat(nama, " mendapat skor ").concat(skor, "/100 (").concat(kat[1], ") di Tes Konsentrasi! Berani adu fokus?"),
-      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Konsentrasi ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(skor, "<span style=\"font-size:26px\">/100</span></div><b>Kategori: ").concat(kat[1], "</b></div>\n        <h3>\uD83D\uDCCA Rincian</h3>\n        ").concat(batang("🔍 Ketuntasan", Math.round(tuntas * 100), 100, tuntas < 0.7)).concat(batang("🎯 Ketelitian", Math.round(teliti * 100), 100, teliti < 0.85), "\n        <p class=\"sub-kecil\" style=\"text-align:left\">Ketemu ").concat(T.benar, " dari ").concat(T.target, " \u2022 salah tekan ").concat(T.salah, " \u2022 rata-rata ").concat(perTarget, " detik per target.</p>\n        ").concat(j.map(function (x, i) {
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Konsentrasi ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        ").concat(panelSkor(skor, 100, "Kategori: " + kat[1], ""), "\n        <h3>\uD83D\uDCCA Rincian</h3>\n        ").concat(batang("🔍 Ketuntasan", Math.round(tuntas * 100), 100, tuntas < 0.7)).concat(batang("🎯 Ketelitian", Math.round(teliti * 100), 100, teliti < 0.85), "\n        <p class=\"sub-kecil\" style=\"text-align:left\">Ketemu ").concat(T.benar, " dari ").concat(T.target, " \u2022 salah tekan ").concat(T.salah, " \u2022 rata-rata ").concat(perTarget, " detik per target.</p>\n        ").concat(j.map(function (x, i) {
         return "<div class=\"kotak\"><b>Babak ".concat(i + 1, ": ").concat(BABAK_FOKUS[i].nama, "</b><br>\u2705 ").concat(x.benar, "/").concat(x.target, " \u2022 \u274C ").concat(x.salah, " \u2022 \u23F1\uFE0F ").concat(x.detik, " detik</div>");
       }).join(""), "\n        <h3>\uD83D\uDCA1 ").concat(teliti < 0.85 ? "Kamu cepat, tinggal lebih teliti" : tuntas < 0.7 ? "Kamu teliti, tinggal lebih cepat" : "Pertahankan fokusmu", "</h3><ul>\n          <li>Pindai baris demi baris dari kiri ke kanan, seperti membaca.</li>\n          <li>Latihan: puzzle cari perbedaan, mencari kata, menyusun puzzle, dan permainan bola.</li>\n          <li>Kurangi gangguan saat belajar: jauhkan HP dan TV, belajar 20\u201325 menit lalu istirahat 5 menit.</li>\n          <li>Cukup tidur, sarapan, dan minum air putih sangat membantu konsentrasi.</li></ul>\n        ").concat(catatanKecerdasan)
     };
@@ -7028,7 +7048,7 @@ TES.ruang = {
       ringkas: "".concat(total, "/16 (").concat(kat[1], ")"),
       piagam: total >= 9 ? "atas skor ".concat(total, "/16 (").concat(kat[1], ") pada Tes Ruang (Spasial) tingkat ").concat(namaLevel()) : null,
       bagikan: "\uD83E\uDDCA ".concat(nama, " mendapat skor ").concat(total, "/16 (").concat(kat[1], ") di Tes Ruang (Spasial)! Bisa memutar bentuk di kepala? Coba juga!"),
-      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Ruang ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        <div class=\"kotak tengah\"><div style=\"font-size:52px;font-weight:800;color:var(--primary-dark)\">").concat(total, "<span style=\"font-size:26px\">/16</span></div>\n          <b>Kategori: ").concat(kat[1], "</b><br>Waktu: ").concat(menit, " menit ").concat(detik, " detik</div>\n        <h3>\uD83D\uDCCA Kemampuan per bagian</h3>").concat(urut.map(function (a) {
+      html: "<div class=\"besar\">".concat(kat[0], "</div><h2>Hasil Tes Ruang ").concat(esc(nama), "</h2><p class=\"sub-kecil\">Tingkat ").concat(namaLevel(), " \u2022 ").concat(tglHariIni(), "</p>\n        ").concat(panelSkor(total, 16, "Kategori: " + kat[1], "\uD83D\uDD52 Waktu: ".concat(menit, " menit ").concat(detik, " detik")), "\n        <h3>\uD83D\uDCCA Kemampuan per bagian</h3>").concat(urut.map(function (a) {
         return batang(AREA_RUANG[a], per[a], 4, per[a] <= 1);
       }).join(""), "\n        <h3>\u2728 Kekuatanmu</h3><p>Kamu paling kuat di <b>").concat(AREA_RUANG[urut[0]], "</b>. ").concat(per[urut[3]] < 4 ? "Ayo latih <b>".concat(AREA_RUANG[urut[3]], "</b>.") : "Semua bagian sempurna. Hebat!", "</p>\n        <h3>\uD83D\uDCA1 Cara melatih kemampuan ruang</h3><ul>\n          <li>Bermain lego, balok, tangram, dan puzzle.</li><li>Membuat origami dan menggunting kardus menjadi kubus atau balok.</li>\n          <li>Membaca peta dan menjadi \u201Cpenunjuk jalan\u201D saat bepergian.</li><li>Menggambar benda dari depan, samping, dan atas.</li></ul>\n        ").concat(catatanKecerdasan)
     };

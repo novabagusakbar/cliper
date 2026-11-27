@@ -76,7 +76,11 @@ h1{font-size:clamp(28px,6vw,40px);line-height:1.15;color:var(--navy);margin:8px 
 .tombol{display:inline-block;background:var(--hijau);color:#fff;font-weight:800;font-size:20px;text-decoration:none;border-radius:18px;padding:12px 24px;box-shadow:0 5px 0 var(--hijau-tua);margin:6px 8px 6px 0}
 .tombol.kedua{background:#fff;color:var(--ink);border:3px solid var(--garis);box-shadow:0 5px 0 var(--garis)}
 .kecil{color:var(--muted);font-size:15px}.chip{display:inline-block;background:#fff;border:2px solid var(--garis);border-radius:999px;padding:2px 12px;margin:3px 4px 3px 0;font-size:15px;text-decoration:none;color:var(--ink)}
-.hf{background:linear-gradient(135deg,#072B6B,#0a4686);color:#fff;border:0}.hf a{color:#ffd23f;font-weight:800}ul{padding-left:22px}`;
+.hf{background:linear-gradient(135deg,#072B6B,#0a4686);color:#fff;border:0}.hf a{color:#ffd23f;font-weight:800}ul{padding-left:22px}
+.batang{display:grid;grid-template-columns:130px 1fr 36px;gap:8px;align-items:center;margin:6px 0;font-size:16px}.jalur{height:14px;background:#eef2f8;border-radius:99px;overflow:hidden}.jalur span{display:block;height:100%;background:linear-gradient(90deg,#02c2c1,#02a581);border-radius:99px}
+.langkah{counter-reset:l;list-style:none;padding:0}.langkah li{counter-increment:l;position:relative;padding:4px 0 10px 48px}.langkah li::before{content:counter(l);position:absolute;left:0;top:2px;width:34px;height:34px;border-radius:50%;background:var(--hijau);color:#fff;font-weight:800;display:grid;place-items:center}
+.grid-manfaat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.grid-manfaat div{background:#f6faf8;border:2px solid #d9efe6;border-radius:16px;padding:12px}.grid-manfaat b{display:block}
+details{border-top:1px solid var(--garis);padding:10px 0}summary{font-weight:800;cursor:pointer}`;
 
 function halaman({ judul, deskripsi, url, h1, isi }) {
   return `<!DOCTYPE html>
@@ -138,7 +142,7 @@ ${x.g <= 2 ? "<li>Soal bisa dibacakan suara, cocok untuk anak yang belum lancar 
 <li>Guru bisa membuat link kuis untuk kelas, nilainya masuk ke WhatsApp guru.</li></ul></div>
 ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara}</div>` : ""}
 <div class="kartu"><h2>🏫 ${esc(nm)} kelas lain</h2>${kelasLain}</div>
-<div class="kartu"><h2>🧠 Tes gratis lainnya</h2><a class="chip" href="${BASE}tes-iq-anak/">Tes Kecerdasan (ala IQ)</a><a class="chip" href="${BASE}tes-gaya-belajar/">Tes Gaya Belajar (ala STIFIn)</a><a class="chip" href="${BASE}tes-mbti/">Tes MBTI</a><a class="chip" href="${BASE}tes-disc/">Tes DISC</a><a class="chip" href="${BASE}tes-temperamen/">Tes Temperamen</a><a class="chip" href="${BASE}tes-gaya-belajar-vak/">Gaya Belajar VAK</a><a class="chip" href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Anak TK</a><a class="chip" href="${BASE}tes-gaya-belajar-dewasa/">4 Gaya Belajar Dewasa</a><a class="chip" href="${BASE}tes-kecerdasan-majemuk/">Kecerdasan Majemuk</a><a class="chip" href="${BASE}tes-daya-ingat/">Tes Daya Ingat</a><a class="chip" href="${BASE}tes-konsentrasi/">Tes Konsentrasi</a><a class="chip" href="${BASE}tes-spasial/">Tes Ruang (Spasial)</a></div>`;
+<div class="kartu"><h2>🧠 Tes gratis lainnya</h2><a class="chip" href="${BASE}tes-iq-anak/">Tes Kecerdasan (ala IQ)</a><a class="chip" href="${BASE}tes-gaya-belajar/">Tes Gaya Belajar (ala STIFIn)</a><a class="chip" href="${BASE}tes-mbti/">Tes MBTI</a><a class="chip" href="${BASE}tes-disc/">Tes DISC</a><a class="chip" href="${BASE}tes-temperamen/">Tes Temperamen</a><a class="chip" href="${BASE}sekolah/">🏫 Untuk Sekolah</a><a class="chip" href="${BASE}tes-gaya-belajar-vak/">Gaya Belajar VAK</a><a class="chip" href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Anak TK</a><a class="chip" href="${BASE}tes-gaya-belajar-dewasa/">4 Gaya Belajar Dewasa</a><a class="chip" href="${BASE}tes-kecerdasan-majemuk/">Kecerdasan Majemuk</a><a class="chip" href="${BASE}tes-daya-ingat/">Tes Daya Ingat</a><a class="chip" href="${BASE}tes-konsentrasi/">Tes Konsentrasi</a><a class="chip" href="${BASE}tes-spasial/">Tes Ruang (Spasial)</a></div>`;
     tulisHalaman(slugKuis(x), halaman({
       judul: `Latihan Soal ${nm} ${lk} Online Gratis + Pembahasan | HadirFlow`,
       deskripsi: `Latihan soal ${nm} ${lk} gratis dan selalu baru: ${topik(x.m, x.g)}. Ada pembahasan${to ? ", tryout," : ""} rapor, dan piagam.`,
@@ -178,6 +182,42 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
   TES.forEach(([slug, id, judul, desk, isi]) => tulisHalaman(slug, halaman({ judul: judul + " | HadirFlow", deskripsi: desk, url: BASE + slug + "/", h1: judul,
     isi: isi + `<p><a class="tombol" href="${BASE}?tes=${id}">🚀 Mulai Tes Sekarang</a></p>
 <div class="kartu"><h2>📚 Kuis pelajaran gratis TK–SMA</h2>${["tka", "1", "3", "5", "7", "9", "10", "12"].map((k) => { const x = semua.find((y) => y.k === k && (y.m === "mtk" || y.m === "angka")); return `<a class="chip" href="${BASE}${slugKuis(x)}/">${MAPEL[x.m][0]} ${labelKelas(x)}</a>`; }).join("")}</div>` })));
+
+  // Halaman untuk sekolah: bisa dikirim ke kepala sekolah/yayasan
+  const HF_SEKOLAH = HADIRFLOW.replace("utm_medium=seo", "utm_medium=sekolah");
+  const ajakGuru = encodeURIComponent("Assalamu'alaikum Bapak/Ibu, ini alat gratis untuk mengenali gaya belajar dan kecerdasan murid satu kelas. Hasil murid langsung masuk ke WhatsApp guru, lalu ada rekap kelas dan saran mengajarnya. Tanpa daftar.\n\n👉 " + BASE + "sekolah/");
+  tulisHalaman("sekolah", halaman({ judul: "Tes Gaya Belajar & Kuis Gratis untuk Sekolah | HadirFlow", url: BASE + "sekolah/",
+    deskripsi: "Alat gratis untuk guru dan sekolah: bagikan tes gaya belajar, kecerdasan, atau kuis pelajaran ke satu kelas, hasil murid masuk ke WhatsApp guru, lalu rekap kelas dan saran mengajar keluar otomatis.",
+    h1: "Kenali Gaya Belajar Setiap Murid, Gratis untuk Sekolah",
+    isi: `<p>Satu link untuk satu kelas. Murid mengerjakan tes atau kuis di HP masing-masing, hasilnya langsung masuk ke <b>WhatsApp guru</b>, lalu guru mendapat <b>rekap kelas</b> lengkap dengan saran mengajar. Tanpa daftar, tanpa aplikasi tambahan, tanpa biaya.</p>
+<p><a class="tombol" href="${BASE}?tab=guru">🔗 Buat Link untuk Kelas</a><a class="tombol kedua" href="https://wa.me/?text=${ajakGuru}">💬 Bagikan ke rekan guru</a></p>
+<div class="kartu"><h2>✨ Yang didapat sekolah</h2><div class="grid-manfaat">
+<div><b>👁️ Peta gaya belajar kelas</b>Berapa murid Visual, Auditori, dan Kinestetik, beserta cara mengajar yang paling cocok.</div>
+<div><b>🧠 Profil kecerdasan</b>Kecerdasan majemuk, daya ingat, konsentrasi, dan kemampuan ruang setiap murid.</div>
+<div><b>📚 Kuis pelajaran TK–SMA</b>Soal selalu baru, nilai langsung ke WA guru, rekap bisa diunduh untuk Excel.</div>
+<div><b>🏅 Piagam & laporan anak</b>Murid mendapat piagam, orang tua mendapat Profil Lengkap Anak yang bisa dicetak.</div></div></div>
+<div class="kartu"><h2>🚀 Cara pakai dalam 3 langkah</h2><ol class="langkah">
+<li><b>Buat link.</b> Buka tab <a href="${BASE}?tab=guru">Guru</a>, isi nama dan nomor WhatsApp, pilih <i>Tes kenali diri</i> (misalnya Gaya Belajar VAK) atau <i>Kuis pelajaran</i>.</li>
+<li><b>Kirim ke grup kelas.</b> Murid membuka link, menulis nama, mengerjakan, lalu menekan <b>Kirim hasil ke guru</b>.</li>
+<li><b>Buat rekap.</b> Salin pesan-pesan hasil dari WhatsApp, tempel di kotak Rekap. Sebaran kelas dan saran mengajar langsung tampil, siap dicetak.</li></ol></div>
+<div class="kartu"><h2>📊 Contoh rekap: Gaya Belajar VAK kelas 5A (32 murid)</h2>
+<div class="batang"><span>👁️ Visual</span><div class="jalur"><span style="width:44%"></span></div><b>14</b></div>
+<div class="batang"><span>✋ Kinestetik</span><div class="jalur"><span style="width:34%"></span></div><b>11</b></div>
+<div class="batang"><span>👂 Auditori</span><div class="jalur"><span style="width:22%"></span></div><b>7</b></div>
+<p><b>💡 Saran mengajar:</b> paling banyak murid Visual. Tuliskan poin penting dan langkah di papan, gunakan gambar, diagram, dan warna. Tetap selingi praktik dan diskusi supaya murid Kinestetik dan Auditori ikut terlayani.</p>
+<p class="kecil">Contoh tampilan. Angka di rekap Anda mengikuti hasil murid yang sebenarnya.</p></div>
+<div class="kartu"><h2>🧩 Tes yang bisa dibagikan ke satu kelas</h2>
+<a class="chip" href="${BASE}tes-gaya-belajar-vak/">👁️ Gaya Belajar VAK</a><a class="chip" href="${BASE}tes-gaya-belajar-anak-tk/">👨‍👩‍👧 Gaya Belajar Si Kecil (TK)</a><a class="chip" href="${BASE}tes-gaya-belajar/">🧬 Gaya Belajar ala STIFIn</a><a class="chip" href="${BASE}tes-gaya-belajar-dewasa/">🔄 4 Gaya Belajar (SMP–SMA)</a><a class="chip" href="${BASE}tes-kecerdasan-majemuk/">🌈 Kecerdasan Majemuk</a><a class="chip" href="${BASE}tes-iq-anak/">🧠 Tes Kecerdasan</a><a class="chip" href="${BASE}tes-daya-ingat/">💭 Daya Ingat</a><a class="chip" href="${BASE}tes-konsentrasi/">🎯 Konsentrasi</a><a class="chip" href="${BASE}tes-spasial/">🧊 Ruang (Spasial)</a><a class="chip" href="${BASE}tes-mbti/">🧩 MBTI</a><a class="chip" href="${BASE}tes-disc/">🎯 DISC</a><a class="chip" href="${BASE}tes-temperamen/">🌡️ Temperamen</a></div>
+<div class="kartu hf"><img src="${BASE}logo-hadirflow.png" alt="HadirFlow" width="41" height="48" style="float:right;height:48px;width:auto;background:#fff;border-radius:12px;padding:4px 6px;margin:0 0 8px 10px">
+<h2>🏫 Sudah rapi untuk murid, bagaimana dengan absensi guru?</h2>
+<p><b>HadirFlow</b> membantu sekolah, madrasah, dan pesantren mengurus kehadiran dan penggajian:</p>
+<ul><li>📸 Absensi wajah guru dan karyawan, anti titip absen</li><li>📍 Absen dari HP dengan GPS dan radius lokasi sekolah</li><li>📝 Izin, cuti, dan lembur diajukan langsung dari HP</li><li>💰 Gaji dihitung otomatis dari kehadiran, slip gaji bisa dikirim ke WhatsApp</li><li>📊 Laporan rekap gaji siap pakai untuk yayasan</li></ul>
+<p><a class="tombol" style="background:#ffd23f;color:#072B6B;box-shadow:0 5px 0 #c9a200" href="${HF_SEKOLAH}">🚀 Lihat HadirFlow untuk Sekolah</a></p></div>
+<div class="kartu"><h2>❓ Pertanyaan yang sering diajukan</h2>
+<details><summary>Apakah benar-benar gratis?</summary><p>Ya. Tes, kuis, link kelas, rekap, piagam, dan profil anak gratis tanpa batas dan tanpa daftar.</p></details>
+<details><summary>Di mana data murid disimpan?</summary><p>Hasil tersimpan di HP masing-masing murid. Hasil hanya terkirim ke guru ketika murid menekan tombol kirim di WhatsApp. Tidak ada data murid yang disimpan di server kami.</p></details>
+<details><summary>Apakah ini tes psikologi resmi?</summary><p>Bukan. Tes disusun untuk mengenal kecenderungan belajar dan minat murid, sebagai bahan pertimbangan guru. Untuk asesmen resmi, hubungi psikolog.</p></details>
+<details><summary>Bisa dipakai untuk TK?</summary><p>Bisa. Pakai <a href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Si Kecil</a> yang diisi orang tua, dan kuis pelajaran TK A/TK B yang soalnya bisa dibacakan otomatis.</p></details></div>` }));
 
   // Tautan untuk halaman utama (dibaca Google), dikelompokkan per jenjang
   const tautanUtama = Object.keys(JENJANG).map((j) => `<p class="judul">${JENJANG[j]}</p><p>` +
