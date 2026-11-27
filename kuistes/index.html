@@ -1302,8 +1302,8 @@ function pg(t, benar, pengecoh, p) {
 // Pengecoh angka yang mirip jawaban benar
 function opsiAngka(benar) {
   var akhiran = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
-  var calon = acak([benar + 1, benar - 1, benar + 2, benar - 2, benar + 10, benar - 10, benar + 100, benar - 100, benar * 2]).filter(function (x) {
-    return x > 0 && x !== benar;
+  var calon = acak([benar + 1, benar - 1, benar + 2, benar - 2, benar + 3, benar + 10, benar - 10, benar + 100, benar - 100, benar * 2]).filter(function (x) {
+    return x > 0 && x !== benar && !(benar < 100 && Math.abs(x - benar) === 100) && !(benar < 10 && Math.abs(x - benar) === 10);
   });
   return {
     o: [benar].concat(_toConsumableArray(_toConsumableArray(new Set(calon)).slice(0, 3))).map(function (x) {
@@ -2042,9 +2042,14 @@ var GEN_ARAB = [function () {
     _ambil33 = ambil(KOSAKATA_ARAB[kat]),
     _ambil34 = _slicedToArray(_ambil33, 1),
     a = _ambil34[0];
-  return pg("Kata ".concat(ar(a), " termasuk kelompok kata ..."), kapital(kat), kats.map(kapital), "".concat(a, " artinya ").concat(KOSAKATA_ARAB[kat].find(function (x) {
+  var lbl = function lbl(k) {
+    return k === "pekerjaan" ? "profesi" : k;
+  };
+  return pg("Kata ".concat(ar(a), " termasuk kelompok kata ..."), kapital(lbl(kat)), kats.map(function (k) {
+    return kapital(lbl(k));
+  }), "".concat(a, " artinya ").concat(KOSAKATA_ARAB[kat].find(function (x) {
     return x[0] === a;
-  })[1], ", termasuk kelompok ").concat(kat, "."));
+  })[1], ", termasuk kelompok ").concat(lbl(kat), "."));
 }, function () {
   var kat = ambil(Object.keys(KOSAKATA_ARAB)),
     daftar = KOSAKATA_ARAB[kat],
@@ -2216,7 +2221,7 @@ var ANGKA_KATA = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh"
 var WARNA_BENDA = [["🍎", "apel", "Merah"], ["🍌", "pisang", "Kuning"], ["🥦", "brokoli", "Hijau"], ["🍆", "terong", "Ungu"], ["🥕", "wortel", "Oranye"], ["🐘", "gajah", "Abu-abu"], ["🍫", "cokelat batangan", "Cokelat"], ["🌊", "air laut", "Biru"], ["🍓", "stroberi", "Merah"], ["🍋", "lemon", "Kuning"], ["🐸", "katak", "Hijau"], ["🍇", "anggur", "Ungu"], ["🍊", "jeruk", "Oranye"], ["☁️", "awan", "Putih"], ["🐻", "beruang", "Cokelat"], ["🍅", "tomat", "Merah"], ["🚒", "mobil pemadam", "Merah"], ["🐤", "anak ayam", "Kuning"], ["🌻", "bunga matahari", "Kuning"], ["🥒", "timun", "Hijau"], ["🌲", "pohon cemara", "Hijau"], ["🥚", "telur", "Putih"], ["🥥", "kelapa", "Cokelat"]];
 var CAMPUR_WARNA = [["merah", "kuning", "Oranye"], ["biru", "kuning", "Hijau"], ["merah", "biru", "Ungu"], ["merah", "putih", "Merah muda"], ["hitam", "putih", "Abu-abu"]];
 var SISI_BANGUN = [["segitiga", 3], ["persegi", 4], ["persegi panjang", 4], ["segi lima", 5], ["segi enam", 6]];
-var BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["papan rambu jalan berbentuk segitiga", "Segitiga"], ["ubin lantai", "Persegi"], ["kotak bekal berbentuk sama sisi", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"], ["piring", "Lingkaran"], ["donat", "Lingkaran"], ["papan catur", "Persegi"], ["sapu tangan", "Persegi"], ["layar televisi", "Persegi panjang"], ["amplop surat", "Persegi panjang"]];
+var BENTUK_BENDA = [["roda sepeda", "Lingkaran"], ["uang koin", "Lingkaran"], ["jam dinding bulat", "Lingkaran"], ["atap rumah", "Segitiga"], ["potongan pizza", "Segitiga"], ["potongan roti lapis", "Segitiga"], ["ubin lantai", "Persegi"], ["kertas origami", "Persegi"], ["pintu", "Persegi panjang"], ["buku tulis", "Persegi panjang"], ["papan tulis", "Persegi panjang"], ["piring", "Lingkaran"], ["donat", "Lingkaran"], ["papan catur", "Persegi"], ["sapu tangan", "Persegi"], ["layar televisi", "Persegi panjang"], ["amplop surat", "Persegi panjang"]];
 var BENTUK_EMOJI = [["🔴", "Lingkaran"], ["🟦", "Persegi"], ["🔺", "Segitiga"], ["⭐", "Bintang"], ["❤️", "Hati"]];
 var kecil = function kecil() {
   return G() < 0 ? 5 : 10;
@@ -2538,9 +2543,12 @@ var GEN_MTK7 = [function () {
 }, function () {
   var a = rnd(2, 9),
     b = rnd(2, 9),
-    c = rnd(1, a + b - 1),
-    h = a + b - c;
-  return pg("Bentuk sederhana dari ".concat(a, "x + ").concat(b, "x \u2212 ").concat(c, "x adalah ..."), "".concat(h, "x"), ["".concat(a + b + c, "x"), "".concat(h, "x\xB2"), "".concat(a + b, "x"), "".concat(h + 1, "x")], "Jumlahkan koefisiennya: ".concat(a, " + ").concat(b, " \u2212 ").concat(c, " = ").concat(h, "."));
+    c = rnd(2, a + b - 2),
+    h = a + b - c,
+    sx = function sx(n) {
+      return n === 1 ? "x" : n + "x";
+    };
+  return pg("Bentuk sederhana dari ".concat(a, "x + ").concat(b, "x \u2212 ").concat(c, "x adalah ..."), sx(h), [sx(a + b + c), sx(h) + "²", sx(a + b), sx(h + 1)], "Jumlahkan koefisiennya: ".concat(a, " + ").concat(b, " \u2212 ").concat(c, " = ").concat(h).concat(h === 1 ? ", ditulis x" : "", "."));
 }, function () {
   var a = rnd(2, 9),
     x = rnd(-6, 12),
@@ -2685,7 +2693,7 @@ var GEN_MTK11 = [function () {
     c = rnd(-9, 9),
     k = rnd(-3, 4),
     h = a * k * k + b * k + c;
-  return angkaSoal("Nilai lim x\u2192".concat(k, " (").concat(a === 1 ? "" : a, "x\xB2 ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), "x ").concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c), ") = ...").replace("→-", "→−"), h, "Substitusi x = ".concat(k, ": hasilnya ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+  return angkaSoal("Nilai lim x\u2192".concat(k, " (").concat(a === 1 ? "" : a, "x\xB2").concat(b ? " ".concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b) === 1 ? "" : Math.abs(b), "x") : "").concat(c ? " ".concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c)) : "", ") = ...").replace("→-", "→−"), h, "Substitusi x = ".concat(k, ": hasilnya ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
 }, function () {
   var a = rnd(1, 9);
   return angkaSoal("Nilai lim x\u2192".concat(a, " (x\xB2 \u2212 ").concat(a * a, ")/(x \u2212 ").concat(a, ") = ..."), 2 * a, "(x\xB2 \u2212 ".concat(a * a, ")/(x \u2212 ").concat(a, ") = x + ").concat(a, ". Untuk x = ").concat(a, ", hasilnya ").concat(2 * a, "."));
@@ -2699,7 +2707,9 @@ var GEN_MTK11 = [function () {
     c = rnd(-9, 9),
     k = rnd(-3, 4),
     h = 2 * a * k + b;
-  return angkaSoal("Jika f(x) = ".concat(a === 1 ? "" : a, "x\xB2 ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), "x ").concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c), ", maka f'(").concat(k, ") = ...").replace("(-", "(−"), h, "f'(x) = ".concat(2 * a, "x ").concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b), ", jadi f'(").concat(k, ") = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
+  var sb = b ? " ".concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b) === 1 ? "" : Math.abs(b), "x") : "",
+    sc = c ? " ".concat(c < 0 ? "−" : "+", " ").concat(Math.abs(c)) : "";
+  return angkaSoal("Jika f(x) = ".concat(a === 1 ? "" : a, "x\xB2").concat(sb).concat(sc, ", maka f'(").concat(k, ") = ...").replace("(-", "(−"), h, "f'(x) = ".concat(2 * a, "x").concat(b ? " ".concat(b < 0 ? "−" : "+", " ").concat(Math.abs(b)) : "", ", jadi f'(").concat(k, ") = ").concat(h, ".").replace(/-/g, "−"), "", opsiBulat);
 }, function () {
   var a = rnd(-5, 9),
     b = rnd(-5, 9),
@@ -2730,7 +2740,7 @@ var GEN_MTK12 = [function () {
 }, function () {
   var a = rnd(2, 9),
     n = rnd(2, 5);
-  return pg("Hasil dari \u222B ".concat(a * (n + 1), "x").concat(sup(n), " dx adalah ..."), "".concat(a, "x").concat(sup(n + 1), " + C"), ["".concat(a * (n + 1) * n, "x").concat(sup(n - 1), " + C"), "".concat(a * (n + 1), "x").concat(sup(n + 1), " + C"), "".concat(a, "x").concat(sup(n), " + C"), "".concat(a + 1, "x").concat(sup(n + 1), " + C")], "\u222Bax".concat(sup("n"), " dx = a/(n+1) x").concat(sup("n+1"), " + C."));
+  return pg("Hasil dari \u222B ".concat(a * (n + 1), "x").concat(sup(n), " dx adalah ..."), "".concat(a, "x").concat(sup(n + 1), " + C"), ["".concat(a * (n + 1) * n, "x").concat(sup(n - 1), " + C"), "".concat(a * (n + 1), "x").concat(sup(n + 1), " + C"), "".concat(a, "x").concat(sup(n), " + C"), "".concat(a + 1, "x").concat(sup(n + 1), " + C")], "Rumus: ∫ a·xⁿ dx = a/(n+1) · xⁿ⁺¹ + C.");
 }, function () {
   var a = [rnd(-5, 6), rnd(-5, 6)],
     b = [rnd(-5, 6), rnd(-5, 6)],
@@ -2808,13 +2818,26 @@ var GEN_BIND_EXTRA = {
     var _ambil75 = ambil(KATA_BAKU),
       _ambil76 = _slicedToArray(_ambil75, 2),
       b = _ambil76[0],
-      tb = _ambil76[1],
-      lain = KATA_BAKU.filter(function (x) {
-        return x[0] !== b;
-      }).map(function (x) {
-        return x[0];
-      });
-    return pg("Bentuk baku dari kata \"".concat(tb, "\" adalah ..."), b, lain, "Bentuk bakunya \"".concat(b, "\"."));
+      tb = _ambil76[1];
+    var ubah = [function (w) {
+      return w.replace(/i/, "e");
+    }, function (w) {
+      return w.replace(/e/, "i");
+    }, function (w) {
+      return w.replace(/a/, "e");
+    }, function (w) {
+      return w.replace(/k/, "c");
+    }, function (w) {
+      return w.replace(/s/, "z");
+    }, function (w) {
+      return w.replace(/([bcdfghjklmnpqrstvwxyz])([aiueo])$/, "$1$1$2");
+    }];
+    var varian = acak(ubah.map(function (f) {
+      return f(b);
+    })).filter(function (w, i, a) {
+      return w !== b && w !== tb && a.indexOf(w) === i;
+    }).slice(0, 2);
+    return pg("Bentuk baku dari kata \"".concat(tb, "\" adalah ..."), b, [tb].concat(varian), "Bentuk bakunya \"".concat(b, "\", bukan \"").concat(tb, "\"."));
   },
   jenisTeks: pasangan(JENIS_TEKS, function (a) {
     return "Teks ".concat(a.toLowerCase(), " adalah teks yang ...");
@@ -2838,7 +2861,7 @@ var PASIF = [["My mother", "cooks", "cooked", "cooked", "rice"], ["Ali", "writes
 var KONDISI = [["it rains", "I", "stay", "at home"], ["you study hard", "you", "pass", "the exam"], ["she is hungry", "she", "eat", "some bread"], ["we leave now", "we", "catch", "the bus"], ["they practice every day", "they", "win", "the match"], ["you heat ice", "it", "melt", "quickly"]];
 var TAG = [["She is a teacher", "isn't she"], ["They are students", "aren't they"], ["He can swim", "can't he"], ["You like apples", "don't you"], ["Ani went to Bali", "didn't she"], ["It isn't hot today", "is it"], ["We will win", "won't we"], ["Budi doesn't eat meat", "does he"]];
 var subjTengah = function subjTengah(s) {
-  return ["You", "We", "They", "He", "She", "It"].indexOf(s) >= 0 ? s.toLowerCase() : s;
+  return ["You", "We", "They", "He", "She", "It"].indexOf(s) >= 0 ? s.toLowerCase() : /^(My|The|Our|Your|His|Her) /.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s;
 };
 var bentukIng = function bentukIng(v) {
   return /[^e]e$/.test(v) ? v.slice(0, -1) + "ing" : v + "ing";
@@ -2872,7 +2895,7 @@ var GEN_BING_EXTRA = {
       s = _ambil82[0],
       o = _ambil82[1],
       p = _ambil82[2];
-    if (Math.random() < 0.5) return pg("Kata ganti objek dari \"".concat(s, "\" adalah ..."), o, PRONOUN.map(function (x) {
+    if (Math.random() < 0.5 && o !== s) return pg("Kata ganti objek dari \"".concat(s, "\" adalah ..."), o, PRONOUN.map(function (x) {
       return x[1];
     }), "".concat(s, " \u2192 ").concat(o, "."));
     return pg("Kata ganti kepemilikan dari \"".concat(s, "\" adalah ..."), p, PRONOUN.map(function (x) {
@@ -3047,7 +3070,7 @@ var GEN_SAINS = {
   planet: pasangan(PLANET, function (a) {
     return "Planet ".concat(a, " dikenal sebagai ...");
   }, function (b) {
-    return "Planet yang merupakan ".concat(b, " adalah ...");
+    return "".concat(kapital(b), " adalah ...");
   }, function (x) {
     return x;
   }, kapital),
@@ -3817,7 +3840,8 @@ function mulai() {
       };
     }));
     return Object.assign({}, s, {
-      opsi: urut
+      opsi: urut,
+      p: s.p ? String(s.p).replace(/([a-z])\.\.(\s|$)/gi, "$1.$2") : s.p
     });
   });
   nomor = 0;
