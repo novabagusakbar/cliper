@@ -90,7 +90,7 @@ function halaman({ judul, deskripsi, url, h1, isi }) {
 <meta property="og:type" content="website"><meta property="og:site_name" content="HadirFlow">
 <meta property="og:url" content="${url}"><meta property="og:title" content="${esc(judul)}"><meta property="og:description" content="${esc(deskripsi)}">
 <meta property="og:image" content="${OG}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#072B6B">
-<link rel="manifest" href="${BASE}manifest.json"><link rel="icon" href="${BASE}ikon-192.png">
+<link rel="manifest" href="${BASE}manifest.json"><link rel="icon" type="image/png" sizes="32x32" href="${BASE}favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="${BASE}ikon-192.png"><link rel="apple-touch-icon" href="${BASE}ikon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@800&display=swap" rel="stylesheet">
 <style>${CSS}</style>
 </head>
