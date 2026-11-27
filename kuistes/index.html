@@ -5372,7 +5372,7 @@ TES.temperamen = {
 
 /* ---------- AJAKAN HADIRFLOW, TOMBOL BAGIKAN, KIRIM NILAI KE GURU ---------- */
 function kartuHadirFlow(sumber) {
-  return "<div class=\"kotak-promo hf\"><img class=\"logo-promo\" src=\"".concat(LOGO, "\" alt=\"HadirFlow\"><b>\uD83C\uDFEB Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>\n      <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. Cocok untuk sekolah, madrasah, pesantren, dan usaha.</p>\n      <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"").concat(LINK_HADIRFLOW + sumber, "\">\uD83D\uDE80 Coba HadirFlow</a></div>");
+  return "<div class=\"kotak-promo hf\"><img class=\"logo-promo\" src=\"".concat(LOGO, "\" alt=\"HadirFlow\"><b>\uD83C\uDFEB Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>\n      <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. Cocok untuk sekolah, madrasah, pesantren, dan usaha.</p>\n      <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"").concat(sumber === "guru" ? "https://hadirflow.my.id/kuistes/absensi-guru/" : LINK_HADIRFLOW + sumber, "\">\uD83D\uDE80 ").concat(sumber === "guru" ? "Lihat HadirFlow untuk Sekolah" : "Coba HadirFlow", "</a></div>");
 }
 function normalWA(s) {
   var d = String(s || "").replace(/\D/g, "");
@@ -5856,7 +5856,7 @@ function kepalaRekap() {
 }
 function ajakanRekapHF() {
   var sk = ($("guruSekolah").value || "").trim();
-  return "<div class=\"kotak-promo hf tanpa-cetak\"><img class=\"logo-promo\" src=\"".concat(LOGO, "\" alt=\"HadirFlow\"><b>\uD83D\uDCCA Rekap murid sudah rapi. Bagaimana dengan absensi guru").concat(sk ? " di " + esc(sk) : "", "?</b>\n    <p><b>HadirFlow</b>: absensi wajah dan GPS untuk guru dan karyawan, izin dan cuti dari HP, gaji dihitung otomatis, slip gaji bisa dikirim ke WhatsApp.</p>\n    <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"").concat(LINK_HADIRFLOW, "rekap\">\uD83D\uDE80 Lihat HadirFlow untuk Sekolah</a></div>");
+  return "<div class=\"kotak-promo hf tanpa-cetak\"><img class=\"logo-promo\" src=\"".concat(LOGO, "\" alt=\"HadirFlow\"><b>\uD83D\uDCCA Rekap murid sudah rapi. Bagaimana dengan absensi guru").concat(sk ? " di " + esc(sk) : "", "?</b>\n    <p><b>HadirFlow</b>: absensi wajah dan GPS untuk guru dan karyawan, izin dan cuti dari HP, gaji dihitung otomatis, slip gaji bisa dikirim ke WhatsApp.</p>\n    <a class=\"tombol hf\" target=\"_blank\" rel=\"noopener\" href=\"https://hadirflow.my.id/kuistes/absensi-guru/\">\uD83D\uDE80 Lihat HadirFlow untuk Sekolah</a></div>");
 }
 function buatRekap() {
   var d = bacaRekap($("rekapTeks").value),

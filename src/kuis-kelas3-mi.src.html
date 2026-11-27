@@ -2596,7 +2596,7 @@ TES.temperamen = {
 function kartuHadirFlow(sumber) {
   return `<div class="kotak-promo hf"><img class="logo-promo" src="${LOGO}" alt="HadirFlow"><b>🏫 Untuk Bapak/Ibu Guru, Kepala Sekolah & Pemilik Usaha</b>
       <p>Masih absen manual? <b>HadirFlow</b>: absensi wajah anti titip absen untuk guru dan karyawan, gaji dihitung otomatis. Cocok untuk sekolah, madrasah, pesantren, dan usaha.</p>
-      <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW + sumber}">🚀 Coba HadirFlow</a></div>`;
+      <a class="tombol hf" target="_blank" rel="noopener" href="${sumber === "guru" ? "https://hadirflow.my.id/kuistes/absensi-guru/" : LINK_HADIRFLOW + sumber}">🚀 ${sumber === "guru" ? "Lihat HadirFlow untuk Sekolah" : "Coba HadirFlow"}</a></div>`;
 }
 function normalWA(s) {
   let d = String(s || "").replace(/\D/g, "");
@@ -2826,7 +2826,7 @@ function ajakanRekapHF() {
   const sk = ($("guruSekolah").value || "").trim();
   return `<div class="kotak-promo hf tanpa-cetak"><img class="logo-promo" src="${LOGO}" alt="HadirFlow"><b>📊 Rekap murid sudah rapi. Bagaimana dengan absensi guru${sk ? " di " + esc(sk) : ""}?</b>
     <p><b>HadirFlow</b>: absensi wajah dan GPS untuk guru dan karyawan, izin dan cuti dari HP, gaji dihitung otomatis, slip gaji bisa dikirim ke WhatsApp.</p>
-    <a class="tombol hf" target="_blank" rel="noopener" href="${LINK_HADIRFLOW}rekap">🚀 Lihat HadirFlow untuk Sekolah</a></div>`;
+    <a class="tombol hf" target="_blank" rel="noopener" href="https://hadirflow.my.id/kuistes/absensi-guru/">🚀 Lihat HadirFlow untuk Sekolah</a></div>`;
 }
 function buatRekap() {
   const d = bacaRekap($("rekapTeks").value), dt = bacaRekapTes($("rekapTeks").value), el = $("hasilRekap");

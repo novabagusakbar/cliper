@@ -185,7 +185,7 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
 <div class="kartu"><h2>📚 Kuis pelajaran gratis TK–SMA</h2>${["tka", "1", "3", "5", "7", "9", "10", "12"].map((k) => { const x = semua.find((y) => y.k === k && (y.m === "mtk" || y.m === "angka")); return `<a class="chip" href="${BASE}${slugKuis(x)}/">${MAPEL[x.m][0]} ${labelKelas(x)}</a>`; }).join("")}</div>` })));
 
   // Halaman untuk sekolah: bisa dikirim ke kepala sekolah/yayasan
-  const HF_SEKOLAH = HADIRFLOW.replace("utm_medium=seo", "utm_medium=sekolah");
+  const HF_SEKOLAH = BASE + "absensi-guru/";
   const ajakGuru = encodeURIComponent("Assalamu'alaikum Bapak/Ibu, ini alat gratis untuk mengenali gaya belajar dan kecerdasan murid satu kelas. Hasil murid langsung masuk ke WhatsApp guru, lalu ada rekap kelas dan saran mengajarnya. Tanpa daftar.\n\n👉 " + BASE + "sekolah/");
   tulisHalaman("sekolah", halaman({ judul: "Tes Gaya Belajar & Kuis Gratis untuk Sekolah | HadirFlow", url: BASE + "sekolah/",
     deskripsi: "Alat gratis untuk guru dan sekolah: bagikan tes gaya belajar, kecerdasan, atau kuis pelajaran ke satu kelas, hasil murid masuk ke WhatsApp guru, lalu rekap kelas dan saran mengajar keluar otomatis.",
@@ -220,6 +220,36 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
 <details><summary>Apakah ini tes psikologi resmi?</summary><p>Bukan. Tes disusun untuk mengenal kecenderungan belajar dan minat murid, sebagai bahan pertimbangan guru. Untuk asesmen resmi, hubungi psikolog.</p></details>
 <details><summary>Bisa dipakai untuk TK?</summary><p>Bisa. Pakai <a href="${BASE}tes-gaya-belajar-anak-tk/">Gaya Belajar Si Kecil</a> yang diisi orang tua, dan kuis pelajaran TK A/TK B yang soalnya bisa dibacakan otomatis.</p></details></div>` }));
 
+  // Halaman HadirFlow untuk sekolah (target pencarian "aplikasi absensi guru"); isi hanya fitur yang ada di aplikasi HadirFlow
+  const HF_GURU = HADIRFLOW.replace("utm_medium=seo", "utm_medium=absensi-guru");
+  tulisHalaman("absensi-guru", halaman({ judul: "Aplikasi Absensi Guru & Penggajian Sekolah | HadirFlow", url: BASE + "absensi-guru/", og: BASE + "og.png",
+    deskripsi: "Absensi guru dan karyawan sekolah dengan wajah dan GPS dari HP, anti titip absen. Izin, cuti, dan lembur dari HP, gaji dihitung otomatis, slip gaji bisa dikirim ke WhatsApp. Untuk sekolah, madrasah, dan pesantren.",
+    h1: "Absensi Guru Anti Titip Absen, Gaji Dihitung Otomatis",
+    isi: `<p><b>HadirFlow</b> membantu sekolah, madrasah, dan pesantren mencatat kehadiran guru dan karyawan langsung dari HP, lalu menghitung gajinya secara otomatis. Tidak perlu mesin absen, tidak perlu rekap manual di akhir bulan.</p>
+<p><a class="tombol" href="${HF_GURU}">🚀 Lihat HadirFlow</a><a class="tombol kedua" href="${BASE}sekolah/">🎁 Alat gratis untuk guru</a></p>
+<div class="kartu"><h2>😩 Masalah yang sering terjadi di sekolah</h2><ul>
+<li>Absen di buku atau mesin, lalu ada yang <b>titip absen</b>.</li><li>Rekap kehadiran dan honor guru dihitung manual setiap bulan, rawan salah dan memakan waktu.</li>
+<li>Izin dan cuti lewat kertas atau chat, sulit dilacak.</li><li>Sekolah punya beberapa lokasi (kampus, unit, pondok), absensinya terpisah-pisah.</li></ul></div>
+<div class="kartu"><h2>✨ Yang dilakukan HadirFlow</h2><div class="grid-manfaat">
+<div><b>📸 Absensi wajah & GPS</b>Guru absen dari HP dengan foto wajah dan lokasi. Tidak bisa diwakilkan.</div>
+<div><b>📍 Radius lokasi sekolah</b>Absen hanya sah di dalam radius lokasi yang Anda tentukan. Bisa lebih dari satu lokasi.</div>
+<div><b>📝 Izin, cuti & lembur</b>Diajukan dari HP dan disetujui admin, semuanya tercatat rapi.</div>
+<div><b>💰 Gaji otomatis</b>Gaji dihitung dari data kehadiran. Laporan rekap gaji siap dipakai.</div>
+<div><b>📲 Slip gaji ke WhatsApp</b>Slip gaji bisa dikirim langsung ke WhatsApp masing-masing guru.</div>
+<div><b>👥 Peran admin</b>Pemilik, admin, HRD, dan supervisor punya akses sesuai tugasnya.</div></div></div>
+<div class="kartu"><h2>🚀 Cara mulai</h2><ol class="langkah">
+<li><b>Daftarkan sekolah</b> dan tentukan titik lokasi serta radius absensinya.</li>
+<li><b>Tambahkan guru dan karyawan.</b> Mereka absen dari HP masing-masing setiap datang dan pulang.</li>
+<li><b>Akhir bulan</b>, rekap kehadiran dan gaji sudah jadi. Kirim slip gaji ke WhatsApp guru.</li></ol>
+<p><a class="tombol" href="${HF_GURU}">🚀 Mulai dengan HadirFlow</a></p></div>
+<div class="kartu"><h2>🏫 Cocok untuk</h2><p><span class="chip">Sekolah TK–SMA/SMK</span><span class="chip">Madrasah (MI, MTs, MA)</span><span class="chip">Pondok pesantren</span><span class="chip">TPQ & lembaga kursus</span><span class="chip">Yayasan dengan beberapa unit</span></p></div>
+<div class="kartu"><h2>❓ Pertanyaan yang sering diajukan</h2>
+<details><summary>Apakah perlu membeli mesin absen?</summary><p>Tidak. Guru cukup memakai HP masing-masing untuk absen dengan wajah dan GPS.</p></details>
+<details><summary>Bagaimana mencegah titip absen?</summary><p>Setiap absen memakai foto wajah dan lokasi GPS, dan hanya sah di dalam radius lokasi sekolah yang ditentukan.</p></details>
+<details><summary>Sekolah kami punya beberapa lokasi, bisa?</summary><p>Bisa. HadirFlow mendukung lebih dari satu titik lokasi kerja, sesuai paket yang dipilih.</p></details>
+<details><summary>Bagaimana gaji dihitung?</summary><p>Gaji dihitung otomatis dari data kehadiran sesuai pengaturan sekolah, lalu laporan rekap gaji dan slip gaji siap dipakai dan bisa dikirim ke WhatsApp.</p></details></div>
+<div class="kartu"><h2>🎁 Bonus: alat gratis untuk guru</h2><p>Sambil mencoba HadirFlow, guru bisa memakai <a href="${BASE}sekolah/">tes gaya belajar, kecerdasan, dan kuis pelajaran untuk satu kelas</a>, lengkap dengan rekap dan piagam bernama sekolah. Gratis, tanpa daftar.</p></div>` }));
+
   // Halaman tantangan /t/<slug>/: pratinjau WhatsApp khusus per tes, lalu langsung diteruskan ke aplikasi (query ikut)
   const TANTANG = [["otak", "Tes Kecerdasan (ala IQ)", "Berani adu skor?"], ["majemuk", "Kecerdasan Majemuk", "Kecerdasanmu yang mana?"], ["ingat", "Tes Daya Ingat", "Bisa ingat berapa urutan?"],
     ["fokus", "Tes Konsentrasi", "Seberapa tajam fokusmu?"], ["ruang", "Tes Ruang (Spasial)", "Bisa memutar bentuk di kepala?"], ["vak", "Tes Gaya Belajar VAK", "Visual, Auditori, atau Kinestetik?"],
@@ -245,7 +275,7 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
   const PESAN_PROMO = [
     ["👨‍👩‍👧 Grup wali murid", "Assalamu'alaikum Ayah/Bunda 🙏\nAda tes gratis untuk mengenal anak kita: gaya belajar (Visual, Auditori, Kinestetik), kecerdasan, sampai kepribadian. Hasilnya langsung keluar, ada piagamnya, tanpa daftar.\nAnak TK juga bisa (versi yang diisi orang tua). Silakan dicoba 👇\n" + BASE],
     ["👩‍🏫 Grup guru", "Assalamu'alaikum Bapak/Ibu Guru 🙏\nMau tahu gaya belajar murid satu kelas? Ada alat gratis: guru membuat 1 link, murid mengerjakan di HP, hasilnya langsung masuk ke WhatsApp guru, lalu keluar rekap kelas dan saran mengajarnya. Piagam murid bisa memakai nama sekolah.\nPanduannya di sini 👇\n" + BASE + "sekolah/"],
-    ["🏫 Kepala sekolah / yayasan", "Assalamu'alaikum Bapak/Ibu Kepala Sekolah 🙏\nKami dari HadirFlow menyediakan alat gratis untuk guru: tes gaya belajar, kecerdasan, dan kuis pelajaran untuk satu kelas, dengan rekap otomatis dan piagam bernama sekolah.\nSelain itu, HadirFlow juga membantu absensi guru dan karyawan (wajah + GPS) dan menghitung gaji secara otomatis.\nPanduan untuk sekolah 👇\n" + BASE + "sekolah/"],
+    ["🏫 Kepala sekolah / yayasan", "Assalamu'alaikum Bapak/Ibu Kepala Sekolah 🙏\nKami dari HadirFlow menyediakan alat gratis untuk guru: tes gaya belajar, kecerdasan, dan kuis pelajaran untuk satu kelas, dengan rekap otomatis dan piagam bernama sekolah.\nSelain itu, HadirFlow juga membantu absensi guru dan karyawan (wajah + GPS) dan menghitung gaji secara otomatis.\nAlat gratis untuk guru 👇\n" + BASE + "sekolah/\nAbsensi & gaji guru 👇\n" + BASE + "absensi-guru/"],
     ["😄 Keluarga & teman", "Iseng coba deh 😄 Tes MBTI, IQ, gaya belajar, sampai golongan darah, gratis dan langsung ada hasilnya. Aku dapat ___, kamu apa? 👇\n" + BASE],
     ["📱 Teks Status WA (pendek)", "Anakmu Visual, Auditori, atau Kinestetik? 🤔 Cek gratis 5 menit 👉 hadirflow.my.id/kuistes"]
   ];
