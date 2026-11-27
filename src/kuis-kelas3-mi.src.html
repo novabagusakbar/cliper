@@ -323,7 +323,7 @@
       <div class="lencana">
         <button type="button" data-buka="otak"><span class="ik">🧠</span><span class="isi"><strong>Tes Kecerdasan</strong><small>ala IQ • 20 soal</small></span><em>Gratis</em></button>
         <button type="button" data-buka="mesin"><span class="ik">🧬</span><span class="isi"><strong>Tes Gaya Belajar</strong><small>ala STIFIn • 15 soal</small></span><em>Gratis</em></button>
-        <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>ala MBTI • 28 soal</small></span><em>Gratis</em></button>
+        <button type="button" data-buka="kepribadian"><span class="ik">🎭</span><span class="isi"><strong>Tes Kepribadian</strong><small>MBTI • DISC • Temperamen</small></span><em>Gratis</em></button>
         <button type="button" data-buka="pelajaran"><span class="ik">📚</span><span class="isi"><strong>Kuis Pelajaran</strong><small>TK sampai SMA</small></span><em>Gratis</em></button>
         <button type="button" data-buka="guru" class="lebar"><span class="ik">👩‍🏫</span><span class="isi"><strong>Link Kuis untuk Guru</strong><small>Nilai murid langsung masuk ke WhatsApp guru</small></span><em>Gratis</em></button>
       </div>
@@ -2092,7 +2092,7 @@ const TES = {
   }
 };
 
-/* ---------- 6. TES KEPRIBADIAN: MBTI, DISC, Temperamen (28 soal) ---------- */
+/* ---------- 6. TES KEPRIBADIAN: data bersama (maskot temperamen, 16 tipe MBTI, gaya DISC) ---------- */
 const TC = { K: "#ff6b5e", S: "#ffc93c", M: "#7c8cff", P: "#3fcf9f" };
 const TN = { K: "Koleris", S: "Sanguinis", M: "Melankolis", P: "Plegmatis" };
 function maskot(m) {
@@ -2102,37 +2102,6 @@ function maskot(m) {
   const mulut = { K: `<path d="M47 84q13 -7 26 0" stroke="${k}" stroke-width="5" fill="none" stroke-linecap="round"/>`, S: `<path d="M43 76q17 24 34 0z" fill="${k}"/><ellipse cx="60" cy="86" rx="7" ry="4" fill="#ff8f8f"/>`, M: `<path d="M52 83q8 4 16 0" stroke="${k}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`, P: `<path d="M49 80q11 9 22 0" stroke="${k}" stroke-width="4.5" fill="none" stroke-linecap="round"/>` }[m];
   return `<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="150" height="162"><ellipse cx="60" cy="123" rx="38" ry="6" fill="#000" opacity=".14"/><path d="M60 10c30 0 50 22 50 54s-18 54-50 54S10 96 10 64 30 10 60 10z" fill="${c}"/><path d="M60 118c-28 0-46-20-49-48 8 26 26 40 49 40s41-14 49-40c-3 28-21 48-49 48z" fill="#000" opacity=".12"/><ellipse cx="40" cy="30" rx="15" ry="8" fill="#fff" opacity=".5" transform="rotate(-25 40 30)"/>${alis}${mata}<circle cx="31" cy="76" r="7" fill="#fff" opacity=".4"/><circle cx="89" cy="76" r="7" fill="#fff" opacity=".4"/>${mulut}</svg>`;
 }
-// [bagian, pertanyaan, [[jawaban, kode], ...]]; kode diawali m: (MBTI), d: (DISC), t: (temperamen)
-const SOAL_KEPRIBADIAN = [
-  ["MBTI", "Setelah seharian sibuk, cara kamu mengisi energi lagi:", [["Ngobrol atau main bersama teman", "m:E"], ["Menyendiri dan istirahat dengan tenang", "m:I"]]],
-  ["MBTI", "Di acara yang banyak orang baru, kamu biasanya:", [["Aktif berkenalan dan memulai obrolan", "m:E"], ["Menunggu diajak, atau dekat dengan yang sudah kenal", "m:I"]]],
-  ["MBTI", "Saat memikirkan masalah, kamu lebih suka:", [["Langsung membicarakannya dengan orang lain", "m:E"], ["Merenungkannya dulu sendirian", "m:I"]]],
-  ["MBTI", "Kamu lebih percaya pada:", [["Fakta dan pengalaman nyata", "m:S"], ["Firasat dan berbagai kemungkinan", "m:N"]]],
-  ["MBTI", "Saat belajar hal baru, kamu suka:", [["Contoh nyata, langkah demi langkah", "m:S"], ["Gambaran besarnya dulu, detail belakangan", "m:N"]]],
-  ["MBTI", "Obrolan yang paling kamu nikmati:", [["Hal sehari-hari: kerjaan, sekolah, kejadian", "m:S"], ["Ide, khayalan, dan masa depan", "m:N"]]],
-  ["MBTI", "Saat mengambil keputusan penting, kamu utamakan:", [["Logika dan untung-ruginya", "m:T"], ["Perasaan orang-orang yang terlibat", "m:F"]]],
-  ["MBTI", "Temanmu curhat soal masalahnya. Kamu cenderung:", [["Langsung memberi solusi", "m:T"], ["Mendengarkan dan menghibur dulu", "m:F"]]],
-  ["MBTI", "Kamu lebih senang dikenal sebagai orang yang:", [["Adil dan masuk akal", "m:T"], ["Baik hati dan pengertian", "m:F"]]],
-  ["MBTI", "Soal rencana liburan, kamu:", [["Menyusun jadwal dari jauh hari", "m:J"], ["Jalan saja, lihat nanti di sana", "m:P"]]],
-  ["MBTI", "Kalau ada tugas dengan batas waktu, kamu:", [["Menyelesaikannya lebih awal", "m:J"], ["Paling semangat menjelang batas waktu", "m:P"]]],
-  ["MBTI", "Kamar atau meja kerjamu biasanya:", [["Rapi dan tertata", "m:J"], ["Agak berantakan, tapi aku tahu letak barangnya", "m:P"]]],
-  ["DISC", "Dalam kelompok, peran yang paling kamu suka:", [["Memimpin dan menentukan arah", "d:D"], ["Menyemangati dan menghidupkan suasana", "d:I"], ["Membantu dan menjaga kekompakan", "d:S"], ["Memastikan semuanya benar dan rapi", "d:C"]]],
-  ["DISC", "Saat ada masalah mendadak, kamu:", [["Langsung bertindak", "d:D"], ["Mengajak orang lain berdiskusi", "d:I"], ["Tetap tenang, pelan-pelan saja", "d:S"], ["Mencari tahu penyebabnya dulu", "d:C"]]],
-  ["DISC", "Yang paling bikin kamu kesal:", [["Orang yang lambat dan bertele-tele", "d:D"], ["Suasana yang kaku dan membosankan", "d:I"], ["Perubahan mendadak dan pertengkaran", "d:S"], ["Pekerjaan asal-asalan", "d:C"]]],
-  ["DISC", "Pujian yang paling kamu suka:", [["Kamu hebat, targetnya tercapai", "d:D"], ["Kamu seru dan menginspirasi", "d:I"], ["Kamu bisa diandalkan", "d:S"], ["Hasilmu teliti dan rapi", "d:C"]]],
-  ["DISC", "Cara kamu berbicara:", [["Langsung ke inti dan tegas", "d:D"], ["Ekspresif dan banyak cerita", "d:I"], ["Lembut dan sabar", "d:S"], ["Runtut dan pakai alasan yang jelas", "d:C"]]],
-  ["DISC", "Yang paling kamu hindari:", [["Kehilangan kendali", "d:D"], ["Tidak disukai orang", "d:I"], ["Kehilangan rasa aman", "d:S"], ["Melakukan kesalahan", "d:C"]]],
-  ["DISC", "Suasana kerja atau belajar idealmu:", [["Penuh tantangan dan target", "d:D"], ["Ramai dan banyak kerja sama", "d:I"], ["Tenang dan harmonis", "d:S"], ["Aturannya jelas dan teratur", "d:C"]]],
-  ["DISC", "Saat mengambil keputusan, kamu:", [["Cepat dan berani ambil risiko", "d:D"], ["Mengikuti semangat dan perasaan", "d:I"], ["Pelan-pelan, minta pendapat orang", "d:S"], ["Hati-hati, cek semua detailnya", "d:C"]]],
-  ["Temperamen", "Teman-temanmu paling sering bilang kamu:", [["Tegas dan suka mengatur", "t:K"], ["Heboh dan lucu", "t:S"], ["Serius dan perasa", "t:M"], ["Santai dan kalem", "t:P"]]],
-  ["Temperamen", "Kelemahan terbesarmu:", [["Tidak sabaran, gampang marah", "t:K"], ["Pelupa, kurang konsisten", "t:S"], ["Terlalu banyak berpikir, gampang kecewa", "t:M"], ["Suka menunda-nunda", "t:P"]]],
-  ["Temperamen", "Waktu luang idealmu:", [["Mengerjakan target atau proyek pribadi", "t:K"], ["Jalan-jalan ramai-ramai", "t:S"], ["Membaca, berkarya, atau merenung", "t:M"], ["Rebahan dan bersantai", "t:P"]]],
-  ["Temperamen", "Saat ada pertengkaran, kamu:", [["Menghadapi langsung, ingin menang", "t:K"], ["Mencairkan suasana dengan candaan", "t:S"], ["Memendam dan memikirkannya lama", "t:M"], ["Menghindar, yang penting damai", "t:P"]]],
-  ["Temperamen", "Kelebihan utamamu:", [["Berani mengambil keputusan", "t:K"], ["Gampang akrab dengan siapa saja", "t:S"], ["Teliti dan berstandar tinggi", "t:M"], ["Sabar dan pendengar yang baik", "t:P"]]],
-  ["Temperamen", "Rencana yang batal mendadak membuatmu:", [["Kesal, lalu langsung cari rencana lain", "t:K"], ["Santai, cari keseruan lain", "t:S"], ["Kecewa dan terus kepikiran", "t:M"], ["Tenang saja, malah bisa istirahat", "t:P"]]],
-  ["Temperamen", "Di grup WhatsApp, kamu biasanya:", [["Yang mengatur dan memutuskan", "t:K"], ["Paling ramai kirim pesan dan stiker", "t:S"], ["Jarang muncul, tapi sekali bicara panjang", "t:M"], ["Lebih sering membaca saja", "t:P"]]],
-  ["Temperamen", "Cara kerjamu:", [["Cepat dan fokus pada hasil", "t:K"], ["Semangat sekali di awal", "t:S"], ["Detail, rapi, dan perfeksionis", "t:M"], ["Santai tapi stabil", "t:P"]]]
-];
 const MB = {
   INTJ: ["Sang Arsitek", "Pemikir strategis yang suka merencanakan jauh ke depan dan memecahkan masalah rumit.", "perencana strategi, peneliti, programmer, insinyur"],
   INTP: ["Sang Pemikir", "Penuh rasa ingin tahu, suka teori, dan senang menganalisis cara kerja segala hal.", "ilmuwan, analis data, pengembang software, penulis teknis"],
@@ -2163,24 +2132,171 @@ const TD = {
   M: ["Si pemikir mendalam yang teratur dan perfeksionis.", "teliti, setia, kreatif", "mudah cemas dan terlalu banyak berpikir", "Ingat bahwa selesai lebih baik daripada sempurna."],
   P: ["Si penyejuk yang tenang dan cinta damai.", "sabar, kalem, pendengar yang baik", "kurang inisiatif dan suka menunda", "Mulai dari langkah kecil setiap hari agar lebih bergerak."]
 };
-const PASANGAN_DISC = { D: "K", I: "S", S: "P", C: "M" };
 const WARNA_DISC = { D: "#ff6b5e", I: "#ffb020", S: "#3fcf9f", C: "#7c8cff" };
 const besarAwal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-function hitungKepribadian(j) {
-  const n = {}; j.forEach((v) => (n[v] = (n[v] || 0) + 1));
-  const type = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]].map(([a, b]) => ((n["m:" + a] || 0) >= (n["m:" + b] || 0) ? a : b)).join("");
-  const d = {}, t = {};
-  ["D", "I", "S", "C"].forEach((k) => (d[k] = n["d:" + k] || 0));
-  ["K", "S", "M", "P"].forEach((k) => (t[k] = n["t:" + k] || 0));
-  const urut = (c, keys) => keys.slice().sort((x, y) => c[y] - c[x]);
-  return { type, d, t, dk: urut(d, ["D", "I", "S", "C"]), tk: urut(t, ["K", "S", "M", "P"]) };
+/* ---------- TES KEPRIBADIAN: MBTI (40), DISC (24), Temperamen (32) — soal buatan sendiri ---------- */
+const SKALA_SETUJU = [["😄 Sangat setuju", 2], ["🙂 Setuju", 1], ["😐 Tidak setuju", -1], ["🙅 Sangat tidak setuju", -2]];
+// [dimensi 0–3, arah (+1 = huruf pertama, −1 = huruf kedua), pernyataan]. Setiap dimensi: 5 pernyataan ke tiap arah.
+const DIMENSI_MBTI = [
+  ["E", "I", "Ekstrover", "Introver", "mendapat energi dari bergaul dan beraktivitas bersama orang lain", "mendapat energi dari waktu tenang dan menyendiri"],
+  ["S", "N", "Sensing", "Intuition", "berpegang pada fakta nyata, detail, dan pengalaman", "tertarik pada ide, pola, dan berbagai kemungkinan"],
+  ["T", "F", "Thinking", "Feeling", "memutuskan dengan logika dan keadilan", "memutuskan dengan mempertimbangkan perasaan dan nilai"],
+  ["J", "P", "Judging", "Perceiving", "suka terencana, teratur, dan tuntas", "suka fleksibel, spontan, dan terbuka pada perubahan"]
+];
+const SOAL_MBTI = [
+  [0, 1, "Saya mudah memulai obrolan dengan orang yang baru saya kenal."],
+  [0, 1, "Setelah seharian bersama banyak orang, saya justru merasa makin bersemangat."],
+  [0, 1, "Saya lebih mudah memikirkan masalah sambil membicarakannya dengan orang lain."],
+  [0, 1, "Di kelas atau rapat, saya sering menjadi orang pertama yang berbicara."],
+  [0, 1, "Akhir pekan yang ideal bagi saya adalah berkumpul bersama banyak teman."],
+  [0, -1, "Saya butuh waktu sendiri untuk mengisi tenaga setelah bertemu banyak orang."],
+  [0, -1, "Saya lebih nyaman mengobrol berdua daripada dalam kelompok besar."],
+  [0, -1, "Saya biasanya berpikir matang dulu sebelum berbicara."],
+  [0, -1, "Saya lebih senang punya sedikit sahabat dekat daripada banyak kenalan."],
+  [0, -1, "Saya menikmati kegiatan yang bisa dilakukan sendiri, seperti membaca atau menggambar."],
+  [1, 1, "Saya lebih percaya pada hal yang sudah terbukti daripada dugaan."],
+  [1, 1, "Saat belajar, saya suka contoh nyata dan langkah-langkah yang jelas."],
+  [1, 1, "Saya memperhatikan detail kecil yang sering terlewat oleh orang lain."],
+  [1, 1, "Saya lebih suka memakai cara yang sudah biasa dan terbukti berhasil."],
+  [1, 1, "Saya lebih tertarik pada apa yang terjadi sekarang daripada masa depan yang masih jauh."],
+  [1, -1, "Saya sering membayangkan berbagai kemungkinan dan ide baru."],
+  [1, -1, "Saya lebih suka memahami gambaran besarnya dulu, detailnya belakangan."],
+  [1, -1, "Saya senang mencoba cara baru walaupun belum tentu berhasil."],
+  [1, -1, "Saya sering menangkap makna atau pola tersembunyi dari sebuah kejadian."],
+  [1, -1, "Saya suka membicarakan ide, impian, dan rencana masa depan."],
+  [2, 1, "Saat memutuskan sesuatu, saya mengutamakan logika dan untung-ruginya."],
+  [2, 1, "Saya lebih suka mendapat kritik yang jujur daripada pujian yang tidak tulus."],
+  [2, 1, "Saat teman curhat, saya cenderung langsung mencarikan solusi."],
+  [2, 1, "Bagi saya, aturan harus berlaku sama untuk semua orang, tanpa pengecualian."],
+  [2, 1, "Saya bisa tetap tenang dan objektif walaupun orang di sekitar sedang emosi."],
+  [2, -1, "Saya mudah ikut merasakan perasaan orang lain."],
+  [2, -1, "Saat memutuskan sesuatu, saya memikirkan dampaknya bagi perasaan orang lain."],
+  [2, -1, "Saya lebih suka menjaga suasana tetap rukun daripada memenangkan perdebatan."],
+  [2, -1, "Saya sulit menolak ketika ada orang yang meminta tolong."],
+  [2, -1, "Saya senang dikenal sebagai orang yang baik hati dan pengertian."],
+  [3, 1, "Saya suka membuat rencana atau jadwal sebelum melakukan sesuatu."],
+  [3, 1, "Saya merasa lega jika tugas sudah selesai jauh sebelum batas waktu."],
+  [3, 1, "Barang-barang saya biasanya tertata rapi di tempatnya."],
+  [3, 1, "Saya kurang nyaman jika rencana berubah mendadak."],
+  [3, 1, "Saya suka menuntaskan satu pekerjaan sebelum memulai pekerjaan lain."],
+  [3, -1, "Saya lebih suka mengikuti suasana daripada terikat jadwal."],
+  [3, -1, "Saya sering paling bersemangat bekerja menjelang batas waktu."],
+  [3, -1, "Saya senang membiarkan pilihan tetap terbuka sampai saat terakhir."],
+  [3, -1, "Saya mudah menyesuaikan diri ketika rencana tiba-tiba berubah."],
+  [3, -1, "Saya sering mengerjakan beberapa hal sekaligus secara bergantian."]
+];
+const KELOMPOK_MBTI = {
+  NT: ["Si Rasional", "🧠", "#7c8cff", "berpikir logis dan strategis, suka memecahkan masalah rumit", "kadang kurang peka pada perasaan orang lain dan cepat bosan dengan hal rutin"],
+  NF: ["Si Idealis", "💖", "#3fcf9f", "empati tinggi, kreatif, dan pandai memahami orang lain", "mudah terbawa perasaan dan kadang terlalu idealis"],
+  SJ: ["Si Penjaga", "🛡️", "#ffc93c", "bertanggung jawab, teratur, dan bisa diandalkan", "kurang luwes menghadapi perubahan dan mudah khawatir"],
+  SP: ["Si Petualang", "🚀", "#ff6b5e", "praktis, cepat beradaptasi, dan berani bertindak", "mudah bosan dan kurang suka rencana jangka panjang"]
+};
+const BELAJAR_MBTI = {
+  E: "belajar kelompok, diskusi, dan menjelaskan ulang ke orang lain", I: "belajar sendiri di tempat tenang, lalu baru berdiskusi",
+  S: "contoh nyata, praktik, dan langkah demi langkah", N: "gambaran besar dulu, peta pikiran, dan mengaitkan dengan ide baru",
+  T: "memahami alasan logis di balik setiap materi", F: "suasana hangat, cerita, dan pujian yang tulus",
+  J: "jadwal belajar yang jelas dan target harian", P: "variasi cara belajar dan waktu belajar yang pendek-pendek"
+};
+
+// DISC: 24 kelompok, pilih yang PALING menggambarkan diri. Urutan [D, I, S, C], ditampilkan acak.
+const SOAL_DISC = [
+  ["Saya adalah orang yang ...", ["Tegas", "Ramah", "Sabar", "Teliti"]],
+  ["Saya adalah orang yang ...", ["Berani mengambil risiko", "Suka bercerita", "Pendengar yang baik", "Suka aturan yang jelas"]],
+  ["Saya adalah orang yang ...", ["Ingin semuanya cepat selesai", "Penuh semangat", "Tenang", "Berhati-hati"]],
+  ["Saya adalah orang yang ...", ["Suka memimpin", "Suka menghibur", "Suka membantu", "Suka menganalisis"]],
+  ["Cara saya berbicara ...", ["Langsung ke inti", "Ekspresif dan heboh", "Lembut", "Runtut dan jelas"]],
+  ["Saya adalah orang yang ...", ["Kompetitif", "Mudah bergaul", "Setia", "Rapi"]],
+  ["Saya paling suka ...", ["Tantangan", "Keramaian", "Suasana damai", "Ketepatan"]],
+  ["Saya adalah orang yang ...", ["Mandiri", "Optimis", "Mudah menerima", "Penuh pertimbangan"]],
+  ["Saya adalah orang yang ...", ["Fokus pada hasil", "Pandai meyakinkan orang", "Bisa diandalkan", "Perfeksionis"]],
+  ["Saat memutuskan, saya ...", ["Cepat memutuskan", "Mengikuti perasaan", "Minta pendapat orang dulu", "Mengecek semua data dulu"]],
+  ["Saya adalah orang yang ...", ["Berani berpendapat", "Senang dipuji", "Suka bekerja sama", "Suka mengikuti prosedur"]],
+  ["Kelemahan saya ...", ["Tidak sabaran", "Mudah bosan", "Sulit berkata tidak", "Terlalu kritis"]],
+  ["Saya senang ...", ["Mengatur", "Mengobrol", "Menolong", "Memeriksa ulang"]],
+  ["Saya adalah orang yang ...", ["Gigih", "Ceria", "Stabil", "Disiplin"]],
+  ["Yang saya kejar ...", ["Target dan kemenangan", "Teman dan pengakuan", "Kekompakan dan rasa aman", "Kualitas dan kebenaran"]],
+  ["Saya adalah orang yang ...", ["Lugas", "Hangat", "Kalem", "Sistematis"]],
+  ["Saat ada masalah mendadak, saya ...", ["Langsung bertindak", "Mengajak orang berdiskusi", "Menenangkan orang lain", "Mencari penyebabnya dulu"]],
+  ["Yang paling membuat saya kesal ...", ["Orang yang lambat dan bertele-tele", "Suasana yang kaku dan membosankan", "Pertengkaran dan perubahan mendadak", "Pekerjaan yang asal-asalan"]],
+  ["Yang paling saya hindari ...", ["Kehilangan kendali", "Tidak disukai orang", "Kehilangan rasa aman", "Melakukan kesalahan"]],
+  ["Pujian yang paling saya suka ...", ["\"Kamu hebat, targetnya tercapai!\"", "\"Kamu seru dan menginspirasi!\"", "\"Kamu bisa diandalkan.\"", "\"Hasilmu teliti dan rapi.\""]],
+  ["Saya punya jiwa ...", ["Pemimpin", "Penghibur", "Penolong", "Peneliti"]],
+  ["Kelemahan saya ...", ["Keras kepala", "Kurang teliti", "Terlalu menurut", "Terlalu banyak berpikir"]],
+  ["Dalam kelompok, saya biasanya ...", ["Menentukan arah", "Menghidupkan suasana", "Membantu teman", "Memastikan semuanya benar"]],
+  ["Cara belajar atau bekerja yang saya suka ...", ["Cepat dan fokus pada hasil", "Ramai dan banyak interaksi", "Tenang dan bertahap", "Detail dan terstruktur"]]
+];
+const KODE_DISC = ["D", "I", "S", "C"];
+const DISC_EKSTRA = {
+  D: { ikon: "🦁", motivasi: "tantangan, hasil nyata, dan kebebasan bertindak", takut: "kehilangan kendali atau dimanfaatkan orang", tekanan: "menjadi keras dan memaksakan kehendak", belajar: "target yang jelas, tantangan, dan kesempatan memimpin" },
+  I: { ikon: "🦜", motivasi: "pengakuan, pujian, dan suasana yang menyenangkan", takut: "ditolak atau tidak disukai", tekanan: "banyak bicara dan kurang teliti", belajar: "kerja kelompok, diskusi, dan permainan" },
+  S: { ikon: "🐢", motivasi: "rasa aman, kerukunan, dan penghargaan yang tulus", takut: "perubahan mendadak dan pertengkaran", tekanan: "diam, memendam, dan sulit berkata tidak", belajar: "suasana tenang, langkah bertahap, dan contoh yang jelas" },
+  C: { ikon: "🦉", motivasi: "kualitas, ketepatan, dan aturan yang jelas", takut: "dikritik atau berbuat salah", tekanan: "terlalu kritis dan lambat memutuskan", belajar: "penjelasan logis, data, dan waktu untuk mengecek ulang" }
+};
+
+// Temperamen: 32 kelompok (16 kelebihan + 16 kelemahan). Urutan [K, S, M, P], ditampilkan acak.
+const SOAL_TEMPERAMEN = [
+  ["Tegas", "Ceria", "Teliti", "Sabar"], ["Pemberani", "Mudah bergaul", "Setia", "Tenang"],
+  ["Percaya diri", "Ekspresif", "Penuh perasaan", "Pembawa damai"], ["Mandiri", "Lucu", "Rapi dan teratur", "Pendengar yang baik"],
+  ["Pemimpin alami", "Penuh semangat", "Berstandar tinggi", "Mudah menyesuaikan diri"], ["Produktif", "Pandai bercerita", "Kreatif dan berjiwa seni", "Santai"],
+  ["Cepat bertindak", "Spontan", "Berpikir mendalam", "Seimbang"], ["Gigih", "Optimis", "Peka", "Bisa diandalkan"],
+  ["Suka tantangan", "Suka bersenang-senang", "Suka keindahan", "Suka ketenangan"], ["Fokus pada tujuan", "Pandai memotivasi", "Berpikir analitis", "Diplomatis"],
+  ["Yakin pada diri sendiri", "Hangat", "Cermat", "Rendah hati"], ["Praktis", "Disukai banyak orang", "Perfeksionis", "Penurut"],
+  ["Berani mengambil keputusan", "Menghidupkan suasana", "Suka merencanakan", "Menenangkan orang lain"], ["Pekerja keras", "Penuh warna", "Setia kawan", "Konsisten"],
+  ["Tegas pada aturan", "Murah senyum", "Suka merenung", "Murah hati"], ["Punya visi jauh ke depan", "Antusias", "Tekun", "Toleran"],
+  ["Tidak sabaran", "Pelupa", "Mudah murung", "Suka menunda"], ["Mudah marah", "Kurang disiplin", "Terlalu banyak berpikir", "Kurang bersemangat"],
+  ["Suka memerintah", "Suka memotong pembicaraan", "Mudah tersinggung", "Ragu-ragu"], ["Keras kepala", "Mudah bosan", "Pesimis", "Malas memulai"],
+  ["Kurang peka perasaan orang", "Berantakan", "Sulit memaafkan", "Cuek"], ["Gila kerja", "Terlalu banyak bicara", "Terlalu kritis", "Kurang inisiatif"],
+  ["Suka berdebat", "Kurang konsisten", "Terlalu perasa", "Terlalu pendiam"], ["Gengsi meminta maaf", "Suka pamer", "Pemurung", "Takut konflik"],
+  ["Mau menang sendiri", "Mudah terpengaruh", "Pendendam", "Lamban"], ["Tidak sabar dengan kesalahan orang", "Sering lupa janji", "Mudah cemas", "Suka menghindar"],
+  ["Suka mengatur orang lain", "Ingin jadi pusat perhatian", "Sulit merasa puas", "Terlalu santai"], ["Kasar saat kesal", "Ceroboh", "Menarik diri", "Plin-plan"],
+  ["Sulit diajak bersantai", "Boros", "Terlalu memikirkan pendapat orang", "Terlalu mudah mengalah"], ["Ingin semuanya serba cepat", "Sulit fokus", "Perfeksionis berlebihan", "Tidak punya target"],
+  ["Terlalu dominan", "Heboh berlebihan", "Tertutup", "Pasif"], ["Tidak mau kalah", "Lupa waktu", "Mudah curiga", "Sering menunda keputusan"]
+];
+const KODE_TEMP = ["K", "S", "M", "P"];
+const TEMP_EKSTRA = {
+  K: { kelebihan: ["tegas dan berani", "cepat mengambil keputusan", "pekerja keras dan fokus pada tujuan", "mandiri", "pemimpin alami"], kelemahan: ["tidak sabaran", "mudah marah", "suka mengatur orang lain", "kurang peka perasaan orang"], cocok: "memimpin kelompok, lomba, organisasi, dan proyek yang menantang" },
+  S: { kelebihan: ["ceria dan optimis", "mudah bergaul", "pandai bercerita dan menghibur", "spontan dan penuh semangat", "pandai memotivasi"], kelemahan: ["pelupa", "kurang disiplin", "mudah bosan", "terlalu banyak bicara"], cocok: "kegiatan panggung, bercerita, berjualan, dan kerja kelompok" },
+  M: { kelebihan: ["teliti dan rapi", "berpikir mendalam", "kreatif dan berjiwa seni", "setia", "berstandar tinggi"], kelemahan: ["mudah murung dan cemas", "terlalu kritis", "perfeksionis berlebihan", "mudah tersinggung"], cocok: "seni, menulis, sains, perencanaan, dan pekerjaan yang butuh ketelitian" },
+  P: { kelebihan: ["tenang dan sabar", "pendengar yang baik", "pembawa damai", "bisa diandalkan", "mudah menyesuaikan diri"], kelemahan: ["suka menunda", "kurang inisiatif", "ragu-ragu", "terlalu santai"], cocok: "menjadi penengah, merawat, mengajar, dan pekerjaan yang stabil" }
+};
+const CAMPURAN_TEMP = {
+  KS: "pemimpin yang energik dan pandai membujuk: cepat bertindak dan mudah bergaul", KM: "pemimpin yang tegas dan teliti: berstandar tinggi dan sangat fokus pada hasil",
+  KP: "tegas tapi tetap tenang: mampu memimpin tanpa banyak gejolak", SK: "ceria dan berani: suka tampil memimpin dan menghidupkan kelompok",
+  SM: "ekspresif sekaligus perasa: hangat dan kreatif, kadang suasana hatinya naik-turun", SP: "ramah dan santai: disukai banyak orang dan mudah menyesuaikan diri",
+  MK: "pemikir yang tegas: perfeksionis yang berani mengambil keputusan", MS: "pemikir yang hangat: teliti, namun tetap ceria bersama orang terdekat",
+  MP: "tenang, teliti, dan setia: bekerja rapi tanpa banyak bicara", PK: "kalem tapi punya ketegasan: tenang, namun bisa bertindak saat perlu",
+  PS: "santai dan menyenangkan: pembawa damai yang mudah akrab", PM: "tenang dan cermat: sabar, setia, dan berpikir matang"
+};
+
+function hitungMBTI(j, soal) {
+  const skor = [0, 0, 0, 0];
+  soal.forEach((s, i) => { if (typeof j[i] === "number") skor[s.dim] += j[i] * s.arah; });
+  const dim = DIMENSI_MBTI.map((d, i) => {
+    const p = Math.round(((skor[i] + 20) / 40) * 100), pertama = skor[i] >= 0, kuat = Math.abs(p - 50);
+    return { huruf: pertama ? d[0] : d[1], persen: pertama ? p : 100 - p, nama: pertama ? d[2] : d[3], ket: pertama ? d[4] : d[5],
+      kejelasan: kuat < 10 ? "seimbang" : kuat < 25 ? "cukup jelas" : kuat < 40 ? "jelas" : "sangat jelas", d, pKiri: p };
+  });
+  const type = dim.map((x) => x.huruf).join("");
+  return { type, dim, kel: type[1] === "N" ? "N" + type[2] : "S" + type[3] };
 }
-function meteran(c, keys, nm, warna) {
-  return keys.map((k) => { const p = Math.round((c[k] / 8) * 100); return `<div class="batang"><span>${nm[k]}</span><div class="jalur"><div class="isi" style="width:${p}%;background:${warna[k]}"></div></div><b>${p}%</b></div>`; }).join("");
+function hitungPilihan(j, kode) {
+  const n = {}; kode.forEach((k) => (n[k] = 0));
+  j.forEach((v) => { if (n[v] !== undefined) n[v]++; });
+  const urut = kode.slice().sort((a, b) => n[b] - n[a]);
+  return { n, urut, total: j.length };
 }
-function teksBagikan(R) {
-  return `Hasil tes kepribadian ${nama}:\nMBTI: ${R.type} (${MB[R.type][0]})\nDISC: ${DD[R.dk[0]][0]}\nTemperamen: ${TN[R.tk[0]]}\n\nKamu tipe apa? Yuk coba tesnya juga di https://hadirflow.my.id/kuistes`;
+function meteran(c, keys, nm, warna, maks) {
+  return keys.map((k) => { const p = Math.round((c[k] / maks) * 100); return `<div class="batang"><span>${nm[k]}</span><div class="jalur"><div class="isi" style="width:${p}%;background:${warna[k]}"></div></div><b>${p}%</b></div>`; }).join("");
+}
+function blokKartuWA(teks, namaFile) {
+  return `<div class="kotak tanpa-cetak"><h3 style="margin-top:0">📲 Bagikan ke Status WA</h3>
+    <p class="sub-kecil" style="text-align:left">Simpan kartu hasil di bawah, lalu buka WhatsApp, pilih Status, dan unggah gambarnya. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
+    <img id="kartuGambar" alt="Kartu hasil ${esc(nama)}" style="width:100%;max-width:280px;display:block;margin:10px auto;border-radius:16px;border:3px solid var(--line)">
+    <div class="baris-tombol">
+      <a class="tombol" id="kartuUnduh" download="${namaFile}" style="text-decoration:none">💾 Simpan gambar</a>
+      <a class="tombol wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(teks + "\n\nCoba juga gratis di https://hadirflow.my.id/kuistes")}">💬 Kirim ke WhatsApp</a>
+    </div><p class="sub-kecil" id="kartuPesan"></p></div>`;
 }
 function bungkusTeks(ctx, text, x, y, maxW, lh) {
   const kata = text.split(" "), baris = []; let line = "";
@@ -2188,80 +2304,131 @@ function bungkusTeks(ctx, text, x, y, maxW, lh) {
   baris.push(line); baris.forEach((l, i) => ctx.fillText(l, x, y + i * lh)); return baris.length;
 }
 function kotakBulat(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-// Kartu 1080x1920 untuk Status WA
-function gambarKartu(R) {
-  const mb = MB[R.type], W = 1080, H = 1920, cv = document.createElement("canvas");
-  cv.width = W; cv.height = H;
+// Kartu Status WA 1080×1920. o: { latar, gambar (svg) atau emoji, judulAtas, besar, warnaBesar, judul, deskripsi, judulBatang, batang: [[label, 0–1, warna]], penutup }
+function gambarKartuHasil(o) {
+  const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
   const c = cv.getContext("2d"), ink = "#1d1a2f", F = '"Baloo 2", sans-serif';
   const selesai = () => {
-    c.fillStyle = "#5b5770"; c.textAlign = "center"; c.font = "800 50px " + F; c.fillText(nama, W / 2, 590);
-    c.fillStyle = "#ff5a4e"; c.font = "800 210px " + F; c.fillText(R.type, W / 2, 790);
-    c.fillStyle = ink; c.font = "800 70px " + F; c.fillText(mb[0], W / 2, 880);
+    c.textAlign = "center"; c.fillStyle = "#5b5770"; c.font = "800 50px " + F; c.fillText(nama, W / 2, 590);
+    c.fillStyle = o.warnaBesar || "#ff5a4e"; let uk = 200; c.font = `800 ${uk}px ${F}`;
+    while (c.measureText(o.besar).width > W - 220 && uk > 90) { uk -= 10; c.font = `800 ${uk}px ${F}`; }
+    c.fillText(o.besar, W / 2, 780);
+    c.fillStyle = ink; c.font = "800 66px " + F; c.fillText(o.judul, W / 2, 870);
     c.fillStyle = "#5b5770"; c.font = "600 38px " + F;
-    let y = 950 + bungkusTeks(c, mb[1], W / 2, 950, 800, 52) * 52 + 40;
+    let y = 940 + bungkusTeks(c, o.deskripsi, W / 2, 940, 800, 52) * 52 + 30;
     c.fillStyle = "#ece6d6"; c.fillRect(150, y, W - 300, 4); y += 70;
-    c.textAlign = "left"; c.fillStyle = ink; c.font = "800 46px " + F; c.fillText("Gaya DISC: " + DD[R.dk[0]][0], 150, y); y += 30;
-    ["D", "I", "S", "C"].forEach((k) => {
-      const p = R.d[k] / 8; y += 58;
-      c.fillStyle = "#5b5770"; c.font = "800 36px " + F; c.fillText(k, 150, y + 12);
-      kotakBulat(c, 210, y - 14, W - 430, 32, 16); c.fillStyle = "#f1ece0"; c.fill();
-      if (p > 0) { kotakBulat(c, 210, y - 14, Math.max(32, (W - 430) * p), 32, 16); c.fillStyle = WARNA_DISC[k]; c.fill(); }
+    c.textAlign = "left"; c.fillStyle = ink; c.font = "800 44px " + F; c.fillText(o.judulBatang, 150, y); y += 26;
+    o.batang.forEach(([lab, p, warna]) => {
+      y += 62; c.fillStyle = "#5b5770"; c.font = "800 34px " + F; c.fillText(lab, 150, y + 12);
+      kotakBulat(c, 330, y - 14, W - 610, 32, 16); c.fillStyle = "#f1ece0"; c.fill();
+      if (p > 0) { kotakBulat(c, 330, y - 14, Math.max(32, (W - 610) * p), 32, 16); c.fillStyle = warna; c.fill(); }
       c.fillStyle = "#5b5770"; c.textAlign = "right"; c.fillText(Math.round(p * 100) + "%", W - 150, y + 12); c.textAlign = "left";
     });
-    y += 100; c.fillStyle = ink; c.font = "800 46px " + F; c.fillText("Temperamen: " + TN[R.tk[0]], 150, y);
-    y += 56; c.fillStyle = "#5b5770"; c.font = "600 36px " + F; c.fillText("Kelebihan: " + TD[R.tk[0]][1], 150, y);
+    if (o.penutup) { y += 90; c.fillStyle = "#5b5770"; c.font = "600 36px " + F; bungkusTeks(c, o.penutup, 150, y, W - 300, 48); }
     c.textAlign = "center"; kakiLogo(c, W, 1840, "Coba juga di hadirflow.my.id/kuistes", "800 44px " + F, ink);
-    try {
-      const url = cv.toDataURL("image/png");
-      $("kartuGambar").src = url; $("kartuUnduh").href = url;
-    } catch (e) { $("kartuPesan").textContent = "Kartu gambar tidak bisa dibuat di perangkat ini."; }
+    try { const url = cv.toDataURL("image/png"); $("kartuGambar").src = url; $("kartuUnduh").href = url; }
+    catch (e) { $("kartuPesan").textContent = "Kartu gambar tidak bisa dibuat di perangkat ini."; }
   };
-  c.fillStyle = TC[R.tk[0]]; c.fillRect(0, 0, W, H);
+  c.fillStyle = o.latar; c.fillRect(0, 0, W, H);
   c.fillStyle = "rgba(255,255,255,.25)";
   [[120, 140, 90], [960, 260, 130], [90, 1700, 120], [1000, 1820, 90]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
-  c.textAlign = "center"; c.fillStyle = ink; c.font = "800 60px " + F; c.fillText("Hasil tes kepribadianku", W / 2, 110);
+  c.textAlign = "center"; c.fillStyle = ink; c.font = "800 60px " + F; c.fillText(o.judulAtas, W / 2, 110);
   kotakBulat(c, 70, 240, W - 140, 1500, 64); c.fillStyle = "#fff"; c.fill();
-  const img = new Image();
-  img.onload = () => { try { c.drawImage(img, W / 2 - 170, 170, 340, 368); } catch (e) {} selesai(); };
-  img.onerror = selesai;
-  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(maskot(R.tk[0]));
+  if (o.gambar) {
+    const img = new Image();
+    img.onload = () => { try { c.drawImage(img, W / 2 - 170, 170, 340, 368); } catch (e) {} selesai(); };
+    img.onerror = selesai;
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(o.gambar);
+  } else { c.font = "260px " + F; c.fillText(o.emoji || "⭐", W / 2, 470); selesai(); }
 }
+const catatanKepribadian = `<p class="catatan-ortu">Tes ini untuk refleksi diri, bukan pengganti tes psikologi resmi. Hasil bisa sedikit berbeda jika diulang di suasana hati yang berbeda.</p>`;
+const introKepribadian = (jumlah, cara) => `<p><b>${jumlah}</b>. ${cara}</p>
+  <p>Tidak ada jawaban benar atau salah. Jawablah sesuai <b>dirimu sehari-hari</b>, bukan seperti yang kamu inginkan. Jangan terlalu lama berpikir; jawaban pertama biasanya paling jujur.</p>
+  <p class="catatan-ortu">ℹ️ Soal disusun sendiri oleh HadirFlow untuk refleksi diri. Ini bukan tes psikologi resmi. Cocok untuk anak kelas 4 SD ke atas dan orang dewasa.</p>`;
 
-TES.kepribadian = {
-  nama: "Tes Kepribadian (ala MBTI, DISC, Temperamen)", ikon: "🎭", warna: "#ffe0dd",
-  intro: `<div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">${["K", "S", "M", "P"].map((m) => `<div style="width:70px;text-align:center;font-size:13px;font-weight:800">${maskot(m).replace('width="150" height="162"', 'width="70" height="76"')}${TN[m]}</div>`).join("")}</div>
-    <p>MBTI, DISC, dan temperamen dalam <b>28 pertanyaan singkat</b>. Cocok untuk segala umur, termasuk Ayah dan Bunda. Selesai sekitar 5 menit.</p>
-    <p>Tidak ada jawaban benar atau salah. Pilih yang <b>paling mirip dirimu sehari-hari</b>, bukan yang kamu inginkan.</p>
-    <p class="catatan-ortu">ℹ️ Tes ini untuk hiburan dan refleksi diri, bukan pengganti tes psikologi resmi.</p>`,
-  soal: () => SOAL_KEPRIBADIAN.map(([bagian, t, pil]) => ({ t, bagian, o: opsi(pil) })),
-  hasil(j) {
-    const R = hitungKepribadian(j), mb = MB[R.type], D0 = DD[R.dk[0]], D1 = DD[R.dk[1]], T0 = TD[R.tk[0]];
-    const cocok = PASANGAN_DISC[R.dk[0]] === R.tk[0], teks = teksBagikan(R);
+TES.mbti = {
+  nama: "Tes MBTI (16 Tipe Kepribadian)", ikon: "🧩", warna: "#e3e8ff", kartu: true,
+  intro: introKepribadian("40 pernyataan, sekitar 6 menit", "Untuk setiap pernyataan, pilih seberapa setuju kamu: Sangat setuju, Setuju, Tidak setuju, atau Sangat tidak setuju."),
+  soal: () => acak(SOAL_MBTI).map(([dim, arah, t]) => ({ t, bagian: "MBTI", dim, arah, o: opsi(SKALA_SETUJU) })),
+  hasil(j, extra) {
+    const R = hitungMBTI(j, extra.soal), mb = MB[R.type], kel = KELOMPOK_MBTI[R.kel];
+    const teks = `🧩 Hasil Tes MBTI ${nama}: ${R.type} (${mb[0]})\n${R.dim.map((d) => `${d.nama} ${d.persen}%`).join(" • ")}`;
     return {
-      ringkas: `${R.type} • ${D0[0]} • ${TN[R.tk[0]]}`,
-      html: `
-        <div class="kotak tengah" style="background:${TC[R.tk[0]]};border-color:transparent;color:#1d1a2f">${maskot(R.tk[0])}
-          <p style="margin:8px 0 0;font-weight:800">Halo, ${esc(nama)}! Kamu adalah</p>
+      ringkas: `${R.type} • ${mb[0]}`,
+      html: `<div class="kotak tengah" style="background:${kel[2]};border-color:transparent;color:#1d1a2f"><div class="besar">${kel[1]}</div>
+          <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Tipe kepribadianmu</p>
           <div style="font-size:72px;font-weight:800;line-height:1;letter-spacing:2px">${R.type}</div>
-          <h2 style="margin:6px 0">${mb[0]}</h2><p style="margin:0">${mb[1]}</p></div>
-        <div class="kotak"><b>Gaya DISC:</b> ${D0[0]} <span class="sub-kecil">(pendukung: ${D1[0]})</span><br><b>Temperamen:</b> ${TN[R.tk[0]]} <span class="sub-kecil">(campuran: ${TN[R.tk[1]]})</span></div>
-        <h3>📊 Skor DISC</h3>${meteran(R.d, ["D", "I", "S", "C"], { D: "Dominance (D)", I: "Influence (I)", S: "Steadiness (S)", C: "Conscientiousness (C)" }, WARNA_DISC)}
-        <h3>📊 Skor temperamen</h3>${meteran(R.t, ["K", "S", "M", "P"], TN, TC)}
-        <h3>🪞 Gambaran dirimu</h3><p>${esc(nama)}, kamu adalah ${mb[0].toLowerCase()} (${R.type}). ${T0[0]} Dalam bekerja dan bergaul, gayamu cenderung ${D0[0]}: ${D0[1]}, didukung sisi ${D1[0]}. ${cocok ? "Hasil DISC dan temperamenmu saling menguatkan, jadi karaktermu cukup konsisten." : "Hasil DISC dan temperamenmu berbeda arah, artinya kamu punya kombinasi unik dan bisa menyesuaikan diri dengan banyak situasi."}</p>
-        <h3>💪 Kekuatanmu</h3><ul><li>Dari gaya DISC: ${D0[1]}.</li><li>Dari temperamen: ${T0[1]}.</li></ul>
-        <h3>🌱 Yang bisa dikembangkan</h3><ul><li>${besarAwal(D0[2])}.</li><li>Waspadai sifat ${T0[2]}.</li><li>${T0[3]}</li></ul>
+          <h2 style="margin:6px 0">${mb[0]}</h2><p style="margin:0">${mb[1]}</p><p style="margin:6px 0 0"><b>Kelompok:</b> ${kel[0]} (${R.kel})</p></div>
+        <h3>📊 Kekuatan setiap kecenderungan</h3>
+        ${R.dim.map((d) => `<div class="kotak"><b>${d.nama} (${d.huruf}) ${d.persen}%</b> <span class="sub-kecil">• ${d.kejelasan}</span>
+          <div class="batang" style="margin:6px 0 2px"><span>${d.d[2]} (${d.d[0]})</span><div class="jalur"><div class="isi" style="width:${d.pKiri}%;background:var(--navy)"></div></div><b>${d.pKiri}%</b></div>
+          <div class="batang" style="margin:0"><span>${d.d[3]} (${d.d[1]})</span><div class="jalur"><div class="isi" style="width:${100 - d.pKiri}%;background:var(--hf-teal)"></div></div><b>${100 - d.pKiri}%</b></div>
+          <span class="sub-kecil" style="text-align:left;display:block">Kamu ${d.ket}.</span></div>`).join("")}
+        ${R.dim.some((d) => d.kejelasan === "seimbang") ? `<div class="kotak peringatan">⚖️ Ada kecenderungan yang <b>seimbang</b> (${R.dim.filter((d) => d.kejelasan === "seimbang").map((d) => d.d[0] + "/" + d.d[1]).join(", ")}). Artinya kamu bisa luwes di kedua sisi, dan huruf di sana bisa berubah jika tes diulang.</div>` : ""}
+        <h3>💪 Kekuatanmu</h3><p>${besarAwal(kel[3])}.</p>
+        <h3>🌱 Yang bisa dikembangkan</h3><p>${besarAwal(kel[4])}.</p>
+        <h3>📚 Cara belajar yang cocok</h3><ul>${R.type.split("").map((h) => `<li><b>${h}:</b> ${BELAJAR_MBTI[h]}</li>`).join("")}</ul>
         <h3>💼 Pekerjaan dan kegiatan yang cocok</h3><p>${besarAwal(mb[2])}.</p>
+        ${blokKartuWA(teks, "hasil-mbti.png")}${catatanKepribadian}`,
+      setelah: () => gambarKartuHasil({ latar: kel[2], emoji: kel[1], judulAtas: "Hasil Tes MBTI-ku", besar: R.type, warnaBesar: "#072B6B", judul: mb[0], deskripsi: mb[1],
+        judulBatang: "Kecenderungan:", batang: R.dim.map((d) => [d.nama, d.persen / 100, "#02a581"]), penutup: "" })
+    };
+  }
+};
+
+TES.disc = {
+  nama: "Tes DISC (Gaya Perilaku)", ikon: "🎯", warna: "#ffe0dd", kartu: true,
+  intro: introKepribadian("24 kelompok pilihan, sekitar 4 menit", "Di setiap kelompok ada 4 pilihan. Pilih satu yang <b>paling</b> menggambarkan dirimu."),
+  soal: () => SOAL_DISC.map(([t, pil]) => ({ t, bagian: "DISC", o: acak(pil.map((teks, i) => ({ teks, nilai: KODE_DISC[i] }))) })),
+  hasil(j) {
+    const R = hitungPilihan(j, KODE_DISC), p = R.urut[0], q = R.urut[1], D0 = DD[p], D1 = DD[q], E = DISC_EKSTRA[p];
+    const dukung = R.n[q] >= R.total * 0.2;   // gaya pendukung hanya ditampilkan jika skornya cukup berarti
+    const nmDisc = { D: "Dominance (D)", I: "Influence (I)", S: "Steadiness (S)", C: "Conscientiousness (C)" };
+    const teks = `🎯 Hasil Tes DISC ${nama}: gaya ${D0[0]} (${p})${dukung ? `, pendukung ${D1[0]} (${q})` : ""}\n${KODE_DISC.map((k) => `${k} ${Math.round((R.n[k] / R.total) * 100)}%`).join(" • ")}`;
+    return {
+      ringkas: `${dukung ? p + "/" + q : p} • ${D0[0]}`,
+      html: `<div class="kotak tengah" style="background:${WARNA_DISC[p]};border-color:transparent;color:#1d1a2f"><div class="besar">${E.ikon}</div>
+          <p style="margin:4px 0 0;font-weight:800">Halo, ${esc(nama)}! Gaya perilakumu</p>
+          <div style="font-size:64px;font-weight:800;line-height:1">${p}${dukung ? `<span style="font-size:36px">/${q}</span>` : ""}</div>
+          <h2 style="margin:6px 0">${D0[0]}</h2><p style="margin:0">Gaya utama <b>${D0[0]}</b>${dukung ? `, didukung <b>${D1[0]}</b>` : ", sangat menonjol"}.</p></div>
+        <h3>📊 Skor DISC</h3>${meteran(R.n, KODE_DISC, nmDisc, WARNA_DISC, R.total)}
+        <h3>💪 Kekuatanmu</h3><ul><li>${besarAwal(D0[1])}.</li>${dukung ? `<li>Dari sisi ${D1[0]}: ${D1[1]}.</li>` : ""}</ul>
+        <h3>🔥 Yang membuatmu bersemangat</h3><p>${besarAwal(E.motivasi)}.</p>
+        <h3>😟 Yang paling kamu hindari</h3><p>${besarAwal(E.takut)}.</p>
+        <h3>⚠️ Saat tertekan, kamu cenderung</h3><p>${besarAwal(E.tekanan)}.</p>
+        <h3>🌱 Yang bisa dikembangkan</h3><p>${besarAwal(D0[2])}.</p>
+        <h3>📚 Cara belajar atau bekerja yang cocok</h3><p>${besarAwal(E.belajar)}.</p>
         <h3>💬 Cara terbaik berkomunikasi denganmu</h3><p>${D0[3]}</p>
-        <div class="kotak tanpa-cetak"><h3 style="margin-top:0">📲 Bagikan ke Status WA</h3>
-          <p class="sub-kecil" style="text-align:left">Simpan kartu hasil di bawah, lalu buka WhatsApp, pilih Status, dan unggah gambarnya. Kalau tombol simpan tidak berfungsi, tekan lama gambarnya.</p>
-          <img id="kartuGambar" alt="Kartu hasil tes kepribadian ${esc(nama)}" style="width:100%;max-width:280px;display:block;margin:10px auto;border-radius:16px;border:3px solid var(--line)">
-          <div class="baris-tombol">
-            <a class="tombol" id="kartuUnduh" download="hasil-tes-kepribadian.png" style="text-decoration:none">💾 Simpan gambar</a>
-            <a class="tombol" style="background:#1faa59;box-shadow:0 5px 0 #168544;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(teks)}">💬 Kirim ke WhatsApp</a>
-          </div>
-          <p class="sub-kecil" id="kartuPesan"></p></div>
-        <p class="catatan-ortu">Tes ini untuk hiburan dan refleksi diri, bukan pengganti tes psikologi resmi.</p>`,
-      setelah: () => gambarKartu(R)
+        ${blokKartuWA(teks, "hasil-disc.png")}${catatanKepribadian}`,
+      setelah: () => gambarKartuHasil({ latar: WARNA_DISC[p], emoji: E.ikon, judulAtas: "Hasil Tes DISC-ku", besar: dukung ? p + "/" + q : p, warnaBesar: "#072B6B", judul: D0[0], deskripsi: besarAwal(D0[1]) + ".",
+        judulBatang: "Skor DISC:", batang: KODE_DISC.map((k) => [k, R.n[k] / R.total, WARNA_DISC[k]]), penutup: "" })
+    };
+  }
+};
+
+TES.temperamen = {
+  nama: "Tes Temperamen (4 Tipe)", ikon: "🌡️", warna: "#fff1b8", kartu: true,
+  intro: `<div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">${KODE_TEMP.map((m) => `<div style="width:70px;text-align:center;font-size:13px;font-weight:800">${maskot(m).replace('width="150" height="162"', 'width="70" height="76"')}${TN[m]}</div>`).join("")}</div>` +
+    introKepribadian("32 kelompok pilihan, sekitar 5 menit", "Di setiap kelompok ada 4 sifat. Pilih satu yang <b>paling</b> menggambarkan dirimu. Separuh kelompok berisi kelebihan, separuh lagi kelemahan; jawablah dengan jujur."),
+  soal: () => SOAL_TEMPERAMEN.map((pil, i) => ({ t: i < 16 ? "Kelebihan: mana yang paling menggambarkan dirimu?" : "Kelemahan: mana yang paling menggambarkan dirimu?", bagian: i < 16 ? "Temperamen • Kelebihan" : "Temperamen • Kelemahan", o: acak(pil.map((teks, k) => ({ teks, nilai: KODE_TEMP[k] }))) })),
+  hasil(j) {
+    const R = hitungPilihan(j, KODE_TEMP), p = R.urut[0], q = R.urut[1], T0 = TD[p], E = TEMP_EKSTRA[p];
+    const campur = R.n[q] >= R.total * 0.25;
+    const teks = `🌡️ Hasil Tes Temperamen ${nama}: ${TN[p]}${campur ? "–" + TN[q] : ""}\n${KODE_TEMP.map((k) => `${TN[k]} ${Math.round((R.n[k] / R.total) * 100)}%`).join(" • ")}`;
+    return {
+      ringkas: TN[p] + (campur ? "–" + TN[q] : ""),
+      html: `<div class="kotak tengah" style="background:${TC[p]};border-color:transparent;color:#1d1a2f">${maskot(p)}
+          <p style="margin:8px 0 0;font-weight:800">Halo, ${esc(nama)}! Temperamenmu</p>
+          <div style="font-size:52px;font-weight:800;line-height:1.05">${TN[p]}${campur ? `<span style="font-size:30px"> – ${TN[q]}</span>` : ""}</div>
+          <p style="margin:6px 0 0">${T0[0]}${campur ? ` Campuranmu: <b>${CAMPURAN_TEMP[p + q]}</b>.` : ""}</p></div>
+        <h3>📊 Skor temperamen</h3>${meteran(R.n, KODE_TEMP, TN, TC, R.total)}
+        <h3>💪 Kelebihanmu</h3><ul>${E.kelebihan.map((x) => `<li>${besarAwal(x)}</li>`).join("")}</ul>
+        <h3>🌱 Yang perlu dijaga</h3><ul>${E.kelemahan.map((x) => `<li>${besarAwal(x)}</li>`).join("")}</ul>
+        <h3>💡 Saran untukmu</h3><p>${T0[3]}</p>
+        <h3>🎯 Kegiatan yang cocok</h3><p>${besarAwal(E.cocok)}.</p>
+        ${blokKartuWA(teks, "hasil-temperamen.png")}${catatanKepribadian}`,
+      setelah: () => gambarKartuHasil({ latar: TC[p], gambar: maskot(p), judulAtas: "Hasil Tes Temperamenku", besar: TN[p], warnaBesar: "#072B6B", judul: campur ? "campuran " + TN[q] : "Temperamen utama", deskripsi: T0[0],
+        judulBatang: "Skor temperamen:", batang: KODE_TEMP.map((k) => [TN[k], R.n[k] / R.total, TC[k]]), penutup: "Kelebihan: " + E.kelebihan.slice(0, 3).join(", ") + "." })
     };
   }
 };
@@ -2462,7 +2629,7 @@ function terapkanTautan() {
     renderPilihan();
     if (pilihanMapel) $("infoPilihan").textContent = "✅ Kamu memilih: " + MAPEL_INFO[pilihanMapel].ikon + " " + MAPEL_INFO[pilihanMapel].nama + " • " + KELAS_INFO[kelasAktif].nama;
   }
-  if (TES[PARAM.tes]) gantiTab("tabDiri");
+  if (TES[PARAM.tes] || PARAM.tes === "kepribadian") gantiTab("tabDiri");
   if (PARAM.tab === "guru") gantiTab("tabGuru");
 }
 function terapkanKuisGuru() {
@@ -2527,7 +2694,7 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  ["otak", "mesin", "kepribadian", "kekuatan", "mood", "darah"].forEach((id) => {
+  ["otak", "mesin", "mbti", "disc", "temperamen", "kekuatan", "mood", "darah"].forEach((id) => {
     const t = TES[id], b = document.createElement("button"), akhir = n ? baca(kunci("tes-" + id, n), null) : null;
     b.type = "button"; b.className = "mapel"; b.style.background = t.warna;
     b.innerHTML = `<span class="ikon">${t.ikon}</span><b>${t.nama}</b><small>${akhir ? "Terakhir: " + esc(akhir.ringkas) : "Belum dicoba"}</small>`;
@@ -2606,7 +2773,7 @@ function selesaiTes() {
   bukaHasil(() => {
     tampilkan("layarHasilTes"); bunyi("selesai");
     if (id !== "mood" && id !== "darah") konfeti(50);
-  }, "promoHasilTes", { bagikan: id === "mood" || id === "kepribadian" ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null });
+  }, "promoHasilTes", { bagikan: id === "mood" || t.kartu ? null : (h.bagikan || `${t.ikon} Hasil ${t.nama} ${nama}: ${h.ringkas}`), piagam: h.piagam || null });
 }
 function gantiTab(id) {
   document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("aktif", b.dataset.tab === id));
@@ -2624,6 +2791,7 @@ document.querySelectorAll("[data-buka]").forEach((b) => b.addEventListener("clic
   const id = b.getAttribute("data-buka");
   if (id === "pelajaran") { gantiTab("tabPelajaran"); $("daftarJenjang").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
   if (id === "guru") { gantiTab("tabGuru"); $("guruNama").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+  if (id === "kepribadian") { gantiTab("tabDiri"); $("daftarTes").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
   gantiTab("tabDiri");
   if (!$("namaSiswa").value.trim()) { $("namaSiswa").focus(); $("pesanError").textContent = "Tulis nama anak dulu, lalu pilih tesnya. 😊"; return; }
   bukaTes(id);

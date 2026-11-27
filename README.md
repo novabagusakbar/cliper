@@ -79,6 +79,15 @@ Setelah dijalankan, **semua file** di `kuistes/` mengikuti GitHub secara otomati
 
 Alternatif tanpa nginx di host: `Dockerfile` di repo ini menyajikan kuis di `/kuistes/` memakai nginx di dalam container.
 
+## Tes kepribadian (soal disusun sendiri)
+| Tes | Jumlah | Cara menjawab | Hasil |
+|---|---|---|---|
+| 🧩 MBTI | 40 pernyataan (10 per dimensi, 5 ke tiap arah) | Sangat setuju … Sangat tidak setuju | 16 tipe + persentase & tingkat kejelasan E/I, S/N, T/F, J/P, kelompok (NT/NF/SJ/SP), cara belajar, pekerjaan |
+| 🎯 DISC | 24 kelompok (pilihan diacak) | Pilih yang paling menggambarkan diri | Gaya utama (+ pendukung bila ≥ 20%), motivasi, perilaku saat tertekan, cara berkomunikasi |
+| 🌡️ Temperamen | 32 kelompok: 16 kelebihan + 16 kelemahan (diacak) | Pilih yang paling menggambarkan diri | Temperamen utama + campuran (bila ≥ 25%), kelebihan, yang perlu dijaga, kegiatan cocok |
+
+Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asli MBTI naik dari 85% (versi 12 soal) menjadi 99%; DISC dan Temperamen dari 95% menjadi 100%. Menjawab "Sangat setuju" untuk semua pernyataan menghasilkan 50% "seimbang" di setiap dimensi. Ketiganya bukan tes psikologi resmi.
+
 ## Fitur belajar
 - **Mode Tryout** (SD 20 soal/30 menit, SMP 30/60, SMA 40/90): tanpa pembahasan sampai selesai, ada hitung mundur, soal yang belum dijawab dihitung salah saat waktu habis.
 - **Soal dibacakan** (🔊) memakai suara bawaan perangkat; otomatis untuk TK dan SD kelas 1–2.
