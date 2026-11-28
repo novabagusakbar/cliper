@@ -119,6 +119,11 @@ Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asl
 - **Kit Promosi** (`/kuistes/promosi/`, tidak diindeks Google): 6 gambar promosi (3 Status 1080×1920, 3 Postingan 1080×1080), 5 template pesan WhatsApp, 3 caption media sosial, ide video pendek, dan jadwal sebar 14 hari. Gambar dibuat dari `src/promosi/promosi.html` dengan `node deploy/buat-gambar-promosi.js`.
 - **Mode Sekolah**: di tab Guru isi *Nama sekolah* (opsional, parameter `s=`). Nama sekolah tampil di banner murid, piagam ("Didukung HadirFlow"), kartu hasil, dan kepala rekap; di bawah rekap ada ajakan absensi HadirFlow untuk sekolah tersebut.
 
+## Suara pembaca soal
+- **TK**: setiap kalimat soal dan pilihan sudah direkam dengan suara AI gratis **Piper** (model `id_ID-news_tts-medium`), 370 rekaman di `kuistes/suara/tk/` (±3,8 MB), diputar berurutan per bagian. Huruf tunggal dieja cara Indonesia (B = "be"). Kalimat yang belum terekam otomatis memakai suara HP.
+- Rekam ulang setelah soal TK berubah: `node deploy/kumpulkan-kalimat-tk.js` lalu `PIPER_MODEL=…/id_ID-news_tts-medium.onnx python3 deploy/buat-suara-tk.py`, lalu build.
+- **Kelas lain**: suara HP, otomatis memilih suara Indonesia paling alami (Google/Natural/Enhanced), dibaca per bagian; pilihan suara di menu 🔊 Suara pembaca soal.
+
 ## Fitur belajar
 - **🔥 Tantangan Harian**: 5 soal campuran per hari sesuai kelas, kalender 7 hari, hitungan hari beruntun, lencana 3/7/14/30/100 hari (dengan piagam). Mengulang di hari yang sama tercatat sebagai latihan tambahan.
 - **📋 Profil Lengkap Anak**: gabungan semua hasil tes + rapor kuis + Tantangan Harian dalam satu halaman cetak/PDF: gambaran anak, resep belajar gabungan, kegiatan pendukung, arah cita-cita, dan tes yang belum dicoba.

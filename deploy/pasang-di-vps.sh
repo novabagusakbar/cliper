@@ -57,7 +57,7 @@ TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 V="?v=$(date +%s)"
 curl -fsSL --max-time 60 "$SUMBER/daftar-file.txt$V" -o "$TMP/daftar" || exit 0
 grep -qE '^[0-9a-f]{64}  index\.html$' "$TMP/daftar" || exit 0
-[ "$(wc -l < "$TMP/daftar")" -le 400 ] || exit 0
+[ "$(wc -l < "$TMP/daftar")" -le 3000 ] || exit 0
 BERUBAH=0
 while read -r HASH REL; do
   [[ "$HASH" =~ ^[0-9a-f]{64}$ ]] || continue

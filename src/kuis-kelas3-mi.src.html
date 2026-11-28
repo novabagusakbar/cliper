@@ -1849,7 +1849,7 @@ function lanjut() {
 
 function selesai() {
   hentikanTimer();
-  try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {}
+  hentikanSuara();
   $("barProgress").style.width = "100%";
   const total = soalAktif.length;
   const nilai = Math.round((skor / total) * 100);
@@ -2772,7 +2772,7 @@ function suaraTerbaik() {
   return d.filter((v) => v.name === pilih)[0] || d.slice().sort((a, b) => skorSuara(b) - skorSuara(a))[0] || null;
 }
 function ucapkan(bagian, anak) {
-  speechSynthesis.cancel();
+  hentikanSuara();
   const v = suaraTerbaik();
   bagian.filter(Boolean).forEach((teks) => {
     const u = new SpeechSynthesisUtterance(teks);
@@ -2781,7 +2781,33 @@ function ucapkan(bagian, anak) {
     speechSynthesis.speak(u);
   });
 }
+// Rekaman suara AI (Piper, gratis) untuk semua kalimat kuis TK: kalimat -> kuistes/suara/tk/<nama>.mp3
+const SUARA_TK = /*SUARA_TK*/{};
+const ALAMAT_SUARA = (location.protocol === "file:" ? "kuistes/" : "") + "suara/tk/";
+let pemutar = null, antreSuara = [];
+function hentikanSuara() { antreSuara = []; try { if (pemutar) pemutar.pause(); } catch (e) {} try { if (BISA_BICARA) speechSynthesis.cancel(); } catch (e) {} }
+function putarRekaman(bagian) {
+  // true jika semua bagian punya rekaman; diputar berurutan dengan satu elemen audio (aman untuk iPhone)
+  const nama = bagian.filter(Boolean).map((b) => SUARA_TK[b]);
+  if (!nama.length || nama.some((x) => !x) || typeof Audio === "undefined") return false;
+  hentikanSuara();
+  if (!pemutar) { pemutar = new Audio(); pemutar.addEventListener("ended", () => setTimeout(lanjutRekaman, 220)); pemutar.addEventListener("error", () => setTimeout(lanjutRekaman, 50)); }
+  antreSuara = nama.slice();
+  lanjutRekaman();
+  return true;
+}
+function lanjutRekaman() {
+  if (!antreSuara.length) return;
+  pemutar.src = ALAMAT_SUARA + antreSuara.shift() + ".mp3";
+  try { const j = pemutar.play(); if (j && j.catch) j.catch(() => {}); } catch (e) {}
+}
 function bacakanSoal(t, opsi) {
+  const tk = KELAS_INFO[kelasAktif] && KELAS_INFO[kelasAktif].jenjang === "tk";
+  if (tk) {
+    const bagian = [teksUcapan(t)];
+    (opsi || []).forEach((o, i) => { const u = teksUcapan(o); if (u.trim()) bagian.push("ABCDE"[i] + ".", u); });
+    if (putarRekaman(bagian)) return;
+  }
   if (!BISA_BICARA) return;
   try {
     // dibacakan per bagian (soal, lalu tiap pilihan) supaya ada jeda alami, tidak satu kalimat panjang
