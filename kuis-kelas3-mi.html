@@ -286,6 +286,14 @@
   .lencana-harian i.dapat { filter: none; opacity: 1; }
   .selesai-harian { font-weight: 800; color: #17603a; font-size: 15px; }
   .tombol.kecil { padding: 8px 18px; font-size: 17px; }
+  .kartu-pas { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e3f0ff, #f0e9ff); border: 3px solid #c9dafc; border-radius: 20px; padding: 12px 14px; margin-bottom: 16px; color: var(--ink); }
+  .kartu-pas .ik { font-size: 34px; } .kartu-pas .isi { flex: 1; min-width: 0; } .kartu-pas b { display: block; font-size: 18px; } .kartu-pas small { display: block; color: #5b5770; font-size: 14px; }
+  .kartu-pas em { font-style: normal; font-weight: 800; color: #0b5fa5; white-space: nowrap; }
+  .status-pas { display: inline-block; border: 2px solid; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+  .tabel-pas { font-size: 15px; } .tabel-pas td, .tabel-pas th { vertical-align: middle; padding: 6px 4px; }
+  .tabel-pas .tombol.kecil { padding: 6px 9px; font-size: 13px; white-space: nowrap; margin: 0; box-shadow: 0 3px 0 var(--primary-dark); }
+  @media (max-width: 420px) { .status-pas { font-size: 12px; padding: 1px 6px; } }
+  @media (max-width: 360px) { .status-pas .st-teks { display: none; } .tabel-pas { font-size: 14px; } }
   .kartu-profil { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e8f7f2, #e6f0ff); border: 3px solid #bfe6da; border-radius: 20px; padding: 12px 14px; margin-bottom: 14px; color: var(--ink); }
   .kartu-profil .ik { font-size: 34px; }
   .kartu-profil .isi { flex: 1; min-width: 0; }
@@ -489,6 +497,7 @@
 
       <div id="tabPelajaran" class="isi-tab aktif">
         <div id="kartuHarian"></div>
+        <div id="kartuPAS"></div>
         <p class="judul">🎒 Pilih jenjang:</p>
         <div class="pilih-chip" id="daftarJenjang"></div>
         <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
@@ -3698,12 +3707,18 @@ function konfeti() {
 }
 function tampilkan(id) {
   try {
-    if (BISA_BICARA) speechSynthesis.cancel();
+    hentikanSuara();
   } catch (e) {}
   document.querySelectorAll(".screen").forEach(function (s) {
     return s.classList.remove("aktif");
   });
   $(id).classList.add("aktif");
+  if (id === "layarMulai") {
+    try {
+      renderHarian();
+      renderPAS();
+    } catch (e) {}
+  }
   try {
     window.scrollTo({
       top: 0,
@@ -3807,6 +3822,7 @@ function renderMode() {
 function perbaruiInfoMapel() {
   var n = $("namaSiswa").value.trim();
   renderHarian();
+  renderPAS();
   document.querySelectorAll("#daftarMapel .mapel").forEach(function (b) {
     var kode = b.dataset.kode;
     var teks = "♾️ Soal selalu baru";
@@ -4094,7 +4110,7 @@ function selesai() {
         n: nilai
       }))
     },
-    banding: kotakBanding("kuis", String(nilai)),
+    banding: kotakBanding("kuis", String(nilai)) + (modeAktif === "tryout" && !KUIS_GURU ? "<div class=\"kotak-promo\"><b>\uD83D\uDCDD Peta Kesiapan ".concat(musimUjian().nama, "</b><p>Lihat kesiapanmu di semua pelajaran ").concat(esc(KELAS_INFO[kelasAktif].nama), ", lalu tryout pelajaran yang belum.</p><button type=\"button\" class=\"tombol\" data-buka-pas>\uD83D\uDCDD Buka Peta Kesiapan</button></div>") : ""),
     piagam: nilai >= 70 ? "atas nilai ".concat(nilai, " pada ").concat(jenis, " ").concat(m.nama, " ").concat(KELAS_INFO[kelasAktif].nama) : null,
     guru: KUIS_GURU ? {
       nama: KUIS_GURU.nama,
@@ -5430,6 +5446,10 @@ function isiPromo(el, opsi) {
     var kb = el.querySelector(".kotak-bagikan");
     if (kb) pasangBagikan(kb, opsi.kartu);
   }
+  var bp = el.querySelector("[data-buka-pas]");
+  if (bp) bp.addEventListener("click", function () {
+    return bukaPetaPAS("layarHasil");
+  });
   var b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", function () {
     try {
@@ -8723,6 +8743,152 @@ function pasangBagikan(el, o) {
     tampil(format);
   });
 }
+
+/* ---------- 13. PERSIAPAN PAS / UJIAN AKHIR SEMESTER: peta kesiapan per pelajaran dari nilai tryout ---------- */
+function musimUjian() {
+  var b = new Date().getMonth(); // 0 = Januari
+  if (b >= 10 || b === 0) return {
+    nama: "PAS/ASAS Semester Ganjil",
+    pendek: "PAS"
+  };
+  if (b >= 3 && b <= 5) return {
+    nama: "PAT/ASAT Kenaikan Kelas",
+    pendek: "PAT"
+  };
+  return {
+    nama: "Ujian Akhir Semester",
+    pendek: "Ujian"
+  };
+}
+var NAMA_STATUS_PAS = [[80, "🟢", "Siap", "#02a581"], [60, "🟡", "Hampir siap", "#f0b400"], [0, "🔴", "Perlu latihan", "#e2563b"]];
+function statusNilai(n) {
+  return n == null ? ["⚪", "Belum tryout", "#c9cfdb"] : NAMA_STATUS_PAS.find(function (_ref62) {
+    var _ref63 = _slicedToArray(_ref62, 1),
+      b = _ref63[0];
+    return n >= b;
+  }).slice(1);
+}
+function dataKesiapan(n, k) {
+  var r = n ? baca(kunci("rapor", n), []) : [],
+    daftar = mapelKelas(k);
+  var baris = daftar.map(function (m) {
+    var try_ = r.filter(function (e) {
+        return e.k === k && e.m === m && e.mode === "tryout";
+      }),
+      lat = r.filter(function (e) {
+        return e.k === k && e.m === m && e.mode !== "tryout";
+      });
+    var akhir = try_.length ? try_[try_.length - 1] : null;
+    return {
+      m: m,
+      n: akhir ? akhir.n : null,
+      kali: try_.length,
+      latihan: lat.length ? Math.round(lat.slice(-5).reduce(function (a, e) {
+        return a + e.n;
+      }, 0) / Math.min(5, lat.length)) : null
+    };
+  });
+  var sudah = baris.filter(function (x) {
+      return x.n != null;
+    }),
+    siap = Math.round(baris.reduce(function (a, x) {
+      return a + (x.n || 0);
+    }, 0) / daftar.length);
+  return {
+    baris: baris,
+    sudah: sudah.length,
+    total: daftar.length,
+    siap: siap,
+    rata: sudah.length ? Math.round(sudah.reduce(function (a, x) {
+      return a + x.n;
+    }, 0) / sudah.length) : null
+  };
+}
+function renderPAS() {
+  var el = $("kartuPAS");
+  if (!el) return;
+  if (KUIS_GURU || TES_GURU || !TRYOUT[jenjangAktif]) {
+    el.innerHTML = "";
+    return;
+  }
+  var n = $("namaSiswa").value.trim(),
+    M = musimUjian(),
+    D = dataKesiapan(n, kelasAktif);
+  el.innerHTML = "<button type=\"button\" class=\"kartu-pas\" id=\"btnPAS\"><span class=\"ik\">\uD83D\uDCDD</span><span class=\"isi\"><b>Persiapan ".concat(M.nama, "</b>\n    <small>").concat(KELAS_INFO[kelasAktif].nama, ": ").concat(D.sudah ? "".concat(D.sudah, "/").concat(D.total, " pelajaran sudah tryout \u2022 kesiapan ").concat(D.siap, "%") : "tryout ".concat(TRYOUT[jenjangAktif][0], " soal per pelajaran, lalu lihat peta kesiapanmu"), "</small>\n    <span class=\"jalur-profil\"><span style=\"width:").concat(D.siap, "%\"></span></span></span><em>Peta \u203A</em></button>");
+  $("btnPAS").addEventListener("click", function () {
+    return bukaPetaPAS("layarMulai");
+  });
+}
+function mulaiTryoutPAS(m) {
+  if (!$("namaSiswa").value.trim()) {
+    tampilkan("layarMulai");
+    gantiTab("tabPelajaran");
+    $("pesanError").textContent = "Tulis namamu dulu, ya! 😊";
+    $("namaSiswa").focus();
+    return;
+  }
+  keluarHarian();
+  pilihanMapel = m;
+  modeAktif = "tryout";
+  mulai();
+}
+function bukaPetaPAS(asal) {
+  nama = $("namaSiswa").value.trim() || nama;
+  if (!nama) {
+    gantiTab("tabPelajaran");
+    $("pesanError").textContent = "Tulis namamu dulu untuk melihat peta kesiapan. 😊";
+    $("namaSiswa").focus();
+    return;
+  }
+  layarAsalRapor = asal || "layarMulai";
+  var M = musimUjian(),
+    D = dataKesiapan(nama, kelasAktif),
+    to = TRYOUT[jenjangAktif],
+    kls = KELAS_INFO[kelasAktif].nama;
+  var lemah = D.baris.filter(function (x) {
+      return x.n != null && x.n < 60;
+    }),
+    belum = D.baris.filter(function (x) {
+      return x.n == null;
+    });
+  var teks = "\uD83D\uDCDD Kesiapan ".concat(M.pendek, " ").concat(nama, " (").concat(kls, "): ").concat(D.siap, "%\n").concat(D.baris.map(function (x) {
+    return "".concat(MAPEL_INFO[x.m].nama, ": ").concat(x.n == null ? "belum" : x.n);
+  }).join(" • "), "\n\nSudah siap ").concat(M.pendek, "? Latihan tryout gratis per pelajaran \uD83D\uDC49 ").concat(URL_KUIS, "latihan-pas/?utm_source=bagikan&utm_medium=pas");
+  var kartu = {
+    namaFile: "kesiapan-pas.png",
+    teks: teks,
+    kartu: {
+      latar: "#dff0ff",
+      emoji: "📝",
+      judulAtas: "Kesiapan ".concat(M.pendek, "-ku"),
+      besar: D.siap + "%",
+      warnaBesar: "#0b5fa5",
+      judul: kls,
+      deskripsi: "".concat(D.sudah, " dari ").concat(D.total, " pelajaran sudah tryout"),
+      judulBatang: "Nilai tryout terakhir:",
+      batang: D.baris.map(function (x) {
+        return [MAPEL_INFO[x.m].nama.replace("Pendidikan Agama Islam", "PAI").replace("Bahasa ", "B. "), (x.n || 0) / 100, statusNilai(x.n)[2], x.n == null ? "–" : String(x.n)];
+      }),
+      ajakan: "Sudah siap ".concat(M.pendek, "? Coba gratis \uD83D\uDC47"),
+      seruan: "Ayo siapkan ujian bareng! 📚"
+    }
+  };
+  $("isiRapor").innerHTML = "<div class=\"tengah\"><div style=\"font-size:52px\">\uD83D\uDCDD</div><h2 style=\"margin:4px 0 0\">Peta Kesiapan ".concat(esc(M.nama), "</h2><p class=\"sub-kecil\">").concat(esc(nama), " \u2022 ").concat(esc(kls), " \u2022 ").concat(tglHariIni(), "</p></div>\n    <div class=\"panel-skor\"><div class=\"angka\">").concat(D.siap, "<small>%</small></div><span class=\"kategori\">").concat(D.siap >= 80 ? "Siap menghadapi ujian! 🎉" : D.siap >= 60 ? "Hampir siap 💪" : D.sudah ? "Ayo terus latihan 📚" : "Mulai tryout pertamamu", "</span>\n      <span class=\"info\">").concat(D.sudah, "/").concat(D.total, " pelajaran sudah tryout").concat(D.rata != null ? " \u2022 rata-rata nilai ".concat(D.rata) : "", "</span></div>\n    <p class=\"sub-kecil\" style=\"text-align:left\">Kesiapan = rata-rata nilai tryout terakhir dari <b>semua</b> pelajaran (yang belum dicoba dihitung 0). Tryout: ").concat(to[0], " soal, ").concat(to[1], " menit, tanpa pembahasan sampai selesai, seperti ujian sungguhan.</p>\n    <table class=\"tabel tabel-pas\"><thead><tr><th>Pelajaran</th><th class=\"angka\">Nilai</th><th>Status</th><th></th></tr></thead><tbody>\n    ").concat(D.baris.map(function (x) {
+    var s = statusNilai(x.n);
+    return "<tr><td>".concat(MAPEL_INFO[x.m].ikon, " ").concat(esc(MAPEL_INFO[x.m].nama)).concat(x.kali > 1 ? "<br><span class=\"sub-kecil\" style=\"text-align:left\">".concat(x.kali, "\xD7 tryout</span>") : x.n == null && x.latihan != null ? "<br><span class=\"sub-kecil\" style=\"text-align:left\">latihan: ".concat(x.latihan, "</span>") : "", "</td>\n      <td class=\"angka\"><b>").concat(x.n == null ? "–" : x.n, "</b></td><td><span class=\"status-pas\" style=\"border-color:").concat(s[2], "\" title=\"").concat(s[1], "\">").concat(s[0], "<span class=\"st-teks\"> ").concat(s[1], "</span></span></td>\n      <td class=\"tanpa-cetak\"><button type=\"button\" class=\"tombol kecil\" data-tryout-pas=\"").concat(x.m, "\">").concat(x.n == null ? "Mulai" : "Ulangi", "</button></td></tr>");
+  }).join(""), "</tbody></table>\n    <h3>\uD83C\uDFAF Saran untuk ").concat(esc(nama), "</h3><ul>\n      ").concat(belum.length ? "<li>Coba tryout <b>".concat(belum.map(function (x) {
+    return MAPEL_INFO[x.m].nama;
+  }).join(", "), "</b> supaya peta kesiapanmu lengkap.</li>") : "", "\n      ").concat(lemah.length ? "<li>Prioritaskan <b>".concat(lemah.map(function (x) {
+    return MAPEL_INFO[x.m].nama;
+  }).join(", "), "</b>: latihan dulu (ada pembahasan), lalu tryout lagi.</li>") : "", "\n      <li>Belajar 25 menit, istirahat 5 menit. Satu atau dua pelajaran per hari sudah cukup.</li>\n      <li>Ulangi tryout 2\u20133 hari kemudian untuk melihat kemajuan. Soalnya selalu berganti.</li>\n      <li>Malam sebelum ujian: tidur cukup, siapkan alat tulis, sarapan sebelum berangkat. Jangan lupa berdoa \uD83E\uDD32</li></ul>\n    <div class=\"tanpa-cetak\" id=\"bagikanPAS\">").concat(blokBagikan(kartu), "</div>\n    <p class=\"catatan-ortu\">Soal tryout mencakup materi ").concat(esc(kls), " secara umum. Fokuskan latihan pada bab yang diajarkan di sekolah semester ini. Data tersimpan di perangkat ini saja.</p>\n    <div class=\"tanpa-cetak\">").concat(kartuHadirFlow("pas"), "</div>");
+  $("isiRapor").querySelectorAll("[data-tryout-pas]").forEach(function (b) {
+    return b.addEventListener("click", function () {
+      return mulaiTryoutPAS(b.getAttribute("data-tryout-pas"));
+    });
+  });
+  pasangBagikan($("bagikanPAS").querySelector(".kotak-bagikan"), kartu);
+  tampilkan("layarRapor");
+}
 var tesTerkini = null;
 var tesAktif = null,
   tesSoal = [],
@@ -8758,11 +8924,11 @@ function buatDaftarTes() {
     wadah.appendChild(tombol);
     return;
   }
-  GRUP_TES.forEach(function (_ref62) {
-    var _ref63 = _slicedToArray(_ref62, 3),
-      gid = _ref63[0],
-      judul = _ref63[1],
-      daftar = _ref63[2];
+  GRUP_TES.forEach(function (_ref64) {
+    var _ref65 = _slicedToArray(_ref64, 3),
+      gid = _ref65[0],
+      judul = _ref65[1],
+      daftar = _ref65[2];
     var h = document.createElement("div");
     h.className = "judul-grup";
     h.id = "grup-" + gid;
@@ -8812,10 +8978,10 @@ function bukaTes(id) {
     var _gambarLevel = function gambarLevel() {
       var w = $("daftarLevel");
       w.innerHTML = "";
-      LEVEL_OTAK.forEach(function (_ref64) {
-        var _ref65 = _slicedToArray(_ref64, 2),
-          n = _ref65[0],
-          v = _ref65[1];
+      LEVEL_OTAK.forEach(function (_ref66) {
+        var _ref67 = _slicedToArray(_ref66, 2),
+          n = _ref67[0],
+          v = _ref67[1];
         return w.appendChild(tombolChip(n, v === levelOtak, function () {
           levelOtak = v;
           tulis(kunci("level-otak", nama), v);
@@ -9071,6 +9237,7 @@ $("btnProfilTes").addEventListener("click", function () {
 });
 $("namaSiswa").addEventListener("input", function () {
   renderHarian();
+  renderPAS();
   isiKartuProfil();
 });
 $("namaSiswa").addEventListener("input", perbaruiInfoMapel);
@@ -9166,6 +9333,7 @@ $("btnPasang").addEventListener("click", function () {
 buatDaftarMapel();
 terapkanTautan();
 renderHarian();
+renderPAS();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>

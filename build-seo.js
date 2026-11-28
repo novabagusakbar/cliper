@@ -151,6 +151,36 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
     }));
   });
 
+  // Halaman persiapan PAS/ASAS & PAT: per kelas × pelajaran (SD–SMA) + halaman induk
+  const slugPAS = (x) => `latihan-pas-${MAPEL[x.m][1]}-${slugKelas(x.k, x.j)}`;
+  const adaPAS = semua.filter((x) => x.j !== "tk");
+  const TIPS_PAS = { sd: ["Belajar bersama Ayah/Bunda 20–25 menit, lalu istirahat.", "Ulangi soal yang salah sampai paham pembahasannya.", "Tidur cukup dan sarapan sebelum ujian."],
+    smp: ["Buat jadwal: satu atau dua pelajaran per hari menjelang ujian.", "Kerjakan tryout dengan batas waktu supaya terbiasa mengatur waktu.", "Catat rumus dan konsep yang sering salah di satu lembar ringkasan."],
+    sma: ["Kerjakan tryout penuh dengan waktu sungguhan, lalu evaluasi soal yang salah.", "Prioritaskan bab dengan nilai paling rendah di peta kesiapan.", "Jaga pola tidur; begadang justru menurunkan konsentrasi saat ujian."] };
+  adaPAS.forEach((x) => {
+    const [nm, , ikon] = MAPEL[x.m], lk = labelKelas(x), to = TRYOUT[x.j];
+    const saudara = adaPAS.filter((y) => y.k === x.k && y.m !== x.m).map((y) => `<a class="chip" href="${BASE}${slugPAS(y)}/">${MAPEL[y.m][2]} ${MAPEL[y.m][0]}</a>`).join("");
+    tulisHalaman(slugPAS(x), halaman({ judul: `Latihan Soal PAS ${nm} ${lk} Online Gratis (Tryout + Pembahasan) | HadirFlow`, url: BASE + slugPAS(x) + "/", og: BASE + "og/pas.png",
+      deskripsi: `Persiapan PAS/ASAS dan PAT ${nm} ${lk}: tryout ${to[0]} soal ${to[1]} menit, soal selalu baru, nilai langsung keluar, plus peta kesiapan semua pelajaran. Gratis tanpa daftar.`,
+      h1: `Latihan Soal PAS ${nm} ${lk}`,
+      isi: `<p>Persiapkan <b>Penilaian Akhir Semester (PAS/ASAS)</b> maupun <b>PAT</b> ${esc(nm)} ${esc(lk)} dengan tryout online gratis. Soal dibuat otomatis sehingga selalu baru, dan nilainya langsung keluar.</p>
+<p><a class="tombol" href="${BASE}?k=${x.k}&amp;m=${x.m}&amp;mode=tryout&amp;utm_source=seo&amp;utm_medium=pas">⏱️ Mulai Tryout ${to[0]} soal, ${to[1]} menit</a><a class="tombol kedua" href="${BASE}?k=${x.k}&amp;m=${x.m}">${ikon} Latihan dengan pembahasan</a></p>
+<div class="kartu"><h2>📝 Cara memakai untuk persiapan ujian</h2><ol class="langkah">
+<li><b>Tryout dulu</b> untuk mengukur kemampuan: ${to[0]} soal, ${to[1]} menit, tanpa pembahasan sampai selesai, seperti ujian sungguhan.</li>
+<li><b>Latihan</b> di mode latihan untuk soal-soal yang masih salah; setiap jawaban langsung dibahas.</li>
+<li><b>Lihat Peta Kesiapan</b>: semua pelajaran ${esc(lk)} beserta nilai tryout terakhir dan statusnya (Siap, Hampir siap, Perlu latihan).</li></ol></div>
+<div class="kartu"><h2>📚 Materi yang dilatih</h2><p>${esc(topik(x.m, x.g))}.</p><p class="kecil">Soal mencakup materi ${esc(lk)} secara umum. Fokuskan pada bab yang diajarkan di sekolah semester ini.</p></div>
+<div class="kartu"><h2>💡 Tips menjelang ujian</h2><ul>${TIPS_PAS[x.j].map((t) => `<li>${t}</li>`).join("")}</ul></div>
+${saudara ? `<div class="kartu"><h2>📖 Latihan PAS pelajaran lain ${esc(lk)}</h2>${saudara}</div>` : ""}
+<div class="kartu"><h2>🏫 Semua kelas</h2><p><a href="${BASE}latihan-pas/">Lihat latihan PAS untuk semua kelas SD, SMP, dan SMA →</a></p></div>` }));
+  });
+  tulisHalaman("latihan-pas", halaman({ judul: "Latihan Soal PAS & PAT Online Gratis SD, SMP, SMA (Tryout + Peta Kesiapan) | HadirFlow", url: BASE + "latihan-pas/", og: BASE + "og/pas.png",
+    deskripsi: "Tryout PAS/ASAS dan PAT gratis untuk SD/MI, SMP/MTs, dan SMA/MA: soal selalu baru, nilai langsung keluar, peta kesiapan semua pelajaran, dan kartu hasil untuk Status WA.",
+    h1: "Latihan Soal PAS & PAT Online Gratis",
+    isi: `<p>Musim ujian akhir semester sudah dekat? Latih semua pelajaran dengan <b>tryout berbatas waktu</b>, lalu lihat <b>Peta Kesiapan</b> untuk mengetahui pelajaran mana yang sudah siap dan mana yang perlu latihan lagi. Gratis, tanpa daftar.</p>
+<p><a class="tombol" href="${BASE}?utm_source=seo&amp;utm_medium=pas">📝 Buka Tes Gratis HadirFlow</a></p>
+${Object.keys(JENJANG).filter((j) => j !== "tk").map((j) => `<div class="kartu"><h2>${JENJANG[j]} • tryout ${TRYOUT[j][0]} soal, ${TRYOUT[j][1]} menit</h2>${[...new Set(adaPAS.filter((x) => x.j === j).map((x) => x.k))].map((k) => `<p style="margin:6px 0"><b>${KELAS.find((y) => y[0] === k)[1]}:</b> ${adaPAS.filter((x) => x.k === k).map((x) => `<a class="chip" href="${BASE}${slugPAS(x)}/">${MAPEL[x.m][2]} ${MAPEL[x.m][0]}</a>`).join("")}</p>`).join("")}</div>`).join("")}` }));
+
   // Halaman tes
   const TES = [
     ["tes-iq-anak", "otak", "Tes Kecerdasan Anak (ala IQ) Online Gratis", "Tes kecerdasan anak online gratis: 20 soal angka, pola gambar, kata, dan logika, dengan tingkat SD, SMP, SMA, dan dewasa. Hasil langsung keluar per bidang.",
@@ -270,9 +300,10 @@ ${saudara ? `<div class="kartu"><h2>📖 Pelajaran lain ${esc(lk)}</h2>${saudara
   });
 
   // Kit Promosi: gambar & pesan siap sebar (tidak diindeks Google)
-  const GAMBAR_PROMO = [["semua-tes-status", "Semua tes (Status)"], ["gaya-belajar-status", "Gaya belajar (Status)"], ["guru-status", "Untuk guru (Status)"],
+  const GAMBAR_PROMO = [["pas-status", "Musim PAS (Status)"], ["pas-postingan", "Musim PAS (Postingan)"], ["semua-tes-status", "Semua tes (Status)"], ["gaya-belajar-status", "Gaya belajar (Status)"], ["guru-status", "Untuk guru (Status)"],
     ["kecerdasan-postingan", "Kecerdasan (Postingan)"], ["kepribadian-postingan", "Kepribadian (Postingan)"], ["tantangan-harian-postingan", "Tantangan Harian (Postingan)"]];
   const PESAN_PROMO = [
+    ["📝 Musim PAS (grup wali murid)", "Assalamu'alaikum Ayah/Bunda 🙏\nMenjelang PAS/ujian akhir semester, ada latihan tryout gratis untuk SD, SMP, dan SMA: soal selalu baru, ada batas waktunya seperti ujian, nilainya langsung keluar, dan ada Peta Kesiapan untuk melihat pelajaran mana yang masih perlu latihan.\nSilakan dicoba 👇\n" + BASE + "latihan-pas/"],
     ["👨‍👩‍👧 Grup wali murid", "Assalamu'alaikum Ayah/Bunda 🙏\nAda tes gratis untuk mengenal anak kita: gaya belajar (Visual, Auditori, Kinestetik), kecerdasan, sampai kepribadian. Hasilnya langsung keluar, ada piagamnya, tanpa daftar.\nAnak TK juga bisa (versi yang diisi orang tua). Silakan dicoba 👇\n" + BASE],
     ["👩‍🏫 Grup guru", "Assalamu'alaikum Bapak/Ibu Guru 🙏\nMau tahu gaya belajar murid satu kelas? Ada alat gratis: guru membuat 1 link, murid mengerjakan di HP, hasilnya langsung masuk ke WhatsApp guru, lalu keluar rekap kelas dan saran mengajarnya. Piagam murid bisa memakai nama sekolah.\nPanduannya di sini 👇\n" + BASE + "sekolah/"],
     ["🏫 Kepala sekolah / yayasan", "Assalamu'alaikum Bapak/Ibu Kepala Sekolah 🙏\nKami dari HadirFlow menyediakan alat gratis untuk guru: tes gaya belajar, kecerdasan, dan kuis pelajaran untuk satu kelas, dengan rekap otomatis dan piagam bernama sekolah.\nSelain itu, HadirFlow juga membantu absensi guru dan karyawan (wajah + GPS) dan menghitung gaji secara otomatis.\nAlat gratis untuk guru 👇\n" + BASE + "sekolah/\nAbsensi & gaji guru 👇\n" + BASE + "absensi-guru/"],

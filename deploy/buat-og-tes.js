@@ -21,6 +21,7 @@ const DAFTAR = [
   ["kekuatan", "💪", "KENALI DIRI", "Kelebihanku", "Apa kelebihan terbesarmu?", ["#ffd23f", "#fff6cc"], "#4d3700"],
   ["darah", "🩸", "KENALI DIRI", "Golongan Darahku", "Golonganmu apa?", ["#ff8fa0", "#ffe0e5"], "#5c0a18"],
   ["kuis", "🏆", "KUIS PELAJARAN TK–SMA", "Bisa kalahkan nilaiku?", "Soal selalu baru, langsung ada nilainya", ["#2fbf8f", "#c9f2dd"], "#0b3f30"],
+  ["pas", "📝", "PERSIAPAN UJIAN AKHIR SEMESTER", "Latihan Soal PAS & PAT", "Tryout gratis + peta kesiapan semua pelajaran", ["#5b8def", "#d9e6ff"], "#0b2a6b"],
   ["harian", "🔥", "TANTANGAN HARIAN", "Ikut Tantangan Harian!", "5 soal sehari, berapa hari kamu kuat?", ["#ff9a52", "#ffe2c4"], "#5a1e00"]
 ];
 

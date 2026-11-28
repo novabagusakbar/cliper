@@ -119,6 +119,11 @@ Uji simulasi (3.000 orang tiruan yang 75% konsisten): ketepatan menebak tipe asl
 - **Kit Promosi** (`/kuistes/promosi/`, tidak diindeks Google): 6 gambar promosi (3 Status 1080×1920, 3 Postingan 1080×1080), 5 template pesan WhatsApp, 3 caption media sosial, ide video pendek, dan jadwal sebar 14 hari. Gambar dibuat dari `src/promosi/promosi.html` dengan `node deploy/buat-gambar-promosi.js`.
 - **Mode Sekolah**: di tab Guru isi *Nama sekolah* (opsional, parameter `s=`). Nama sekolah tampil di banner murid, piagam ("Didukung HadirFlow"), kartu hasil, dan kepala rekap; di bawah rekap ada ajakan absensi HadirFlow untuk sekolah tersebut.
 
+## Persiapan PAS / PAT
+- Kartu **📝 Persiapan PAS/ASAS** di tab Kuis Pelajaran (nama musim mengikuti bulan: Nov–Jan PAS Semester Ganjil, Apr–Jun PAT). Disembunyikan untuk TK dan link guru.
+- **Peta Kesiapan**: semua pelajaran kelas anak, nilai tryout terakhir, status 🟢 Siap (≥80) / 🟡 Hampir (≥60) / 🔴 Perlu latihan / ⚪ Belum, tombol tryout per pelajaran, saran belajar, kartu Status WA "Kesiapan PAS-ku". Kesiapan = rata-rata nilai tryout terakhir semua pelajaran (belum dicoba = 0).
+- Halaman Google `latihan-pas-<pelajaran>-<kelas>/` (72 halaman SD–SMA) + induk `latihan-pas/`, gambar pratinjau `og/pas.png`, gambar promosi PAS di Kit Promosi.
+
 ## Suara pembaca soal
 - **TK**: setiap kalimat soal dan pilihan sudah direkam dengan suara AI gratis **Piper** (model `id_ID-news_tts-medium`), 370 rekaman di `kuistes/suara/tk/` (±3,8 MB), diputar berurutan per bagian. Huruf tunggal dieja cara Indonesia (B = "be"). Kalimat yang belum terekam otomatis memakai suara HP.
 - Rekam ulang setelah soal TK berubah: `node deploy/kumpulkan-kalimat-tk.js` lalu `PIPER_MODEL=…/id_ID-news_tts-medium.onnx python3 deploy/buat-suara-tk.py`, lalu build.

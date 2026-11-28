@@ -286,6 +286,14 @@
   .lencana-harian i.dapat { filter: none; opacity: 1; }
   .selesai-harian { font-weight: 800; color: #17603a; font-size: 15px; }
   .tombol.kecil { padding: 8px 18px; font-size: 17px; }
+  .kartu-pas { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e3f0ff, #f0e9ff); border: 3px solid #c9dafc; border-radius: 20px; padding: 12px 14px; margin-bottom: 16px; color: var(--ink); }
+  .kartu-pas .ik { font-size: 34px; } .kartu-pas .isi { flex: 1; min-width: 0; } .kartu-pas b { display: block; font-size: 18px; } .kartu-pas small { display: block; color: #5b5770; font-size: 14px; }
+  .kartu-pas em { font-style: normal; font-weight: 800; color: #0b5fa5; white-space: nowrap; }
+  .status-pas { display: inline-block; border: 2px solid; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+  .tabel-pas { font-size: 15px; } .tabel-pas td, .tabel-pas th { vertical-align: middle; padding: 6px 4px; }
+  .tabel-pas .tombol.kecil { padding: 6px 9px; font-size: 13px; white-space: nowrap; margin: 0; box-shadow: 0 3px 0 var(--primary-dark); }
+  @media (max-width: 420px) { .status-pas { font-size: 12px; padding: 1px 6px; } }
+  @media (max-width: 360px) { .status-pas .st-teks { display: none; } .tabel-pas { font-size: 14px; } }
   .kartu-profil { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; background: linear-gradient(135deg, #e8f7f2, #e6f0ff); border: 3px solid #bfe6da; border-radius: 20px; padding: 12px 14px; margin-bottom: 14px; color: var(--ink); }
   .kartu-profil .ik { font-size: 34px; }
   .kartu-profil .isi { flex: 1; min-width: 0; }
@@ -489,6 +497,7 @@
 
       <div id="tabPelajaran" class="isi-tab aktif">
         <div id="kartuHarian"></div>
+        <div id="kartuPAS"></div>
         <p class="judul">🎒 Pilih jenjang:</p>
         <div class="pilih-chip" id="daftarJenjang"></div>
         <p class="judul" style="margin-top:12px">🏫 Pilih kelas:</p>
@@ -1658,9 +1667,10 @@ function konfeti(n = 80) {
 }
 
 function tampilkan(id) {
-  try { if (BISA_BICARA) speechSynthesis.cancel(); } catch (e) {}
+  try { hentikanSuara(); } catch (e) {}
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("aktif"));
   $(id).classList.add("aktif");
+  if (id === "layarMulai") { try { renderHarian(); renderPAS(); } catch (e) {} }
   try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
 }
 
@@ -1721,7 +1731,7 @@ function renderMode() {
 /* Tulisan kecil di kartu pelajaran: berapa soal sudah dikerjakan */
 function perbaruiInfoMapel() {
   const n = $("namaSiswa").value.trim();
-  renderHarian();
+  renderHarian(); renderPAS();
   document.querySelectorAll("#daftarMapel .mapel").forEach((b) => {
     const kode = b.dataset.kode;
     let teks = "♾️ Soal selalu baru";
@@ -1902,7 +1912,7 @@ function selesai() {
     kartu: { namaFile: "nilai-kuis.png", kartu: { latar: "#c9f2dd", emoji: emoji, judulAtas: `Nilai ${jenis}-ku`, besar: String(nilai), warnaBesar: "#016a53", judul: `${m.nama} • ${KELAS_INFO[kelasAktif].nama}`,
         deskripsi: `Benar ${skor} dari ${total} soal ${"⭐".repeat(jmlBintang)}`, ajakan: "Bisa lebih tinggi? Coba gratis 👇", seruan: "Bisa kalahkan nilaiku? 😎" },
       teks: `📚 ${nama} mendapat nilai ${nilai} di ${jenis.toLowerCase()} ${m.nama} ${KELAS_INFO[kelasAktif].nama}! ${nilai >= 80 ? "MasyaAllah 🎉" : "Terus semangat 💪"}\n\nBisa lebih tinggi? Coba soal yang sama tingkatnya, gratis 👉 ${tautanTantang({ k: kelasAktif, m: pilihanMapel, n: nilai })}` },
-    banding: kotakBanding("kuis", String(nilai)),
+    banding: kotakBanding("kuis", String(nilai)) + (modeAktif === "tryout" && !KUIS_GURU ? `<div class="kotak-promo"><b>📝 Peta Kesiapan ${musimUjian().nama}</b><p>Lihat kesiapanmu di semua pelajaran ${esc(KELAS_INFO[kelasAktif].nama)}, lalu tryout pelajaran yang belum.</p><button type="button" class="tombol" data-buka-pas>📝 Buka Peta Kesiapan</button></div>` : ""),
     piagam: nilai >= 70 ? `atas nilai ${nilai} pada ${jenis} ${m.nama} ${KELAS_INFO[kelasAktif].nama}` : null,
     guru: KUIS_GURU ? { nama: KUIS_GURU.nama, wa: KUIS_GURU.wa, pesan: pesanNilaiGuru(nilai, skor, total) } : null,
     video: pilihanMapel === "campur" ? null : kelasAktif + "|" + pilihanMapel
@@ -2651,6 +2661,7 @@ function isiPromo(el, opsi) {
     pasang(); muatHurufPiagam(pasang);
   }
   if (opsi.kartu) { const kb = el.querySelector(".kotak-bagikan"); if (kb) pasangBagikan(kb, opsi.kartu); }
+  const bp = el.querySelector("[data-buka-pas]"); if (bp) bp.addEventListener("click", () => bukaPetaPAS("layarHasil"));
   const b = el.querySelector("[data-bagikan]");
   if (b) b.addEventListener("click", () => { try { navigator.share({ title: "Tes Gratis HadirFlow", text: opsi.bagikan, url: URL_KUIS }).catch(() => {}); } catch (e) {} });
 }
@@ -3953,6 +3964,71 @@ function pasangBagikan(el, o) {
   muatHurufPiagam(() => { Object.keys(cache).forEach((k) => delete cache[k]); tampil(format); });
 }
 
+/* ---------- 13. PERSIAPAN PAS / UJIAN AKHIR SEMESTER: peta kesiapan per pelajaran dari nilai tryout ---------- */
+function musimUjian() {
+  const b = new Date().getMonth();   // 0 = Januari
+  if (b >= 10 || b === 0) return { nama: "PAS/ASAS Semester Ganjil", pendek: "PAS" };
+  if (b >= 3 && b <= 5) return { nama: "PAT/ASAT Kenaikan Kelas", pendek: "PAT" };
+  return { nama: "Ujian Akhir Semester", pendek: "Ujian" };
+}
+const NAMA_STATUS_PAS = [[80, "🟢", "Siap", "#02a581"], [60, "🟡", "Hampir siap", "#f0b400"], [0, "🔴", "Perlu latihan", "#e2563b"]];
+function statusNilai(n) { return n == null ? ["⚪", "Belum tryout", "#c9cfdb"] : NAMA_STATUS_PAS.find(([b]) => n >= b).slice(1); }
+function dataKesiapan(n, k) {
+  const r = n ? baca(kunci("rapor", n), []) : [], daftar = mapelKelas(k);
+  const baris = daftar.map((m) => {
+    const try_ = r.filter((e) => e.k === k && e.m === m && e.mode === "tryout"), lat = r.filter((e) => e.k === k && e.m === m && e.mode !== "tryout");
+    const akhir = try_.length ? try_[try_.length - 1] : null;
+    return { m, n: akhir ? akhir.n : null, kali: try_.length, latihan: lat.length ? Math.round(lat.slice(-5).reduce((a, e) => a + e.n, 0) / Math.min(5, lat.length)) : null };
+  });
+  const sudah = baris.filter((x) => x.n != null), siap = Math.round(baris.reduce((a, x) => a + (x.n || 0), 0) / daftar.length);
+  return { baris, sudah: sudah.length, total: daftar.length, siap, rata: sudah.length ? Math.round(sudah.reduce((a, x) => a + x.n, 0) / sudah.length) : null };
+}
+function renderPAS() {
+  const el = $("kartuPAS"); if (!el) return;
+  if (KUIS_GURU || TES_GURU || !TRYOUT[jenjangAktif]) { el.innerHTML = ""; return; }
+  const n = $("namaSiswa").value.trim(), M = musimUjian(), D = dataKesiapan(n, kelasAktif);
+  el.innerHTML = `<button type="button" class="kartu-pas" id="btnPAS"><span class="ik">📝</span><span class="isi"><b>Persiapan ${M.nama}</b>
+    <small>${KELAS_INFO[kelasAktif].nama}: ${D.sudah ? `${D.sudah}/${D.total} pelajaran sudah tryout • kesiapan ${D.siap}%` : `tryout ${TRYOUT[jenjangAktif][0]} soal per pelajaran, lalu lihat peta kesiapanmu`}</small>
+    <span class="jalur-profil"><span style="width:${D.siap}%"></span></span></span><em>Peta ›</em></button>`;
+  $("btnPAS").addEventListener("click", () => bukaPetaPAS("layarMulai"));
+}
+function mulaiTryoutPAS(m) {
+  if (!$("namaSiswa").value.trim()) { tampilkan("layarMulai"); gantiTab("tabPelajaran"); $("pesanError").textContent = "Tulis namamu dulu, ya! 😊"; $("namaSiswa").focus(); return; }
+  keluarHarian(); pilihanMapel = m; modeAktif = "tryout"; mulai();
+}
+function bukaPetaPAS(asal) {
+  nama = $("namaSiswa").value.trim() || nama;
+  if (!nama) { gantiTab("tabPelajaran"); $("pesanError").textContent = "Tulis namamu dulu untuk melihat peta kesiapan. 😊"; $("namaSiswa").focus(); return; }
+  layarAsalRapor = asal || "layarMulai";
+  const M = musimUjian(), D = dataKesiapan(nama, kelasAktif), to = TRYOUT[jenjangAktif], kls = KELAS_INFO[kelasAktif].nama;
+  const lemah = D.baris.filter((x) => x.n != null && x.n < 60), belum = D.baris.filter((x) => x.n == null);
+  const teks = `📝 Kesiapan ${M.pendek} ${nama} (${kls}): ${D.siap}%\n${D.baris.map((x) => `${MAPEL_INFO[x.m].nama}: ${x.n == null ? "belum" : x.n}`).join(" • ")}\n\nSudah siap ${M.pendek}? Latihan tryout gratis per pelajaran 👉 ${URL_KUIS}latihan-pas/?utm_source=bagikan&utm_medium=pas`;
+  const kartu = { namaFile: "kesiapan-pas.png", teks, kartu: { latar: "#dff0ff", emoji: "📝", judulAtas: `Kesiapan ${M.pendek}-ku`, besar: D.siap + "%", warnaBesar: "#0b5fa5", judul: kls,
+    deskripsi: `${D.sudah} dari ${D.total} pelajaran sudah tryout`, judulBatang: "Nilai tryout terakhir:",
+    batang: D.baris.map((x) => [MAPEL_INFO[x.m].nama.replace("Pendidikan Agama Islam", "PAI").replace("Bahasa ", "B. "), (x.n || 0) / 100, statusNilai(x.n)[2], x.n == null ? "–" : String(x.n)]),
+    ajakan: `Sudah siap ${M.pendek}? Coba gratis 👇`, seruan: "Ayo siapkan ujian bareng! 📚" } };
+  $("isiRapor").innerHTML = `<div class="tengah"><div style="font-size:52px">📝</div><h2 style="margin:4px 0 0">Peta Kesiapan ${esc(M.nama)}</h2><p class="sub-kecil">${esc(nama)} • ${esc(kls)} • ${tglHariIni()}</p></div>
+    <div class="panel-skor"><div class="angka">${D.siap}<small>%</small></div><span class="kategori">${D.siap >= 80 ? "Siap menghadapi ujian! 🎉" : D.siap >= 60 ? "Hampir siap 💪" : D.sudah ? "Ayo terus latihan 📚" : "Mulai tryout pertamamu"}</span>
+      <span class="info">${D.sudah}/${D.total} pelajaran sudah tryout${D.rata != null ? ` • rata-rata nilai ${D.rata}` : ""}</span></div>
+    <p class="sub-kecil" style="text-align:left">Kesiapan = rata-rata nilai tryout terakhir dari <b>semua</b> pelajaran (yang belum dicoba dihitung 0). Tryout: ${to[0]} soal, ${to[1]} menit, tanpa pembahasan sampai selesai, seperti ujian sungguhan.</p>
+    <table class="tabel tabel-pas"><thead><tr><th>Pelajaran</th><th class="angka">Nilai</th><th>Status</th><th></th></tr></thead><tbody>
+    ${D.baris.map((x) => { const s = statusNilai(x.n); return `<tr><td>${MAPEL_INFO[x.m].ikon} ${esc(MAPEL_INFO[x.m].nama)}${x.kali > 1 ? `<br><span class="sub-kecil" style="text-align:left">${x.kali}× tryout</span>` : x.n == null && x.latihan != null ? `<br><span class="sub-kecil" style="text-align:left">latihan: ${x.latihan}</span>` : ""}</td>
+      <td class="angka"><b>${x.n == null ? "–" : x.n}</b></td><td><span class="status-pas" style="border-color:${s[2]}" title="${s[1]}">${s[0]}<span class="st-teks"> ${s[1]}</span></span></td>
+      <td class="tanpa-cetak"><button type="button" class="tombol kecil" data-tryout-pas="${x.m}">${x.n == null ? "Mulai" : "Ulangi"}</button></td></tr>`; }).join("")}</tbody></table>
+    <h3>🎯 Saran untuk ${esc(nama)}</h3><ul>
+      ${belum.length ? `<li>Coba tryout <b>${belum.map((x) => MAPEL_INFO[x.m].nama).join(", ")}</b> supaya peta kesiapanmu lengkap.</li>` : ""}
+      ${lemah.length ? `<li>Prioritaskan <b>${lemah.map((x) => MAPEL_INFO[x.m].nama).join(", ")}</b>: latihan dulu (ada pembahasan), lalu tryout lagi.</li>` : ""}
+      <li>Belajar 25 menit, istirahat 5 menit. Satu atau dua pelajaran per hari sudah cukup.</li>
+      <li>Ulangi tryout 2–3 hari kemudian untuk melihat kemajuan. Soalnya selalu berganti.</li>
+      <li>Malam sebelum ujian: tidur cukup, siapkan alat tulis, sarapan sebelum berangkat. Jangan lupa berdoa 🤲</li></ul>
+    <div class="tanpa-cetak" id="bagikanPAS">${blokBagikan(kartu)}</div>
+    <p class="catatan-ortu">Soal tryout mencakup materi ${esc(kls)} secara umum. Fokuskan latihan pada bab yang diajarkan di sekolah semester ini. Data tersimpan di perangkat ini saja.</p>
+    <div class="tanpa-cetak">${kartuHadirFlow("pas")}</div>`;
+  $("isiRapor").querySelectorAll("[data-tryout-pas]").forEach((b) => b.addEventListener("click", () => mulaiTryoutPAS(b.getAttribute("data-tryout-pas"))));
+  pasangBagikan($("bagikanPAS").querySelector(".kotak-bagikan"), kartu);
+  tampilkan("layarRapor");
+}
+
 let tesTerkini = null;
 let tesAktif = null, tesSoal = [], tesJawab = [], tesTeks = [], tesNo = 0, tesMulai = 0, tesUsia = null, tesRiwayatNo = [];
 /* Alamat halaman tes. Kosongkan ("") untuk memakai tes bawaan di file ini. */
@@ -4121,7 +4197,7 @@ $("btnLanjut").addEventListener("click", lanjut);
 $("btnUlang").addEventListener("click", mulai);
 $("btnGanti").addEventListener("click", () => { hentikanTimer(); keluarHarian(); perbaruiInfoMapel(); renderHarian(); tampilkan("layarMulai"); });
 $("btnProfilTes").addEventListener("click", () => bukaProfil("layarHasilTes"));
-$("namaSiswa").addEventListener("input", () => { renderHarian(); isiKartuProfil(); });
+$("namaSiswa").addEventListener("input", () => { renderHarian(); renderPAS(); isiKartuProfil(); });
 $("namaSiswa").addEventListener("input", perbaruiInfoMapel);
 $("btnReset").addEventListener("click", () => {
   const n = $("namaSiswa").value.trim();
@@ -4160,7 +4236,7 @@ $("btnPasang").addEventListener("click", () => { if (promptPasang) { promptPasan
 })();
 buatDaftarMapel();
 terapkanTautan();
-renderHarian();
+renderHarian(); renderPAS();
 document.getElementById("cekJS").style.display = "none";
 </script>
 </body>
